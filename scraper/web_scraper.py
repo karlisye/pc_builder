@@ -1,102 +1,193 @@
 import requests
 from bs4 import BeautifulSoup
 import time
-import csv
+import mysql.connector
+from mysql.connector import Error
+from dotenv import load_dotenv
+import os
 
-def scrape_page(url, page_num):
-    """Scrape processors from a single page"""
+
+CATEGORIES = {
+    'intel': 'https://www.dateks.lv/cenas/procesori-intel',
+    'amd': 'https://www.dateks.lv/cenas/procesori-amd',
+}
+
+load_dotenv()
+
+DB_CONFIG = {
+    'host': os.getenv('DB_HOST'),
+    'user': os.getenv('DB_USER'),
+    'password': os.getenv('DB_PASSWORD'),
+    'database': os.getenv('DB_NAME')
+}
+
+def init_database():
+    try:
+        conn = mysql.connector.connect(**DB_CONFIG)
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS processors (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                category VARCHAR(50),
+                name VARCHAR(255),
+                price VARCHAR(50),
+                availability TEXT,
+                socket VARCHAR(100),
+                processor_number VARCHAR(100),
+                cores VARCHAR(20),
+                frequency VARCHAR(50),
+                cache VARCHAR(50),
+                lithography VARCHAR(50),
+                tdp VARCHAR(50),
+                cooler_included VARCHAR(50),
+                scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                INDEX idx_category (category),
+                INDEX idx_name (name)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+        """)
+
+        conn.commit()
+        print("Database initialized successfully")
+        return conn
+
+    except Error as e:
+        print(f"Error connecting to MySQL: {e}")
+        return None
+
+def save_to_database(conn, product_data):
+    try:
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            INSERT INTO processors (
+                category, name, price, availability, socket, 
+                processor_number, cores, frequency, cache, 
+                lithography, tdp, cooler_included
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """, (
+            product_data.get('category'),
+            product_data.get('name'),
+            product_data.get('price'),
+            product_data.get('availability'),
+            product_data.get('Socket', product_data.get('Procesora ligzda')),
+            product_data.get('Procesora numurs'),
+            product_data.get('Performance kodolu skaits', product_data.get('Kodolu skaits')),
+            product_data.get('Takts frekvence'),
+            product_data.get('Cache'),
+            product_data.get('Processing Die Lithography', product_data.get('Semiconductor Fabrication Process')),
+            product_data.get('TDP', product_data.get('Thermal Design Power')),
+            product_data.get('Komplektā dzesētājs', product_data.get('Integrēta videokarte'))
+        ))
+
+        conn.commit()
+        return True
+
+    except Error as e:
+        print(f"Database error: {e}")
+        return False
+
+def extract_specs(component):
+    specs = {}
+    fvs_container = component.find('div', class_='fvs')
+
+    if fvs_container:
+        for fv in fvs_container.find_all('div', class_='fv'):
+            try:
+                key = fv.find('span', class_='k').get_text(strip=True)
+                value = fv.find('span', class_='v').get_text(strip=True)
+                specs[key] = value
+            except AttributeError:
+                continue
+
+    return specs
+
+def scrape_page(url, page_num, category_name, conn):
     response = requests.get(url)
 
     if response.url != url:
-        print(f"Page {page_num} doesn't exist. Redirected to: {response.url}")
-        return None, True
+        print(f"[{category_name}] Page {page_num} doesn't exist.")
+        return 0, True
 
     soup = BeautifulSoup(response.text, 'html.parser')
     components = soup.find_all('div', class_='prod')
 
     if not components:
-        print(f"No products found on page {page_num}")
-        return None, True
+        print(f"[{category_name}] No products found on page {page_num}")
+        return 0, True
 
-    page_data = []
+    count = 0
     for component in components:
         try:
             name = component.find('span').get_text(strip=True)
             price = component.find('div', class_='price').get_text(strip=True)
             avail = component.find('div', class_='avail').get_text(strip=True)
+            specs = extract_specs(component)
 
-            page_data.append({
+            product_data = {
+                'category': category_name,
                 'name': name,
                 'price': price,
-                'availability': avail
-            })
+                'availability': avail,
+                **specs
+            }
 
-            print(f"{name} | {price} | {avail}")
-        except AttributeError as e:
-            print(f"Error parsing component: {e}")
+            if save_to_database(conn, product_data):
+                count += 1
+                print(f"[{category_name}] Saved: {name} | {price}")
+
+        except Exception as e:
+            print(f"[{category_name}] Error: {e}")
             continue
 
-    return page_data, False
+    return count, False
 
-def scrape_all_pages():
-    """Scrape all pages of Intel processors"""
-    base_url = 'https://www.dateks.lv/cenas/procesori-intel'
-    all_data = []
+def scrape_category(category_name, base_url, conn):
+    print(f"\n{'='*70}")
+    print(f"Scraping: {category_name.upper()}")
+    print(f"{'='*70}\n")
 
-    print("=" * 60)
-    print("Scraping page 1...")
-    print("=" * 60)
+    total_count = 0
 
-    page_data, should_stop = scrape_page(base_url, 1)
-    if page_data:
-        all_data.extend(page_data)
+    count, should_stop = scrape_page(base_url, 1, category_name, conn)
+    total_count += count
 
     if should_stop:
-        return all_data
+        return total_count
 
-    print(f"\nFound {len(page_data)} products on page 1\n")
-
-    index = 2
-
+    page_num = 2
     while True:
-        url = f'{base_url}/pg/{index}'
-
-        print("=" * 60)
-        print(f"Scraping page {index}: {url}")
-        print("=" * 60)
-
-        page_data, should_stop = scrape_page(url, index)
+        url = f'{base_url}/pg/{page_num}'
+        count, should_stop = scrape_page(url, page_num, category_name, conn)
+        total_count += count
 
         if should_stop:
-            print(f"\nStopping at page {index}")
             break
 
-        if page_data:
-            all_data.extend(page_data)
-            print(f"\nFound {len(page_data)} products on page {index}\n")
-
-        index += 1
+        page_num += 1
         time.sleep(1)
 
-    return all_data
+    return total_count
 
 if __name__ == "__main__":
-    print("Starting Intel processor scraper...")
-    print()
+    print("Starting Dateks scraper with MySQL database...\n")
 
-    all_processors = scrape_all_pages()
+    conn = init_database()
 
-    print("=" * 60)
-    print(f"Scraping complete! Total products found: {len(all_processors)}")
-    print("=" * 60)
+    if not conn:
+        print("Failed to connect to database. Exiting.")
+        exit(1)
 
-    if all_processors:
-        csv_filename = 'intel_processors.csv'
-        with open(csv_filename, 'w', newline='', encoding='utf-8') as f:
-            writer = csv.DictWriter(f, fieldnames=['name', 'price', 'availability'])
-            writer.writeheader()
-            writer.writerows(all_processors)
+    total_products = 0
 
-        print(f"\nData saved to {csv_filename}")
-    else:
-        print("\nNo data to save")
+    for category_name, base_url in CATEGORIES.items():
+        count = scrape_category(category_name, base_url, conn)
+        total_products += count
+        print(f"\n✓ {category_name}: {count} products saved")
+        time.sleep(2)
+
+    conn.close()
+
+    print(f"\n{'='*70}")
+    print(f"COMPLETE! Total: {total_products} products saved to MySQL")
+    print(f"{'='*70}")
