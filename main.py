@@ -5,6 +5,7 @@ import time
 
 load_dotenv()
 
+
 def main():
     print('Starting scraper...\n')
 

@@ -1,7 +1,17 @@
 import requests
 from bs4 import BeautifulSoup
 import time
+import re
 from scraper import database
+
+
+def extract_number(text):
+    if not text:
+        return None
+    match = re.search(r'\d+', text)
+    if match:
+        return int(match.group())
+    return None
 
 
 def extract_specs(component):
@@ -18,6 +28,53 @@ def extract_specs(component):
                 continue
 
     return specs
+
+
+def parse_processor_data(specs, category_name, name, price, avail):
+    return {
+        'category': category_name,
+        'name': name,
+        'price': price,
+        'availability': avail,
+        'socket': specs.get('Socket', specs.get('Procesora ligzda')),
+        'processor_number': specs.get('Procesora numurs'),
+        'cores': extract_number(specs.get('Performance kodolu skaits', specs.get('Kodolu skaits'))),
+        'frequency': extract_number(specs.get('Takts frekvence')),
+        'cache': extract_number(specs.get('Cache')),
+        'lithography': extract_number(specs.get('Processing Die Lithography')),
+        'tdp': extract_number(specs.get('TDP', specs.get('Thermal Design Power'))),
+        'cooler_included': specs.get('Komplektā dzesētājs', specs.get('Integrēta videokarte'))
+    }
+
+
+def parse_motherboard_data(specs, category_name, name, price, avail):
+    return {
+        'category': category_name,
+        'name': name,
+        'price': price,
+        'availability': avail,
+        'series': specs.get('Sērija'),
+        'socket': specs.get('Ligzda (socket)'),
+        'chipset': specs.get('Mikroshēmu kopne (chipset)'),
+        'form_factor': specs.get('Plates izmērs'),
+        'memory_type': specs.get('Atmiņas tips'),
+        'memory_slots': extract_number(specs.get('Atmiņas sloti')),
+        'wifi': specs.get('Iebūvēts Wi-Fi')
+    }
+
+
+def parse_ram_data(specs, category_name, name, price, avail):
+    return {
+        'category': category_name,
+        'name': name,
+        'price': price,
+        'availability': avail,
+        'capacity': extract_number(specs.get('Apjoms')),
+        'frequency': extract_number(specs.get('Maksimālā takts frekvence')),
+        'memory_type': specs.get('Atmiņas tips'),
+        'cas_latency': extract_number(specs.get('CL')),
+        'kit_type': specs.get('KIT')
+    }
 
 
 def scrape_page(url, page_num, category_name, product_type, conn):
@@ -42,19 +99,14 @@ def scrape_page(url, page_num, category_name, product_type, conn):
             avail = component.find('div', class_='avail').get_text(strip=True)
             specs = extract_specs(component)
 
-            product_data = {
-                'category': category_name,
-                'name': name,
-                'price': price,
-                'availability': avail,
-                **specs
-            }
-
             if product_type == 'processors':
+                product_data = parse_processor_data(specs, category_name, name, price, avail)
                 success = database.save_processor(conn, product_data)
             elif product_type == 'motherboards':
+                product_data = parse_motherboard_data(specs, category_name, name, price, avail)
                 success = database.save_motherboard(conn, product_data)
-            elif product_type == 'ram':
+            else:
+                product_data = parse_ram_data(specs, category_name, name, price, avail)
                 success = database.save_ram(conn, product_data)
 
             if success:

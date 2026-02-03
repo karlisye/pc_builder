@@ -30,15 +30,16 @@ def init_database(conn):
                 availability TEXT,
                 socket VARCHAR(100),
                 processor_number VARCHAR(100),
-                cores VARCHAR(20),
-                frequency VARCHAR(50),
-                cache VARCHAR(50),
-                lithography VARCHAR(50),
-                tdp VARCHAR(50),
+                cores INT,
+                frequency INT,
+                cache INT,
+                lithography INT,
+                tdp INT,
                 cooler_included VARCHAR(50),
                 scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 INDEX idx_category (category),
-                INDEX idx_name (name)
+                INDEX idx_cores (cores),
+                INDEX idx_frequency (frequency)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
         ''')
 
@@ -54,11 +55,12 @@ def init_database(conn):
                 chipset VARCHAR(100),
                 form_factor VARCHAR(50),
                 memory_type VARCHAR(50),
-                memory_slots VARCHAR(20),
+                memory_slots INT,
                 wifi VARCHAR(20),
                 scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 INDEX idx_category (category),
-                INDEX idx_name (name)
+                INDEX idx_socket (socket),
+                INDEX idx_chipset (chipset)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
         ''')
 
@@ -69,14 +71,15 @@ def init_database(conn):
                 name VARCHAR(255),
                 price VARCHAR(50),
                 availability TEXT,
-                capacity VARCHAR(50),
-                frequency VARCHAR(50),
+                capacity INT,
+                frequency INT,
                 memory_type VARCHAR(50),
-                cas_latency VARCHAR(50),
+                cas_latency INT,
                 kit_type VARCHAR(100),
                 scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 INDEX idx_category (category),
-                INDEX idx_name (name)
+                INDEX idx_capacity (capacity),
+                INDEX idx_frequency (frequency)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
         ''')
 
@@ -117,14 +120,14 @@ def save_processor(conn, data):
             data.get('name'),
             data.get('price'),
             data.get('availability'),
-            data.get('Socket', data.get('Procesora ligzda')),
-            data.get('Procesora numurs'),
-            data.get('Performance kodolu skaits', data.get('Kodolu skaits')),
-            data.get('Takts frekvence'),
-            data.get('Cache'),
-            data.get('Processing Die Lithography', data.get('Semiconductor Fabrication Process')),
-            data.get('TDP', data.get('Thermal Design Power')),
-            data.get('Komplektā dzesētājs', data.get('Integrēta videokarte'))
+            data.get('socket'),
+            data.get('processor_number'),
+            data.get('cores'),
+            data.get('frequency'),
+            data.get('cache'),
+            data.get('lithography'),
+            data.get('tdp'),
+            data.get('cooler_included')
         ))
         conn.commit()
         return True
@@ -147,20 +150,21 @@ def save_motherboard(conn, data):
             data.get('name'),
             data.get('price'),
             data.get('availability'),
-            data.get('Sērija'),
-            data.get('Ligzda (socket)'),
-            data.get('Mikroshēmu kopne (chipset)'),
-            data.get('Plates izmērs'),
-            data.get('Atmiņas tips'),
-            data.get('Atmiņas sloti'),
-            data.get('Iebūvēts Wi-Fi')
+            data.get('series'),
+            data.get('socket'),
+            data.get('chipset'),
+            data.get('form_factor'),
+            data.get('memory_type'),
+            data.get('memory_slots'),
+            data.get('wifi')
         ))
         conn.commit()
         return True
     except Error as e:
         print(f'Database error: {e}')
         return False
-    
+
+
 def save_ram(conn, data):
     try:
         cursor = conn.cursor()
@@ -174,15 +178,14 @@ def save_ram(conn, data):
             data.get('name'),
             data.get('price'),
             data.get('availability'),
-            data.get('Apjoms'),
-            data.get('Maksimālā takts frekvence'),
-            data.get('Atmiņas tips'),
-            data.get('CL'),
-            data.get('KIT')
+            data.get('capacity'),
+            data.get('frequency'),
+            data.get('memory_type'),
+            data.get('cas_latency'),
+            data.get('kit_type')
         ))
         conn.commit()
         return True
     except Error as e:
         print(f'Database error: {e}')
         return False
-
