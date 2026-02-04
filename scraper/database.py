@@ -83,6 +83,26 @@ def init_database(conn):
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
         ''')
 
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS gpus (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                category VARCHAR(50),
+                name VARCHAR(255),
+                price VARCHAR(50),
+                availability TEXT,
+                gpu_model VARCHAR(100),
+                gpu_speed INT,
+                power_connector VARCHAR(50),
+                memory INT,
+                memory_type VARCHAR(50),
+                cooling VARCHAR(100),
+                scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                INDEX idx_category (category),
+                INDEX idx_gpu_model (gpu_model),
+                INDEX idx_memory (memory)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+        ''')
+
         conn.commit()
         print('Database initialized')
         return True
@@ -98,6 +118,7 @@ def clear_tables(conn):
         cursor.execute('TRUNCATE TABLE processors')
         cursor.execute('TRUNCATE TABLE motherboards')
         cursor.execute('TRUNCATE TABLE ram')
+        cursor.execute('TRUNCATE TABLE gpus')
         conn.commit()
         print('Cleared existing data')
         return True
@@ -183,6 +204,32 @@ def save_ram(conn, data):
             data.get('memory_type'),
             data.get('cas_latency'),
             data.get('kit_type')
+        ))
+        conn.commit()
+        return True
+    except Error as e:
+        print(f'Database error: {e}')
+        return False
+    
+def save_gpu(conn, data):
+    try:
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO gpus (
+                category, name, price, availability, gpu_model,
+                gpu_speed, power_connector, memory, memory_type, cooling
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        ''', (
+            data.get('category'),
+            data.get('name'),
+            data.get('price'),
+            data.get('availability'),
+            data.get('gpu_model'),
+            data.get('gpu_speed'),
+            data.get('power_connector'),
+            data.get('memory'),
+            data.get('memory_type'),
+            data.get('cooling')
         ))
         conn.commit()
         return True

@@ -9,5 +9,8 @@ CATEGORIES = {
     },
     'ram': {
         'all': 'https://www.dateks.lv/cenas/atmina-ram',
+    },
+    'gpus': {
+        'all': 'https://www.dateks.lv/cenas/videokartes',
     }
 }

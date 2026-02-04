@@ -76,6 +76,21 @@ def parse_ram_data(specs, category_name, name, price, avail):
         'kit_type': specs.get('KIT')
     }
 
+def parse_gpu_data(specs, category_name, name, price, avail):
+    return {
+        'category': category_name,
+        'name': name,
+        'price': price,
+        'availability': avail,
+        'gpu_model': specs.get('GPU modelis'),
+        'gpu_speed': extract_number(specs.get('Dzinēja ātrums (GPU speed)')),
+        'power_connector': specs.get('Barošanas ligzdas'),
+        'memory': extract_number(specs.get('Operatīvā atmiņa')),
+        'memory_type': specs.get('Atmiņas tehnoloģija'),
+        'cooling': specs.get('Dzesēšana')
+    }
+
+
 
 def scrape_page(url, page_num, category_name, product_type, conn):
     response = requests.get(url)
@@ -105,9 +120,12 @@ def scrape_page(url, page_num, category_name, product_type, conn):
             elif product_type == 'motherboards':
                 product_data = parse_motherboard_data(specs, category_name, name, price, avail)
                 success = database.save_motherboard(conn, product_data)
-            else:
+            elif product_type == 'ram':
                 product_data = parse_ram_data(specs, category_name, name, price, avail)
                 success = database.save_ram(conn, product_data)
+            elif product_type == 'gpus':
+                product_data = parse_gpu_data(specs, category_name, name, price, avail)
+                success = database.save_gpu(conn, product_data)
 
             if success:
                 count += 1
