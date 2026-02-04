@@ -76,6 +76,7 @@ def parse_ram_data(specs, category_name, name, price, avail):
         'kit_type': specs.get('KIT')
     }
 
+
 def parse_gpu_data(specs, category_name, name, price, avail):
     return {
         'category': category_name,
@@ -90,6 +91,79 @@ def parse_gpu_data(specs, category_name, name, price, avail):
         'cooling': specs.get('Dzesēšana')
     }
 
+
+def parse_ssd_data(specs, category_name, name, price, avail):
+    return {
+        'category': category_name,
+        'name': name,
+        'price': price,
+        'availability': avail,
+        'capacity': extract_number(specs.get('Apjoms')),
+        'type': specs.get('Tips'),
+        'read_speed': extract_number(specs.get('Lasīšanas ātrums (Seq. Read)')),
+        'write_speed': extract_number(specs.get('Rakstīšanas ātrums (Seq. Write)')),
+        'form_factor': specs.get('Formāts'),
+        'interface': specs.get('Interfeiss')
+    }
+
+
+def parse_hdd_data(specs, category_name, name, price, avail):
+    return {
+        'category': category_name,
+        'name': name,
+        'price': price,
+        'availability': avail,
+        'capacity': extract_number(specs.get('Apjoms')),
+        'interface': specs.get('Pieslēguma interfeiss'),
+        'rpm': extract_number(specs.get('Apgriezieni')),
+        'cache': extract_number(specs.get('Buferis'))
+    }
+
+
+def parse_case_data(specs, category_name, name, price, avail):
+    return {
+        'category': category_name,
+        'name': name,
+        'price': price,
+        'availability': avail,
+        'form_factor': specs.get('Formfaktors'),
+        'case_type': specs.get('Korpusa tips'),
+        'color': specs.get('Krāsa'),
+        'psu_included': specs.get('Barošanas bloks')
+    }
+
+
+def parse_fan_data(specs, category_name, name, price, avail):
+    return {
+        'category': category_name,
+        'name': name,
+        'price': price,
+        'availability': avail,
+        'manufacturer': specs.get('Ražotājs'),
+        'rpm_max': extract_number(specs.get('Apgriezieni (MAX), rpm')),
+        'rpm_min': extract_number(specs.get('Apgriezieni (MIN), rpm')),
+        'size': extract_number(specs.get('Izmērs, mm')),
+        'led_color': specs.get('LED izgaismojuma krāsa'),
+        'connector': specs.get('Savienojums'),
+        'quantity': extract_number(specs.get('Skaits iepakojumā')),
+        'noise_level': specs.get('Trošņa līmenis (MAX), dB(A)')
+    }
+
+
+def parse_psu_data(specs, category_name, name, price, avail):
+    return {
+        'category': category_name,
+        'name': name,
+        'price': price,
+        'availability': avail,
+        'manufacturer': specs.get('Ražotājs'),
+        'wattage': extract_number(specs.get('Jauda')),
+        'certification': specs.get('80 PLUS certification'),
+        'fan_size': extract_number(specs.get('Ventilatora izmērs')),
+        'modular': specs.get('Modulārie kabeļi'),
+        'cpu_connector': specs.get('Procesora spraudnis'),
+        'pcie_connector': specs.get('PCI-E')
+    }
 
 
 def scrape_page(url, page_num, category_name, product_type, conn):
@@ -126,6 +200,26 @@ def scrape_page(url, page_num, category_name, product_type, conn):
             elif product_type == 'gpus':
                 product_data = parse_gpu_data(specs, category_name, name, price, avail)
                 success = database.save_gpu(conn, product_data)
+            elif product_type == 'ssd':
+                product_data = parse_ssd_data(specs, category_name, name, price, avail)
+                success = database.save_ssd(conn, product_data)
+            elif product_type == 'hdd_35':
+                product_data = parse_hdd_data(specs, category_name, name, price, avail)
+                success = database.save_hdd(conn, product_data, 'hdd_35')
+            elif product_type == 'hdd_25':
+                product_data = parse_hdd_data(specs, category_name, name, price, avail)
+                success = database.save_hdd(conn, product_data, 'hdd_25')
+            elif product_type == 'cases':
+                product_data = parse_case_data(specs, category_name, name, price, avail)
+                success = database.save_case(conn, product_data)
+            elif product_type == 'fans':
+                product_data = parse_fan_data(specs, category_name, name, price, avail)
+                success = database.save_fan(conn, product_data)
+            elif product_type == 'psu':
+                product_data = parse_psu_data(specs, category_name, name, price, avail)
+                success = database.save_psu(conn, product_data)
+            else:
+                success = False
 
             if success:
                 count += 1

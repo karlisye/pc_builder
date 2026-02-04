@@ -103,6 +103,121 @@ def init_database(conn):
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
         ''')
 
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS ssd (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                category VARCHAR(50),
+                name VARCHAR(255),
+                price VARCHAR(50),
+                availability TEXT,
+                capacity INT,
+                type VARCHAR(50),
+                read_speed INT,
+                write_speed INT,
+                form_factor VARCHAR(50),
+                interface VARCHAR(100),
+                scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                INDEX idx_category (category),
+                INDEX idx_capacity (capacity),
+                INDEX idx_type (type)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+        ''')
+
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS hdd_35 (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                category VARCHAR(50),
+                name VARCHAR(255),
+                price VARCHAR(50),
+                availability TEXT,
+                capacity INT,
+                interface VARCHAR(100),
+                rpm INT,
+                cache INT,
+                scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                INDEX idx_category (category),
+                INDEX idx_capacity (capacity),
+                INDEX idx_rpm (rpm)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+        ''')
+
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS hdd_25 (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                category VARCHAR(50),
+                name VARCHAR(255),
+                price VARCHAR(50),
+                availability TEXT,
+                capacity INT,
+                interface VARCHAR(100),
+                rpm INT,
+                cache INT,
+                scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                INDEX idx_category (category),
+                INDEX idx_capacity (capacity),
+                INDEX idx_rpm (rpm)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+        ''')
+
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS cases (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                category VARCHAR(50),
+                name VARCHAR(255),
+                price VARCHAR(50),
+                availability TEXT,
+                form_factor VARCHAR(50),
+                case_type VARCHAR(100),
+                color VARCHAR(50),
+                psu_included VARCHAR(50),
+                scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                INDEX idx_category (category),
+                INDEX idx_form_factor (form_factor)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+        ''')
+
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS fans (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                category VARCHAR(50),
+                name VARCHAR(255),
+                price VARCHAR(50),
+                availability TEXT,
+                manufacturer VARCHAR(100),
+                rpm_max INT,
+                rpm_min INT,
+                size INT,
+                led_color VARCHAR(50),
+                connector VARCHAR(50),
+                quantity INT,
+                noise_level VARCHAR(50),
+                scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                INDEX idx_category (category),
+                INDEX idx_size (size)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+        ''')
+
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS psu (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                category VARCHAR(50),
+                name VARCHAR(255),
+                price VARCHAR(50),
+                availability TEXT,
+                manufacturer VARCHAR(100),
+                wattage INT,
+                certification VARCHAR(50),
+                fan_size INT,
+                modular VARCHAR(50),
+                cpu_connector VARCHAR(100),
+                pcie_connector VARCHAR(100),
+                scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                INDEX idx_category (category),
+                INDEX idx_wattage (wattage),
+                INDEX idx_certification (certification)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+        ''')
+
         conn.commit()
         print('Database initialized')
         return True
@@ -119,6 +234,12 @@ def clear_tables(conn):
         cursor.execute('TRUNCATE TABLE motherboards')
         cursor.execute('TRUNCATE TABLE ram')
         cursor.execute('TRUNCATE TABLE gpus')
+        cursor.execute('TRUNCATE TABLE ssd')
+        cursor.execute('TRUNCATE TABLE hdd_35')
+        cursor.execute('TRUNCATE TABLE hdd_25')
+        cursor.execute('TRUNCATE TABLE cases')
+        cursor.execute('TRUNCATE TABLE fans')
+        cursor.execute('TRUNCATE TABLE psu')
         conn.commit()
         print('Cleared existing data')
         return True
@@ -210,7 +331,8 @@ def save_ram(conn, data):
     except Error as e:
         print(f'Database error: {e}')
         return False
-    
+
+
 def save_gpu(conn, data):
     try:
         cursor = conn.cursor()
@@ -230,6 +352,142 @@ def save_gpu(conn, data):
             data.get('memory'),
             data.get('memory_type'),
             data.get('cooling')
+        ))
+        conn.commit()
+        return True
+    except Error as e:
+        print(f'Database error: {e}')
+        return False
+
+
+def save_ssd(conn, data):
+    try:
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO ssd (
+                category, name, price, availability, capacity,
+                type, read_speed, write_speed, form_factor, interface
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        ''', (
+            data.get('category'),
+            data.get('name'),
+            data.get('price'),
+            data.get('availability'),
+            data.get('capacity'),
+            data.get('type'),
+            data.get('read_speed'),
+            data.get('write_speed'),
+            data.get('form_factor'),
+            data.get('interface')
+        ))
+        conn.commit()
+        return True
+    except Error as e:
+        print(f'Database error: {e}')
+        return False
+
+
+def save_hdd(conn, data, table_name):
+    try:
+        cursor = conn.cursor()
+        cursor.execute(f'''
+            INSERT INTO {table_name} (
+                category, name, price, availability, capacity,
+                interface, rpm, cache
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        ''', (
+            data.get('category'),
+            data.get('name'),
+            data.get('price'),
+            data.get('availability'),
+            data.get('capacity'),
+            data.get('interface'),
+            data.get('rpm'),
+            data.get('cache')
+        ))
+        conn.commit()
+        return True
+    except Error as e:
+        print(f'Database error: {e}')
+        return False
+
+
+def save_case(conn, data):
+    try:
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO cases (
+                category, name, price, availability, form_factor,
+                case_type, color, psu_included
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        ''', (
+            data.get('category'),
+            data.get('name'),
+            data.get('price'),
+            data.get('availability'),
+            data.get('form_factor'),
+            data.get('case_type'),
+            data.get('color'),
+            data.get('psu_included')
+        ))
+        conn.commit()
+        return True
+    except Error as e:
+        print(f'Database error: {e}')
+        return False
+
+
+def save_fan(conn, data):
+    try:
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO fans (
+                category, name, price, availability, manufacturer,
+                rpm_max, rpm_min, size, led_color, connector,
+                quantity, noise_level
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        ''', (
+            data.get('category'),
+            data.get('name'),
+            data.get('price'),
+            data.get('availability'),
+            data.get('manufacturer'),
+            data.get('rpm_max'),
+            data.get('rpm_min'),
+            data.get('size'),
+            data.get('led_color'),
+            data.get('connector'),
+            data.get('quantity'),
+            data.get('noise_level')
+        ))
+        conn.commit()
+        return True
+    except Error as e:
+        print(f'Database error: {e}')
+        return False
+
+
+def save_psu(conn, data):
+    try:
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO psu (
+                category, name, price, availability, manufacturer,
+                wattage, certification, fan_size, modular,
+                cpu_connector, pcie_connector
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        ''', (
+            data.get('category'),
+            data.get('name'),
+            data.get('price'),
+            data.get('availability'),
+            data.get('manufacturer'),
+            data.get('wattage'),
+            data.get('certification'),
+            data.get('fan_size'),
+            data.get('modular'),
+            data.get('cpu_connector'),
+            data.get('pcie_connector')
         ))
         conn.commit()
         return True
