@@ -26,7 +26,7 @@ def init_database(conn):
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 category VARCHAR(50),
                 name VARCHAR(255),
-                price VARCHAR(50),
+                price DECIMAL(10,2),
                 availability TEXT,
                 socket VARCHAR(100),
                 processor_number VARCHAR(100),
@@ -38,6 +38,7 @@ def init_database(conn):
                 cooler_included VARCHAR(50),
                 scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 INDEX idx_category (category),
+                INDEX idx_price (price),
                 INDEX idx_cores (cores),
                 INDEX idx_frequency (frequency)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
@@ -48,7 +49,7 @@ def init_database(conn):
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 category VARCHAR(50),
                 name VARCHAR(255),
-                price VARCHAR(50),
+                price DECIMAL(10,2),
                 availability TEXT,
                 series VARCHAR(100),
                 socket VARCHAR(100),
@@ -59,6 +60,7 @@ def init_database(conn):
                 wifi VARCHAR(20),
                 scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 INDEX idx_category (category),
+                INDEX idx_price (price),
                 INDEX idx_socket (socket),
                 INDEX idx_chipset (chipset)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
@@ -69,7 +71,7 @@ def init_database(conn):
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 category VARCHAR(50),
                 name VARCHAR(255),
-                price VARCHAR(50),
+                price DECIMAL(10,2),
                 availability TEXT,
                 capacity INT,
                 frequency INT,
@@ -78,6 +80,7 @@ def init_database(conn):
                 kit_type VARCHAR(100),
                 scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 INDEX idx_category (category),
+                INDEX idx_price (price),
                 INDEX idx_capacity (capacity),
                 INDEX idx_frequency (frequency)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
@@ -88,7 +91,7 @@ def init_database(conn):
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 category VARCHAR(50),
                 name VARCHAR(255),
-                price VARCHAR(50),
+                price DECIMAL(10,2),
                 availability TEXT,
                 gpu_model VARCHAR(100),
                 gpu_speed INT,
@@ -98,6 +101,7 @@ def init_database(conn):
                 cooling VARCHAR(100),
                 scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 INDEX idx_category (category),
+                INDEX idx_price (price),
                 INDEX idx_gpu_model (gpu_model),
                 INDEX idx_memory (memory)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
@@ -108,7 +112,7 @@ def init_database(conn):
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 category VARCHAR(50),
                 name VARCHAR(255),
-                price VARCHAR(50),
+                price DECIMAL(10,2),
                 availability TEXT,
                 capacity INT,
                 type VARCHAR(50),
@@ -118,6 +122,7 @@ def init_database(conn):
                 interface VARCHAR(100),
                 scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 INDEX idx_category (category),
+                INDEX idx_price (price),
                 INDEX idx_capacity (capacity),
                 INDEX idx_type (type)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
@@ -128,7 +133,7 @@ def init_database(conn):
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 category VARCHAR(50),
                 name VARCHAR(255),
-                price VARCHAR(50),
+                price DECIMAL(10,2),
                 availability TEXT,
                 capacity INT,
                 interface VARCHAR(100),
@@ -136,6 +141,7 @@ def init_database(conn):
                 cache INT,
                 scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 INDEX idx_category (category),
+                INDEX idx_price (price),
                 INDEX idx_capacity (capacity),
                 INDEX idx_rpm (rpm)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
@@ -146,7 +152,7 @@ def init_database(conn):
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 category VARCHAR(50),
                 name VARCHAR(255),
-                price VARCHAR(50),
+                price DECIMAL(10,2),
                 availability TEXT,
                 capacity INT,
                 interface VARCHAR(100),
@@ -154,6 +160,7 @@ def init_database(conn):
                 cache INT,
                 scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 INDEX idx_category (category),
+                INDEX idx_price (price),
                 INDEX idx_capacity (capacity),
                 INDEX idx_rpm (rpm)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
@@ -164,7 +171,7 @@ def init_database(conn):
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 category VARCHAR(50),
                 name VARCHAR(255),
-                price VARCHAR(50),
+                price DECIMAL(10,2),
                 availability TEXT,
                 form_factor VARCHAR(50),
                 case_type VARCHAR(100),
@@ -172,6 +179,7 @@ def init_database(conn):
                 psu_included VARCHAR(50),
                 scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 INDEX idx_category (category),
+                INDEX idx_price (price),
                 INDEX idx_form_factor (form_factor)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
         ''')
@@ -181,7 +189,7 @@ def init_database(conn):
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 category VARCHAR(50),
                 name VARCHAR(255),
-                price VARCHAR(50),
+                price DECIMAL(10,2),
                 availability TEXT,
                 manufacturer VARCHAR(100),
                 rpm_max INT,
@@ -193,6 +201,7 @@ def init_database(conn):
                 noise_level VARCHAR(50),
                 scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 INDEX idx_category (category),
+                INDEX idx_price (price),
                 INDEX idx_size (size)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
         ''')
@@ -202,7 +211,7 @@ def init_database(conn):
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 category VARCHAR(50),
                 name VARCHAR(255),
-                price VARCHAR(50),
+                price DECIMAL(10,2),
                 availability TEXT,
                 manufacturer VARCHAR(100),
                 wattage INT,
@@ -213,6 +222,7 @@ def init_database(conn):
                 pcie_connector VARCHAR(100),
                 scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 INDEX idx_category (category),
+                INDEX idx_price (price),
                 INDEX idx_wattage (wattage),
                 INDEX idx_certification (certification)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4

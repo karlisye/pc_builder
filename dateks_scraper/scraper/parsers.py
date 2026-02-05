@@ -14,6 +14,17 @@ def extract_number(text):
     return None
 
 
+def parse_price(price_text):
+    if not price_text:
+        return None
+    price = str(price_text).replace('€', '').replace(' ', '').strip()
+    price = price.replace(',', '.')
+    try:
+        return float(price)
+    except:
+        return None
+
+
 def extract_specs(component):
     specs = {}
     fvs_container = component.find('div', class_='fvs')
@@ -34,7 +45,7 @@ def parse_processor_data(specs, category_name, name, price, avail):
     return {
         'category': category_name,
         'name': name,
-        'price': price,
+        'price': parse_price(price),
         'availability': avail,
         'socket': specs.get('Socket', specs.get('Procesora ligzda')),
         'processor_number': specs.get('Procesora numurs'),
@@ -51,7 +62,7 @@ def parse_motherboard_data(specs, category_name, name, price, avail):
     return {
         'category': category_name,
         'name': name,
-        'price': price,
+        'price': parse_price(price),
         'availability': avail,
         'series': specs.get('Sērija'),
         'socket': specs.get('Ligzda (socket)'),
@@ -67,7 +78,7 @@ def parse_ram_data(specs, category_name, name, price, avail):
     return {
         'category': category_name,
         'name': name,
-        'price': price,
+        'price': parse_price(price),
         'availability': avail,
         'capacity': extract_number(specs.get('Apjoms')),
         'frequency': extract_number(specs.get('Maksimālā takts frekvence')),
@@ -81,7 +92,7 @@ def parse_gpu_data(specs, category_name, name, price, avail):
     return {
         'category': category_name,
         'name': name,
-        'price': price,
+        'price': parse_price(price),
         'availability': avail,
         'gpu_model': specs.get('GPU modelis'),
         'gpu_speed': extract_number(specs.get('Dzinēja ātrums (GPU speed)')),
@@ -96,7 +107,7 @@ def parse_ssd_data(specs, category_name, name, price, avail):
     return {
         'category': category_name,
         'name': name,
-        'price': price,
+        'price': parse_price(price),
         'availability': avail,
         'capacity': extract_number(specs.get('Apjoms')),
         'type': specs.get('Tips'),
@@ -111,7 +122,7 @@ def parse_hdd_data(specs, category_name, name, price, avail):
     return {
         'category': category_name,
         'name': name,
-        'price': price,
+        'price': parse_price(price),
         'availability': avail,
         'capacity': extract_number(specs.get('Apjoms')),
         'interface': specs.get('Pieslēguma interfeiss'),
@@ -124,7 +135,7 @@ def parse_case_data(specs, category_name, name, price, avail):
     return {
         'category': category_name,
         'name': name,
-        'price': price,
+        'price': parse_price(price),
         'availability': avail,
         'form_factor': specs.get('Formfaktors'),
         'case_type': specs.get('Korpusa tips'),
@@ -137,7 +148,7 @@ def parse_fan_data(specs, category_name, name, price, avail):
     return {
         'category': category_name,
         'name': name,
-        'price': price,
+        'price': parse_price(price),
         'availability': avail,
         'manufacturer': specs.get('Ražotājs'),
         'rpm_max': extract_number(specs.get('Apgriezieni (MAX), rpm')),
@@ -154,7 +165,7 @@ def parse_psu_data(specs, category_name, name, price, avail):
     return {
         'category': category_name,
         'name': name,
-        'price': price,
+        'price': parse_price(price),
         'availability': avail,
         'manufacturer': specs.get('Ražotājs'),
         'wattage': extract_number(specs.get('Jauda')),
