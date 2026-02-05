@@ -15,67 +15,118 @@ class BuildController extends Controller
   public function generate(Request $request)
   {
     $budget = $request->input('budget', 2000);
+    $originalBudget = $budget;
 
+    $result = $this->attemptBuildWithRetries($budget);
+
+    if ($result['success']) {
+      $data = $result['data'];
+      $data['original_budget'] = $originalBudget;
+
+      if ($result['adjusted_budget'] !== $originalBudget) {
+        $data['adjustments'] = [
+          'budget_reduced' => true,
+          'original_budget' => $originalBudget,
+          'final_budget' => $result['adjusted_budget'],
+          'reduction' => round($originalBudget - $result['adjusted_budget'], 2),
+          'message' => 'Budget was reduced to find compatible components'
+        ];
+      }
+
+      return response()->json($data);
+    }
+
+    return response()->json([
+      'error' => 'Could not build PC with available components',
+      'requested_budget' => $originalBudget,
+      'message' => 'Try increasing budget or check component availability'
+    ], 404);
+  }
+
+  protected function attemptBuildWithRetries($budget, $maxAttempts = 10)
+  {
+    for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
+      $result = $this->attemptBuild($budget, $attempt === $maxAttempts);
+      
+      if ($result['success']) {
+        $result['adjusted_budget'] = $budget;
+        return $result;
+      }
+      
+      if ($attempt < $maxAttempts) {
+        $budget = $budget * 0.98;
+      }
+    }
+    
+    return ['success' => false, 'error' => 'Max attempts reached'];
+  }
+
+  protected function attemptBuild($budget, $relaxed = false)
+  {
     $allocations = $this->calculateBudgetAllocations($budget);
 
     $cpu = $this->selectCpu($allocations['cpu']);
-
     if (!$cpu) {
-      return response()->json(['error' => 'No CPU found within budget'], 404);
+      return ['success' => false, 'error' => 'No CPU found'];
     }
 
     $mobo = $this->selectMotherboard($cpu, $allocations['mobo']);
-
     if (!$mobo) {
-      return response()->json(['error' => 'No compatible motherboard found'], 404);
+      return ['success' => false, 'error' => 'No motherboard found'];
     }
 
-    $ram = $this->selectRam($mobo, $allocations['ram']);
-
+    $ram = $this->selectRam($mobo, $allocations['ram'], $relaxed);
     if (!$ram) {
-      return response()->json(['error' => 'No compatible RAM found'], 404);
+      return ['success' => false, 'error' => 'No RAM found'];
     }
 
     $gpu = $this->selectGpu($allocations['gpu']);
-    $ssd = $this->selectSsd($allocations['ssd']);
+    $ssd = $this->selectSsd($allocations['ssd'], $relaxed);
     $psu = $this->selectPsu($allocations['psu'], $cpu, $gpu);
 
     $total = $cpu->price + $mobo->price + $ram->price + 
              ($gpu->price ?? 0) + ($ssd->price ?? 0) + ($psu->price ?? 0);
 
-    return response()->json([
-      'cpu' => $cpu,
-      'motherboard' => $mobo,
-      'ram' => $ram,
-      'gpu' => $gpu,
-      'ssd' => $ssd,
-      'psu' => $psu,
-      'total' => round($total, 2),
-      'budget' => $budget,
-      'remaining' => round($budget - $total, 2),
-      'budget_breakdown' => [
-        'cpu_budget' => $allocations['cpu'],
-        'cpu_spent' => $cpu->price,
-        'mobo_budget' => $allocations['mobo'],
-        'mobo_spent' => $mobo->price,
-        'ram_budget' => $allocations['ram'],
-        'ram_spent' => $ram->price,
-        'gpu_budget' => $allocations['gpu'],
-        'gpu_spent' => $gpu->price ?? 0,
-        'ssd_budget' => $allocations['ssd'],
-        'ssd_spent' => $ssd->price ?? 0,
-        'psu_budget' => $allocations['psu'],
-        'psu_spent' => $psu->price ?? 0
-      ],
-      'compatibility' => [
-        'cpu_socket' => $cpu->socket,
-        'mobo_socket' => $mobo->socket,
-        'socket_match' => $cpu->socket === $mobo->socket,
-        'mobo_memory_type' => $mobo->memory_type,
-        'ram_memory_type' => $ram->memory_type,
-        'memory_type_match' => $mobo->memory_type === $ram->memory_type
+    return [
+      'success' => true,
+      'data' => [
+        'cpu' => $cpu,
+        'motherboard' => $mobo,
+        'ram' => $ram,
+        'gpu' => $gpu,
+        'ssd' => $ssd,
+        'psu' => $psu,
+        'total' => round($total, 2),
+        'budget' => $budget,
+        'remaining' => round($budget - $total, 2),
+        'budget_breakdown' => [
+          'cpu_budget' => $allocations['cpu'],
+          'cpu_spent' => $cpu->price,
+          'mobo_budget' => $allocations['mobo'],
+          'mobo_spent' => $mobo->price,
+          'ram_budget' => $allocations['ram'],
+          'ram_spent' => $ram->price,
+          'gpu_budget' => $allocations['gpu'],
+          'gpu_spent' => $gpu->price ?? 0,
+          'ssd_budget' => $allocations['ssd'],
+          'ssd_spent' => $ssd->price ?? 0,
+          'psu_budget' => $allocations['psu'],
+          'psu_spent' => $psu->price ?? 0
+        ],
+        'compatibility' => [
+          'cpu_socket' => $cpu->socket,
+          'mobo_socket' => $mobo->socket,
+          'socket_match' => $cpu->socket === $mobo->socket,
+          'mobo_memory_type' => $mobo->memory_type,
+          'ram_memory_type' => $ram->memory_type,
+          'memory_type_match' => $mobo->memory_type === $ram->memory_type
+        ],
+        'component_notes' => [
+          'ram' => $ram->capacity < 16 ? 'Less than 16GB due to budget' : null,
+          'ssd' => $ssd && $ssd->capacity < 512 ? 'Less than 512GB due to budget' : null
+        ]
       ]
-    ]);
+    ];
   }
 
   protected function calculateBudgetAllocations($budget)
@@ -143,28 +194,30 @@ class BuildController extends Controller
       ->first();
   }
 
-  protected function selectRam($mobo, $budget)
+  protected function selectRam($mobo, $budget, $relaxed = false)
   {
-    $ram = Ram::where('memory_type', $mobo->memory_type)
-      ->whereNotNull('capacity')
-      ->whereNotNull('price')
-      ->where('capacity', '>=', 16)
-      ->where('price', '<=', $budget)
-      ->orderByDesc('capacity')
-      ->orderByDesc('frequency')
-      ->first();
-
-    if (!$ram) {
+    if (!$relaxed) {
       $ram = Ram::where('memory_type', $mobo->memory_type)
         ->whereNotNull('capacity')
         ->whereNotNull('price')
+        ->where('capacity', '>=', 16)
         ->where('price', '<=', $budget)
         ->orderByDesc('capacity')
         ->orderByDesc('frequency')
         ->first();
+
+      if ($ram) {
+        return $ram;
+      }
     }
 
-    return $ram;
+    return Ram::where('memory_type', $mobo->memory_type)
+      ->whereNotNull('capacity')
+      ->whereNotNull('price')
+      ->where('price', '<=', $budget)
+      ->orderByDesc('capacity')
+      ->orderByDesc('frequency')
+      ->first();
   }
 
   protected function selectGpu($budget)
@@ -180,26 +233,28 @@ class BuildController extends Controller
       ->first();
   }
 
-  protected function selectSsd($budget)
+  protected function selectSsd($budget, $relaxed = false)
   {
-    $ssd = Ssd::whereNotNull('capacity')
-      ->whereNotNull('price')
-      ->where('capacity', '>=', 512)
-      ->where('price', '<=', $budget)
-      ->orderByDesc('capacity')
-      ->orderByDesc('read_speed')
-      ->first();
-
-    if (!$ssd) {
+    if (!$relaxed) {
       $ssd = Ssd::whereNotNull('capacity')
         ->whereNotNull('price')
+        ->where('capacity', '>=', 512)
         ->where('price', '<=', $budget)
         ->orderByDesc('capacity')
         ->orderByDesc('read_speed')
         ->first();
+
+      if ($ssd) {
+        return $ssd;
+      }
     }
 
-    return $ssd;
+    return Ssd::whereNotNull('capacity')
+      ->whereNotNull('price')
+      ->where('price', '<=', $budget)
+      ->orderByDesc('capacity')
+      ->orderByDesc('read_speed')
+      ->first();
   }
 
   protected function selectPsu($budget, $cpu, $gpu)
