@@ -42,12 +42,16 @@ def extract_specs(component):
 
 
 def parse_processor_data(specs, category_name, name, price, avail):
+    socket = specs.get('Socket', specs.get('Procesora ligzda'))
+    if socket:
+        socket = socket.replace('Socket ', '').strip()
+    
     return {
         'category': category_name,
         'name': name,
         'price': parse_price(price),
         'availability': avail,
-        'socket': specs.get('Socket', specs.get('Procesora ligzda')),
+        'socket': socket,
         'processor_number': specs.get('Procesora numurs'),
         'cores': extract_number(specs.get('Performance kodolu skaits', specs.get('Kodolu skaits'))),
         'frequency': extract_number(specs.get('Takts frekvence')),
@@ -58,7 +62,12 @@ def parse_processor_data(specs, category_name, name, price, avail):
     }
 
 
+
 def parse_motherboard_data(specs, category_name, name, price, avail):
+    memory_type = specs.get('Atmiņas tips')
+    if memory_type:
+        memory_type = memory_type.strip()
+    
     return {
         'category': category_name,
         'name': name,
@@ -68,13 +77,17 @@ def parse_motherboard_data(specs, category_name, name, price, avail):
         'socket': specs.get('Ligzda (socket)'),
         'chipset': specs.get('Mikroshēmu kopne (chipset)'),
         'form_factor': specs.get('Plates izmērs'),
-        'memory_type': specs.get('Atmiņas tips'),
+        'memory_type': memory_type,
         'memory_slots': extract_number(specs.get('Atmiņas sloti')),
         'wifi': specs.get('Iebūvēts Wi-Fi')
     }
 
 
 def parse_ram_data(specs, category_name, name, price, avail):
+    memory_type = specs.get('Atmiņas tips')
+    if memory_type:
+        memory_type = memory_type.strip()
+    
     return {
         'category': category_name,
         'name': name,
@@ -82,7 +95,7 @@ def parse_ram_data(specs, category_name, name, price, avail):
         'availability': avail,
         'capacity': extract_number(specs.get('Apjoms')),
         'frequency': extract_number(specs.get('Maksimālā takts frekvence')),
-        'memory_type': specs.get('Atmiņas tips'),
+        'memory_type': memory_type,
         'cas_latency': extract_number(specs.get('CL')),
         'kit_type': specs.get('KIT')
     }
