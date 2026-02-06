@@ -9,6 +9,7 @@ use App\Models\Ram;
 use App\Models\Gpu;
 use App\Models\Ssd;
 use App\Models\Psu;
+use App\Models\Cases;
 
 class BuildController extends Controller
 {
@@ -47,17 +48,17 @@ class BuildController extends Controller
   {
     for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
       $result = $this->attemptBuild($budget, $attempt === $maxAttempts);
-      
+
       if ($result['success']) {
         $result['adjusted_budget'] = $budget;
         return $result;
       }
-      
+
       if ($attempt < $maxAttempts) {
         $budget = $budget * 0.98;
       }
     }
-    
+
     return ['success' => false, 'error' => 'Max attempts reached'];
   }
 
@@ -83,9 +84,11 @@ class BuildController extends Controller
     $gpu = $this->selectGpu($allocations['gpu']);
     $ssd = $this->selectSsd($allocations['ssd'], $relaxed);
     $psu = $this->selectPsu($allocations['psu'], $cpu, $gpu);
+    $case = $this->selectCase($allocations['case'], $mobo);
 
     $total = $cpu->price + $mobo->price + $ram->price + 
-             ($gpu->price ?? 0) + ($ssd->price ?? 0) + ($psu->price ?? 0);
+             ($gpu->price ?? 0) + ($ssd->price ?? 0) + 
+             ($psu->price ?? 0) + ($case->price ?? 0);
 
     return [
       'success' => true,
@@ -96,6 +99,7 @@ class BuildController extends Controller
         'gpu' => $gpu,
         'ssd' => $ssd,
         'psu' => $psu,
+        'case' => $case,
         'total' => round($total, 2),
         'budget' => $budget,
         'remaining' => round($budget - $total, 2),
@@ -111,7 +115,9 @@ class BuildController extends Controller
           'ssd_budget' => $allocations['ssd'],
           'ssd_spent' => $ssd->price ?? 0,
           'psu_budget' => $allocations['psu'],
-          'psu_spent' => $psu->price ?? 0
+          'psu_spent' => $psu->price ?? 0,
+          'case_budget' => $allocations['case'],
+          'case_spent' => $case->price ?? 0
         ],
         'compatibility' => [
           'cpu_socket' => $cpu->socket,
@@ -119,11 +125,15 @@ class BuildController extends Controller
           'socket_match' => $cpu->socket === $mobo->socket,
           'mobo_memory_type' => $mobo->memory_type,
           'ram_memory_type' => $ram->memory_type,
-          'memory_type_match' => $mobo->memory_type === $ram->memory_type
+          'memory_type_match' => $mobo->memory_type === $ram->memory_type,
+          'mobo_form_factor' => $mobo->form_factor,
+          'case_form_factor' => $case->form_factor ?? 'ATX',
+          'case_compatibility' => $this->checkCaseCompatibility($mobo, $case)
         ],
         'component_notes' => [
           'ram' => $ram->capacity < 16 ? 'Less than 16GB due to budget' : null,
-          'ssd' => $ssd && $ssd->capacity < 512 ? 'Less than 512GB due to budget' : null
+          'ssd' => $ssd && $ssd->capacity < 512 ? 'Less than 512GB due to budget' : null,
+          'case' => $case && $case->psu_included === 'Ir' ? 'Case includes PSU' : null
         ]
       ]
     ];
@@ -133,39 +143,43 @@ class BuildController extends Controller
   {
     if ($budget < 600) {
       return [
-        'cpu' => $budget * 0.30,
-        'mobo' => $budget * 0.15,
+        'cpu' => $budget * 0.28,
+        'mobo' => $budget * 0.14,
         'ram' => $budget * 0.12,
-        'gpu' => $budget * 0.25,
-        'ssd' => $budget * 0.10,
-        'psu' => $budget * 0.08
+        'gpu' => $budget * 0.24,
+        'ssd' => $budget * 0.09,
+        'psu' => $budget * 0.08,
+        'case' => $budget * 0.05
       ];
     } elseif ($budget < 1000) {
       return [
-        'cpu' => $budget * 0.25,
-        'mobo' => $budget * 0.12,
-        'ram' => $budget * 0.15,
-        'gpu' => $budget * 0.32,
+        'cpu' => $budget * 0.24,
+        'mobo' => $budget * 0.11,
+        'ram' => $budget * 0.14,
+        'gpu' => $budget * 0.31,
         'ssd' => $budget * 0.08,
-        'psu' => $budget * 0.08
+        'psu' => $budget * 0.07,
+        'case' => $budget * 0.05
       ];
     } elseif ($budget < 2000) {
       return [
-        'cpu' => $budget * 0.22,
-        'mobo' => $budget * 0.12,
-        'ram' => $budget * 0.12,
-        'gpu' => $budget * 0.38,
+        'cpu' => $budget * 0.21,
+        'mobo' => $budget * 0.11,
+        'ram' => $budget * 0.11,
+        'gpu' => $budget * 0.37,
         'ssd' => $budget * 0.08,
-        'psu' => $budget * 0.08
+        'psu' => $budget * 0.07,
+        'case' => $budget * 0.05
       ];
     } else {
       return [
-        'cpu' => $budget * 0.20,
-        'mobo' => $budget * 0.12,
-        'ram' => $budget * 0.12,
-        'gpu' => $budget * 0.40,
+        'cpu' => $budget * 0.19,
+        'mobo' => $budget * 0.11,
+        'ram' => $budget * 0.11,
+        'gpu' => $budget * 0.39,
         'ssd' => $budget * 0.08,
-        'psu' => $budget * 0.08
+        'psu' => $budget * 0.07,
+        'case' => $budget * 0.05
       ];
     }
   }
@@ -283,5 +297,60 @@ class BuildController extends Controller
     }
 
     return $psu;
+  }
+
+  protected function selectCase($budget, $mobo)
+  {
+    $moboFormFactor = $mobo->form_factor;
+
+    $compatibleCases = $this->getCompatibleCaseFormFactors($moboFormFactor);
+
+    $case = Cases::whereNotNull('price')
+      ->where('price', '<=', $budget)
+      ->where(function($query) use ($compatibleCases) {
+        foreach ($compatibleCases as $formFactor) {
+          $query->orWhere('form_factor', 'LIKE', "%{$formFactor}%");
+        }
+      })
+      ->orderBy('price', 'desc')
+      ->first();
+
+    if (!$case) {
+      $case = Cases::whereNotNull('price')
+        ->where('price', '<=', $budget)
+        ->orderBy('price', 'desc')
+        ->first();
+    }
+
+    return $case;
+  }
+
+  protected function getCompatibleCaseFormFactors($moboFormFactor)
+  {
+    $compatibility = [
+      'E-ATX' => ['E-ATX', 'Full Tower'],
+      'ATX' => ['ATX', 'Mid Tower', 'Full Tower'],
+      'Micro-ATX' => ['Micro-ATX', 'ATX', 'Mid Tower', 'Full Tower'],
+      'Mini-ITX' => ['Mini-ITX', 'Micro-ATX', 'ATX', 'Mid Tower', 'Full Tower']
+    ];
+
+    return $compatibility[$moboFormFactor] ?? ['ATX', 'Mid Tower'];
+  }
+
+  protected function checkCaseCompatibility($mobo, $case)
+  {
+    if (!$case || !$case->form_factor) {
+      return 'Unknown';
+    }
+
+    $compatibleFormFactors = $this->getCompatibleCaseFormFactors($mobo->form_factor);
+
+    foreach ($compatibleFormFactors as $formFactor) {
+      if (stripos($case->form_factor, $formFactor) !== false) {
+        return 'Compatible';
+      }
+    }
+
+    return 'Check manually';
   }
 }
