@@ -4,7 +4,6 @@ import time
 import re
 from scraper import database
 
-
 def extract_number(text):
     if not text:
         return None
@@ -12,7 +11,6 @@ def extract_number(text):
     if match:
         return int(match.group())
     return None
-
 
 def parse_price(price_text):
     if not price_text:
@@ -24,11 +22,9 @@ def parse_price(price_text):
     except:
         return None
 
-
 def extract_specs(component):
     specs = {}
     fvs_container = component.find('div', class_='fvs')
-
     if fvs_container:
         for fv in fvs_container.find_all('div', class_='fv'):
             try:
@@ -37,15 +33,12 @@ def extract_specs(component):
                 specs[key] = value
             except AttributeError:
                 continue
-
     return specs
-
 
 def parse_processor_data(specs, category_name, name, price, avail):
     socket = specs.get('Socket', specs.get('Procesora ligzda'))
     if socket:
         socket = socket.replace('Socket ', '').strip()
-    
     return {
         'category': category_name,
         'name': name,
@@ -61,13 +54,10 @@ def parse_processor_data(specs, category_name, name, price, avail):
         'cooler_included': specs.get('Komplektā dzesētājs', specs.get('Integrēta videokarte'))
     }
 
-
-
 def parse_motherboard_data(specs, category_name, name, price, avail):
     memory_type = specs.get('Atmiņas tips')
     if memory_type:
         memory_type = memory_type.strip()
-    
     return {
         'category': category_name,
         'name': name,
@@ -82,12 +72,10 @@ def parse_motherboard_data(specs, category_name, name, price, avail):
         'wifi': specs.get('Iebūvēts Wi-Fi')
     }
 
-
 def parse_ram_data(specs, category_name, name, price, avail):
     memory_type = specs.get('Atmiņas tips')
     if memory_type:
         memory_type = memory_type.strip()
-    
     return {
         'category': category_name,
         'name': name,
@@ -99,7 +87,6 @@ def parse_ram_data(specs, category_name, name, price, avail):
         'cas_latency': extract_number(specs.get('CL')),
         'kit_type': specs.get('KIT')
     }
-
 
 def parse_gpu_data(specs, category_name, name, price, avail):
     return {
@@ -115,7 +102,6 @@ def parse_gpu_data(specs, category_name, name, price, avail):
         'cooling': specs.get('Dzesēšana')
     }
 
-
 def parse_ssd_data(specs, category_name, name, price, avail):
     return {
         'category': category_name,
@@ -130,7 +116,6 @@ def parse_ssd_data(specs, category_name, name, price, avail):
         'interface': specs.get('Interfeiss')
     }
 
-
 def parse_hdd_data(specs, category_name, name, price, avail):
     return {
         'category': category_name,
@@ -143,7 +128,6 @@ def parse_hdd_data(specs, category_name, name, price, avail):
         'cache': extract_number(specs.get('Buferis'))
     }
 
-
 def parse_case_data(specs, category_name, name, price, avail):
     return {
         'category': category_name,
@@ -155,7 +139,6 @@ def parse_case_data(specs, category_name, name, price, avail):
         'color': specs.get('Krāsa'),
         'psu_included': specs.get('Barošanas bloks')
     }
-
 
 def parse_fan_data(specs, category_name, name, price, avail):
     return {
@@ -173,7 +156,6 @@ def parse_fan_data(specs, category_name, name, price, avail):
         'noise_level': specs.get('Trošņa līmenis (MAX), dB(A)')
     }
 
-
 def parse_psu_data(specs, category_name, name, price, avail):
     return {
         'category': category_name,
@@ -189,10 +171,8 @@ def parse_psu_data(specs, category_name, name, price, avail):
         'pcie_connector': specs.get('PCI-E')
     }
 
-
 def scrape_page(url, page_num, category_name, product_type, conn):
     response = requests.get(url)
-
     if response.url != url:
         print(f'[{product_type}/{category_name}] Page {page_num} does not exist')
         return 0, True
@@ -229,10 +209,10 @@ def scrape_page(url, page_num, category_name, product_type, conn):
                 success = database.save_ssd(conn, product_data)
             elif product_type == 'hdd_35':
                 product_data = parse_hdd_data(specs, category_name, name, price, avail)
-                success = database.save_hdd(conn, product_data, 'hdd_35')
+                success = database.save_hdd(conn, product_data, 'hdds_35')
             elif product_type == 'hdd_25':
                 product_data = parse_hdd_data(specs, category_name, name, price, avail)
-                success = database.save_hdd(conn, product_data, 'hdd_25')
+                success = database.save_hdd(conn, product_data, 'hdds_25')
             elif product_type == 'cases':
                 product_data = parse_case_data(specs, category_name, name, price, avail)
                 success = database.save_case(conn, product_data)
@@ -248,17 +228,14 @@ def scrape_page(url, page_num, category_name, product_type, conn):
             if success:
                 count += 1
                 print(f'[{product_type}/{category_name}] {name} | {price}')
-
         except Exception as e:
             print(f'[{product_type}/{category_name}] Error: {e}')
             continue
 
     return count, False
 
-
 def scrape_category(category_name, base_url, product_type, conn):
     print(f'\nScraping: {product_type.upper()} - {category_name.upper()}')
-
     total_count = 0
     count, should_stop = scrape_page(base_url, 1, category_name, product_type, conn)
     total_count += count
