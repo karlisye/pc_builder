@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Cases extends Model
+class Hdd35 extends Model
 {
-    protected $table = 'cases';
+    protected $table = 'hdds_35';
     public $timestamps = false;
     
     protected $fillable = [
@@ -15,15 +15,18 @@ class Cases extends Model
         'url',
         'price',
         'availability',
-        'form_factor',
-        'case_type',
-        'color',
-        'psu_included',
+        'capacity',
+        'interface',
+        'rpm',
+        'cache',
         'scraped_at'
     ];
     
     protected $casts = [
         'price' => 'decimal:2',
+        'capacity' => 'integer',
+        'rpm' => 'integer',
+        'cache' => 'integer',
         'scraped_at' => 'datetime',
     ];
 }

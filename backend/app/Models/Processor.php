@@ -6,9 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Processor extends Model
 {
+    protected $table = 'processors';
+    public $timestamps = false;
+    
     protected $fillable = [
         'category',
         'name',
+        'url',
         'price',
         'availability',
         'socket',
@@ -18,6 +22,18 @@ class Processor extends Model
         'cache',
         'lithography',
         'tdp',
-        'cooler_included'
+        'cooler_included',
+        'scraped_at'
+    ];
+    
+    protected $casts = [
+        'price' => 'decimal:2',
+        'cores' => 'integer',
+        'frequency' => 'integer',
+        'cache' => 'integer',
+        'lithography' => 'integer',
+        'tdp' => 'integer',
+        'cooler_included' => 'boolean',
+        'scraped_at' => 'datetime',
     ];
 }

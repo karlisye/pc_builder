@@ -12,4 +12,3 @@ Route::get('/test', function() {
 });
 
 Route::get('/build/generate', [BuildController::class, 'generate']);
-Route::post('/build/check-compatibility', [BuildController::class, 'checkCompatibility']);

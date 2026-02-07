@@ -11,6 +11,7 @@ use App\Models\Ssd;
 use App\Models\Psu;
 use App\Models\Cases;
 use App\Models\Fan;
+use App\Models\Cooler;
 
 class BuildController extends Controller
 {
@@ -82,6 +83,11 @@ class BuildController extends Controller
       return ['success' => false, 'error' => 'No RAM found'];
     }
 
+    $cooler = null;
+    if (!$cpu->cooler_included) {
+      $cooler = $this->selectCooler($allocations['cooler'], $cpu);
+    }
+
     $gpu = $this->selectGpu($allocations['gpu']);
     $ssd = $this->selectSsd($allocations['ssd'], $relaxed);
     $psu = $this->selectPsu($allocations['psu'], $cpu, $gpu);
@@ -90,7 +96,8 @@ class BuildController extends Controller
 
     $total = $cpu->price + $mobo->price + $ram->price + 
              ($gpu->price ?? 0) + ($ssd->price ?? 0) + 
-             ($psu->price ?? 0) + ($case->price ?? 0) + ($fans->price ?? 0);
+             ($psu->price ?? 0) + ($case->price ?? 0) + 
+             ($fans->price ?? 0) + ($cooler->price ?? 0);
 
     return [
       'success' => true,
@@ -98,6 +105,7 @@ class BuildController extends Controller
         'cpu' => $cpu,
         'motherboard' => $mobo,
         'ram' => $ram,
+        'cooler' => $cooler,
         'gpu' => $gpu,
         'ssd' => $ssd,
         'psu' => $psu,
@@ -113,6 +121,8 @@ class BuildController extends Controller
           'mobo_spent' => $mobo->price,
           'ram_budget' => $allocations['ram'],
           'ram_spent' => $ram->price,
+          'cooler_budget' => $allocations['cooler'],
+          'cooler_spent' => $cooler->price ?? 0,
           'gpu_budget' => $allocations['gpu'],
           'gpu_spent' => $gpu->price ?? 0,
           'ssd_budget' => $allocations['ssd'],
@@ -136,6 +146,8 @@ class BuildController extends Controller
           'case_compatibility' => $this->checkCaseCompatibility($mobo, $case)
         ],
         'component_notes' => [
+          'cpu' => $cpu->cooler_included ? 'CPU includes cooler' : null,
+          'cooler' => !$cooler ? 'No cooler needed (included with CPU)' : null,
           'ram' => $ram->capacity < 16 ? 'Less than 16GB due to budget' : null,
           'ssd' => $ssd && $ssd->capacity < 512 ? 'Less than 512GB due to budget' : null,
           'case' => $case && $case->psu_included === 'Ir' ? 'Case includes PSU' : null,
@@ -149,9 +161,10 @@ class BuildController extends Controller
   {
     if ($budget < 600) {
       return [
-        'cpu' => $budget * 0.27,
-        'mobo' => $budget * 0.14,
-        'ram' => $budget * 0.12,
+        'cpu' => $budget * 0.25,
+        'mobo' => $budget * 0.13,
+        'ram' => $budget * 0.11,
+        'cooler' => $budget * 0.04,
         'gpu' => $budget * 0.23,
         'ssd' => $budget * 0.09,
         'psu' => $budget * 0.08,
@@ -160,9 +173,10 @@ class BuildController extends Controller
       ];
     } elseif ($budget < 1000) {
       return [
-        'cpu' => $budget * 0.23,
-        'mobo' => $budget * 0.11,
-        'ram' => $budget * 0.14,
+        'cpu' => $budget * 0.21,
+        'mobo' => $budget * 0.10,
+        'ram' => $budget * 0.13,
+        'cooler' => $budget * 0.04,
         'gpu' => $budget * 0.30,
         'ssd' => $budget * 0.08,
         'psu' => $budget * 0.07,
@@ -171,25 +185,27 @@ class BuildController extends Controller
       ];
     } elseif ($budget < 2000) {
       return [
-        'cpu' => $budget * 0.20,
-        'mobo' => $budget * 0.11,
-        'ram' => $budget * 0.11,
+        'cpu' => $budget * 0.18,
+        'mobo' => $budget * 0.10,
+        'ram' => $budget * 0.10,
+        'cooler' => $budget * 0.05,
         'gpu' => $budget * 0.36,
         'ssd' => $budget * 0.08,
         'psu' => $budget * 0.07,
         'case' => $budget * 0.05,
-        'fans' => $budget * 0.02
+        'fans' => $budget * 0.01
       ];
     } else {
       return [
-        'cpu' => $budget * 0.18,
-        'mobo' => $budget * 0.11,
-        'ram' => $budget * 0.11,
+        'cpu' => $budget * 0.16,
+        'mobo' => $budget * 0.10,
+        'ram' => $budget * 0.10,
+        'cooler' => $budget * 0.06,
         'gpu' => $budget * 0.38,
         'ssd' => $budget * 0.08,
         'psu' => $budget * 0.07,
-        'case' => $budget * 0.05,
-        'fans' => $budget * 0.02
+        'case' => $budget * 0.04,
+        'fans' => $budget * 0.01
       ];
     }
   }
@@ -225,7 +241,7 @@ class BuildController extends Controller
         ->whereNotNull('capacity')
         ->whereNotNull('price')
         ->where('capacity', '>=', 16)
-        ->where('price', '<=', $budget)
+        ->where('price', '<=', $budget * 1.2)
         ->orderByDesc('capacity')
         ->orderByDesc('frequency')
         ->first();
@@ -238,10 +254,35 @@ class BuildController extends Controller
     return Ram::where('memory_type', $mobo->memory_type)
       ->whereNotNull('capacity')
       ->whereNotNull('price')
+      ->where('capacity', '>=', 8)
       ->where('price', '<=', $budget)
       ->orderByDesc('capacity')
       ->orderByDesc('frequency')
       ->first();
+  }
+
+  protected function selectCooler($budget, $cpu)
+  {
+    $cpuTdp = $cpu->tdp ?? 65;
+
+    $cooler = Cooler::whereNotNull('price')
+      ->where('price', '<=', $budget)
+      ->where(function($query) use ($cpuTdp) {
+        $query->whereNull('tdp')
+          ->orWhere('tdp', '>=', $cpuTdp);
+      })
+      ->orderByDesc('tdp')
+      ->orderBy('price', 'asc')
+      ->first();
+
+    if (!$cooler) {
+      $cooler = Cooler::whereNotNull('price')
+        ->where('price', '<=', $budget)
+        ->orderBy('price', 'asc')
+        ->first();
+    }
+
+    return $cooler;
   }
 
   protected function selectGpu($budget)
@@ -252,6 +293,9 @@ class BuildController extends Controller
       ->where('gpu_model', 'NOT LIKE', '%Pro%')
       ->where('gpu_model', 'NOT LIKE', '%Arc%')
       ->where('gpu_model', 'NOT LIKE', '%Quadro%')
+      ->where('gpu_model', 'NOT LIKE', '%RTX A%')
+      ->where('gpu_model', 'NOT LIKE', '%T1000%')
+      ->where('gpu_model', 'NOT LIKE', '%T400%')
       ->orderByDesc('memory')
       ->orderByDesc('gpu_speed')
       ->first();
@@ -293,6 +337,8 @@ class BuildController extends Controller
       ->whereNotNull('price')
       ->where('price', '<=', $budget)
       ->where('wattage', '>=', $minimumWattage)
+      ->whereNotNull('certification')
+      ->where('certification', '!=', 'Nav')
       ->orderBy('certification', 'desc')
       ->orderBy('wattage', 'asc')
       ->first();
@@ -301,7 +347,15 @@ class BuildController extends Controller
       $psu = Psu::whereNotNull('wattage')
         ->whereNotNull('price')
         ->where('price', '<=', $budget)
-        ->orderBy('certification', 'desc')
+        ->where('wattage', '>=', $minimumWattage)
+        ->orderBy('wattage', 'asc')
+        ->first();
+    }
+
+    if (!$psu) {
+      $psu = Psu::whereNotNull('wattage')
+        ->whereNotNull('price')
+        ->where('price', '<=', $budget)
         ->orderByDesc('wattage')
         ->first();
     }
@@ -339,7 +393,9 @@ class BuildController extends Controller
     $fans = Fan::whereNotNull('price')
       ->where('price', '<=', $budget)
       ->whereNotNull('quantity')
+      ->whereNotNull('size')
       ->where('quantity', '>=', 2)
+      ->whereIn('size', [120, 140])
       ->orderByDesc('quantity')
       ->orderBy('price', 'asc')
       ->first();
@@ -347,7 +403,9 @@ class BuildController extends Controller
     if (!$fans) {
       $fans = Fan::whereNotNull('price')
         ->where('price', '<=', $budget)
-        ->orderBy('rpm_max', 'desc')
+        ->whereNotNull('size')
+        ->whereIn('size', [120, 140])
+        ->orderBy('price', 'asc')
         ->first();
     }
 
