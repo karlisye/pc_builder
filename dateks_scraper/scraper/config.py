@@ -31,5 +31,8 @@ CATEGORIES = {
     },
     'psu': {
         'all': 'https://www.dateks.lv/cenas/psu-barosanas-bloki',
-    }
+    },
+    'coolers': {
+        'all': 'https://www.dateks.lv/cenas/procesoru-gaisa-dzesetaji',
+    },
 }
