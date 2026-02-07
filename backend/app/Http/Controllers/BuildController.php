@@ -10,6 +10,7 @@ use App\Models\Gpu;
 use App\Models\Ssd;
 use App\Models\Psu;
 use App\Models\Cases;
+use App\Models\Fan;
 
 class BuildController extends Controller
 {
@@ -85,10 +86,11 @@ class BuildController extends Controller
     $ssd = $this->selectSsd($allocations['ssd'], $relaxed);
     $psu = $this->selectPsu($allocations['psu'], $cpu, $gpu);
     $case = $this->selectCase($allocations['case'], $mobo);
+    $fans = $this->selectFans($allocations['fans']);
 
     $total = $cpu->price + $mobo->price + $ram->price + 
              ($gpu->price ?? 0) + ($ssd->price ?? 0) + 
-             ($psu->price ?? 0) + ($case->price ?? 0);
+             ($psu->price ?? 0) + ($case->price ?? 0) + ($fans->price ?? 0);
 
     return [
       'success' => true,
@@ -100,6 +102,7 @@ class BuildController extends Controller
         'ssd' => $ssd,
         'psu' => $psu,
         'case' => $case,
+        'fans' => $fans,
         'total' => round($total, 2),
         'budget' => $budget,
         'remaining' => round($budget - $total, 2),
@@ -117,7 +120,9 @@ class BuildController extends Controller
           'psu_budget' => $allocations['psu'],
           'psu_spent' => $psu->price ?? 0,
           'case_budget' => $allocations['case'],
-          'case_spent' => $case->price ?? 0
+          'case_spent' => $case->price ?? 0,
+          'fans_budget' => $allocations['fans'],
+          'fans_spent' => $fans->price ?? 0
         ],
         'compatibility' => [
           'cpu_socket' => $cpu->socket,
@@ -133,7 +138,8 @@ class BuildController extends Controller
         'component_notes' => [
           'ram' => $ram->capacity < 16 ? 'Less than 16GB due to budget' : null,
           'ssd' => $ssd && $ssd->capacity < 512 ? 'Less than 512GB due to budget' : null,
-          'case' => $case && $case->psu_included === 'Ir' ? 'Case includes PSU' : null
+          'case' => $case && $case->psu_included === 'Ir' ? 'Case includes PSU' : null,
+          'fans' => $fans ? "Fan kit includes {$fans->quantity} fan(s)" : 'No fans selected'
         ]
       ]
     ];
@@ -143,43 +149,47 @@ class BuildController extends Controller
   {
     if ($budget < 600) {
       return [
-        'cpu' => $budget * 0.28,
+        'cpu' => $budget * 0.27,
         'mobo' => $budget * 0.14,
         'ram' => $budget * 0.12,
-        'gpu' => $budget * 0.24,
+        'gpu' => $budget * 0.23,
         'ssd' => $budget * 0.09,
         'psu' => $budget * 0.08,
-        'case' => $budget * 0.05
+        'case' => $budget * 0.05,
+        'fans' => $budget * 0.02
       ];
     } elseif ($budget < 1000) {
       return [
-        'cpu' => $budget * 0.24,
+        'cpu' => $budget * 0.23,
         'mobo' => $budget * 0.11,
         'ram' => $budget * 0.14,
-        'gpu' => $budget * 0.31,
+        'gpu' => $budget * 0.30,
         'ssd' => $budget * 0.08,
         'psu' => $budget * 0.07,
-        'case' => $budget * 0.05
+        'case' => $budget * 0.05,
+        'fans' => $budget * 0.02
       ];
     } elseif ($budget < 2000) {
       return [
-        'cpu' => $budget * 0.21,
+        'cpu' => $budget * 0.20,
         'mobo' => $budget * 0.11,
         'ram' => $budget * 0.11,
-        'gpu' => $budget * 0.37,
+        'gpu' => $budget * 0.36,
         'ssd' => $budget * 0.08,
         'psu' => $budget * 0.07,
-        'case' => $budget * 0.05
+        'case' => $budget * 0.05,
+        'fans' => $budget * 0.02
       ];
     } else {
       return [
-        'cpu' => $budget * 0.19,
+        'cpu' => $budget * 0.18,
         'mobo' => $budget * 0.11,
         'ram' => $budget * 0.11,
-        'gpu' => $budget * 0.39,
+        'gpu' => $budget * 0.38,
         'ssd' => $budget * 0.08,
         'psu' => $budget * 0.07,
-        'case' => $budget * 0.05
+        'case' => $budget * 0.05,
+        'fans' => $budget * 0.02
       ];
     }
   }
@@ -302,7 +312,6 @@ class BuildController extends Controller
   protected function selectCase($budget, $mobo)
   {
     $moboFormFactor = $mobo->form_factor;
-
     $compatibleCases = $this->getCompatibleCaseFormFactors($moboFormFactor);
 
     $case = Cases::whereNotNull('price')
@@ -323,6 +332,26 @@ class BuildController extends Controller
     }
 
     return $case;
+  }
+
+  protected function selectFans($budget)
+  {
+    $fans = Fan::whereNotNull('price')
+      ->where('price', '<=', $budget)
+      ->whereNotNull('quantity')
+      ->where('quantity', '>=', 2)
+      ->orderByDesc('quantity')
+      ->orderBy('price', 'asc')
+      ->first();
+
+    if (!$fans) {
+      $fans = Fan::whereNotNull('price')
+        ->where('price', '<=', $budget)
+        ->orderBy('rpm_max', 'desc')
+        ->first();
+    }
+
+    return $fans;
   }
 
   protected function getCompatibleCaseFormFactors($moboFormFactor)
