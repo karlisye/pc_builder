@@ -224,6 +224,8 @@ def scrape_page(url, page_num, category_name, product_type, conn):
       specs = extract_specs(component)
 
       if product_type == 'processors':
+        if product_url:
+          specs = scrape_processor_details(product_url)
         product_data = parse_processor_data(specs, category_name, name, price, avail, product_url)
         success = database.save_processor(conn, product_data)
       elif product_type == 'motherboards':
@@ -290,3 +292,33 @@ def scrape_category(category_name, base_url, product_type, conn):
     time.sleep(1)
 
   return total_count
+
+def scrape_processor_details(product_url):
+  try:
+    response = requests.get(product_url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    
+    all_fv = soup.find_all('div', class_='fv')
+    specs = {}
+    
+    for fv in all_fv:
+      try:
+        k_span = fv.find('span', class_='k')
+        v_span = fv.find('span', class_='v')
+        
+        if k_span and v_span:
+          key_link = k_span.find('a')
+          if key_link:
+            key = key_link.get_text(strip=True)
+          else:
+            key = k_span.get_text(strip=True)
+          
+          value = v_span.get_text(strip=True)
+          specs[key] = value
+      except AttributeError:
+        continue
+    
+    return specs
+  except Exception as e:
+    print(f'Error fetching processor details: {e}')
+    return {}
