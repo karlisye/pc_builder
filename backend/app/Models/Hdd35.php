@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Psu extends Model
+class Hdd35 extends Model
 {
-    protected $table = 'psus';
+    protected $table = 'hdds_35';
     public $timestamps = false;
     
     protected $fillable = [
@@ -14,20 +14,18 @@ class Psu extends Model
         'name',
         'price',
         'availability',
-        'manufacturer',
-        'wattage',
-        'certification',
-        'fan_size',
-        'modular',
-        'cpu_connector',
-        'pcie_connector',
+        'capacity',
+        'interface',
+        'rpm',
+        'cache',
         'scraped_at'
     ];
     
     protected $casts = [
         'price' => 'decimal:2',
-        'wattage' => 'integer',
-        'fan_size' => 'integer',
+        'capacity' => 'integer',
+        'rpm' => 'integer',
+        'cache' => 'integer',
         'scraped_at' => 'datetime',
     ];
 }

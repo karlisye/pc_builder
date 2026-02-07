@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Ram extends Model
 {
-    protected $table = 'ram';
+    protected $table = 'rams';
+    public $timestamps = false;
     
     protected $fillable = [
         'category',
@@ -17,6 +18,15 @@ class Ram extends Model
         'frequency',
         'memory_type',
         'cas_latency',
-        'kit_type'
+        'kit_type',
+        'scraped_at'
+    ];
+    
+    protected $casts = [
+        'price' => 'decimal:2',
+        'capacity' => 'integer',
+        'frequency' => 'integer',
+        'cas_latency' => 'integer',
+        'scraped_at' => 'datetime',
     ];
 }
