@@ -299,8 +299,6 @@ def scrape_processor_details(product_url):
     soup = BeautifulSoup(response.text, 'html.parser')
     
     all_fv = soup.find_all('div', class_='fv')
-    print(f'Found {len(all_fv)} total fv divs on page')
-    
     specs = {}
     
     for fv in all_fv:
@@ -320,9 +318,7 @@ def scrape_processor_details(product_url):
       except AttributeError:
         continue
     
-    print(f'Total specs extracted: {len(specs)}')
     return specs
   except Exception as e:
     print(f'Error fetching processor details: {e}')
     return {}
-
