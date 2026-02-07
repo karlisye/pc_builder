@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Cases extends Model
+class Cooler extends Model
 {
-    protected $table = 'cases';
+    protected $table = 'coolers';
     public $timestamps = false;
     
     protected $fillable = [
@@ -15,15 +15,20 @@ class Cases extends Model
         'url',
         'price',
         'availability',
-        'form_factor',
-        'case_type',
-        'color',
-        'psu_included',
+        'manufacturer',
+        'height',
+        'tdp',
+        'cooler_class',
+        'led_color',
+        'fan_count',
         'scraped_at'
     ];
     
     protected $casts = [
         'price' => 'decimal:2',
+        'height' => 'integer',
+        'tdp' => 'integer',
+        'fan_count' => 'integer',
         'scraped_at' => 'datetime',
     ];
 }

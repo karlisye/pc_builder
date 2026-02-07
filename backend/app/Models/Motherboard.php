@@ -12,6 +12,7 @@ class Motherboard extends Model
     protected $fillable = [
         'category',
         'name',
+        'url',
         'price',
         'availability',
         'series',

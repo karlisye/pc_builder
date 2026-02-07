@@ -12,6 +12,7 @@ class Processor extends Model
     protected $fillable = [
         'category',
         'name',
+        'url',
         'price',
         'availability',
         'socket',
@@ -32,6 +33,7 @@ class Processor extends Model
         'cache' => 'integer',
         'lithography' => 'integer',
         'tdp' => 'integer',
+        'cooler_included' => 'boolean',
         'scraped_at' => 'datetime',
     ];
 }

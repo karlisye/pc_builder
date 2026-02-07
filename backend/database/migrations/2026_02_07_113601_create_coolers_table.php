@@ -8,19 +8,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('ssds', function (Blueprint $table) {
+        Schema::create('coolers', function (Blueprint $table) {
             $table->id();
             $table->string('category', 50)->nullable();
             $table->string('name');
             $table->string('url')->nullable();
             $table->decimal('price', 10, 2)->nullable();
             $table->text('availability')->nullable();
-            $table->integer('capacity')->nullable()->index();
-            $table->string('type', 50)->nullable()->index();
-            $table->integer('read_speed')->nullable();
-            $table->integer('write_speed')->nullable();
-            $table->string('form_factor', 50)->nullable();
-            $table->string('interface', 100)->nullable();
+            $table->string('manufacturer', 100)->nullable();
+            $table->integer('height')->nullable();
+            $table->integer('tdp')->nullable()->index();
+            $table->string('cooler_class', 50)->nullable();
+            $table->string('led_color', 50)->nullable();
+            $table->integer('fan_count')->nullable();
             $table->timestamp('scraped_at')->useCurrent();
             
             $table->index('category');
@@ -30,6 +30,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('ssds');
+        Schema::dropIfExists('coolers');
     }
 };

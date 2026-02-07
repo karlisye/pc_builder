@@ -13,6 +13,7 @@ return new class extends Migration
             $table->id();
             $table->string('category', 50)->nullable();
             $table->string('name');
+            $table->string('url')->nullable();
             $table->decimal('price', 10, 2)->nullable();
             $table->text('availability')->nullable();
             $table->string('form_factor', 50)->nullable()->index();

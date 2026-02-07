@@ -12,6 +12,7 @@ class Ram extends Model
     protected $fillable = [
         'category',
         'name',
+        'url',
         'price',
         'availability',
         'capacity',

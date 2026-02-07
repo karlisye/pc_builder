@@ -12,6 +12,7 @@ class Gpu extends Model
     protected $fillable = [
         'category',
         'name',
+        'url',
         'price',
         'availability',
         'gpu_model',

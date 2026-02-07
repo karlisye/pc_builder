@@ -12,6 +12,7 @@ class Hdd25 extends Model
     protected $fillable = [
         'category',
         'name',
+        'url',
         'price',
         'availability',
         'capacity',
