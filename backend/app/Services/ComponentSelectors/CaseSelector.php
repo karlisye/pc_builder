@@ -29,7 +29,7 @@ class CaseSelector
   {
     return Cases::whereNotNull('price')
       ->where('price', '<=', $budget)
-      ->where(function($query) use ($compatibleCases) {
+      ->where(function  ($query) use ($compatibleCases) {
         foreach ($compatibleCases as $formFactor) {
           $query->orWhere('form_factor', 'LIKE', "%{$formFactor}%");
         }

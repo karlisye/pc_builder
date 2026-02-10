@@ -17,7 +17,7 @@ class BuildController extends Controller
   public function generate(Request $request)
   {
     $budget = $request->input('budget', 2000);
-    
+
     $result = $this->buildService->generateBuild($budget);
 
     if ($result['success']) {

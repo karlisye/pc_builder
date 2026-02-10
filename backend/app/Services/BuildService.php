@@ -110,10 +110,10 @@ class BuildService
     $case = $this->caseSelector->select($allocations['case'], $mobo);
     $fans = $this->fanSelector->select($allocations['fans']);
 
-    $total = $cpu->price + $mobo->price + $ram->price + 
-              ($gpu->price ?? 0) + ($ssd->price ?? 0) + 
-              ($psu->price ?? 0) + ($case->price ?? 0) + 
-              ($fans->price ?? 0) + ($cooler->price ?? 0);
+    $total = $cpu->price + $mobo->price + $ram->price +
+      ($gpu->price ?? 0) + ($ssd->price ?? 0) +
+      ($psu->price ?? 0) + ($case->price ?? 0) +
+      ($fans->price ?? 0) + ($cooler->price ?? 0);
 
     return [
       'success' => true,
@@ -131,8 +131,15 @@ class BuildService
         'budget' => $budget,
         'remaining' => round($budget - $total, 2),
         'budget_breakdown' => $this->buildBudgetBreakdown($allocations, [
-            'cpu' => $cpu, 'mobo' => $mobo, 'ram' => $ram, 'cooler' => $cooler,
-            'gpu' => $gpu, 'ssd' => $ssd, 'psu' => $psu, 'case' => $case, 'fans' => $fans
+          'cpu' => $cpu,
+          'mobo' => $mobo,
+          'ram' => $ram,
+          'cooler' => $cooler,
+          'gpu' => $gpu,
+          'ssd' => $ssd,
+          'psu' => $psu,
+          'case' => $case,
+          'fans' => $fans
         ]),
         'compatibility' => $this->compatibilityHelper->check($cpu, $mobo, $ram, $case),
         'component_notes' => $this->buildComponentNotes($cpu, $cooler, $ram, $ssd, $case, $fans)

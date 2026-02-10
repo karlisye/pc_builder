@@ -20,7 +20,7 @@ class CoolerSelector
   {
     return Cooler::whereNotNull('price')
       ->where('price', '<=', $budget)
-      ->where(function($query) use ($cpuTdp) {
+      ->where(function ($query) use ($cpuTdp) {
         $query->whereNull('tdp')
           ->orWhere('tdp', '>=', $cpuTdp);
       })
