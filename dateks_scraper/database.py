@@ -73,8 +73,8 @@ def save_processor(conn, data):
       INSERT INTO processors (
         category, name, url, price, availability, socket,
         processor_number, cores, frequency, cache,
-        lithography, tdp, cooler_included
-      ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        lithography, tdp, cooler_included, integrated_graphics
+      ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     ''', (
       data.get('category'),
       data.get('name'),
@@ -88,7 +88,8 @@ def save_processor(conn, data):
       data.get('cache'),
       data.get('lithography'),
       data.get('tdp'),
-      data.get('cooler_included')
+      data.get('cooler_included'),
+      data.get('integrated_graphics')
     ))
     conn.commit()
     return True

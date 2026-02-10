@@ -6,7 +6,7 @@ class DetailScraper(BaseScraper):
       soup, _ = self.fetch_page(product_url)
       all_fv = soup.find_all('div', class_='fv')
       specs = {}
-
+      
       for fv in all_fv:
         try:
           k_span = fv.find('span', class_='k')
@@ -21,7 +21,7 @@ class DetailScraper(BaseScraper):
             specs[key] = value
         except AttributeError:
           continue
-
+      
       return specs
     except Exception as e:
       print(f'Error fetching processor details: {e}')
