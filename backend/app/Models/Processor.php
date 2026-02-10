@@ -8,7 +8,7 @@ class Processor extends Model
 {
     protected $table = 'processors';
     public $timestamps = false;
-    
+
     protected $fillable = [
         'category',
         'name',
@@ -23,9 +23,9 @@ class Processor extends Model
         'lithography',
         'tdp',
         'cooler_included',
-        'scraped_at'
+        'integrated_graphics',
     ];
-    
+
     protected $casts = [
         'price' => 'decimal:2',
         'cores' => 'integer',
@@ -34,6 +34,5 @@ class Processor extends Model
         'lithography' => 'integer',
         'tdp' => 'integer',
         'cooler_included' => 'boolean',
-        'scraped_at' => 'datetime',
     ];
 }

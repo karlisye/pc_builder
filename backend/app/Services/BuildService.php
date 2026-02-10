@@ -90,8 +90,13 @@ class BuildService
   {
     $allocations = $this->budgetService->calculate($budget);
 
-    $cpu = $this->cpuSelector->select($allocations['cpu']);
-    if (!$cpu) return ['success' => false, 'error' => 'No CPU found'];
+    $cpu = $this->cpuSelector->select($allocations['cpu'], $budget);
+    if (!$cpu) {
+      if ($budget < 600) {
+        return ['success' => false, 'error' => 'No APU found for budget build'];
+      }
+      return ['success' => false, 'error' => 'No CPU found'];
+    }
 
     $mobo = $this->moboSelector->select($allocations['mobo'], $cpu);
     if (!$mobo) return ['success' => false, 'error' => 'No motherboard found'];
@@ -100,15 +105,23 @@ class BuildService
     if (!$ram) return ['success' => false, 'error' => 'No RAM found'];
 
     $cooler = null;
-    if (!$cpu->cooler_included) {
+    if (!$cpu->cooler_included && $allocations['cooler'] > 0) {
       $cooler = $this->coolerSelector->select($allocations['cooler'], $cpu);
     }
 
-    $gpu = $this->gpuSelector->select($allocations['gpu']);
+    $gpu = null;
+    if ($budget >= 600 && $allocations['gpu'] > 0) {
+      $gpu = $this->gpuSelector->select($allocations['gpu']);
+    }
+
     $ssd = $this->ssdSelector->select($allocations['ssd'], $relaxed);
     $psu = $this->psuSelector->select($allocations['psu'], $cpu, $gpu);
     $case = $this->caseSelector->select($allocations['case'], $mobo);
-    $fans = $this->fanSelector->select($allocations['fans']);
+
+    $fans = null;
+    if ($allocations['fans'] > 0) {
+      $fans = $this->fanSelector->select($allocations['fans']);
+    }
 
     $total = $cpu->price + $mobo->price + $ram->price +
       ($gpu->price ?? 0) + ($ssd->price ?? 0) +
@@ -130,6 +143,7 @@ class BuildService
         'total' => round($total, 2),
         'budget' => $budget,
         'remaining' => round($budget - $total, 2),
+        'build_type' => $budget < 600 ? 'APU Build (Integrated Graphics)' : 'Discrete GPU Build',
         'budget_breakdown' => $this->buildBudgetBreakdown($allocations, [
           'cpu' => $cpu,
           'mobo' => $mobo,
@@ -142,7 +156,7 @@ class BuildService
           'fans' => $fans
         ]),
         'compatibility' => $this->compatibilityHelper->check($cpu, $mobo, $ram, $case),
-        'component_notes' => $this->buildComponentNotes($cpu, $cooler, $ram, $ssd, $case, $fans)
+        'component_notes' => $this->buildComponentNotes($cpu, $cooler, $ram, $ssd, $case, $fans, $gpu)
       ]
     ];
   }

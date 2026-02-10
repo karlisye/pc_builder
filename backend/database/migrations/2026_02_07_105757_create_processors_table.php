@@ -23,8 +23,9 @@ return new class extends Migration
             $table->integer('lithography')->nullable();
             $table->integer('tdp')->nullable();
             $table->boolean('cooler_included')->default(false);
+            $table->string('integrated_graphics')->nullable();
             $table->timestamp('scraped_at')->useCurrent();
-            
+
             $table->index('category');
             $table->index('price');
         });
