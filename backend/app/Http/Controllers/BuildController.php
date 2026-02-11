@@ -16,7 +16,11 @@ class BuildController extends Controller
 
   public function generate(Request $request)
   {
-    $budget = $request->input('budget', 2000);
+    $validated = $request->validate([
+      'budget' => 'required|numeric|min:400|max:10000'
+    ]);
+
+    $budget = $validated['budget'];
 
     $result = $this->buildService->generateBuild($budget);
 

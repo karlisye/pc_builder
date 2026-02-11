@@ -11,7 +11,7 @@ Route::get('/test', function () {
   ]);
 });
 
-Route::get('/build/generate', [BuildController::class, 'generate']);
+Route::post('/build/generate', [BuildController::class, 'generate']);
 
 Route::get('/test/builds', function () {
   $buildService = app(\App\Services\BuildService::class);
