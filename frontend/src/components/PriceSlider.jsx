@@ -6,7 +6,7 @@ const PriceSlider = ({ setBudget, budget }) => {
   };
 
   return (
-    <div>
+    <div className="flex flex-col w-50">
       <label htmlFor="range-slider">Selected Value: {budget}</label>
 
       <input
