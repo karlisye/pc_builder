@@ -28,14 +28,6 @@ const Build = () => {
       </div>
 
       <div>
-        {/* <label htmlFor="price"></label>
-        <input
-          value={budget}
-          onChange={(e) => setBudget(e.target.value)}
-          id="price"
-          type="number"
-        />
-        <button onClick={handleGenerate}>Generate</button> */}
         <PriceSlider setBudget={setBudget} budget={budget} />
         <button onClick={handleGenerate}>Generate</button>
       </div>
