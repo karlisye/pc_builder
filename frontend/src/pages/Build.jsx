@@ -15,7 +15,7 @@ const Build = () => {
       console.log(data);
       setBuild(data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
