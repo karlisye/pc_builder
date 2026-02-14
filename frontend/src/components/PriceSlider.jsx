@@ -7,7 +7,9 @@ const PriceSlider = ({ setBudget, budget }) => {
 
   return (
     <div className="flex flex-col w-50">
-      <label htmlFor="range-slider">Selected Value: {budget} €</label>
+      <label className="text-center" htmlFor="range-slider">
+        Price: {budget} €
+      </label>
 
       <input
         className="accent-primary"

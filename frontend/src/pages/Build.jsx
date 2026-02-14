@@ -22,13 +22,16 @@ const Build = () => {
   };
 
   return (
-    <div className="p-4">
-      <div>
-        <h1 className="font-semibold text-2xl">Build A PC</h1>
-      </div>
+    <div className="p-4 flex">
+      <div className="flex-1 border p-2 flex items-center flex-col gap-4">
+        <div>
+          <h1 className="font-semibold text-2xl">Build A PC</h1>
+        </div>
 
-      <div className="space-y-4">
+        <span>Pick a budget for your PC</span>
+
         <PriceSlider setBudget={setBudget} budget={budget} />
+
         <button
           className="bg-linear-to-b from-success-light to-success-dark text-white font-bold text-base py-3 px-6 rounded-xl hover:cursor-pointer"
           onClick={handleGenerate}
@@ -36,6 +39,8 @@ const Build = () => {
           Generate
         </button>
       </div>
+
+      <div className="flex-2 border"></div>
     </div>
   );
 };
