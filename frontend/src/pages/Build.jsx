@@ -22,14 +22,19 @@ const Build = () => {
   };
 
   return (
-    <div>
+    <div className="p-4">
       <div>
-        <h1>Build A PC</h1>
+        <h1 className="font-semibold text-2xl">Build A PC</h1>
       </div>
 
-      <div>
+      <div className="space-y-4">
         <PriceSlider setBudget={setBudget} budget={budget} />
-        <button onClick={handleGenerate}>Generate</button>
+        <button
+          className="bg-linear-to-b from-success-light to-success-dark text-white font-bold text-base py-3 px-6 rounded-xl hover:cursor-pointer"
+          onClick={handleGenerate}
+        >
+          Generate
+        </button>
       </div>
     </div>
   );

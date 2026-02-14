@@ -7,9 +7,10 @@ const PriceSlider = ({ setBudget, budget }) => {
 
   return (
     <div className="flex flex-col w-50">
-      <label htmlFor="range-slider">Selected Value: {budget}</label>
+      <label htmlFor="range-slider">Selected Value: {budget} €</label>
 
       <input
+        className="accent-primary"
         id="range-slider"
         type="range"
         min={500}
