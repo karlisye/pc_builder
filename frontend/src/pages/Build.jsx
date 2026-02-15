@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { buildService } from '../services/server';
 import PriceSlider from '../components/PriceSlider';
+import Computer from '../components/Computer';
 
 const Build = () => {
   const [loading, setLoading] = useState(false);
@@ -22,7 +23,7 @@ const Build = () => {
   };
 
   return (
-    <div className="p-4 flex">
+    <div className="p-4 flex flex-wrap">
       <div className="flex-1 border p-2 flex items-center flex-col gap-4">
         <div>
           <h1 className="font-semibold text-2xl">Build A PC</h1>
@@ -40,7 +41,16 @@ const Build = () => {
         </button>
       </div>
 
-      <div className="flex-2 border"></div>
+      <div className="flex-2 border flex items-center justify-center">
+        {build ? (
+          <Computer components={build} />
+        ) : (
+          <div className="text-center">
+            <h2 className="text-xl font-semibold">Generate a PC to view the parts</h2>
+            <p>Pick a price and press the generate button</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
