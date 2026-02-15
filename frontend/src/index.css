@@ -8,4 +8,9 @@
   --color-success: #30a700;
   --color-success-light: #3ac400;
   --color-success-dark: #278900;
+
+  --color-danger: #dc2626;
+  --color-danger-light: #ef4444;
+  --color-danger-dark: #b91c1c;
+  --color-danger-darker: #871313;
 }
