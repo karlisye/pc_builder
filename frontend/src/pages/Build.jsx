@@ -28,10 +28,10 @@ const Build = () => {
     <div className="p-4 flex flex-wrap">
       <div className="flex-1 border p-2 flex items-center flex-col gap-4">
         <div>
-          <h1 className="font-semibold text-2xl">Build A PC</h1>
+          <h1 className="font-semibold text-2xl">Uzbūvē datoru</h1>
         </div>
 
-        <span>Pick a budget for your PC</span>
+        <span>Izvēlies datora budžetu</span>
 
         <PriceSlider setBudget={setBudget} budget={budget} />
 
@@ -46,30 +46,35 @@ const Build = () => {
       <div className="flex-2 border flex items-center justify-center relative">
         {build ? (
           <>
-            {isInteractiveViewActive ? <PcInteractiveView components={build} /> : <PcListView />}
+            {isInteractiveViewActive ? (
+              <PcInteractiveView components={build} />
+            ) : (
+              <PcListView components={build} />
+            )}
             <button className="absolute top-0 right-0 text-danger" onClick={() => setBuild(null)}>
-              Remove
+              Noņemt
             </button>
 
-            <div className="absolute top-0 left-0 m-2 bg-primary-light rounded-md overflow-hidden">
+            <div className="absolute top-0 left-0 m-2">
+              <p className="font-semibold">Skats</p>
               <button
-                className={`p-2 text-white hover:cursor-pointer ${isInteractiveViewActive ? 'bg-primary-dark' : ''}`}
+                className={`p-2 text-white hover:cursor-pointer rounded-l-md ${isInteractiveViewActive ? 'bg-primary-dark' : 'bg-primary-light'}`}
                 onClick={() => setIsInteractiveViewActive(true)}
               >
-                Interactive
+                Interaktīvs
               </button>
               <button
-                className={`p-2 text-white hover:cursor-pointer ${isInteractiveViewActive ? '' : 'bg-primary-dark'}`}
+                className={`p-2 text-white hover:cursor-pointer rounded-r-md ${isInteractiveViewActive ? 'bg-primary-light' : 'bg-primary-dark'}`}
                 onClick={() => setIsInteractiveViewActive(false)}
               >
-                List
+                Saraksts
               </button>
             </div>
           </>
         ) : (
           <div className="text-center">
-            <h2 className="text-xl font-semibold">Generate a PC to view the parts</h2>
-            <p>Pick a price and press the generate button</p>
+            <h2 className="text-xl font-semibold">Ģenerē datoru, lai redzētu tā komponentes</h2>
+            <p>Izvēlies cenu un uzspied uz pogas Ģenerēt</p>
           </div>
         )}
       </div>

@@ -21,7 +21,7 @@ const PriceSlider = ({ setBudget, budget }) => {
   return (
     <div className="flex flex-col items-center">
       <label className="text-center flex" htmlFor="budget">
-        Price:{' '}
+        Cena:{' '}
         <input
           className={`w-15 text-center rounded-md ${error ? 'outline-red-500 outline-2' : ''}`}
           type="number"
