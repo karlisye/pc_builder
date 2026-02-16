@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { buildService } from '../services/server';
 import PriceSlider from '../components/PriceSlider';
 import PcInteractiveView from '../components/PcInteractiveView';
+import PcListView from '../components/PcListView';
 
 const Build = () => {
   const [loading, setLoading] = useState(false);
   const [budget, setBudget] = useState(1000);
   const [build, setBuild] = useState(null);
-  const [isComputerViewActive, setIsComputerViewActive] = useState(true);
+  const [isInteractiveViewActive, setIsInteractiveViewActive] = useState(true);
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -45,14 +46,24 @@ const Build = () => {
       <div className="flex-2 border flex items-center justify-center relative">
         {build ? (
           <>
-            {isComputerViewActive ? <PcInteractiveView components={build} /> : <PcListView />}
+            {isInteractiveViewActive ? <PcInteractiveView components={build} /> : <PcListView />}
             <button className="absolute top-0 right-0 text-danger" onClick={() => setBuild(null)}>
               Remove
             </button>
 
-            <div className="absolute top-0 left-0 m-1 bg-primary-light">
-              <button className={`border p-1 text-white`}>Interactive</button>
-              <button className="border p-1 text-white">List</button>
+            <div className="absolute top-0 left-0 m-2 bg-primary-light rounded-md overflow-hidden">
+              <button
+                className={`p-2 text-white hover:cursor-pointer ${isInteractiveViewActive ? 'bg-primary-dark' : ''}`}
+                onClick={() => setIsInteractiveViewActive(true)}
+              >
+                Interactive
+              </button>
+              <button
+                className={`p-2 text-white hover:cursor-pointer ${isInteractiveViewActive ? '' : 'bg-primary-dark'}`}
+                onClick={() => setIsInteractiveViewActive(false)}
+              >
+                List
+              </button>
             </div>
           </>
         ) : (
