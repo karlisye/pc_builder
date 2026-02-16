@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { buildService } from '../services/server';
 import PriceSlider from '../components/PriceSlider';
-import Computer from '../components/Computer';
+import PcInteractiveView from '../components/PcInteractiveView';
 
 const Build = () => {
   const [loading, setLoading] = useState(false);
   const [budget, setBudget] = useState(1000);
   const [build, setBuild] = useState(null);
+  const [isComputerViewActive, setIsComputerViewActive] = useState(true);
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -44,10 +45,15 @@ const Build = () => {
       <div className="flex-2 border flex items-center justify-center relative">
         {build ? (
           <>
-            <Computer components={build} />
+            {isComputerViewActive ? <PcInteractiveView components={build} /> : <PcListView />}
             <button className="absolute top-0 right-0 text-danger" onClick={() => setBuild(null)}>
               Remove
             </button>
+
+            <div className="absolute top-0 left-0 m-1 bg-primary-light">
+              <button className={`border p-1 text-white`}>Interactive</button>
+              <button className="border p-1 text-white">List</button>
+            </div>
           </>
         ) : (
           <div className="text-center">

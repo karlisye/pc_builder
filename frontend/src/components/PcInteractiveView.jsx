@@ -1,7 +1,7 @@
 import React from 'react';
 import PcComponent from './PcComponent';
 
-const Computer = ({ components }) => {
+const PcInteractiveView = ({ components }) => {
   return (
     <div className="relative">
       <p className="absolute text-primary-light">
@@ -74,4 +74,4 @@ const Computer = ({ components }) => {
   );
 };
 
-export default Computer;
+export default PcInteractiveView;
