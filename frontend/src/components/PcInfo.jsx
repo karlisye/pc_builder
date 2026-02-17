@@ -1,7 +1,37 @@
 import React from 'react';
 
-const PcInfo = () => {
-  return <div>PcInfo</div>;
+const PcInfo = ({ build }) => {
+  return (
+    <div className="space-y-4">
+      <h2 className="text-xl font-semibold">Informācija par datoru</h2>
+
+      {build.component_notes &&
+        Object.entries(build.component_notes).map(([key, value]) => {
+          if (!value) return null;
+
+          return (
+            <div key={key}>
+              <span className="font-semibold">{key}: </span>
+              <span>{value}</span>
+            </div>
+          );
+        })}
+
+      {build.adjustments && (
+        <div>
+          <div>
+            <span className="font-semibold">Oriģinālais budžets: </span>
+            <span>{build.original_budget}€</span>
+          </div>
+          <div>
+            <span className="font-semibold">Kopā: </span>
+            <span>{Number(build.adjustments.final_budget).toFixed(2)}€</span>
+          </div>
+          <p>{build.adjustments.message}</p>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default PcInfo;

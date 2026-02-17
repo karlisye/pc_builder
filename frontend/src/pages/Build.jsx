@@ -3,6 +3,7 @@ import { buildService } from '../services/server';
 import PriceSlider from '../components/PriceSlider';
 import PcInteractiveView from '../components/PcInteractiveView';
 import PcListView from '../components/PcListView';
+import PcInfo from '../components/PcInfo';
 
 const Build = () => {
   const [loading, setLoading] = useState(false);
@@ -41,6 +42,8 @@ const Build = () => {
         >
           {build ? 'Regenerate' : 'Generate'}
         </button>
+
+        {build && <PcInfo build={build} />}
       </div>
 
       <div className="flex-2 border flex items-center justify-center relative">
