@@ -71,7 +71,7 @@ class BuildService
             'original_budget' => $originalBudget,
             'final_budget' => $budget,
             'reduction' => round($originalBudget - $budget, 2),
-            'message' => 'Budget was reduced to find compatible components'
+            'message' => 'Budžets tika samazināts, lai atrastu derīgas detaļas'
           ];
         }
 
@@ -143,7 +143,7 @@ class BuildService
         'total' => round($total, 2),
         'budget' => $budget,
         'remaining' => round($budget - $total, 2),
-        'build_type' => $budget < 600 ? 'APU Build (Integrated Graphics)' : 'Discrete GPU Build',
+        'build_type' => $budget < 600 ? 'Procesors ar integrēto grafikas karti' : 'Procesors un Grafikas karte',
         'budget_breakdown' => $this->buildBudgetBreakdown($allocations, [
           'cpu' => $cpu,
           'mobo' => $mobo,
@@ -188,12 +188,12 @@ class BuildService
   protected function buildComponentNotes($cpu, $cooler, $ram, $ssd, $case, $fans)
   {
     return [
-      'cpu' => $cpu->cooler_included ? 'CPU includes cooler' : null,
-      'cooler' => !$cooler ? 'No cooler needed (included with CPU)' : null,
-      'ram' => $ram->capacity < 16 ? 'Less than 16GB due to budget' : null,
-      'ssd' => $ssd && $ssd->capacity < 512 ? 'Less than 512GB due to budget' : null,
-      'case' => $case && $case->psu_included === 'Ir' ? 'Case includes PSU' : null,
-      'fans' => $fans ? "Fan kit includes {$fans->quantity} fan(s)" : 'No fans selected'
+      'cpu' => $cpu->cooler_included ? 'Procesora komplektā ir iekļauts dzesētājs' : null,
+      'cooler' => !$cooler ? 'Nav nepieciešams (Ir iekļauts procesora komplektā)' : null,
+      'ram' => $ram->capacity < 16 ? 'Zem 16GB zema budžeta dēļ' : null,
+      'ssd' => $ssd && $ssd->capacity < 512 ? 'Zem 512 GB budžeta dēļ' : null,
+      'case' => $case && $case->psu_included === 'Ir' ? 'Korpusa komplektā ir iekļauts barošanās bloks' : null,
+      'fans' => $fans ? "Ventilātoru komplektā iekļauti {$fans->quantity} ventilātori" : 'Nav ventilātoru'
     ];
   }
 }
