@@ -17,15 +17,15 @@ const PcInfo = ({ build }) => {
           );
         })}
 
+      <div>
+        <span className="font-semibold">Kopā: </span>
+        <span>{Number(build.total).toFixed(2)}€</span>
+      </div>
       {build.adjustments && (
         <div>
           <div>
             <span className="font-semibold">Oriģinālais budžets: </span>
             <span>{build.original_budget}€</span>
-          </div>
-          <div>
-            <span className="font-semibold">Kopā: </span>
-            <span>{Number(build.adjustments.final_budget).toFixed(2)}€</span>
           </div>
           <p>{build.adjustments.message}</p>
         </div>
