@@ -88,7 +88,11 @@ class BuildService
 
   protected function attemptBuild($budget, $relaxed = false)
   {
-    $allocations = $this->budgetService->calculate($budget);
+    $originalBudget = $budget;
+    $remainingBudget = $budget;
+    $selectedComponents = [];
+
+    $allocations = $this->budgetService->calculateInitial($budget);
 
     $cpu = $this->cpuSelector->select($allocations['cpu'], $budget);
     if (!$cpu) {
@@ -97,30 +101,72 @@ class BuildService
       }
       return ['success' => false, 'error' => 'No CPU found'];
     }
+    $remainingBudget -= $cpu->price;
+    $selectedComponents[] = 'cpu';
+
+    $allocations = $this->budgetService->recalculateRemaining($remainingBudget, $selectedComponents);
 
     $mobo = $this->moboSelector->select($allocations['mobo'], $cpu);
     if (!$mobo) return ['success' => false, 'error' => 'No motherboard found'];
+    $remainingBudget -= $mobo->price;
+    $selectedComponents[] = 'mobo';
+
+    $allocations = $this->budgetService->recalculateRemaining($remainingBudget, $selectedComponents);
 
     $ram = $this->ramSelector->select($allocations['ram'], $mobo, $relaxed);
     if (!$ram) return ['success' => false, 'error' => 'No RAM found'];
+    $remainingBudget -= $ram->price;
+    $selectedComponents[] = 'ram';
+
+    $allocations = $this->budgetService->recalculateRemaining($remainingBudget, $selectedComponents);
 
     $cooler = null;
-    if (!$cpu->cooler_included && $allocations['cooler'] > 0) {
+    if (!$cpu->cooler_included && isset($allocations['cooler']) && $allocations['cooler'] > 0) {
       $cooler = $this->coolerSelector->select($allocations['cooler'], $cpu);
+      if ($cooler) {
+        $remainingBudget -= $cooler->price;
+        $selectedComponents[] = 'cooler';
+      }
     }
+
+    $allocations = $this->budgetService->recalculateRemaining($remainingBudget, $selectedComponents);
 
     $gpu = null;
-    if ($budget >= 600 && $allocations['gpu'] > 0) {
+    if ($originalBudget >= 600 && isset($allocations['gpu']) && $allocations['gpu'] > 0) {
       $gpu = $this->gpuSelector->select($allocations['gpu']);
+      if ($gpu) {
+        $remainingBudget -= $gpu->price;
+        $selectedComponents[] = 'gpu';
+      }
     }
 
-    $ssd = $this->ssdSelector->select($allocations['ssd'], $relaxed);
-    $psu = $this->psuSelector->select($allocations['psu'], $cpu, $gpu);
-    $case = $this->caseSelector->select($allocations['case'], $mobo);
+    $allocations = $this->budgetService->recalculateRemaining($remainingBudget, $selectedComponents);
+
+    $ssd = $this->ssdSelector->select($allocations['ssd'] ?? $remainingBudget * 0.3, $relaxed);
+    if ($ssd) {
+      $remainingBudget -= $ssd->price;
+      $selectedComponents[] = 'ssd';
+    }
+
+    $allocations = $this->budgetService->recalculateRemaining($remainingBudget, $selectedComponents);
+
+    $psu = $this->psuSelector->select($allocations['psu'] ?? $remainingBudget * 0.4, $cpu, $gpu);
+    if ($psu) {
+      $remainingBudget -= $psu->price;
+      $selectedComponents[] = 'psu';
+    }
+
+    $allocations = $this->budgetService->recalculateRemaining($remainingBudget, $selectedComponents);
+
+    $case = $this->caseSelector->select($allocations['case'] ?? $remainingBudget * 0.5, $mobo);
+    if ($case) {
+      $remainingBudget -= $case->price;
+      $selectedComponents[] = 'case';
+    }
 
     $fans = null;
-    if ($allocations['fans'] > 0) {
-      $fans = $this->fanSelector->select($allocations['fans']);
+    if ($remainingBudget > 10) {
+      $fans = $this->fanSelector->select($remainingBudget);
     }
 
     $total = $cpu->price + $mobo->price + $ram->price +
@@ -141,22 +187,10 @@ class BuildService
         'case' => $case,
         'fans' => $fans,
         'total' => round($total, 2),
-        'budget' => $budget,
-        'remaining' => round($budget - $total, 2),
-        'build_type' => $budget < 600 ? 'Procesors ar integrēto grafikas karti' : 'Procesors un Grafikas karte',
-        'budget_breakdown' => $this->buildBudgetBreakdown($allocations, [
-          'cpu' => $cpu,
-          'mobo' => $mobo,
-          'ram' => $ram,
-          'cooler' => $cooler,
-          'gpu' => $gpu,
-          'ssd' => $ssd,
-          'psu' => $psu,
-          'case' => $case,
-          'fans' => $fans
-        ]),
-        'compatibility' => $this->compatibilityHelper->check($cpu, $mobo, $ram, $case),
-        'component_notes' => $this->buildComponentNotes($cpu, $cooler, $ram, $ssd, $case, $fans, $gpu)
+        'budget' => $originalBudget,
+        'remaining' => round($originalBudget - $total, 2),
+        'build_type' => $originalBudget < 600 ? 'APU Build (Integrated Graphics)' : 'Discrete GPU Build',
+        'allocation_method' => 'Dynamic Sequential',
       ]
     ];
   }

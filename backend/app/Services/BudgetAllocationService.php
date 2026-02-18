@@ -4,7 +4,7 @@ namespace App\Services;
 
 class BudgetAllocationService
 {
-  public function calculate($budget)
+  public function calculateInitial($budget)
   {
     if ($budget < 600) {
       return $this->budgetUnder600($budget);
@@ -19,78 +19,143 @@ class BudgetAllocationService
     }
   }
 
+  public function recalculateRemaining($remainingBudget, $selectedComponents = [])
+  {
+    $needed = $this->getNeededComponents($selectedComponents, $remainingBudget);
+
+    $totalPercentage = array_sum($needed);
+
+    $allocations = [];
+    foreach ($needed as $component => $percentage) {
+      $allocations[$component] = ($percentage / $totalPercentage) * $remainingBudget;
+    }
+
+    return $allocations;
+  }
+
+  protected function getNeededComponents($selectedComponents, $budget)
+  {
+    $baseRatios = $this->getBaseRatios($budget);
+
+    foreach ($selectedComponents as $component) {
+      unset($baseRatios[$component]);
+    }
+
+    return $baseRatios;
+  }
+
+  protected function getBaseRatios($budget)
+  {
+    if ($budget < 600) {
+      return [
+        'cpu' => 30,
+        'mobo' => 17,
+        'ram' => 18,
+        'cooler' => 3,
+        'gpu' => 0,
+        'ssd' => 15,
+        'psu' => 10,
+        'case' => 6,
+        'fans' => 1
+      ];
+    } elseif ($budget < 900) {
+      return [
+        'cpu' => 18,
+        'mobo' => 13,
+        'ram' => 14,
+        'cooler' => 4,
+        'gpu' => 32,
+        'ssd' => 10,
+        'psu' => 6,
+        'case' => 2,
+        'fans' => 1
+      ];
+    } elseif ($budget < 1400) {
+      return [
+        'cpu' => 20,
+        'mobo' => 11,
+        'ram' => 12,
+        'cooler' => 4,
+        'gpu' => 35,
+        'ssd' => 9,
+        'psu' => 6,
+        'case' => 2,
+        'fans' => 1
+      ];
+    } elseif ($budget < 2000) {
+      return [
+        'cpu' => 18,
+        'mobo' => 10,
+        'ram' => 10,
+        'cooler' => 5,
+        'gpu' => 40,
+        'ssd' => 8,
+        'psu' => 6,
+        'case' => 2,
+        'fans' => 1
+      ];
+    } else {
+      return [
+        'cpu' => 16,
+        'mobo' => 10,
+        'ram' => 9,
+        'cooler' => 6,
+        'gpu' => 42,
+        'ssd' => 8,
+        'psu' => 6,
+        'case' => 2,
+        'fans' => 1
+      ];
+    }
+  }
+
   protected function budgetUnder600($budget)
   {
-    return [
-      'cpu' => $budget * 0.30,
-      'mobo' => $budget * 0.17,
-      'ram' => $budget * 0.18,
-      'cooler' => $budget * 0.03,
-      'gpu' => 0,
-      'ssd' => $budget * 0.15,
-      'psu' => $budget * 0.10,
-      'case' => $budget * 0.06,
-      'fans' => $budget * 0.01
-    ];
+    $ratios = $this->getBaseRatios($budget);
+    $allocations = [];
+    foreach ($ratios as $component => $percentage) {
+      $allocations[$component] = $budget * ($percentage / 100);
+    }
+    return $allocations;
   }
 
   protected function budgetUnder900($budget)
   {
-    return [
-      'cpu' => $budget * 0.18,
-      'mobo' => $budget * 0.13,
-      'ram' => $budget * 0.14,
-      'cooler' => $budget * 0.04,
-      'gpu' => $budget * 0.32,
-      'ssd' => $budget * 0.10,
-      'psu' => $budget * 0.06,
-      'case' => $budget * 0.02,
-      'fans' => $budget * 0.01
-    ];
+    $ratios = $this->getBaseRatios($budget);
+    $allocations = [];
+    foreach ($ratios as $component => $percentage) {
+      $allocations[$component] = $budget * ($percentage / 100);
+    }
+    return $allocations;
   }
 
   protected function budgetUnder1400($budget)
   {
-    return [
-      'cpu' => $budget * 0.20,
-      'mobo' => $budget * 0.11,
-      'ram' => $budget * 0.12,
-      'cooler' => $budget * 0.04,
-      'gpu' => $budget * 0.35,
-      'ssd' => $budget * 0.09,
-      'psu' => $budget * 0.06,
-      'case' => $budget * 0.02,
-      'fans' => $budget * 0.01
-    ];
+    $ratios = $this->getBaseRatios($budget);
+    $allocations = [];
+    foreach ($ratios as $component => $percentage) {
+      $allocations[$component] = $budget * ($percentage / 100);
+    }
+    return $allocations;
   }
 
   protected function budgetUnder2000($budget)
   {
-    return [
-      'cpu' => $budget * 0.18,
-      'mobo' => $budget * 0.10,
-      'ram' => $budget * 0.10,
-      'cooler' => $budget * 0.05,
-      'gpu' => $budget * 0.40,
-      'ssd' => $budget * 0.08,
-      'psu' => $budget * 0.06,
-      'case' => $budget * 0.02,
-      'fans' => $budget * 0.01
-    ];
+    $ratios = $this->getBaseRatios($budget);
+    $allocations = [];
+    foreach ($ratios as $component => $percentage) {
+      $allocations[$component] = $budget * ($percentage / 100);
+    }
+    return $allocations;
   }
 
   protected function budgetOver2000($budget)
   {
-    return [
-      'cpu' => $budget * 0.16,
-      'mobo' => $budget * 0.10,
-      'ram' => $budget * 0.09,
-      'cooler' => $budget * 0.06,
-      'gpu' => $budget * 0.42,
-      'ssd' => $budget * 0.08,
-      'psu' => $budget * 0.06,
-      'case' => $budget * 0.02,
-      'fans' => $budget * 0.01
-    ];
+    $ratios = $this->getBaseRatios($budget);
+    $allocations = [];
+    foreach ($ratios as $component => $percentage) {
+      $allocations[$component] = $budget * ($percentage / 100);
+    }
+    return $allocations;
   }
 }
