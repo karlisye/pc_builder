@@ -18,7 +18,7 @@ const PcInteractiveView = ({ components }) => {
         <PcComponent
           name="Fans"
           component={components.fans}
-          location={{ xPercent: 80, yPercent: 10 }}
+          location={{ xPercent: 65, yPercent: 15 }}
         />
       )}
       {components.case && (
@@ -32,14 +32,14 @@ const PcInteractiveView = ({ components }) => {
         <PcComponent
           name="Gpu"
           component={components.gpu}
-          location={{ xPercent: 25, yPercent: 40 }}
+          location={{ xPercent: 25, yPercent: 55 }}
         />
       )}
       {components.cpu && (
         <PcComponent
           name="Cpu"
           component={components.cpu}
-          location={{ xPercent: 35, yPercent: 20 }}
+          location={{ xPercent: 20, yPercent: 25 }}
         />
       )}
       {components.motherboard && (
@@ -53,7 +53,7 @@ const PcInteractiveView = ({ components }) => {
         <PcComponent
           name="Psu"
           component={components.psu}
-          location={{ xPercent: 20, yPercent: 65 }}
+          location={{ xPercent: 20, yPercent: 75 }}
         />
       )}
       {components.ssd && (
@@ -67,7 +67,7 @@ const PcInteractiveView = ({ components }) => {
         <PcComponent
           name="Ram"
           component={components.ram}
-          location={{ xPercent: 8, yPercent: 20 }}
+          location={{ xPercent: 40, yPercent: 20 }}
         />
       )}
     </div>
