@@ -5,14 +5,17 @@ const PcPartCard = ({ title, part }) => {
       <p className="font-bold text-2xl text-slate-400">{part.name}</p>
       <div className="flex items-center justify-between">
         <span className="text-success-light font-bold text-2xl">{part.price}€</span>
-        <a
-          className="text-white hover:text-success-light transition-colors"
-          href={part.url}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Pasūtīt
-        </a>
+        <div>
+          <button className="text-white hover:text-success-light">Vairāk</button>
+          <a
+            className="text-white hover:text-success-light"
+            href={part.url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Pasūtīt
+          </a>
+        </div>
       </div>
     </div>
   );
