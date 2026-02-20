@@ -1,6 +1,12 @@
 import React from 'react';
+import { useBuild } from '../contexts/BuildContext';
 
 const PcComponent = ({ location, name, component }) => {
+  const { setSelectedComponent, setIsModalActive } = useBuild();
+  const handleSeeMore = () => {
+    setSelectedComponent(component);
+    setIsModalActive(true);
+  };
   return (
     <button
       className="w-20 h-10 rounded-md border-2 absolute flex items-center justify-center bg-white"
@@ -8,7 +14,7 @@ const PcComponent = ({ location, name, component }) => {
         top: `${location.yPercent}%`,
         left: `${location.xPercent}%`,
       }}
-      onClick={() => console.log(component)}
+      onClick={handleSeeMore}
     >
       {name}
     </button>
