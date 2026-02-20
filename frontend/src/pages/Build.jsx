@@ -5,12 +5,15 @@ import PcInteractiveView from '../components/PcInteractiveView';
 import PcListView from '../components/PcListView';
 import PcInfo from '../components/PcInfo';
 import { BuildContext } from '../contexts/BuildContext';
+import PcComponentModal from '../components/PcComponentModal';
 
 const Build = () => {
   const [loading, setLoading] = useState(false);
   const [budget, setBudget] = useState(1000);
   const [build, setBuild] = useState(null);
   const [isInteractiveViewActive, setIsInteractiveViewActive] = useState(true);
+  const [selectedComponent, setSelectedComponent] = useState(null);
+  const [isModalActive, setIsModalActive] = useState(false);
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -27,7 +30,7 @@ const Build = () => {
   };
 
   return (
-    <BuildContext value={{ build }}>
+    <BuildContext value={{ build, setSelectedComponent, setIsModalActive }}>
       <div className="p-4 flex flex-wrap">
         <div className="flex-1 border p-2 flex items-center flex-col gap-4">
           <div>
@@ -80,6 +83,8 @@ const Build = () => {
           )}
         </div>
       </div>
+
+      {isModalActive && <PcComponentModal component={selectedComponent} />}
     </BuildContext>
   );
 };
