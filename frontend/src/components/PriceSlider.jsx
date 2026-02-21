@@ -35,7 +35,7 @@ const PriceSlider = ({ setBudget, budget }) => {
       {error && <p className="text-red-500">{error}</p>}
 
       <input
-        className="accent-success w-60"
+        className="accent-secondary w-60"
         type="range"
         min={500}
         max={5000}
