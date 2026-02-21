@@ -4,74 +4,61 @@ import { useBuild } from '../contexts/BuildContext';
 
 const PcInteractiveView = () => {
   const { build } = useBuild();
+
   return (
     <div className="relative">
-      <p className="absolute text-primary-light">Attēls nesatur īstās datora detaļas.</p>
+      <p className="absolute bottom-0 left-1/2 transform -translate-x-1/2 text-primary-light">
+        Image does not contain actual PC parts.
+      </p>
 
       <img
         className="w-150 min-w-150 mx-auto pointer-events-none"
         src="images/computer.webp"
-        alt=""
+        alt="PC with component positions"
       />
 
       {build.fans && (
-        <PcComponent
-          name="Ventilātori"
-          component={build.fans}
-          location={{ xPercent: 65, yPercent: 15 }}
-        />
+        <PcComponent name="Fans" component={build.fans} location={{ xPercent: 65, yPercent: 15 }} />
       )}
       {build.case && (
-        <PcComponent
-          name="Korpuss"
-          component={build.case}
-          location={{ xPercent: 80, yPercent: 60 }}
-        />
+        <PcComponent name="Case" component={build.case} location={{ xPercent: 80, yPercent: 60 }} />
       )}
       {build.gpu && (
         <PcComponent
-          name="Grafikas karte"
+          name="Graphics Card"
           component={build.gpu}
           location={{ xPercent: 25, yPercent: 55 }}
         />
       )}
       {build.cpu && (
-        <PcComponent
-          name="Procesors"
-          component={build.cpu}
-          location={{ xPercent: 20, yPercent: 25 }}
-        />
+        <PcComponent name="CPU" component={build.cpu} location={{ xPercent: 20, yPercent: 25 }} />
       )}
       {build.cooler && (
         <PcComponent
-          name="Dzesētājs"
+          name="Cooler"
           component={build.cooler}
           location={{ xPercent: 20, yPercent: 15 }}
         />
       )}
       {build.motherboard && (
         <PcComponent
-          name="Sistēmplate"
+          name="Motherboard"
           component={build.motherboard}
           location={{ xPercent: 45, yPercent: 40 }}
         />
       )}
       {build.psu && (
         <PcComponent
-          name="Barošanās bloks"
+          name="Power Supply"
           component={build.psu}
           location={{ xPercent: 20, yPercent: 75 }}
         />
       )}
       {build.ssd && (
-        <PcComponent name="Atmiņa" component={build.ssd} location={{ xPercent: 8, yPercent: 45 }} />
+        <PcComponent name="SSD" component={build.ssd} location={{ xPercent: 8, yPercent: 45 }} />
       )}
       {build.ram && (
-        <PcComponent
-          name="Operatīvā atmiņa"
-          component={build.ram}
-          location={{ xPercent: 40, yPercent: 20 }}
-        />
+        <PcComponent name="RAM" component={build.ram} location={{ xPercent: 40, yPercent: 20 }} />
       )}
     </div>
   );

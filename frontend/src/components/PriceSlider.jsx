@@ -5,12 +5,12 @@ const PriceSlider = ({ setBudget, budget }) => {
 
   const handleSlider = (e) => {
     setBudget(Number(e.target.value));
+    setError('');
   };
 
   const handleInput = (e) => {
     if (e.target.value < 500 || e.target.value > 5000) {
-      console.log('a');
-      setError('Please enter a number between 500 and 5000');
+      setError('Please select a price between €500 and €5000');
     } else {
       setError('');
     }
@@ -21,7 +21,7 @@ const PriceSlider = ({ setBudget, budget }) => {
   return (
     <div className="flex flex-col items-center">
       <label className="text-center flex" htmlFor="budget">
-        Cena:{' '}
+        Price:{' '}
         <input
           className={`w-15 text-center rounded-md ${error ? 'outline-red-500 outline-2' : ''}`}
           type="number"

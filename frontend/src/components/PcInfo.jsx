@@ -3,7 +3,7 @@ import React from 'react';
 const PcInfo = ({ build }) => {
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-semibold">Informācija par datoru</h2>
+      <h2 className="text-xl font-semibold">PC Information</h2>
 
       {build.component_notes &&
         Object.entries(build.component_notes).map(([key, value]) => {
@@ -18,13 +18,14 @@ const PcInfo = ({ build }) => {
         })}
 
       <div>
-        <span className="font-semibold">Kopā: </span>
+        <span className="font-semibold">Total: </span>
         <span>{Number(build.total).toFixed(2)}€</span>
       </div>
+
       {build.adjustments && (
         <div>
           <div>
-            <span className="font-semibold">Oriģinālais budžets: </span>
+            <span className="font-semibold">Original budget: </span>
             <span>{build.original_budget}€</span>
           </div>
           <p>{build.adjustments.message}</p>

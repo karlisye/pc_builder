@@ -13,7 +13,7 @@ const PcComponentModal = ({ component }) => {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between">
-          <h2 className="font-bold text-3xl mb-6">Informācija par komponenti</h2>
+          <h2 className="font-bold text-3xl mb-6">Component info</h2>
           <button className="w-8 h-8" onClick={handleLeave}>
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>

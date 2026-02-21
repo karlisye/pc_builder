@@ -15,7 +15,7 @@ const PcPartCard = ({ title, part }) => {
         <span className="text-success-light font-bold text-2xl">{part.price}€</span>
         <div>
           <button className="text-white hover:text-success-light" onClick={handleSeeMore}>
-            Vairāk
+            More
           </button>
           <a
             className="text-white hover:text-success-light"
@@ -23,7 +23,7 @@ const PcPartCard = ({ title, part }) => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Pasūtīt
+            Order Now
           </a>
         </div>
       </div>
