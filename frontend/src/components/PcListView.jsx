@@ -8,6 +8,7 @@ const PcListView = () => {
     <div className="border w-full flex flex-col p-4 gap-3 mt-15">
       {build.motherboard && <PcPartCard title="Sistēmplate" part={build.motherboard} />}
       {build.cpu && <PcPartCard title="Procesors" part={build.cpu} />}
+      {build.cooler && <PcPartCard title="Dzesētājs" part={build.cooler} />}
       {build.gpu && <PcPartCard title="Grafikas karte" part={build.gpu} />}
       {build.ram && <PcPartCard title="Operatīvā atmiņa" part={build.ram} />}
       {build.psu && <PcPartCard title="Barošanās bloks" part={build.psu} />}

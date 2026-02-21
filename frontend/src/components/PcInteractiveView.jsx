@@ -42,6 +42,13 @@ const PcInteractiveView = () => {
           location={{ xPercent: 20, yPercent: 25 }}
         />
       )}
+      {build.cooler && (
+        <PcComponent
+          name="Dzesētājs"
+          component={build.cooler}
+          location={{ xPercent: 20, yPercent: 15 }}
+        />
+      )}
       {build.motherboard && (
         <PcComponent
           name="Sistēmplate"
