@@ -32,22 +32,26 @@ const Build = () => {
   return (
     <BuildContext value={{ build, setSelectedComponent, setIsModalActive }}>
       <div className="p-4 flex flex-wrap">
-        <div className="flex-1 p-2 flex items-center flex-col gap-4">
-          <div>
-            <h1 className="font-semibold text-2xl">Build a PC</h1>
+        <div className="flex-1 p-3 flex items-center flex-col gap-3">
+          <div className="bg-primary py-2 px-16 rounded-lg">
+            <h1 className="font-semibold text-4xl text-white">Build a PC</h1>
           </div>
 
-          <span>Select your PC budget</span>
+          <div className="bg-primary p-4 w-full rounded-xl flex flex-col gap-3">
+            <span className="text-white font-semibold text-lg text-center">
+              Select your PC budget
+            </span>
 
-          <PriceSlider setBudget={setBudget} budget={budget} />
+            <PriceSlider setBudget={setBudget} budget={budget} />
 
-          <button
-            className="bg-linear-to-b from-success-light to-success-dark text-white font-bold text-base h-12 w-30 rounded-xl hover:cursor-pointer flex justify-center items-center"
-            onClick={handleGenerate}
-            disabled={loading}
-          >
-            {loading ? <LoadingSpinner /> : build ? 'Regenerate' : 'Generate'}
-          </button>
+            <button
+              className="bg-success-light hover:bg-success-dark font-semibold h-10 w-35 rounded-lg hover:cursor-pointer flex justify-center items-center mx-auto"
+              onClick={handleGenerate}
+              disabled={loading}
+            >
+              {loading ? <LoadingSpinner /> : build ? 'Regenerate' : 'Generate'}
+            </button>
+          </div>
 
           {build && <PcInfo build={build} />}
         </div>
@@ -66,13 +70,13 @@ const Build = () => {
               <div className="absolute top-0 left-2 m-2">
                 <p className="font-semibold">View</p>
                 <button
-                  className={`p-2 text-white hover:cursor-pointer rounded-l-md ${isInteractiveViewActive ? 'bg-primary-dark' : 'bg-primary-light'}`}
+                  className={`p-2 text-white hover:cursor-pointer rounded-l-md ${isInteractiveViewActive ? 'bg-primary' : 'bg-primary-light'}`}
                   onClick={() => setIsInteractiveViewActive(true)}
                 >
                   Interactive
                 </button>
                 <button
-                  className={`p-2 text-white hover:cursor-pointer rounded-r-md ${isInteractiveViewActive ? 'bg-primary-light' : 'bg-primary-dark'}`}
+                  className={`p-2 text-white hover:cursor-pointer rounded-r-md ${isInteractiveViewActive ? 'bg-primary-light' : 'bg-primary'}`}
                   onClick={() => setIsInteractiveViewActive(false)}
                 >
                   List

@@ -21,20 +21,11 @@ const PcPartCard = ({ title, part }) => {
 
       <h4 className="font-bold text-xl text-white mb-4 truncate pr-2">{part.name}</h4>
 
-      {/* Action Buttons */}
       <div className="flex items-center gap-4 pt-4">
         <button
           className="flex-1 bg-primary-light text-white font-semibold py-2 px-4 rounded-lg flex items-center justify-center gap-2 hover:cursor-pointer hover:bg-primary-light/50"
           onClick={handleSeeMore}
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
           More Info
         </button>
 

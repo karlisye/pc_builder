@@ -10,11 +10,11 @@ const Layout = ({ children }) => {
             <h1 className="p-4 text-3xl font-bold">PC BUILDER</h1>
           </div>
 
-          <div className="flex items-center space-x-2 bg-linear-to-b from-primary-light to-primary text-white px-6 rounded-lg -mx-2">
-            <Link className="text-sm py-1 px-2 border-r border-primary-light" to="/">
+          <div className="flex items-center space-x-2 bg-primary text-white px-6">
+            <Link className="py-1 px-2 border-r border-primary-light" to="/">
               Home
             </Link>
-            <Link className="text-sm py-1" to="/build">
+            <Link className="py-1" to="/build">
               Build
             </Link>
           </div>
