@@ -9,7 +9,7 @@ const PcComponent = ({ location, name, component }) => {
   };
   return (
     <button
-      className="w-20 h-10 rounded-md border-2 absolute flex items-center justify-center bg-white"
+      className="w-25 h-10 rounded-md border-2 absolute flex items-center justify-center bg-white text-sm leading-tight hover:cursor-pointer"
       style={{
         top: `${location.yPercent}%`,
         left: `${location.xPercent}%`,

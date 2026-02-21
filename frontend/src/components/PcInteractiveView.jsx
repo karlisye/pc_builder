@@ -15,32 +15,56 @@ const PcInteractiveView = () => {
       />
 
       {build.fans && (
-        <PcComponent name="Fans" component={build.fans} location={{ xPercent: 65, yPercent: 15 }} />
+        <PcComponent
+          name="Ventilātori"
+          component={build.fans}
+          location={{ xPercent: 65, yPercent: 15 }}
+        />
       )}
       {build.case && (
-        <PcComponent name="Case" component={build.case} location={{ xPercent: 80, yPercent: 60 }} />
+        <PcComponent
+          name="Korpuss"
+          component={build.case}
+          location={{ xPercent: 80, yPercent: 60 }}
+        />
       )}
       {build.gpu && (
-        <PcComponent name="Gpu" component={build.gpu} location={{ xPercent: 25, yPercent: 55 }} />
+        <PcComponent
+          name="Grafikas karte"
+          component={build.gpu}
+          location={{ xPercent: 25, yPercent: 55 }}
+        />
       )}
       {build.cpu && (
-        <PcComponent name="Cpu" component={build.cpu} location={{ xPercent: 20, yPercent: 25 }} />
+        <PcComponent
+          name="Procesors"
+          component={build.cpu}
+          location={{ xPercent: 20, yPercent: 25 }}
+        />
       )}
       {build.motherboard && (
         <PcComponent
-          name="Mb"
+          name="Sistēmplate"
           component={build.motherboard}
           location={{ xPercent: 45, yPercent: 40 }}
         />
       )}
       {build.psu && (
-        <PcComponent name="Psu" component={build.psu} location={{ xPercent: 20, yPercent: 75 }} />
+        <PcComponent
+          name="Barošanās bloks"
+          component={build.psu}
+          location={{ xPercent: 20, yPercent: 75 }}
+        />
       )}
       {build.ssd && (
-        <PcComponent name="Ssd" component={build.ssd} location={{ xPercent: 8, yPercent: 45 }} />
+        <PcComponent name="Atmiņa" component={build.ssd} location={{ xPercent: 8, yPercent: 45 }} />
       )}
       {build.ram && (
-        <PcComponent name="Ram" component={build.ram} location={{ xPercent: 40, yPercent: 20 }} />
+        <PcComponent
+          name="Operatīvā atmiņa"
+          component={build.ram}
+          location={{ xPercent: 40, yPercent: 20 }}
+        />
       )}
     </div>
   );
