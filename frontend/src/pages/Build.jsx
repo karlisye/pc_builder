@@ -6,6 +6,7 @@ import PcListView from '../components/PcListView';
 import PcInfo from '../components/PcInfo';
 import { BuildContext } from '../contexts/BuildContext';
 import PcComponentModal from '../components/PcComponentModal';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const Build = () => {
   const [loading, setLoading] = useState(false);
@@ -41,11 +42,11 @@ const Build = () => {
           <PriceSlider setBudget={setBudget} budget={budget} />
 
           <button
-            className="bg-linear-to-b from-success-light to-success-dark text-white font-bold text-base py-3 px-6 rounded-xl hover:cursor-pointer"
+            className="bg-linear-to-b from-success-light to-success-dark text-white font-bold text-base h-12 w-30 rounded-xl hover:cursor-pointer flex justify-center items-center"
             onClick={handleGenerate}
             disabled={loading}
           >
-            {loading ? 'Generating...' : build ? 'Regenerate' : 'Generate'}
+            {loading ? <LoadingSpinner /> : build ? 'Regenerate' : 'Generate'}
           </button>
 
           {build && <PcInfo build={build} />}
