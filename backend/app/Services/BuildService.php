@@ -71,7 +71,7 @@ class BuildService
             'original_budget' => $originalBudget,
             'final_budget' => $budget,
             'reduction' => round($originalBudget - $budget, 2),
-            'message' => 'Budžets tika samazināts, lai atrastu derīgas detaļas'
+            'message' => 'Budget was reduced to find compatible parts'
           ];
         }
 
@@ -222,12 +222,12 @@ class BuildService
   protected function buildComponentNotes($cpu, $cooler, $ram, $ssd, $case, $fans)
   {
     return [
-      'cpu' => $cpu->cooler_included ? 'Procesora komplektā ir iekļauts dzesētājs' : null,
-      'cooler' => !$cooler ? 'Nav nepieciešams (Ir iekļauts procesora komplektā)' : null,
-      'ram' => $ram->capacity < 16 ? 'Zem 16GB zema budžeta dēļ' : null,
-      'ssd' => $ssd && $ssd->capacity < 512 ? 'Zem 512 GB budžeta dēļ' : null,
-      'case' => $case && $case->psu_included === 'Ir' ? 'Korpusa komplektā ir iekļauts barošanās bloks' : null,
-      'fans' => $fans ? "Ventilātoru komplektā iekļauti {$fans->quantity} ventilātori" : 'Nav ventilātoru'
+      'cpu' => $cpu->cooler_included ? 'A cooler is included with the processor' : null,
+      'cooler' => !$cooler ? 'Not needed (Included with the processor)' : null,
+      'ram' => $ram->capacity < 16 ? 'Under 16GB due to low budget' : null,
+      'ssd' => $ssd && $ssd->capacity < 512 ? 'Under 512GB due to budget' : null,
+      'case' => $case && $case->psu_included === 'Ir' ? 'A power supply is included with the case' : null,
+      'fans' => $fans ? "Fan kit includes {$fans->quantity} fans" : 'No fans included'
     ];
   }
 }

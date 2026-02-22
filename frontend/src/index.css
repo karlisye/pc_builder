@@ -18,3 +18,11 @@
   --color-danger-dark: #b91c1c;
   --color-danger-darker: #871313;
 }
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}

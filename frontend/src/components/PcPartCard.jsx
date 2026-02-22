@@ -33,7 +33,7 @@ const PcPartCard = ({ title, part }) => {
           </button>
 
           <a
-            className="bg-secondary-light hover:bg-secondary-dark text-primary-dark font-semibold py-2 px-6 rounded-lg shadow-md"
+            className="bg-secondary hover:bg-secondary-dark text-primary-dark font-semibold py-2 px-6 rounded-lg shadow-md"
             href={part.url}
             target="_blank"
           >
