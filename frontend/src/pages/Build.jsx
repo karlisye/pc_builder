@@ -56,7 +56,7 @@ const Build = () => {
           {build && <PcInfo build={build} />}
         </div>
 
-        <div className="flex-2">
+        <div className="flex-2 max-w-full">
           {build ? (
             <>
               <div className="flex justify-between bg-primary-light p-3">
