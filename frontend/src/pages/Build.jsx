@@ -59,7 +59,7 @@ const Build = () => {
         <div className="flex-2 max-w-full">
           {build ? (
             <>
-              <div className="flex justify-between bg-primary-light p-3">
+              <div className="flex justify-between items-center bg-primary-light p-3">
                 <div>
                   <button
                     className={`p-2 text-white hover:cursor-pointer rounded-l-md ${isInteractiveViewActive ? 'bg-primary-dark' : 'bg-primary'}`}
@@ -75,7 +75,7 @@ const Build = () => {
                   </button>
                 </div>
 
-                <button className="text-danger hover:cursor-pointer" onClick={() => setBuild(null)}>
+                <button className="text-danger-light hover:cursor-pointer bg-danger-darker px-6 py-1 rounded-md border border-danger-light text-sm" onClick={() => setBuild(null)}>
                   Remove
                 </button>
               </div>

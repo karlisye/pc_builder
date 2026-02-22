@@ -14,12 +14,7 @@
   --color-success-dark: #278900;
 
   --color-danger: #dc2626;
-  --color-danger-light: #ef4444;
+  --color-danger-light: #fca5a5;
   --color-danger-dark: #b91c1c;
   --color-danger-darker: #871313;
-}
-
-@keyframes marquee {
-  0%   { transform: translateX(0px); }
-  100% { transform: translateX(-200px); }
 }
