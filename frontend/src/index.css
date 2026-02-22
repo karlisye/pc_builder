@@ -13,14 +13,14 @@
   --color-success-light: #3ac400;
   --color-success-dark: #278900;
 
-  --color-danger: #dc2626;
-  --color-danger-light: #fca5a5;
-  --color-danger-dark: #b91c1c;
-  --color-danger-darker: #871313;
+  --color-danger: #b91c1c;        /* was #dc2626 — Tailwind red-700 */
+  --color-danger-light: #f87171;  /* was #fca5a5 — Tailwind red-400 */
+  --color-danger-dark: #991b1b;   /* was #b91c1c — Tailwind red-800 */
+  --color-danger-darker: #6b0f0f; /* was #871313 — deeper than red-900 */
 }
 
 body {
-  background-color: #2e5060;
+  background-color: #111827;
 }
 
 /* remove arrows from number input fields */

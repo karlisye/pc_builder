@@ -34,7 +34,7 @@ const Build = () => {
       <div className="p-4 flex flex-wrap bg-primary-dark">
         <div className="flex-1 p-3 flex items-center flex-col gap-3 bg-primary-light">
           <div className="bg-primary py-2 px-16 rounded-lg">
-            <h1 className="font-bold text-5xl text-secondary">BUILD A PC</h1>
+            <h1 className="font-bold text-5xl text-secondary text-nowrap">BUILD A PC</h1>
           </div>
 
           <div className="bg-primary p-4 w-full rounded-xl flex flex-col gap-3">
@@ -62,20 +62,20 @@ const Build = () => {
               <div className="flex justify-between items-center bg-primary-light p-3">
                 <div>
                   <button
-                    className={`p-2 text-white hover:cursor-pointer rounded-l-md ${isInteractiveViewActive ? 'bg-primary-dark' : 'bg-primary'}`}
+                    className={`p-2 text-white hover:cursor-pointer rounded-l-md ${isInteractiveViewActive ? 'bg-primary-dark shadow-xl' : 'bg-primary'}`}
                     onClick={() => setIsInteractiveViewActive(true)}
                   >
                     Interactive
                   </button>
                   <button
-                    className={`p-2 text-white hover:cursor-pointer rounded-r-md ${isInteractiveViewActive ? 'bg-primary' : 'bg-primary-dark'}`}
+                    className={`p-2 text-white hover:cursor-pointer rounded-r-md ${isInteractiveViewActive ? 'bg-primary' : 'bg-primary-dark shadow-xl'}`}
                     onClick={() => setIsInteractiveViewActive(false)}
                   >
                     List
                   </button>
                 </div>
 
-                <button className="text-danger-light hover:cursor-pointer bg-danger-darker px-6 py-1 rounded-md border border-danger-light text-sm" onClick={() => setBuild(null)}>
+                <button className="text-white hover:cursor-pointer bg-danger-darker hover:bg-danger-darker/90 px-6 py-1 rounded-md border-2 border-danger-dark text-sm" onClick={() => setBuild(null)}>
                   Remove
                 </button>
               </div>
