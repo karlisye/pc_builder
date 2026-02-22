@@ -124,7 +124,7 @@ def main():
       print(f'Total {product_type}/{category_name}: {count} products')
 
   conn.close()
-  print('\n✓ Scraping completed')
+  print('\nScraping completed')
 
 if __name__ == '__main__':
   main()

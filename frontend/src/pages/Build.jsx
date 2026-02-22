@@ -31,7 +31,7 @@ const Build = () => {
 
   return (
     <BuildContext value={{ build, setSelectedComponent, setIsModalActive }}>
-      <div className="p-4 flex flex-wrap">
+      <div className="p-4 flex flex-wrap bg-primary-dark">
         <div className="flex-1 p-3 flex items-center flex-col gap-3 bg-primary-light">
           <div className="bg-primary py-2 px-16 rounded-lg">
             <h1 className="font-bold text-5xl text-secondary">BUILD A PC</h1>
@@ -83,9 +83,11 @@ const Build = () => {
               {isInteractiveViewActive ? <PcInteractiveView /> : <PcListView />}
             </>
           ) : (
-            <div className="text-center">
-              <h2 className="text-xl font-semibold">Generate a PC to see its components</h2>
-              <p>Select price and click Generate button</p>
+            <div className="bg-primary-light h-full p-3">
+              <div className='bg-primary p-4 rounded-xl h-full flex flex-col items-center justify-center'>
+                <h2 className="text-xl font-semibold text-secondary">Generate a PC to see its components</h2>
+                <p className='text-white'>Select price and click Generate button</p>
+              </div>
             </div>
           )}
         </div>
