@@ -32,7 +32,7 @@ const Build = () => {
   return (
     <BuildContext value={{ build, setSelectedComponent, setIsModalActive }}>
       <div className="p-4 flex flex-wrap bg-primary-dark">
-        <div className="flex-1 p-3 flex items-center flex-col gap-3 bg-primary-light">
+        <div className="flex-1 p-3 flex items-center flex-col gap-3 bg-primary-light rounded-l-lg">
           <div className="bg-primary py-2 px-16 rounded-lg">
             <h1 className="font-bold text-5xl text-secondary text-nowrap">BUILD A PC</h1>
           </div>
@@ -59,7 +59,7 @@ const Build = () => {
         <div className="flex-2 max-w-full">
           {build ? (
             <>
-              <div className="flex justify-between items-center bg-primary-light p-3">
+              <div className="flex justify-between items-center bg-primary-light p-3 rounded-tr-lg">
                 <div>
                   <button
                     className={`p-2 text-white hover:cursor-pointer rounded-l-md ${isInteractiveViewActive ? 'bg-primary-dark shadow-xl' : 'bg-primary'}`}

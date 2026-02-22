@@ -6,7 +6,7 @@ const PcInteractiveView = () => {
   const { build } = useBuild();
 
   return (
-    <div className='p-3 bg-primary-light'>
+    <div className='p-3 bg-primary-light rounded-br-lg'>
       <div className='bg-primary mt-3 rounded-lg'>
         <div className="relative sm:w-150 sm:min-w-150 w-90 mx-auto">
           <p className="absolute bottom-0 left-1/2 transform -translate-x-1/2 text-primary-light">

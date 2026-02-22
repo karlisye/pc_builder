@@ -6,7 +6,7 @@ const PcListView = () => {
   const { build } = useBuild();
 
   return (
-    <div className='bg-primary-light px-3 pt-6 pb-3'>
+    <div className='bg-primary-light px-3 pt-6 pb-3 rounded-br-lg'>
       <div className="w-full flex p-4 flex-wrap justify-center bg-primary rounded-lg">
         {build.motherboard && <PcPartCard title="Motherboard" part={build.motherboard} />}
         {build.cpu && <PcPartCard title="CPU" part={build.cpu} />}
