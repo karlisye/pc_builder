@@ -4,12 +4,17 @@ import { useBuild } from '../contexts/BuildContext';
 const PcComponent = ({ location, name, component }) => {
   const { setSelectedComponent, setIsModalActive } = useBuild();
   const handleSeeMore = () => {
-    setSelectedComponent(component);
-    setIsModalActive(true);
+    if (component) {
+      setSelectedComponent(component);
+      setIsModalActive(true);
+      return;
+    }
   };
   return (
     <button
-      className="sm:w-25 sm:h-10 w-10 h-10 rounded-full sm:rounded-md font-semibold border-2 border-secondary-light absolute flex items-center justify-center bg-secondary hover:bg-secondary-dark text-sm leading-tight hover:cursor-pointer"
+      className={`sm:w-25 sm:h-10 w-10 h-10 rounded-full sm:rounded-md font-semibold border-2 absolute flex items-center justify-center text-sm leading-tight hover:cursor-pointer
+        ${component ? 'border-secondary-light bg-secondary hover:bg-secondary-dark' : 'bg-neutral-600 border-neutral-700'}
+        `}
       style={{
         top: `${location.yPercent}%`,
         left: `${location.xPercent}%`,

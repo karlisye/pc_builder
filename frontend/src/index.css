@@ -13,10 +13,10 @@
   --color-success-light: #3ac400;
   --color-success-dark: #278900;
 
-  --color-danger: #b91c1c;        /* was #dc2626 — Tailwind red-700 */
-  --color-danger-light: #f87171;  /* was #fca5a5 — Tailwind red-400 */
-  --color-danger-dark: #991b1b;   /* was #b91c1c — Tailwind red-800 */
-  --color-danger-darker: #6b0f0f; /* was #871313 — deeper than red-900 */
+  --color-danger: #b91c1c;
+  --color-danger-light: #f87171;
+  --color-danger-dark: #991b1b;
+  --color-danger-darker: #6b0f0f;
 }
 
 body {
@@ -24,11 +24,11 @@ body {
 }
 
 /* remove arrows from number input fields */
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-input[type=number] {
+input[type='number'] {
   -moz-appearance: textfield;
 }
