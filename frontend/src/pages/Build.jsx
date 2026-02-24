@@ -45,7 +45,7 @@ const Build = () => {
             <PriceSlider setBudget={setBudget} budget={budget} />
 
             <button
-              className="bg-secondary hover:bg-secondary-dark font-semibold h-10 w-35 rounded-lg hover:cursor-pointer flex justify-center items-center mx-auto"
+              className="bg-secondary hover:bg-secondary-dark border-secondary-light border-2 font-semibold h-10 w-35 rounded-lg hover:cursor-pointer flex justify-center items-center mx-auto"
               onClick={handleGenerate}
               disabled={loading}
             >
@@ -75,7 +75,10 @@ const Build = () => {
                   </button>
                 </div>
 
-                <button className="text-white hover:cursor-pointer bg-danger-darker hover:bg-danger-darker/90 px-6 py-1 rounded-md border-2 border-danger-dark text-sm" onClick={() => setBuild(null)}>
+                <button
+                  className="text-white hover:cursor-pointer bg-danger-darker hover:bg-danger-darker/90 px-6 py-1 rounded-md border-2 border-danger-dark text-sm"
+                  onClick={() => setBuild(null)}
+                >
                   Remove
                 </button>
               </div>
@@ -84,9 +87,11 @@ const Build = () => {
             </>
           ) : (
             <div className="bg-primary-light h-full p-3">
-              <div className='bg-primary p-4 rounded-xl h-full flex flex-col items-center justify-center'>
-                <h2 className="text-xl font-semibold text-secondary">Generate a PC to see its components</h2>
-                <p className='text-white'>Select price and click Generate button</p>
+              <div className="bg-primary p-4 rounded-xl h-full flex flex-col items-center justify-center">
+                <h2 className="text-xl font-semibold text-secondary">
+                  Generate a PC to see its components
+                </h2>
+                <p className="text-white">Select price and click Generate button</p>
               </div>
             </div>
           )}

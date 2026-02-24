@@ -13,7 +13,7 @@ const PcComponent = ({ location, name, component }) => {
   return (
     <button
       className={`sm:w-25 sm:h-10 w-10 h-10 rounded-full sm:rounded-md font-semibold border-2 absolute flex items-center justify-center text-sm leading-tight hover:cursor-pointer
-        ${component ? 'border-secondary-light bg-secondary hover:bg-secondary-dark' : 'bg-neutral-600 border-neutral-700'}
+        ${component ? 'border-secondary-light bg-secondary hover:bg-secondary-dark' : 'bg-neutral-600 border-neutral-500 hover:bg-neutral-700'}
         `}
       style={{
         top: `${location.yPercent}%`,
