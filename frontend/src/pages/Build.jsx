@@ -87,11 +87,33 @@ const Build = () => {
             </>
           ) : (
             <div className="bg-primary-light h-full p-3">
-              <div className="bg-primary p-4 rounded-xl h-full flex flex-col items-center justify-center">
-                <h2 className="text-xl font-semibold text-secondary">
-                  Generate a PC to see its components
-                </h2>
-                <p className="text-white">Select price and click Generate button</p>
+              <div className="bg-primary p-4 rounded-xl h-full flex flex-col items-center justify-center gap-4">
+                <div>
+                  <h2 className="text-xl font-semibold text-secondary text-center">
+                    Generate a PC to see its components
+                  </h2>
+                  <p className="text-white text-center">Select price and click Generate button</p>
+                </div>
+
+                <button
+                  className="bg-primary border-primary-lighter border-2 rounded-md p-2 text-primary-lighter hover:bg-primary-dark hover:cursor-pointer"
+                  title="Add a specific component"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    height="24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </button>
               </div>
             </div>
           )}
