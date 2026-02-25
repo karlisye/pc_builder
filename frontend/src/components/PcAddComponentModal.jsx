@@ -1,10 +1,11 @@
 import React from 'react';
 import { useBuild } from '../contexts/BuildContext';
+import PcListView from './PcListView';
 
-const PcComponentModal = ({ component }) => {
-  const { setIsComponentModalActive } = useBuild();
+const PcAddComponentModal = () => {
+  const { setIsAddModalActive } = useBuild();
   const handleLeave = () => {
-    setIsComponentModalActive(false);
+    setIsAddModalActive(false);
   };
   return (
     <div className="fixed top-0 bottom-0 left-0 right-0 backdrop-blur-xs" onClick={handleLeave}>
@@ -14,7 +15,7 @@ const PcComponentModal = ({ component }) => {
       >
         <div className="flex justify-between">
           <h2 className="font-bold text-3xl mb-6 bg-primary-light px-6 py-1 rounded-md text-secondary">
-            Component info
+            Add a Component
           </h2>
           <button className="w-8 h-8 text-secondary hover:cursor-pointer" onClick={handleLeave}>
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -32,37 +33,11 @@ const PcComponentModal = ({ component }) => {
             </svg>
           </button>
         </div>
-        <div>
-          {Object.entries(component).map(([key, value]) => {
-            if (
-              !value ||
-              key === 'id' ||
-              key === 'category' ||
-              key === 'scraped_at' ||
-              key === 'url'
-            )
-              return null;
 
-            return (
-              <div key={key}>
-                <span className="font-semibold text-white">{key}: </span>
-                <span className="text-white">{value}</span>
-              </div>
-            );
-          })}
-        </div>
-        <div className="flex">
-          <a
-            className="bg-secondary hover:bg-secondary-dark text-primary-dark font-semibold py-2 px-6 rounded-lg shadow-md ml-auto"
-            href={component.url}
-            target="_blank"
-          >
-            Order
-          </a>
-        </div>
+        <PcListView />
       </div>
     </div>
   );
 };
 
-export default PcComponentModal;
+export default PcAddComponentModal;

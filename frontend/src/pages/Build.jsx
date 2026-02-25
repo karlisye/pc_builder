@@ -7,6 +7,7 @@ import PcInfo from '../components/PcInfo';
 import { BuildContext } from '../contexts/BuildContext';
 import PcComponentModal from '../components/PcComponentModal';
 import LoadingSpinner from '../components/LoadingSpinner';
+import PcAddComponentModal from '../components/PcAddComponentModal';
 
 const Build = () => {
   const [loading, setLoading] = useState(false);
@@ -14,7 +15,8 @@ const Build = () => {
   const [build, setBuild] = useState(null);
   const [isInteractiveViewActive, setIsInteractiveViewActive] = useState(true);
   const [selectedComponent, setSelectedComponent] = useState(null);
-  const [isModalActive, setIsModalActive] = useState(false);
+  const [isComponentModalActive, setIsComponentModalActive] = useState(false);
+  const [isAddModalActive, setIsAddModalActive] = useState(false);
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -30,7 +32,9 @@ const Build = () => {
   };
 
   return (
-    <BuildContext value={{ build, setSelectedComponent, setIsModalActive }}>
+    <BuildContext
+      value={{ build, setSelectedComponent, setIsComponentModalActive, setIsAddModalActive }}
+    >
       <div className="p-4 flex flex-wrap bg-primary-dark">
         <div className="flex-1 p-3 flex items-center flex-col gap-3 bg-primary-light rounded-l-lg">
           <div className="bg-primary py-2 px-16 rounded-lg">
@@ -98,6 +102,7 @@ const Build = () => {
                 <button
                   className="bg-primary border-primary-lighter border-2 rounded-md p-2 text-primary-lighter hover:bg-primary-dark hover:cursor-pointer"
                   title="Add a specific component"
+                  onClick={() => setIsAddModalActive(true)}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -120,7 +125,8 @@ const Build = () => {
         </div>
       </div>
 
-      {isModalActive && <PcComponentModal component={selectedComponent} />}
+      {isComponentModalActive && <PcComponentModal component={selectedComponent} />}
+      {isAddModalActive && <PcAddComponentModal />}
     </BuildContext>
   );
 };
