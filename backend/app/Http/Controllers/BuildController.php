@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\BuildService;
+use Inertia\Inertia;
 
 class BuildController extends Controller
 {
@@ -12,6 +13,11 @@ class BuildController extends Controller
   public function __construct(BuildService $buildService)
   {
     $this->buildService = $buildService;
+  }
+
+  public function index()
+  {
+    return Inertia::render('Build');
   }
 
   public function generate(Request $request)
