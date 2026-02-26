@@ -1,11 +1,11 @@
 import { useBuild } from '../contexts/BuildContext';
 
 const PcPartCard = ({ title, component }) => {
-  const { setSelectedComponent, setIsModalActive } = useBuild();
+  const { setSelectedComponent, setIsComponentModalActive } = useBuild();
 
   const handleSeeMore = () => {
     setSelectedComponent(component);
-    setIsModalActive(true);
+    setIsComponentModalActive(true);
   };
 
   return (

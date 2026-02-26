@@ -2,11 +2,11 @@ import React from 'react';
 import { useBuild } from '../contexts/BuildContext';
 
 const PcComponent = ({ location, name, component }) => {
-  const { setSelectedComponent, setIsModalActive } = useBuild();
+  const { setSelectedComponent, setIsComponentModalActive } = useBuild();
   const handleSeeMore = () => {
     if (component) {
       setSelectedComponent(component);
-      setIsModalActive(true);
+      setIsComponentModalActive(true);
       return;
     }
   };
