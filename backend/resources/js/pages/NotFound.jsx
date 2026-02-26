@@ -11,4 +11,6 @@ const NotFound = () => {
     );
 };
 
+NotFound.layout = (page) => page;
+
 export default NotFound;
