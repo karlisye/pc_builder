@@ -42,7 +42,7 @@ const Build = () => {
             }}
         >
             <div className="p-4 flex flex-wrap bg-primary-dark">
-                <div className="flex-1 p-3 flex items-center flex-col gap-3 bg-primary-light rounded-l-lg">
+                <div className="flex-1 p-3 flex items-center flex-col gap-3 rounded-l-lg">
                     <div className="bg-primary py-2 px-16 rounded-lg">
                         <h1 className="font-bold text-5xl text-secondary text-nowrap">
                             BUILD A PC
@@ -74,13 +74,13 @@ const Build = () => {
                     {build && <PcInfo build={build} />}
                 </div>
 
-                <div className="flex-2 max-w-full">
+                <div className="flex-2 max-w-full flex flex-col">
                     {build ? (
                         <>
-                            <div className="flex justify-between items-center bg-primary-light p-3 rounded-tr-lg">
+                            <div className="flex justify-between items-center p-3 rounded-tr-lg mb-6">
                                 <div>
                                     <button
-                                        className={`p-2 text-white hover:cursor-pointer rounded-l-md ${isInteractiveViewActive ? "bg-primary-dark shadow-xl" : "bg-primary"}`}
+                                        className={`p-2 text-white hover:cursor-pointer rounded-l-md ${isInteractiveViewActive ? "bg-primary shadow-xl" : "bg-primary-light"}`}
                                         onClick={() =>
                                             setIsInteractiveViewActive(true)
                                         }
@@ -88,7 +88,7 @@ const Build = () => {
                                         Interactive
                                     </button>
                                     <button
-                                        className={`p-2 text-white hover:cursor-pointer rounded-r-md ${isInteractiveViewActive ? "bg-primary" : "bg-primary-dark shadow-xl"}`}
+                                        className={`p-2 text-white hover:cursor-pointer rounded-r-md ${isInteractiveViewActive ? "bg-primary-light" : "bg-primary shadow-xl"}`}
                                         onClick={() =>
                                             setIsInteractiveViewActive(false)
                                         }
@@ -112,38 +112,36 @@ const Build = () => {
                             )}
                         </>
                     ) : (
-                        <div className="bg-primary-light h-full p-3">
-                            <div className="bg-primary p-4 rounded-xl h-full flex flex-col items-center justify-center gap-4">
-                                <div>
-                                    <h2 className="text-xl font-semibold text-secondary text-center">
-                                        Generate a PC to see its components
-                                    </h2>
-                                    <p className="text-white text-center">
-                                        Select price and click Generate button
-                                    </p>
-                                </div>
-
-                                <button
-                                    className="bg-primary border-primary-lighter border-2 rounded-md p-2 text-primary-lighter hover:bg-primary-dark hover:cursor-pointer"
-                                    title="Add a specific component"
-                                    onClick={() => setIsAddModalActive(true)}
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24"
-                                        width="24"
-                                        height="24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2.5"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                    >
-                                        <line x1="12" y1="5" x2="12" y2="19" />
-                                        <line x1="5" y1="12" x2="19" y2="12" />
-                                    </svg>
-                                </button>
+                        <div className="bg-primary p-4 m-3 rounded-xl h-full flex flex-col items-center justify-center gap-4">
+                            <div>
+                                <h2 className="text-xl font-semibold text-secondary text-center">
+                                    Generate a PC to see its components
+                                </h2>
+                                <p className="text-white text-center">
+                                    Select price and click Generate button
+                                </p>
                             </div>
+
+                            <button
+                                className="bg-primary border-primary-lighter border-2 rounded-md p-2 text-primary-lighter hover:bg-primary-dark hover:cursor-pointer"
+                                title="Add a specific component"
+                                onClick={() => setIsAddModalActive(true)}
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    width="24"
+                                    height="24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </button>
                         </div>
                     )}
                 </div>
