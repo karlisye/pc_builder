@@ -1,7 +1,7 @@
-import { useBuild } from '../contexts/BuildContext';
+import { useBuild } from "../contexts/BuildContext";
 
 const PcPartCard = ({ title, component }) => {
-  const { setSelectedComponent, setIsComponentModalActive } = useBuild();
+  const { setSelectedComponent, setIsComponentModalActive, build } = useBuild();
 
   const handleSeeMore = () => {
     setSelectedComponent(component);
@@ -13,7 +13,7 @@ const PcPartCard = ({ title, component }) => {
       <div className="bg-primary-dark p-3 rounded-xl h-full">
         {component ? (
           <>
-            <div className="flex lg:flex-col flex-row items-center lg:items-start justify-between mb-4 gap-2">
+            <div className="flex lg:flex-col flex-row items-center lg:items-start justify-between mb-4 gap-2 relative">
               <h3 className="font-bold text-2xl bg-primary-light backdrop-blur-sm px-4 py-2 rounded-lg text-secondary">
                 {title}
               </h3>
@@ -22,7 +22,10 @@ const PcPartCard = ({ title, component }) => {
               </span>
             </div>
 
-            <h4 className="font-bold text-xl text-white truncate" title={component.name}>
+            <h4
+              className="font-bold text-xl text-white truncate"
+              title={component.name}
+            >
               {component.name}
             </h4>
 
@@ -44,17 +47,41 @@ const PcPartCard = ({ title, component }) => {
             </div>
           </>
         ) : (
-          <div className="h-full flex flex-col items-center justify-center gap-4">
+          <div className="h-full flex flex-col items-center justify-center gap-4 relative">
             <h3 className="font-bold text-2xl bg-primary-light backdrop-blur-sm px-4 py-2 rounded-lg text-primary-dark">
               {title}
             </h3>
-            <span className="text-sm text-primary-light text-center">
-              {title === 'Graphics Card'
-                ? 'The CPU includes an integrated graphics card'
-                : title === 'Cooler'
-                  ? 'The CPU comes with a cooler'
-                  : ''}
-            </span>
+            {build && (
+              <span className="text-sm text-primary-light text-center">
+                {title === "Graphics Card"
+                  ? "The CPU includes an integrated graphics card"
+                  : title === "Cooler"
+                    ? "The CPU comes with a cooler"
+                    : ""}
+              </span>
+            )}
+            {!build && (
+              <button
+                className="bg-primary border-primary-lighter border-2 rounded-md p-2 text-primary-lighter hover:bg-primary-dark hover:cursor-pointer"
+                title="Add a specific component"
+                onClick={() => setIsAddModalActive(true)}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  height="24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+              </button>
+            )}
           </div>
         )}
       </div>
