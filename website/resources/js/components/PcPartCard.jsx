@@ -1,11 +1,22 @@
 import { useBuild } from "../contexts/BuildContext";
 
 const PcPartCard = ({ title, component }) => {
-  const { setSelectedComponent, setIsComponentModalActive, build } = useBuild();
+  const {
+    setSelectedComponent,
+    setIsComponentModalActive,
+    build,
+    setIsAddActive,
+    setCurrCompToAdd,
+  } = useBuild();
 
   const handleSeeMore = () => {
     setSelectedComponent(component);
     setIsComponentModalActive(true);
+  };
+
+  const handleAdd = () => {
+    setIsAddActive(true);
+    setCurrCompToAdd(title);
   };
 
   return (
@@ -64,7 +75,7 @@ const PcPartCard = ({ title, component }) => {
               <button
                 className="bg-primary border-primary-lighter border-2 rounded-md p-2 text-primary-lighter hover:bg-primary-dark hover:cursor-pointer"
                 title="Add a specific component"
-                onClick={() => setIsAddModalActive(true)}
+                onClick={handleAdd}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

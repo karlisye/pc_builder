@@ -18,6 +18,9 @@ const Build = () => {
   const [isComponentModalActive, setIsComponentModalActive] = useState(false);
   const [isAddModalActive, setIsAddModalActive] = useState(false);
 
+  const [isAddActive, setIsAddActive] = useState(false);
+  const [currCompToAdd, setCurrCompToAdd] = useState("");
+
   const handleGenerate = async () => {
     setLoading(true);
 
@@ -38,6 +41,10 @@ const Build = () => {
         setSelectedComponent,
         setIsComponentModalActive,
         setIsAddModalActive,
+        setIsAddActive,
+        isAddActive,
+        setCurrCompToAdd,
+        currCompToAdd,
       }}
     >
       <div className="p-4 flex flex-wrap bg-primary-dark">
