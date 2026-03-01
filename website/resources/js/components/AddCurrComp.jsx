@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useBuild } from "../contexts/BuildContext";
 import LoadingSpinner from "./LoadingSpinner";
+import axios from "axios";
 
 const AddCurrComp = () => {
   const { currCompToAdd, setIsAddActive } = useBuild();
   const [loading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
 
   const handleRemove = () => {
     setIsAddActive(false);
@@ -13,6 +15,10 @@ const AddCurrComp = () => {
   const fetchComponent = async () => {
     const component = currCompToAdd.toLowerCase().replace(/\s+/g, "");
     console.log(component);
+    const res = await axios.get(`/components/${component}`);
+    setData(res.data[component].data);
+
+    console.log(res.data[component].data);
   };
 
   useEffect(() => {
