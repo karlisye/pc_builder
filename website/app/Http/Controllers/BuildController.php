@@ -38,6 +38,6 @@ class BuildController extends Controller
       'error' => 'Could not build PC with available components',
       'requested_budget' => $budget,
       'message' => 'Try increasing budget or check component availability'
-    ], 404);
+    ], 422);
   }
 }

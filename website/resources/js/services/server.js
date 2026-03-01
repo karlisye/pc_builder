@@ -6,7 +6,11 @@ axios.defaults.withXSRFToken = true;
 
 export const buildService = {
   generateBuild: async (budget) => {
-    const response = await axios.post('/build/generate', { budget });
-    return response.data;
+    try {
+      const response = await axios.post('/build/generate', { budget });
+      return response.data;
+    } catch (error) {
+      console.error('failed to generate: ', error)
+    }
   },
 };

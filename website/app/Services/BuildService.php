@@ -59,7 +59,7 @@ class BuildService
     $originalBudget = $budget;
 
     for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
-      $result = $this->attemptBuild($budget, $attempt === $maxAttempts);
+      $result = $this->attemptBuild($budget, $originalBudget, $attempt === $maxAttempts);
 
       if ($result['success']) {
         $data = $result['data'];
@@ -86,9 +86,8 @@ class BuildService
     return ['success' => false, 'error' => 'Max attempts reached'];
   }
 
-  protected function attemptBuild($budget, $relaxed = false)
+  protected function attemptBuild($budget, $originalBudget, $relaxed = false)
   {
-    $originalBudget = $budget;
     $remainingBudget = $budget;
     $selectedComponents = [];
 
@@ -96,7 +95,7 @@ class BuildService
 
     $cpu = $this->cpuSelector->select($allocations['cpu'], $budget);
     if (!$cpu) {
-      if ($budget < 600) {
+      if ($originalBudget  < 600) {
         return ['success' => false, 'error' => 'No APU found for budget build'];
       }
       return ['success' => false, 'error' => 'No CPU found'];
@@ -143,18 +142,16 @@ class BuildService
     $allocations = $this->budgetService->recalculateRemaining($remainingBudget, $selectedComponents);
 
     $ssd = $this->ssdSelector->select($allocations['ssd'] ?? $remainingBudget * 0.3, $relaxed);
-    if ($ssd) {
-      $remainingBudget -= $ssd->price;
-      $selectedComponents[] = 'ssd';
-    }
+    if (!$ssd) return ['success' => false, 'error' => 'No SSD found'];
+    $remainingBudget -= $ssd->price;
+    $selectedComponents[] = 'ssd';
 
     $allocations = $this->budgetService->recalculateRemaining($remainingBudget, $selectedComponents);
 
     $psu = $this->psuSelector->select($allocations['psu'] ?? $remainingBudget * 0.4, $cpu, $gpu);
-    if ($psu) {
-      $remainingBudget -= $psu->price;
-      $selectedComponents[] = 'psu';
-    }
+    if (!$psu) return ['success' => false, 'error' => 'No PSU found'];
+    $remainingBudget -= $psu->price;
+    $selectedComponents[] = 'psu';
 
     $allocations = $this->budgetService->recalculateRemaining($remainingBudget, $selectedComponents);
 

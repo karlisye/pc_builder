@@ -48,15 +48,15 @@ class BudgetAllocationService
   {
     if ($budget < 600) {
       return [
-        'cpu' => 30,
-        'mobo' => 17,
-        'ram' => 18,
-        'cooler' => 3,
+        'cpu' => 25,
+        'mobo' => 16,
+        'ram' => 22,
+        'cooler' => 2,
         'gpu' => 0,
-        'ssd' => 15,
-        'psu' => 10,
-        'case' => 6,
-        'fans' => 1
+        'ssd' => 16,
+        'psu' => 11,
+        'case' => 7,
+        'fans' => 1,
       ];
     } elseif ($budget < 900) {
       return [
