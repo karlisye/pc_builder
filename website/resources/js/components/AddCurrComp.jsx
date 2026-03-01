@@ -1,19 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useBuild } from "../contexts/BuildContext";
+import LoadingSpinner from "./LoadingSpinner";
 
 const AddCurrComp = () => {
   const { currCompToAdd, setIsAddActive } = useBuild();
+  const [loading, setLoading] = useState(true);
 
   const handleRemove = () => {
     setIsAddActive(false);
   };
+
+  const fetchComponent = async () => {
+    const component = currCompToAdd.toLowerCase().replace(/\s+/g, "");
+    console.log(component);
+  };
+
+  useEffect(() => {
+    fetchComponent();
+  }, []);
 
   return (
     <div className="p-2 rounded-lg bg-primary flex flex-col">
       <div className="flex items-center gap-2">
         <h2 className="text-2xl font-semibold text-white">{currCompToAdd}</h2>
         <button
-          className="w-8 h-8 text-secondary hover:cursor-pointer"
+          className="w-6 h-6 text-secondary hover:cursor-pointer"
           onClick={handleRemove}
         >
           <svg
@@ -39,6 +50,8 @@ const AddCurrComp = () => {
           </svg>
         </button>
       </div>
+
+      <div>{loading ? <LoadingSpinner /> : ""}</div>
     </div>
   );
 };
