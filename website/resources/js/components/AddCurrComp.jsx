@@ -4,7 +4,7 @@ import LoadingSpinner from "./LoadingSpinner";
 import axios from "axios";
 
 const AddCurrComp = () => {
-  const { currCompToAdd, setIsAddActive } = useBuild();
+  const { currCompToAdd, setIsAddActive, build, setBuild } = useBuild();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
 
@@ -13,51 +13,82 @@ const AddCurrComp = () => {
   };
 
   const fetchComponent = async () => {
+    setLoading(true);
     const component = currCompToAdd.toLowerCase().replace(/\s+/g, "");
-    console.log(component);
-    const res = await axios.get(`/components/${component}`);
-    setData(res.data[component].data);
 
-    console.log(res.data[component].data);
+    const params = {
+      build_state: JSON.stringify(build),
+    };
+
+    try {
+      const res = await axios.get(`/components/${component}`, { params });
+      setData(res.data[component].data || []);
+    } catch (error) {
+      console.error(`Failed to load ${component}:`, error);
+      setData([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    fetchComponent();
-  }, []);
+    if (currCompToAdd) {
+      fetchComponent();
+    }
+  }, [currCompToAdd]);
 
   return (
-    <div className="p-2 rounded-lg bg-primary flex flex-col">
-      <div className="flex items-center gap-2">
-        <h2 className="text-2xl font-semibold text-white">{currCompToAdd}</h2>
+    <div className="p-6 rounded-xl mx-auto max-h-[80vh] overflow-y-auto w-3xl">
+      <div className="flex items-center mb-6">
+        <h2 className="text-2xl font-bold text-white">Add {currCompToAdd}</h2>
         <button
-          className="w-6 h-6 text-secondary hover:cursor-pointer"
+          className="w-8 h-8 text-secondary flex items-center justify-center"
           onClick={handleRemove}
         >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-            <g
-              id="SVGRepo_tracerCarrier"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            ></g>
-            <g id="SVGRepo_iconCarrier">
-              {" "}
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M5.29289 5.29289C5.68342 4.90237 6.31658 4.90237 6.70711 5.29289L12 10.5858L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289C19.0976 5.68342 19.0976 6.31658 18.7071 6.70711L13.4142 12L18.7071 17.2929C19.0976 17.6834 19.0976 18.3166 18.7071 18.7071C18.3166 19.0976 17.6834 19.0976 17.2929 18.7071L12 13.4142L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L10.5858 12L5.29289 6.70711C4.90237 6.31658 4.90237 5.68342 5.29289 5.29289Z"
-                fill="currentColor"
-              ></path>{" "}
-            </g>
-          </svg>
+          ✕
         </button>
       </div>
 
-      <div>{loading ? <LoadingSpinner /> : ""}</div>
+      {loading ? (
+        <LoadingSpinner />
+      ) : data.length === 0 ? (
+        <div className="text-center py-12 text-secondary">
+          No compatible {currCompToAdd.toLowerCase()} found
+        </div>
+      ) : (
+        <div className="w-full flex flex-col justify-center rounded-lg gap-4">
+          {data.map((component) => (
+            <div className="bg-primary p-2 rounded-md flex justify-between items-center">
+              <span className="text-white">{component.name}</span>
+
+              <div className="flex items-center gap-2">
+                <button className="border-2 rounded-md p-2 text-primary-lighter hover:cursor-pointer hover:bg-primary-dark">
+                  See more
+                </button>
+                <button
+                  className="bg-primary border-primary-lighter border-2 rounded-md p-2 text-primary-lighter hover:bg-primary-dark hover:cursor-pointer"
+                  title="Add a specific component"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    height="24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
