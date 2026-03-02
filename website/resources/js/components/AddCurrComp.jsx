@@ -60,7 +60,12 @@ const AddCurrComp = () => {
         <div className="w-full flex flex-col justify-center rounded-lg gap-4">
           {data.map((component) => (
             <div key={component.id} className="bg-primary p-2 rounded-md flex justify-between items-center">
-              <span className="text-white">{component.name}</span>
+              <div className="flex items-center gap-4">
+                <span className="px-3 py-1 bg-success-dark/50 text-success-light text-sm font-semibold rounded-full">
+                  {component.price}€
+                </span>
+                <h3 className="text-white">{component.name}</h3>
+              </div>
 
               <div className="flex items-center gap-2">
                 <button className="border-2 rounded-md p-2 text-primary-lighter hover:cursor-pointer hover:bg-primary-dark" onClick={() => handleSeeMore(component)}>
