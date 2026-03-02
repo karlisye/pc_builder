@@ -8,7 +8,7 @@ const PcComponentModal = ({ component }) => {
   };
   return (
     <div
-      className="fixed top-0 bottom-0 left-0 right-0 backdrop-blur-xs"
+      className="fixed top-0 bottom-0 left-0 right-0 backdrop-blur-xs z-10"
       onClick={handleLeave}
     >
       <div

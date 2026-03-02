@@ -4,7 +4,7 @@ import LoadingSpinner from "./LoadingSpinner";
 import axios from "axios";
 
 const AddCurrComp = () => {
-  const { currCompToAdd, setIsAddActive, build, setBuild } = useBuild();
+  const { currCompToAdd, setIsAddActive, setSelectedComponent, setIsComponentModalActive } = useBuild();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
 
@@ -12,16 +12,17 @@ const AddCurrComp = () => {
     setIsAddActive(false);
   };
 
+  const handleSeeMore = (component) => {
+    setSelectedComponent(component);
+    setIsComponentModalActive(true);
+  };
+
   const fetchComponent = async () => {
     setLoading(true);
     const component = currCompToAdd.toLowerCase().replace(/\s+/g, "");
 
-    const params = {
-      build_state: JSON.stringify(build),
-    };
-
     try {
-      const res = await axios.get(`/components/${component}`, { params });
+      const res = await axios.get(`/components/${component}`);
       setData(res.data[component].data || []);
     } catch (error) {
       console.error(`Failed to load ${component}:`, error);
@@ -58,11 +59,11 @@ const AddCurrComp = () => {
       ) : (
         <div className="w-full flex flex-col justify-center rounded-lg gap-4">
           {data.map((component) => (
-            <div className="bg-primary p-2 rounded-md flex justify-between items-center">
+            <div key={component.id} className="bg-primary p-2 rounded-md flex justify-between items-center">
               <span className="text-white">{component.name}</span>
 
               <div className="flex items-center gap-2">
-                <button className="border-2 rounded-md p-2 text-primary-lighter hover:cursor-pointer hover:bg-primary-dark">
+                <button className="border-2 rounded-md p-2 text-primary-lighter hover:cursor-pointer hover:bg-primary-dark" onClick={() => handleSeeMore(component)}>
                   See more
                 </button>
                 <button
