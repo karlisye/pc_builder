@@ -53,21 +53,31 @@ const AddCurrComp = () => {
     }
   }, [currCompToAdd]);
 
+  const initializedRef = useRef(false);
+
   useEffect(() => {
     if (currCompToAdd) {
+      initializedRef.current = false;
       setSearch("");
       setPage(1);
-      fetchComponent("", 1);
+      fetchComponent("", 1).then(() => {
+        initializedRef.current = true;
+      });
     }
   }, [currCompToAdd]);
 
   useEffect(() => {
     if (!bottomRef.current) return;
-    if (!search) handleSearch();
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && page < lastPage && !loadingMore) {
+        if (
+          entries[0].isIntersecting &&
+          initializedRef.current &&
+          page < lastPage &&
+          !loadingMore &&
+          !loading
+        ) {
           fetchComponent(search, page + 1);
         }
       },
@@ -76,7 +86,7 @@ const AddCurrComp = () => {
 
     observer.observe(bottomRef.current);
     return () => observer.disconnect();
-  }, [page, lastPage, loadingMore, search]);
+  }, [page, lastPage, loadingMore, loading, search]);
 
   const handleSearch = () => {
     setPage(1);
@@ -136,7 +146,7 @@ const AddCurrComp = () => {
                 <span className="px-3 py-1 bg-success-dark/50 text-success-light text-sm font-semibold rounded-full">
                   {component.price}€
                 </span>
-                <h3 className="text-white">{component.name}</h3>
+                <h3 className="text-white truncate max-w-xs">{component.name}</h3>
               </div>
               <div className="flex items-center gap-2">
                 <button className="border-2 rounded-md p-2 text-primary-lighter hover:cursor-pointer hover:bg-primary-dark" onClick={() => handleSeeMore(component)}>
@@ -158,7 +168,7 @@ const AddCurrComp = () => {
               <span className="text-primary-light text-sm">End of components</span>
             )}
           </div>
-          
+
           {showScrollTop && (
             <button
               onClick={scrollToTop}

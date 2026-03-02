@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cases;
+use App\Models\Cooler;
+use App\Models\Fan;
 use App\Models\Gpu;
 use App\Models\Motherboard;
 use App\Models\Processor;
 use App\Models\Psu;
 use App\Models\Ram;
+use App\Models\Ssd;
 use Illuminate\Http\Request;
 
 class ComponentController extends Controller
@@ -17,13 +20,16 @@ class ComponentController extends Controller
         $search = $request->query('search', '');
 
         $query = match($component) {
-            'cpu'         => Processor::query(),
-            'gpu'         => Gpu::query(),
+            'processor' => Processor::query(),
+            'graphicscard' => Gpu::query(),
+            'cooler' => Cooler::query(),
             'motherboard' => Motherboard::query(),
-            'ram'         => Ram::query(),
-            'psu'         => Psu::query(),
-            'case'        => Cases::query(),
-            default       => abort(404),
+            'ram' => Ram::query(),
+            'powersupply' => Psu::query(),
+            'ssd' => Ssd::query(),
+            'case' => Cases::query(),
+            'fans' => Fan::query(),
+            default => abort(404),
         };
 
         $data = $query
