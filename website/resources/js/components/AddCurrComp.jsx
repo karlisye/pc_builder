@@ -4,7 +4,7 @@ import LoadingSpinner from "./LoadingSpinner";
 import axios from "axios";
 
 const AddCurrComp = () => {
-  const { currCompToAdd, setIsAddActive, setSelectedComponent, setIsComponentModalActive } = useBuild();
+  const { currCompToAdd, setIsAddActive, setSelectedComponent, setIsComponentModalActive, setBuild } = useBuild();
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [data, setData] = useState([]);
@@ -28,6 +28,26 @@ const AddCurrComp = () => {
   const handleSeeMore = (component) => {
     setSelectedComponent(component);
     setIsComponentModalActive(true);
+  };
+
+  const typeMap = {
+    "processor": "cpu",
+    "motherboard": "motherboard",
+    "ram": "ram",
+    "cooler": "cooler",
+    "graphics card": "gpu",
+    "ssd": "ssd",
+    "power supply": "psu",
+    "case": "case",
+    "fans": "fans",
+  };
+
+  const handleAddComponent = (component) => {
+    console.log(component)
+    const type = typeMap[currCompToAdd.toLowerCase()];
+    if (!type) return;
+    setBuild((prev) => ({ ...prev, [type]: component }));
+    setIsAddActive(false);
   };
 
   const fetchComponent = useCallback(async (searchQuery = "", pageNum = 1) => {
@@ -152,7 +172,7 @@ const AddCurrComp = () => {
                 <button className="border-2 rounded-md p-2 text-primary-lighter hover:cursor-pointer hover:bg-primary-dark" onClick={() => handleSeeMore(component)}>
                   See more
                 </button>
-                <button className="bg-primary border-primary-lighter border-2 rounded-md p-2 text-primary-lighter hover:bg-primary-dark hover:cursor-pointer" title="Add a specific component">
+                <button className="bg-primary border-primary-lighter border-2 rounded-md p-2 text-primary-lighter hover:bg-primary-dark hover:cursor-pointer" title="Add this component to build" onClick={() => handleAddComponent(component)}>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="12" y1="5" x2="12" y2="19" />
                     <line x1="5" y1="12" x2="19" y2="12" />

@@ -38,6 +38,7 @@ const Build = () => {
     <BuildContext
       value={{
         build,
+        setBuild,
         setSelectedComponent,
         setIsComponentModalActive,
         setIsAddModalActive,
