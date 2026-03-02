@@ -46,7 +46,11 @@ const AddCurrComp = () => {
     console.log(component)
     const type = typeMap[currCompToAdd.toLowerCase()];
     if (!type) return;
-    setBuild((prev) => ({ ...prev, [type]: component }));
+    setBuild((prev) => ({
+      ...prev,
+      [type]: component,
+      total: (prev?.total ?? 0) + component.price,
+    }));
     setIsAddActive(false);
   };
 

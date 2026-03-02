@@ -6,7 +6,21 @@ const PcPartCard = ({ title, component }) => {
     setIsComponentModalActive,
     setIsAddActive,
     setCurrCompToAdd,
+    setBuild,
+    build
   } = useBuild();
+
+  const typeMap = {
+    "processor": "cpu",
+    "motherboard": "motherboard",
+    "ram": "ram",
+    "cooler": "cooler",
+    "graphics card": "gpu",
+    "ssd": "ssd",
+    "power supply": "psu",
+    "case": "case",
+    "fans": "fans",
+  };
 
   const handleSeeMore = () => {
     setSelectedComponent(component);
@@ -18,19 +32,39 @@ const PcPartCard = ({ title, component }) => {
     setIsAddActive(true);
     setCurrCompToAdd(title);
   };
+  
+  const handleRemove = () => {
+    const type = typeMap[title.toLowerCase()];
+    if (!type) return;
+    setBuild((prev) => ({
+      ...prev,
+      [type]: null,
+      total: (prev.total ?? 0) - component.price,
+    }));
+  };
+
 
   return (
     <div className="lg:w-1/3 md:w-1/2 w-full p-2">
       <div className="bg-primary-dark p-3 rounded-xl h-full">
         {component ? (
           <>
-            <div className="flex lg:flex-col flex-row items-center lg:items-start justify-between mb-4 gap-2">
+            <div className="flex lg:flex-col flex-row items-center lg:items-start justify-between mb-4 gap-2 relative">
               <h3 className="font-bold text-2xl bg-primary-light backdrop-blur-sm px-4 py-2 rounded-lg text-secondary">
                 {title}
               </h3>
-              <span className="px-3 py-1 bg-success-dark/50 text-success-light text-sm font-semibold rounded-full">
-                {component.price}€
-              </span>
+              <div>
+                <span className="px-3 py-1 bg-success-dark/50 text-success-light text-sm font-semibold rounded-full">
+                  {component.price}€
+                </span>
+              </div>
+
+              <button
+                className="w-8 h-8 text-secondary hover:cursor-pointer absolute top-0 right-0"
+                onClick={handleRemove}
+              >
+                ✕
+              </button>
             </div>
 
             <h4 className="font-bold text-xl text-white truncate" title={component.name}>

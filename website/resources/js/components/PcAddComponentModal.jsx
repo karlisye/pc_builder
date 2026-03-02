@@ -16,7 +16,7 @@ const PcAddComponentModal = () => {
       onClick={handleLeave}
     >
       <div
-        className="fixed top-1/2 left-1/2 transform -translate-1/2 bg-primary-dark p-4 shadow-lg rounded-lg"
+        className="fixed top-1/2 left-1/2 transform -translate-1/2 bg-primary-dark p-4 shadow-lg rounded-lg w-120 md:w-200 lg:w-300"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between">

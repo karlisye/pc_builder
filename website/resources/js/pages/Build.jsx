@@ -8,6 +8,7 @@ import { BuildContext } from "../contexts/BuildContext";
 import PcComponentModal from "../components/PcComponentModal";
 import LoadingSpinner from "../components/LoadingSpinner";
 import PcAddComponentModal from "../components/PcAddComponentModal";
+import AddCurrComp from "../components/AddCurrComp";
 
 const Build = () => {
   const [loading, setLoading] = useState(false);
@@ -102,7 +103,7 @@ const Build = () => {
                 </button>
               </div>
 
-              {isInteractiveViewActive ? <PcInteractiveView /> : <PcListView />}
+              {isInteractiveViewActive ? <PcInteractiveView /> : isAddActive ? <AddCurrComp /> : <PcListView />}
             </>
           ) : (
             <div className="bg-primary p-4 m-3 rounded-xl h-full flex flex-col items-center justify-center gap-4">
