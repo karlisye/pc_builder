@@ -6,4 +6,4 @@ use App\Http\Controllers\ComponentController;
 
 Route::post('/build/generate', [BuildController::class, 'generate']);
 
-Route::get('/components/motherboard', [ComponentController::class, 'getMotherboards']);
+Route::get('/components/{component}', [ComponentController::class, 'show']);
