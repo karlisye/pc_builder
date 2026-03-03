@@ -28,7 +28,6 @@ const PcPartCard = ({ title, component }) => {
   };
 
   const handleAdd = () => {
-    console.log(title)
     setIsAddActive(true);
     setCurrCompToAdd(title);
   };

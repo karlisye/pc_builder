@@ -43,13 +43,12 @@ const AddCurrComp = () => {
   };
 
   const handleAddComponent = (component) => {
-    console.log(component)
     const type = typeMap[currCompToAdd.toLowerCase()];
     if (!type) return;
     setBuild((prev) => ({
       ...prev,
       [type]: component,
-      total: (prev?.total ?? 0) + component.price,
+      total: parseFloat(prev?.total ?? 0) + parseFloat(component.price ?? 0),
     }));
     setIsAddActive(false);
   };
@@ -125,7 +124,7 @@ const AddCurrComp = () => {
     <div
       ref={scrollRef}
       onScroll={handleScroll}
-      className="relative p-6 rounded-xl mx-auto min-h-[80vh] max-h-[80vh] overflow-y-auto w-3xl"
+      className="relative p-6 rounded-xl mx-auto min-h-[80vh] max-h-[80vh] overflow-y-auto w-3xl w-full"
     >
       <div className="flex items-center justify-between mb-6 gap-4">
         <div className="flex items-center gap-2 shrink-0">
