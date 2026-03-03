@@ -53,13 +53,18 @@ class BuildService
     $this->coolerSelector = $coolerSelector;
     $this->compatibilityHelper = $compatibilityHelper;
   }
-
-  public function generateBuild($budget, $maxAttempts = 10)
+ 
+  public function generateBuild($budget, $maxAttempts = 10, array $locked = [])
   {
     $originalBudget = $budget;
 
     for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
-      $result = $this->attemptBuild($budget, $originalBudget, $attempt === $maxAttempts);
+      $result = $this->attemptBuild(
+        $budget,
+        $originalBudget,
+        $attempt === $maxAttempts,
+        $locked
+      );
 
       if ($result['success']) {
         $data = $result['data'];
@@ -86,14 +91,23 @@ class BuildService
     return ['success' => false, 'error' => 'Max attempts reached'];
   }
 
-  protected function attemptBuild($budget, $originalBudget, $relaxed = false)
+  protected function attemptBuild($budget, $originalBudget, $relaxed = false, array $locked = [])
   {
     $remainingBudget = $budget;
     $selectedComponents = [];
 
     $allocations = $this->budgetService->calculateInitial($budget);
+ 
+    // CPU (allow locked)
+    if (isset($locked['cpu'])) {
+      $cpu = $locked['cpu'];
+      if ($cpu->price > $allocations['cpu'] && !$relaxed) {
+        return ['success' => false, 'error' => 'Locked CPU exceeds allocated budget'];
+      }
+    } else {
+      $cpu = $this->cpuSelector->select($allocations['cpu'], $budget);
+    }
 
-    $cpu = $this->cpuSelector->select($allocations['cpu'], $budget);
     if (!$cpu) {
       if ($originalBudget  < 600) {
         return ['success' => false, 'error' => 'No APU found for budget build'];
@@ -105,22 +119,54 @@ class BuildService
 
     $allocations = $this->budgetService->recalculateRemaining($remainingBudget, $selectedComponents);
 
-    $mobo = $this->moboSelector->select($allocations['mobo'], $cpu);
+    // Motherboard (allow locked, must be compatible socket)
+    if (isset($locked['motherboard'])) {
+      $mobo = $locked['motherboard'];
+      if ($mobo->socket !== $cpu->socket) {
+        return ['success' => false, 'error' => 'Locked motherboard is not compatible with CPU socket'];
+      }
+      if ($mobo->price > $allocations['mobo'] && !$relaxed) {
+        return ['success' => false, 'error' => 'Locked motherboard exceeds allocated budget'];
+      }
+    } else {
+      $mobo = $this->moboSelector->select($allocations['mobo'], $cpu);
+    }
+
     if (!$mobo) return ['success' => false, 'error' => 'No motherboard found'];
     $remainingBudget -= $mobo->price;
     $selectedComponents[] = 'mobo';
 
     $allocations = $this->budgetService->recalculateRemaining($remainingBudget, $selectedComponents);
 
-    $ram = $this->ramSelector->select($allocations['ram'], $mobo, $relaxed);
+    // RAM (allow locked, must match mobo memory type)
+    if (isset($locked['ram'])) {
+      $ram = $locked['ram'];
+      if ($ram->memory_type !== $mobo->memory_type) {
+        return ['success' => false, 'error' => 'Locked RAM is not compatible with motherboard memory type'];
+      }
+      if ($ram->price > $allocations['ram'] * 1.2 && !$relaxed) {
+        return ['success' => false, 'error' => 'Locked RAM exceeds allocated budget'];
+      }
+    } else {
+      $ram = $this->ramSelector->select($allocations['ram'], $mobo, $relaxed);
+    }
     if (!$ram) return ['success' => false, 'error' => 'No RAM found'];
     $remainingBudget -= $ram->price;
     $selectedComponents[] = 'ram';
 
     $allocations = $this->budgetService->recalculateRemaining($remainingBudget, $selectedComponents);
 
+    // Cooler (allow locked)
     $cooler = null;
-    if (!$cpu->cooler_included && isset($allocations['cooler']) && $allocations['cooler'] > 0) {
+    if (isset($locked['cooler'])) {
+      $cooler = $locked['cooler'];
+      $remainingBudget -= $cooler->price;
+      $selectedComponents[] = 'cooler';
+    } elseif (
+      !$cpu->cooler_included &&
+      isset($allocations['cooler']) &&
+      $allocations['cooler'] > 0
+    ) {
       $cooler = $this->coolerSelector->select($allocations['cooler'], $cpu);
       if ($cooler) {
         $remainingBudget -= $cooler->price;
@@ -130,8 +176,16 @@ class BuildService
 
     $allocations = $this->budgetService->recalculateRemaining($remainingBudget, $selectedComponents);
 
+    // GPU (allow locked)
     $gpu = null;
-    if ($originalBudget >= 600 && isset($allocations['gpu']) && $allocations['gpu'] > 0) {
+    if (isset($locked['gpu'])) {
+      $gpu = $locked['gpu'];
+      if ($originalBudget < 600) {
+        return ['success' => false, 'error' => 'Locked GPU cannot be used with APU-style budget build'];
+      }
+      $remainingBudget -= $gpu->price;
+      $selectedComponents[] = 'gpu';
+    } elseif ($originalBudget >= 600 && isset($allocations['gpu']) && $allocations['gpu'] > 0) {
       $gpu = $this->gpuSelector->select($allocations['gpu']);
       if ($gpu) {
         $remainingBudget -= $gpu->price;
@@ -141,28 +195,54 @@ class BuildService
 
     $allocations = $this->budgetService->recalculateRemaining($remainingBudget, $selectedComponents);
 
-    $ssd = $this->ssdSelector->select($allocations['ssd'] ?? $remainingBudget * 0.3, $relaxed);
-    if (!$ssd) return ['success' => false, 'error' => 'No SSD found'];
-    $remainingBudget -= $ssd->price;
-    $selectedComponents[] = 'ssd';
-
-    $allocations = $this->budgetService->recalculateRemaining($remainingBudget, $selectedComponents);
-
-    $psu = $this->psuSelector->select($allocations['psu'] ?? $remainingBudget * 0.4, $cpu, $gpu);
-    if (!$psu) return ['success' => false, 'error' => 'No PSU found'];
-    $remainingBudget -= $psu->price;
-    $selectedComponents[] = 'psu';
-
-    $allocations = $this->budgetService->recalculateRemaining($remainingBudget, $selectedComponents);
-
-    $case = $this->caseSelector->select($allocations['case'] ?? $remainingBudget * 0.5, $mobo);
-    if ($case) {
-      $remainingBudget -= $case->price;
-      $selectedComponents[] = 'case';
+    // SSD (allow locked)
+    if (isset($locked['ssd'])) {
+      $ssd = $locked['ssd'];
+      $remainingBudget -= $ssd->price;
+      $selectedComponents[] = 'ssd';
+    } else {
+      $ssd = $this->ssdSelector->select($allocations['ssd'] ?? $remainingBudget * 0.3, $relaxed);
+      if (!$ssd) return ['success' => false, 'error' => 'No SSD found'];
+      $remainingBudget -= $ssd->price;
+      $selectedComponents[] = 'ssd';
     }
 
+    $allocations = $this->budgetService->recalculateRemaining($remainingBudget, $selectedComponents);
+
+    // PSU (allow locked)
+    if (isset($locked['psu'])) {
+      $psu = $locked['psu'];
+      $remainingBudget -= $psu->price;
+      $selectedComponents[] = 'psu';
+    } else {
+      $psu = $this->psuSelector->select($allocations['psu'] ?? $remainingBudget * 0.4, $cpu, $gpu);
+      if (!$psu) return ['success' => false, 'error' => 'No PSU found'];
+      $remainingBudget -= $psu->price;
+      $selectedComponents[] = 'psu';
+    }
+
+    $allocations = $this->budgetService->recalculateRemaining($remainingBudget, $selectedComponents);
+
+    // Case (allow locked)
+    if (isset($locked['case'])) {
+      $case = $locked['case'];
+      $remainingBudget -= $case->price;
+      $selectedComponents[] = 'case';
+    } else {
+      $case = $this->caseSelector->select($allocations['case'] ?? $remainingBudget * 0.5, $mobo);
+      if ($case) {
+        $remainingBudget -= $case->price;
+        $selectedComponents[] = 'case';
+      }
+    }
+
+    // Fans (allow locked)
     $fans = null;
-    if ($remainingBudget > 10) {
+    if (isset($locked['fans'])) {
+      $fans = $locked['fans'];
+      $remainingBudget -= $fans->price;
+      $selectedComponents[] = 'fans';
+    } elseif ($remainingBudget > 10) {
       $fans = $this->fanSelector->select($remainingBudget);
     }
 

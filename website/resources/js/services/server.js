@@ -13,4 +13,13 @@ export const buildService = {
       console.error('failed to generate: ', error)
     }
   },
+  generateBuildWithLocked: async (budget, locked) => {
+    try {
+      const response = await axios.post('/build/generate', { budget, locked });
+      return response.data;
+    } catch (error) {
+      console.error('failed to generate with locked components: ', error);
+      throw error;
+    }
+  },
 };
