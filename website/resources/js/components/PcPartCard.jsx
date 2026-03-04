@@ -4,10 +4,11 @@ const PcPartCard = ({ title, component }) => {
   const {
     setSelectedComponent,
     setIsComponentModalActive,
-    setIsAddActive,
-    setCurrCompToAdd,
     setBuild,
-    build
+    build,
+    locked,
+    setLocked,
+    setActivePicker,
   } = useBuild();
 
   const typeMap = {
@@ -28,18 +29,26 @@ const PcPartCard = ({ title, component }) => {
   };
 
   const handleAdd = () => {
-    setIsAddActive(true);
-    setCurrCompToAdd(title);
+    setActivePicker(title);
   };
   
   const handleRemove = () => {
     const type = typeMap[title.toLowerCase()];
     if (!type) return;
-    setBuild((prev) => ({
-      ...prev,
-      [type]: null,
-      total: (prev.total ?? 0) - component.price,
-    }));
+    // If a full build exists, remove from build and adjust total.
+    if (build) {
+      setBuild((prev) => ({
+        ...prev,
+        [type]: null,
+        total: (prev.total ?? 0) - (component?.price ?? 0),
+      }));
+    } else {
+      // Before build generation, just clear the locked selection
+      setLocked((prev) => ({
+        ...prev,
+        [type]: null,
+      }));
+    }
   };
 
 
