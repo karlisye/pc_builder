@@ -1,32 +1,46 @@
 import React, { useState } from "react";
 import { buildService } from "../services/server";
 import PriceSlider from "../components/PriceSlider";
-import PcInteractiveView from "../components/PcInteractiveView";
 import PcListView from "../components/PcListView";
 import PcInfo from "../components/PcInfo";
 import { BuildContext } from "../contexts/BuildContext";
 import PcComponentModal from "../components/PcComponentModal";
 import LoadingSpinner from "../components/LoadingSpinner";
-import PcAddComponentModal from "../components/PcAddComponentModal";
 import AddCurrComp from "../components/AddCurrComp";
+
+const INITIAL_LOCKED = {
+  cpu: null,
+  motherboard: null,
+  ram: null,
+  cooler: null,
+  gpu: null,
+  ssd: null,
+  psu: null,
+  case: null,
+  fans: null,
+};
 
 const Build = () => {
   const [loading, setLoading] = useState(false);
   const [budget, setBudget] = useState(1000);
   const [build, setBuild] = useState(null);
-  const [isInteractiveViewActive, setIsInteractiveViewActive] = useState(true);
+  const [locked, setLocked] = useState(INITIAL_LOCKED);
+  const [activePicker, setActivePicker] = useState(null);
   const [selectedComponent, setSelectedComponent] = useState(null);
   const [isComponentModalActive, setIsComponentModalActive] = useState(false);
-  const [isAddModalActive, setIsAddModalActive] = useState(false);
-
-  const [isAddActive, setIsAddActive] = useState(false);
-  const [currCompToAdd, setCurrCompToAdd] = useState("");
 
   const handleGenerate = async () => {
     setLoading(true);
 
     try {
-      const data = await buildService.generateBuild(budget);
+      const lockedIds = Object.entries(locked).reduce((acc, [key, value]) => {
+        if (value && value.id) {
+          acc[key] = value.id;
+        }
+        return acc;
+      }, {});
+
+      const data = await buildService.generateBuild(budget, lockedIds);
       setBuild(data);
     } catch (error) {
       console.error(error);
@@ -35,18 +49,22 @@ const Build = () => {
     }
   };
 
+  const handleClearBuild = () => {
+    setBuild(null);
+    setLocked(INITIAL_LOCKED);
+  };
+
   return (
     <BuildContext
       value={{
         build,
         setBuild,
+        locked,
+        setLocked,
+        activePicker,
+        setActivePicker,
         setSelectedComponent,
         setIsComponentModalActive,
-        setIsAddModalActive,
-        setIsAddActive,
-        isAddActive,
-        setCurrCompToAdd,
-        currCompToAdd,
       }}
     >
       <div className="p-4 flex flex-wrap bg-primary-dark">
@@ -77,74 +95,24 @@ const Build = () => {
         </div>
 
         <div className="flex-2 max-w-full flex flex-col">
-          {build ? (
-            <>
-              <div className="flex justify-between items-center p-3 rounded-tr-lg mb-6">
-                <div>
-                  <button
-                    className={`p-2 text-white hover:cursor-pointer rounded-l-md ${isInteractiveViewActive ? "bg-primary shadow-xl" : "bg-primary-light"}`}
-                    onClick={() => setIsInteractiveViewActive(true)}
-                  >
-                    Interactive
-                  </button>
-                  <button
-                    className={`p-2 text-white hover:cursor-pointer rounded-r-md ${isInteractiveViewActive ? "bg-primary-light" : "bg-primary shadow-xl"}`}
-                    onClick={() => setIsInteractiveViewActive(false)}
-                  >
-                    List
-                  </button>
-                </div>
-
-                <button
-                  className="text-white hover:cursor-pointer bg-danger-darker hover:bg-danger-darker/90 px-6 py-1 rounded-md border-2 border-danger-dark text-sm"
-                  onClick={() => setBuild(null)}
-                >
-                  Remove
-                </button>
-              </div>
-
-              {isInteractiveViewActive ? <PcInteractiveView /> : isAddActive ? <AddCurrComp /> : <PcListView />}
-            </>
-          ) : (
-            <div className="bg-primary p-4 m-3 rounded-xl h-full flex flex-col items-center justify-center gap-4">
-              <div>
-                <h2 className="text-xl font-semibold text-secondary text-center">
-                  Generate a PC to see its components
-                </h2>
-                <p className="text-white text-center">
-                  Select price and click Generate button
-                </p>
-              </div>
-
+          <div className="flex justify-end items-center p-3 rounded-tr-lg mb-6">
+            {build && (
               <button
-                className="bg-primary border-primary-lighter border-2 rounded-md p-2 text-primary-lighter hover:bg-primary-dark hover:cursor-pointer"
-                title="Add a specific component"
-                onClick={() => setIsAddModalActive(true)}
+                className="text-white hover:cursor-pointer bg-danger-darker hover:bg-danger-darker/90 px-6 py-1 rounded-md border-2 border-danger-dark text-sm"
+                onClick={handleClearBuild}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  width="24"
-                  height="24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <line x1="12" y1="5" x2="12" y2="19" />
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                </svg>
+                Clear build
               </button>
-            </div>
-          )}
+            )}
+          </div>
+
+          {activePicker ? <AddCurrComp /> : <PcListView />}
         </div>
       </div>
 
       {isComponentModalActive && (
         <PcComponentModal component={selectedComponent} />
       )}
-      {isAddModalActive && <PcAddComponentModal />}
     </BuildContext>
   );
 };

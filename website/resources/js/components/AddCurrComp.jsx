@@ -1,38 +1,36 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React from "react";
 import { useBuild } from "../contexts/BuildContext";
 import LoadingSpinner from "./LoadingSpinner";
-import axios from "axios";
-import { buildService } from "../services/server";
+import { useComponentSearch } from "./add-component/useComponentSearch";
 
 const AddCurrComp = () => {
   const {
-    currCompToAdd,
-    setIsAddActive,
+    activePicker,
+    setActivePicker,
     setSelectedComponent,
     setIsComponentModalActive,
-    setBuild,
-    build,
+    locked,
+    setLocked,
   } = useBuild();
 
-  const [loading, setLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [data, setData] = useState([]);
-  const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
-  const [lastPage, setLastPage] = useState(1);
-  const bottomRef = useRef(null);
-  const scrollRef = useRef(null);
-  const [showScrollTop, setShowScrollTop] = useState(false);
+  const {
+    loading,
+    loadingMore,
+    data,
+    search,
+    setSearch,
+    bottomRef,
+    scrollRef,
+    showScrollTop,
+    handleScroll,
+    scrollToTop,
+    handleSearch,
+    handleKeyDown,
+    page,
+    lastPage
+  } = useComponentSearch(activePicker, locked);
 
-  const handleScroll = () => {
-    setShowScrollTop(scrollRef.current?.scrollTop > 200);
-  };
-
-  const scrollToTop = () => {
-    scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const handleRemove = () => setIsAddActive(false);
+  const handleRemove = () => setActivePicker(null);
 
   const handleSeeMore = (component) => {
     setSelectedComponent(component);
@@ -51,124 +49,25 @@ const AddCurrComp = () => {
     fans: "fans",
   };
 
-  const handleAddComponent = async (component) => {
-    const type = typeMap[currCompToAdd.toLowerCase()];
+  const handleAddComponent = (component) => {
+    const type = typeMap[activePicker.toLowerCase()];
     if (!type) return;
-
-    // Use current build budget if available, otherwise fall back to slider budget via build.budget
-    const budget = build?.budget ?? build?.original_budget ?? null;
-    if (!budget) {
-      // Fallback: just patch locally if we somehow don't know the budget
-      setBuild((prev) => ({
-        ...prev,
-        [type]: component,
-        total:
-          parseFloat(prev?.total ?? 0) +
-          parseFloat(component.price ?? 0),
-      }));
-      setIsAddActive(false);
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const locked = { [type]: component.id };
-      const newBuild = await buildService.generateBuildWithLocked(
-        budget,
-        locked,
-      );
-      if (newBuild) {
-        setBuild(newBuild);
-      }
-      setIsAddActive(false);
-    } catch (err) {
-      console.error("Failed to rebuild with locked component", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchComponent = useCallback(
-    async (searchQuery = "", pageNum = 1) => {
-      pageNum === 1 ? setLoading(true) : setLoadingMore(true);
-      const component = currCompToAdd.toLowerCase().replace(/\s+/g, "");
-
-      try {
-        const res = await axios.get(`/components/${component}`, {
-          params: { search: searchQuery, page: pageNum },
-        });
-
-        const payload = res.data[component];
-
-        setData((prev) =>
-          pageNum === 1 ? payload.data : [...prev, ...payload.data],
-        );
-        setLastPage(payload.last_page);
-        setPage(pageNum);
-      } catch (error) {
-        console.error(`Failed to load ${component}:`, error);
-        if (pageNum === 1) setData([]);
-      } finally {
-        setLoading(false);
-        setLoadingMore(false);
-      }
-    },
-    [currCompToAdd],
-  );
-
-  const initializedRef = useRef(false);
-
-  useEffect(() => {
-    if (currCompToAdd) {
-      initializedRef.current = false;
-      setSearch("");
-      setPage(1);
-      fetchComponent("", 1).then(() => {
-        initializedRef.current = true;
-      });
-    }
-  }, [currCompToAdd]);
-
-  useEffect(() => {
-    if (!bottomRef.current) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (
-          entries[0].isIntersecting &&
-          initializedRef.current &&
-          page < lastPage &&
-          !loadingMore &&
-          !loading
-        ) {
-          fetchComponent(search, page + 1);
-        }
-      },
-      { threshold: 1.0 },
-    );
-
-    observer.observe(bottomRef.current);
-    return () => observer.disconnect();
-  }, [page, lastPage, loadingMore, loading, search]);
-
-  const handleSearch = () => {
-    setPage(1);
-    fetchComponent(search, 1);
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") handleSearch();
+    setLocked((prev) => ({
+      ...prev,
+      [type]: component,
+    }));
+    setActivePicker(null);
   };
 
   return (
     <div
       ref={scrollRef}
       onScroll={handleScroll}
-      className="relative p-6 rounded-xl mx-auto min-h-[80vh] max-h-[80vh] overflow-y-auto w-3xl w-full"
+      className="relative p-6 rounded-xl mx-auto min-h-[80vh] max-h-[80vh] overflow-y-auto w-full"
     >
       <div className="flex items-center justify-between mb-6 gap-4">
         <div className="flex items-center gap-2 shrink-0">
-          <h2 className="text-2xl font-bold text-white">Add {currCompToAdd}</h2>
+          <h2 className="text-2xl font-bold text-white">Add {activePicker}</h2>
           <button
             className="w-8 h-8 text-secondary flex items-center justify-center"
             onClick={handleRemove}
@@ -183,7 +82,7 @@ const AddCurrComp = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={`Search ${currCompToAdd?.toLowerCase()}...`}
+            placeholder={`Search ${activePicker?.toLowerCase()}...`}
             className="bg-primary w-full border border-primary-lighter text-white placeholder-primary-light rounded-full pl-4 pr-10 py-2 text-sm focus:outline-none focus:border-secondary"
           />
           <button
@@ -214,7 +113,7 @@ const AddCurrComp = () => {
         <div className="text-center py-12 text-secondary">
           {search
             ? `No results for "${search}"`
-            : `No compatible ${currCompToAdd?.toLowerCase()} found`}
+            : `No compatible ${activePicker?.toLowerCase()} found`}
         </div>
       ) : (
         <div className="w-full flex flex-col justify-center rounded-lg gap-4">

@@ -5,20 +5,19 @@ axios.defaults.withCredentials = true;
 axios.defaults.withXSRFToken = true;
 
 export const buildService = {
-  generateBuild: async (budget) => {
+  generateBuild: async (budget, locked = {}) => {
     try {
-      const response = await axios.post('/build/generate', { budget });
+      const payload = { budget };
+      if (locked && Object.keys(locked).length > 0) {
+        payload.locked = locked;
+      }
+      const response = await axios.post('/build/generate', payload);
       return response.data;
     } catch (error) {
-      console.error('failed to generate: ', error)
-    }
-  },
-  generateBuildWithLocked: async (budget, locked) => {
-    try {
-      const response = await axios.post('/build/generate', { budget, locked });
-      return response.data;
-    } catch (error) {
-      console.error('failed to generate with locked components: ', error);
+      console.error(
+        'failed to generate: ',
+        error.response?.data ?? error
+      );
       throw error;
     }
   },

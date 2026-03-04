@@ -13,6 +13,15 @@ use App\Services\ComponentSelectors\CaseSelector;
 use App\Services\ComponentSelectors\FanSelector;
 use App\Services\ComponentSelectors\CoolerSelector;
 use App\Helpers\CompatibilityHelper;
+use App\Models\Processor;
+use App\Models\Motherboard;
+use App\Models\Ram;
+use App\Models\Cooler;
+use App\Models\Gpu;
+use App\Models\Ssd;
+use App\Models\Psu;
+use App\Models\Cases;
+use App\Models\Fan;
 
 class BuildService
 {
@@ -58,37 +67,44 @@ class BuildService
   {
     $originalBudget = $budget;
 
-    for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
-      $result = $this->attemptBuild(
-        $budget,
-        $originalBudget,
-        $attempt === $maxAttempts,
-        $locked
-      );
+    // Resolve locked IDs to models once up front
+    $lockedModels = [];
+    $map = [
+      'cpu' => Processor::class,
+      'motherboard' => Motherboard::class,
+      'ram' => Ram::class,
+      'cooler' => Cooler::class,
+      'gpu' => Gpu::class,
+      'ssd' => Ssd::class,
+      'psu' => Psu::class,
+      'case' => Cases::class,
+      'fans' => Fan::class,
+    ];
 
-      if ($result['success']) {
-        $data = $result['data'];
-        $data['original_budget'] = $originalBudget;
-
-        if ($budget !== $originalBudget) {
-          $data['adjustments'] = [
-            'budget_reduced' => true,
-            'original_budget' => $originalBudget,
-            'final_budget' => $budget,
-            'reduction' => round($originalBudget - $budget, 2),
-            'message' => 'Budget was reduced to find compatible parts'
-          ];
+    foreach ($map as $key => $modelClass) {
+      if (isset($locked[$key])) {
+        $model = $modelClass::find($locked[$key]);
+        if ($model) {
+          $lockedModels[$key] = $model;
         }
-
-        return ['success' => true, 'data' => $data];
-      }
-
-      if ($attempt < $maxAttempts) {
-        $budget = $budget * 0.98;
       }
     }
 
-    return ['success' => false, 'error' => 'Max attempts reached'];
+    $result = $this->attemptBuild(
+      $budget,
+      $originalBudget,
+      false,
+      $lockedModels
+    );
+
+    if ($result['success']) {
+      $data = $result['data'];
+      $data['original_budget'] = $originalBudget;
+
+      return ['success' => true, 'data' => $data];
+    }
+
+    return ['success' => false, 'error' => $result['error'] ?? 'Could not build PC'];
   }
 
   protected function attemptBuild($budget, $originalBudget, $relaxed = false, array $locked = [])
@@ -101,17 +117,20 @@ class BuildService
     // CPU (allow locked)
     if (isset($locked['cpu'])) {
       $cpu = $locked['cpu'];
-      if ($cpu->price > $allocations['cpu'] && !$relaxed) {
-        return ['success' => false, 'error' => 'Locked CPU exceeds allocated budget'];
-      }
     } else {
       $cpu = $this->cpuSelector->select($allocations['cpu'], $budget);
+      // Fallback to any reasonable CPU if strict budgeted search fails
+      if (!$cpu) {
+        $cpu = Processor::whereNotNull('socket')
+          ->whereNotNull('cores')
+          ->whereNotNull('price')
+          ->whereNotIn('socket', ['sWRX8', 'sTR5'])
+          ->orderBy('price', 'asc')
+          ->first();
+      }
     }
 
     if (!$cpu) {
-      if ($originalBudget  < 600) {
-        return ['success' => false, 'error' => 'No APU found for budget build'];
-      }
       return ['success' => false, 'error' => 'No CPU found'];
     }
     $remainingBudget -= $cpu->price;
@@ -125,11 +144,15 @@ class BuildService
       if ($mobo->socket !== $cpu->socket) {
         return ['success' => false, 'error' => 'Locked motherboard is not compatible with CPU socket'];
       }
-      if ($mobo->price > $allocations['mobo'] && !$relaxed) {
-        return ['success' => false, 'error' => 'Locked motherboard exceeds allocated budget'];
-      }
     } else {
       $mobo = $this->moboSelector->select($allocations['mobo'], $cpu);
+      if (!$mobo) {
+        // Fallback: pick the cheapest board that matches the CPU socket
+        $mobo = Motherboard::where('socket', $cpu->socket)
+          ->whereNotNull('price')
+          ->orderBy('price', 'asc')
+          ->first();
+      }
     }
 
     if (!$mobo) return ['success' => false, 'error' => 'No motherboard found'];
@@ -144,11 +167,15 @@ class BuildService
       if ($ram->memory_type !== $mobo->memory_type) {
         return ['success' => false, 'error' => 'Locked RAM is not compatible with motherboard memory type'];
       }
-      if ($ram->price > $allocations['ram'] * 1.2 && !$relaxed) {
-        return ['success' => false, 'error' => 'Locked RAM exceeds allocated budget'];
-      }
     } else {
       $ram = $this->ramSelector->select($allocations['ram'], $mobo, $relaxed);
+      if (!$ram) {
+        // Fallback: any RAM matching memory type
+        $ram = Ram::where('memory_type', $mobo->memory_type)
+          ->whereNotNull('price')
+          ->orderBy('price', 'asc')
+          ->first();
+      }
     }
     if (!$ram) return ['success' => false, 'error' => 'No RAM found'];
     $remainingBudget -= $ram->price;
@@ -180,9 +207,6 @@ class BuildService
     $gpu = null;
     if (isset($locked['gpu'])) {
       $gpu = $locked['gpu'];
-      if ($originalBudget < 600) {
-        return ['success' => false, 'error' => 'Locked GPU cannot be used with APU-style budget build'];
-      }
       $remainingBudget -= $gpu->price;
       $selectedComponents[] = 'gpu';
     } elseif ($originalBudget >= 600 && isset($allocations['gpu']) && $allocations['gpu'] > 0) {
@@ -202,6 +226,14 @@ class BuildService
       $selectedComponents[] = 'ssd';
     } else {
       $ssd = $this->ssdSelector->select($allocations['ssd'] ?? $remainingBudget * 0.3, $relaxed);
+      if (!$ssd) {
+        // Fallback: any SSD within remaining budget, or cheapest overall
+        $ssd = Ssd::whereNotNull('price')
+          ->where('price', '<=', $remainingBudget)
+          ->orderBy('price', 'asc')
+          ->first()
+          ?? Ssd::whereNotNull('price')->orderBy('price', 'asc')->first();
+      }
       if (!$ssd) return ['success' => false, 'error' => 'No SSD found'];
       $remainingBudget -= $ssd->price;
       $selectedComponents[] = 'ssd';
@@ -216,6 +248,14 @@ class BuildService
       $selectedComponents[] = 'psu';
     } else {
       $psu = $this->psuSelector->select($allocations['psu'] ?? $remainingBudget * 0.4, $cpu, $gpu);
+      if (!$psu) {
+        // Fallback: any PSU within remaining budget, or cheapest overall
+        $psu = Psu::whereNotNull('price')
+          ->where('price', '<=', $remainingBudget)
+          ->orderBy('price', 'asc')
+          ->first()
+          ?? Psu::whereNotNull('price')->orderBy('price', 'asc')->first();
+      }
       if (!$psu) return ['success' => false, 'error' => 'No PSU found'];
       $remainingBudget -= $psu->price;
       $selectedComponents[] = 'psu';

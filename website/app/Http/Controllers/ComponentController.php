@@ -12,14 +12,17 @@ use App\Models\Psu;
 use App\Models\Ram;
 use App\Models\Ssd;
 use Illuminate\Http\Request;
+use App\Helpers\CompatibilityHelper;
 
 class ComponentController extends Controller
 {
     public function show(string $component, Request $request)
     {
         $search = $request->query('search', '');
+        $cpuId = $request->query('cpu_id');
+        $motherboardId = $request->query('motherboard_id');
 
-        $query = match($component) {
+        $query = match ($component) {
             'processor' => Processor::query(),
             'graphicscard' => Gpu::query(),
             'cooler' => Cooler::query(),
@@ -31,6 +34,42 @@ class ComponentController extends Controller
             'fans' => Fan::query(),
             default => abort(404),
         };
+
+        // Apply basic compatibility filters based on already selected parts
+        if ($component === 'motherboard' && $cpuId) {
+            $cpu = Processor::find($cpuId);
+            if ($cpu && $cpu->socket) {
+                $query->where('socket', $cpu->socket);
+            }
+        }
+
+        if ($component === 'processor' && $motherboardId) {
+            $mobo = Motherboard::find($motherboardId);
+            if ($mobo && $mobo->socket) {
+                $query->where('socket', $mobo->socket);
+            }
+        }
+
+        if ($component === 'ram' && $motherboardId) {
+            $mobo = Motherboard::find($motherboardId);
+            if ($mobo && $mobo->memory_type) {
+                $query->where('memory_type', $mobo->memory_type);
+            }
+        }
+
+        if ($component === 'case' && $motherboardId) {
+            $mobo = Motherboard::find($motherboardId);
+            if ($mobo && $mobo->form_factor) {
+                $compatHelper = new CompatibilityHelper();
+                $compatibleForms = $compatHelper->getCompatibleCaseFormFactors($mobo->form_factor);
+
+                $query->where(function ($q) use ($compatibleForms) {
+                    foreach ($compatibleForms as $formFactor) {
+                        $q->orWhere('form_factor', 'LIKE', "%{$formFactor}%");
+                    }
+                });
+            }
+        }
 
         $data = $query
             ->when($search, fn($q) => $q->where('name', 'like', "%{$search}%"))
