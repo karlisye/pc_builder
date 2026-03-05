@@ -1,16 +1,7 @@
-import { useBuild } from "../contexts/BuildContext";
+import React from "react";
+import axios from "axios";
 
-const PcPartCard = ({ title, component }) => {
-  const {
-    setSelectedComponent,
-    setIsComponentModalActive,
-    setBuild,
-    build,
-    locked,
-    setLocked,
-    setActivePicker,
-  } = useBuild();
-
+const CustomPartCard = ({ component, title, build }) => {
   const typeMap = {
     processor: "cpu",
     motherboard: "motherboard",
@@ -23,33 +14,17 @@ const PcPartCard = ({ title, component }) => {
     fans: "fans",
   };
 
-  const handleSeeMore = () => {
-    setSelectedComponent(component);
-    setIsComponentModalActive(true);
-  };
-
-  const handleAdd = () => {
-    setActivePicker(title);
-  };
-
-  const handleRemove = () => {
+  const handleAdd = async () => {
     const type = typeMap[title.toLowerCase()];
-    if (!type) return;
-    // If a full build exists, remove from build and adjust total.
-    if (build) {
-      setBuild((prev) => ({
-        ...prev,
-        [type]: null,
-        total: (prev.total ?? 0) - (component?.price ?? 0),
-      }));
-    } else {
-      // Before build generation, just clear the locked selection
-      setLocked((prev) => ({
-        ...prev,
-        [type]: null,
-      }));
+    try {
+      const res = await axios.get(`/add-component/${type}`, { params: build });
+      console.log(res.data);
+    } catch (error) {
+      console.error(error);
     }
   };
+  const handleRemove = () => {};
+  const handleSeeMore = () => {};
 
   return (
     <div className="lg:w-1/3 md:w-1/2 w-full p-2">
@@ -130,4 +105,4 @@ const PcPartCard = ({ title, component }) => {
   );
 };
 
-export default PcPartCard;
+export default CustomPartCard;

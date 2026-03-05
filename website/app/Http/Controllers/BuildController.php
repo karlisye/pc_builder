@@ -20,6 +20,11 @@ class BuildController extends Controller
     return Inertia::render('Build');
   }
 
+  public function custom()
+  {
+    return Inertia::render('Custom');
+  }
+
   public function generate(Request $request)
   {
     $validated = $request->validate([

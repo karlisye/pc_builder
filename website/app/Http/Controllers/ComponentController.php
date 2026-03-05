@@ -16,6 +16,20 @@ use App\Helpers\CompatibilityHelper;
 
 class ComponentController extends Controller
 {
+    public function add(string $component, Request $request)
+    {
+        $locked = $request->all();
+
+        $query = "";
+
+        if ($component === 'motherboard') {
+            if ($locked["cpu"]) {
+            }
+        }
+
+        return response()->json(["locked" => $locked]);
+    }
+
     public function show(string $component, Request $request)
     {
         $search = $request->query('search', '');

@@ -7,3 +7,5 @@ use App\Http\Controllers\ComponentController;
 Route::post('/build/generate', [BuildController::class, 'generate']);
 
 Route::get('/components/{component}', [ComponentController::class, 'show']);
+
+Route::get('/add-component/{component}', [ComponentController::class, 'add']);
