@@ -1,75 +1,90 @@
+import re
 from bs4 import BeautifulSoup
 from database import insert_row
 from parsers.helpers import (
-    extract_name, extract_specs, extract_extra_specs,
+    extract_name, extract_specs,
     to_bool, to_int, to_float,
 )
 
 TABLE = "cpus"
 
 
+def _normalise_socket(value: str) -> str | None:
+    """Normalise socket string for clean cooler compatibility matching.
+    'Socket AM4'  → 'AM4'
+    'LGA 1700'    → 'LGA1700'
+    'LGA1851'     → 'LGA1851'
+    """
+    if not value:
+        return None
+    s = value.strip()
+    s = re.sub(r'^[Ss]ocket\s+', '', s)
+    s = s.replace(" ", "")
+    return s or None
+
+
+def _parse_integrated_graphics(value: str) -> bool | None:
+    """CPUs with no iGPU report 'No' / 'Not' / 'Nav'.
+    CPUs WITH an iGPU report the GPU name, e.g. 'Intel UHD 770'.
+    to_bool() returns None for unrecognised strings, so we treat any
+    non-None-returning, non-False value as True here.
+    """
+    if value is None:
+        return None
+    result = to_bool(value)
+    if result is not None:
+        return result          # "No"/"Not"/"Nav" → False, "Yes"/"Ir" → True
+    # Unrecognised string → it's a GPU name like "Intel UHD 770" → True
+    return True if value.strip() else None
+
+
 def parse(html, dateks_id, url, price, in_stock, stock_quantity, scraped_at):
     soup = BeautifulSoup(html, "html.parser")
     specs = extract_specs(soup)
-    extra = extract_extra_specs(soup)
 
-    # Determine total cores
-    # Intel: sum performance-cores + efficient-cores
-    # AMD: read "Cores" directly
-    perf_cores = to_int(extra.get("Performance-cores Quantity"))
-    eff_cores = to_int(extra.get("Efficient-cores Quantity"))
-    amd_cores = to_int(specs.get("Cores") or specs.get("Number of Performance Cores"))
+    # --- Cores ---
+    # Intel: "Number of Performance Cores" + "Efficient number of cores"
+    # AMD:   single "Cores" field
+    perf_cores = to_int(specs.get("Number of Performance Cores"))
+    eff_cores  = to_int(specs.get("Efficient number of cores"))
+    amd_cores  = to_int(specs.get("Cores"))
 
     if perf_cores is not None:
         total_cores = (perf_cores or 0) + (eff_cores or 0)
     else:
         total_cores = amd_cores
 
-    # Passmark: strip trailing "+" before converting
+    # --- Passmark ---
     passmark_raw = specs.get("Performance (PassMark)", "")
-    passmark = to_int(passmark_raw.replace("+", ""))
+    passmark = to_int(passmark_raw.replace("+", "")) if passmark_raw else None
+
+    # --- TDP ---
+    # Intel: "TDP",  AMD: "Thermal Design Power"
+    tdp = to_int(specs.get("TDP") or specs.get("Thermal Design Power"))
+
+    # --- Cooler included ---
+    # "Nav" / "No" → False (Tray / boxed without cooler)
+    # "Yes" / "Ir" → True  (boxed with cooler)
+    # Important for build recommendations: no cooler_included → must add one.
+    cooler_included = to_bool(specs.get("Cooler included"))
 
     return {
-        "dateks_id": dateks_id,
-        "url": url,
-        "name": extract_name(soup),
-        "price": price,
-        "in_stock": in_stock,
-        "stock_quantity": stock_quantity,
-        "brand": extra.get("Brand") or extra.get("Manufacturer"),
-        "processor_type": specs.get("Type") or specs.get("Processor type"),
-        "processor_number": specs.get("Processor number"),
-        "architecture": extra.get("Core Name") or extra.get("CPU Architecture"),
-        "socket": specs.get("Socket") or specs.get("CPU Socket"),
-        "cores": total_cores,
-        "performance_cores": perf_cores,
-        "efficient_cores": eff_cores,
-        "threads": to_int(specs.get("Threads")),
-        "clock_rate": to_float(specs.get("Clock rate")),
-        "turbo_frequency": to_float(specs.get("Turbo frequency")),
-        "cache": to_int(specs.get("Cache")),
-        "lithography": (
-            specs.get("Processing Die Lithography")
-            or specs.get("Semiconductor Fabrication Process")
-        ),
-        "tdp": to_int(specs.get("TDP") or specs.get("Thermal Design Power")),
-        "max_tdp": to_int(extra.get("Maximum TDP")),
-        "integrated_graphics": to_bool(specs.get("Integrated graphics")),
-        "cooler_included": to_bool(specs.get("Cooler included")),
-        "packaging": specs.get("Packaging"),
-        "passmark": passmark,
-        "memory_type": (
-            extra.get("Memory Types")
-            or extra.get("Memory types supported by processor")
-        ),
-        "max_memory": to_int(extra.get("Max Memory Size")),
-        "memory_channels": to_int(extra.get("Memory Channels Supports")),
-        "pcie_lanes": to_int(extra.get("Max Number of PCI Express Lanes")),
-        "instruction_set": (
-            extra.get("Instruction Set")
-            or extra.get("Processor - Processor operating modes")
-        ),
-        "scraped_at": scraped_at,
+        "dateks_id":           dateks_id,
+        "url":                 url,
+        "name":                extract_name(soup),
+        "price":               price,
+        "in_stock":            in_stock,
+        "stock_quantity":      stock_quantity,
+        "socket":              _normalise_socket(specs.get("Socket")),
+        "cores":               total_cores,
+        "threads":             to_int(specs.get("Threads")),
+        "clock_rate":          to_float(specs.get("Clock rate")),
+        "turbo_frequency":     to_float(specs.get("Turbo frequency")),
+        "tdp":                 tdp,
+        "integrated_graphics": _parse_integrated_graphics(specs.get("Integrated graphics")),
+        "cooler_included":     cooler_included,
+        "passmark":            passmark,
+        "scraped_at":          scraped_at,
     }
 
 

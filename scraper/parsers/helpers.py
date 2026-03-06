@@ -40,38 +40,6 @@ def extract_specs(soup) -> dict:
     return specs
 
 
-def extract_extra_specs(soup) -> dict:
-    """Extract key-value pairs from the 'More detailed specification' block.
-
-    The block is a flat <div> with 'Key - Value<br>' lines.
-    Note: duplicate keys are overwritten (last value wins).
-    For fields with duplicate keys (e.g. supported_form_factors),
-    use parse_supported_form_factors() instead.
-    """
-    extra = {}
-    details_div = soup.select_one("div.details.part")
-    if not details_div:
-        return extra
-    content_div = details_div.select_one("div.content > div")
-    if not content_div:
-        return extra
-    raw = content_div.decode_contents()
-    lines = raw.split("<br")
-    for line in lines:
-        clean = re.sub(r"<[^>]+>", "", line).strip()
-        if " - " in clean:
-            parts = clean.split(" - ", 1)
-            key = parts[0].strip()
-            val = parts[1].strip()
-            if key and val:
-                extra[key] = val
-    return extra
-
-
-# ---------------------------------------------------------------------------
-# Type conversion helpers
-# ---------------------------------------------------------------------------
-
 def to_bool(value: str) -> bool | None:
     """Convert Latvian/English boolean strings to Python bool.
     'Ir', 'Yes', 'Is', 'True' → True
@@ -157,30 +125,6 @@ def parse_memory_speeds(value: str):
     if len(numbers) == 1:
         return int(numbers[0]), int(numbers[0])
     return None, None
-
-
-def parse_supported_form_factors(soup) -> str | None:
-    """Collect all 'Design - Supported motherboard form factors' values.
-
-    The extra details block has MULTIPLE lines with the same key, one per
-    form factor. extract_extra_specs() would overwrite duplicates, so this
-    function reads the raw HTML directly instead.
-    Example output: 'ATX,micro ATX,Mini-ITX'
-    """
-    details_div = soup.select_one("div.details.part div.content > div")
-    if not details_div:
-        return None
-    raw = details_div.decode_contents()
-    lines = [re.sub(r"<[^>]+>", "", l).strip() for l in raw.split("<br")]
-    values = []
-    for line in lines:
-        if line.startswith("Design - Supported motherboard form factors - "):
-            # split(" - ", 2) is intentional: preserves form factor names
-            # that themselves contain " - " (e.g. "Mini-ITX - slim")
-            val = line.split(" - ", 2)[2].strip()
-            if val:
-                values.append(val)
-    return ",".join(values) if values else None
 
 
 def parse_connector_count(value: str) -> int | None:
