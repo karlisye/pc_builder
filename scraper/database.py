@@ -16,10 +16,6 @@ def get_connection():
 
 
 def wipe_table(conn, table):
-    # Tables are wiped before every scrape run. This is intentional:
-    # dateks_id is UNIQUE in every table — re-inserting without wiping would
-    # throw a duplicate key SQL error. The wipe+insert approach also ensures
-    # stale products removed from the site are purged automatically.
     cursor = conn.cursor()
     cursor.execute(f"DELETE FROM `{table}`")
     cursor.execute(f"ALTER TABLE `{table}` AUTO_INCREMENT = 1")

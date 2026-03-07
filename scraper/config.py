@@ -1,8 +1,5 @@
-# Delay in seconds between each page request
 PAGE_DELAY = 1
 
-# Categories to scrape
-# Each entry: category_key → urls, parser module name, table name
 CATEGORIES = {
     "cpu": {
         "urls": [

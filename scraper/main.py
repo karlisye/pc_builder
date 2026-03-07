@@ -14,7 +14,9 @@ def prompt_user():
     for i, key in enumerate(keys, 1):
         print(f"  {i}. {key}")
     print("  all. Scrape everything")
-    choice = input("\nEnter category name(s) separated by comma, or 'all': ").strip().lower()
+    choice = (
+        input("\nEnter category name(s) separated by comma, or 'all': ").strip().lower()
+    )
     if choice == "all":
         return keys
     selected = [c.strip() for c in choice.split(",")]
@@ -53,7 +55,9 @@ def main():
         error_count = 0
         skipped = []
 
-        for i, (dateks_id, url, price, in_stock, stock_quantity) in enumerate(all_urls, 1):
+        for i, (dateks_id, url, price, in_stock, stock_quantity) in enumerate(
+            all_urls, 1
+        ):
             print(f"  [{i}/{len(all_urls)}] Scraping: {url}")
             try:
                 html = scrape_detail_page(url)
@@ -61,8 +65,6 @@ def main():
                     html, dateks_id, url, price, in_stock, stock_quantity, scraped_at
                 )
                 if data:
-                    # Out-of-stock products ARE inserted — builder filters by in_stock
-                    # at query time to preserve full catalogue for display.
                     parser_module.insert(conn, data)
             except Exception as e:
                 error_count += 1
@@ -70,14 +72,17 @@ def main():
                 print(f"  [SKIP {error_count}/{MAX_ERRORS_PER_CATEGORY}] {url}")
                 print(f"  [SKIP] {e}")
                 if error_count >= MAX_ERRORS_PER_CATEGORY:
-                    print(f"\n[ABORT] {category_key.upper()} reached {MAX_ERRORS_PER_CATEGORY} errors — stopping category.")
+                    print(
+                        f"\n[ABORT] {category_key.upper()} reached {MAX_ERRORS_PER_CATEGORY} errors — stopping category."
+                    )
                     break
 
             time.sleep(PAGE_DELAY)
 
-        # Summary for this category
         inserted = i - error_count
-        print(f"\n  [{category_key.upper()}] Done: {inserted} inserted, {error_count} skipped")
+        print(
+            f"\n  [{category_key.upper()}] Done: {inserted} inserted, {error_count} skipped"
+        )
         if skipped:
             print(f"  Skipped URLs:")
             for url, err in skipped:

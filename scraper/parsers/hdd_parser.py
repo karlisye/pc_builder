@@ -10,15 +10,15 @@ def parse(html, dateks_id, url, price, in_stock, stock_quantity, scraped_at):
     specs = extract_specs(soup)
 
     return {
-        "dateks_id":    dateks_id,
-        "url":          url,
-        "name":         extract_name(soup),
-        "price":        price,
-        "in_stock":     in_stock,
+        "dateks_id": dateks_id,
+        "url": url,
+        "name": extract_name(soup),
+        "price": price,
+        "in_stock": in_stock,
         "stock_quantity": stock_quantity,
-        "capacity":     tb_to_gb(specs.get("Capacity")),    # "2 TB" → 2000
-        "interface":    specs.get("Data Interface"),        # "SATA III"
-        "scraped_at":   scraped_at,
+        "capacity": tb_to_gb(specs.get("Capacity")),
+        "interface": specs.get("Data Interface"),
+        "scraped_at": scraped_at,
     }
 
 
