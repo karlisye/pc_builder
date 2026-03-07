@@ -108,7 +108,6 @@ return new class extends Migration
             $table->boolean('in_stock')->default(false)->index();
             $table->string('stock_quantity')->nullable();
             $table->smallInteger('capacity')->nullable()->index();   // GB (2TB → 2000)
-            $table->string('form_factor')->nullable()->index();      // null — not in #params
             $table->string('interface')->nullable()->index();        // "SATA III"
             $table->timestamp('scraped_at')->nullable();
         });
@@ -141,8 +140,6 @@ return new class extends Migration
             $table->smallInteger('size_mm')->nullable()->index();
             $table->string('connector')->nullable()->index();        // "4-pin (PWM)", "3-pin"
             $table->smallInteger('rpm_max')->nullable();
-            $table->smallInteger('rpm_min')->nullable();
-            $table->decimal('noise_db', 4, 1)->nullable();
             $table->tinyInteger('units_in_package')->nullable();
             $table->timestamp('scraped_at')->nullable();
         });

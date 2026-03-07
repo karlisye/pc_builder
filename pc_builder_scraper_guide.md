@@ -272,9 +272,54 @@ All tables match parser output exactly. See `2024_01_01_000000_create_pc_builder
 - **Boolean filters** (`in_stock`, `integrated_graphics`, `cooler_included`, `wifi`, `modular`, `psu_included`) → indexed
 - **Display-only** (`threads`, `clock_rate`, `noise_db`, `bays`, `power_connectors`) → not indexed
 
+### Removed columns
+
+- `supported_form_factors` (motherboards) — mobo↔case fit handled in app logic
+- `depth_mm` (PSUs) — PSU↔case length check dropped for this project scope
+- `max_psu_length` (cases) — counterpart to depth_mm, also dropped
+
+### Column type corrections
+
+- `fans.size_mm`, `psus.fan_size_mm`, `coolers.fan_size_mm` — `smallInteger` not `tinyInteger` (tinyInt max 127mm would exclude 140mm+ fans)
+
 ---
 
-## 9. Compatibility Relationships
+## 9. Error Handling
+
+Each category tolerates up to **10 errors** before aborting that category. Individual product failures (duplicates, missing fields, network blips) are skipped and logged — the scraper continues to the next product.
+
+```python
+MAX_ERRORS_PER_CATEGORY = 10
+```
+
+Behaviour per product error:
+
+- Prints `[SKIP N/10] <url>` and the exception message
+- Increments error counter
+- Continues to next product
+
+At 10 errors for a category:
+
+- Prints `[ABORT] CATEGORY reached 10 errors — stopping category`
+- Moves on to the next selected category (does **not** exit the whole run)
+
+At end of each category a summary is printed:
+
+```
+[CPU] Done: 142 inserted, 3 skipped
+Skipped URLs:
+  https://www.dateks.lv/... → 1264 (22003): Out of range value...
+```
+
+**Common skip reasons:**
+
+- Duplicate `dateks_id` (same product listed in two category URLs) → MySQL unique constraint → skip silently
+- Out-of-range value (e.g. tinyInteger overflow) → fix the column type in migration
+- Missing `#params` block on the page → parser returns partial data
+
+---
+
+## 10. Compatibility Relationships
 
 | Check                      | Source                     | Target                                |
 | -------------------------- | -------------------------- | ------------------------------------- |
