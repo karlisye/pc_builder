@@ -17,7 +17,6 @@ def parse(html, dateks_id, url, price, in_stock, stock_quantity, scraped_at):
         "in_stock":     in_stock,
         "stock_quantity": stock_quantity,
         "capacity":     tb_to_gb(specs.get("Capacity")),    # "2 TB" → 2000
-        "form_factor":  None,                               # not present in #params; always 3.5" for desktop
         "interface":    specs.get("Data Interface"),        # "SATA III"
         "scraped_at":   scraped_at,
     }

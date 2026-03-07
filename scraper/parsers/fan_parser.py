@@ -19,8 +19,6 @@ def parse(html, dateks_id, url, price, in_stock, stock_quantity, scraped_at):
         "size_mm":        to_int(specs.get("Size, mm")),                # "120" → 120
         "connector":      specs.get("Output Interface"),                # "4-pin (PWM)"
         "rpm_max":        to_int(specs.get("RPM (MAX), rpm")),          # "3000" → 3000
-        "rpm_min":        to_int(specs.get("RPM (MIN), rpm")),          # not seen, likely null
-        "noise_db":       to_float(specs.get("Sound level (MAX), dB(A)")),  # "Not specified" → None
         "units_in_package": to_int(specs.get("Units in package")),      # "1" → 1
         "scraped_at":     scraped_at,
     }
