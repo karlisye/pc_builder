@@ -5,6 +5,8 @@ from database import get_connection, wipe_table
 from scrapers.list_scraper import get_product_urls
 from scrapers.detail_scraper import scrape_detail_page
 
+MAX_ERRORS_PER_CATEGORY = 10
+
 
 def prompt_user():
     print("\nAvailable categories:")
@@ -48,6 +50,9 @@ def main():
 
         print(f"  Total: {len(all_urls)} products to scrape")
 
+        error_count = 0
+        skipped = []
+
         for i, (dateks_id, url, price, in_stock, stock_quantity) in enumerate(all_urls, 1):
             print(f"  [{i}/{len(all_urls)}] Scraping: {url}")
             try:
@@ -56,18 +61,28 @@ def main():
                     html, dateks_id, url, price, in_stock, stock_quantity, scraped_at
                 )
                 if data:
-                    # Out-of-stock products ARE inserted. The builder uses in_stock
-                    # as a filter at query time, not at scrape time. This preserves
-                    # full catalogue data for display and future availability checks.
+                    # Out-of-stock products ARE inserted — builder filters by in_stock
+                    # at query time to preserve full catalogue for display.
                     parser_module.insert(conn, data)
             except Exception as e:
-                print(f"\n[ERROR] Failed on URL: {url}")
-                print(f"[ERROR] {e}")
-                conn.close()
-                exit(1)
+                error_count += 1
+                skipped.append((url, str(e)))
+                print(f"  [SKIP {error_count}/{MAX_ERRORS_PER_CATEGORY}] {url}")
+                print(f"  [SKIP] {e}")
+                if error_count >= MAX_ERRORS_PER_CATEGORY:
+                    print(f"\n[ABORT] {category_key.upper()} reached {MAX_ERRORS_PER_CATEGORY} errors — stopping category.")
+                    break
+
             time.sleep(PAGE_DELAY)
 
-        print(f"  Done with {category_key.upper()}\n")
+        # Summary for this category
+        inserted = i - error_count
+        print(f"\n  [{category_key.upper()}] Done: {inserted} inserted, {error_count} skipped")
+        if skipped:
+            print(f"  Skipped URLs:")
+            for url, err in skipped:
+                print(f"    {url}  →  {err}")
+        print()
 
     conn.close()
     print("Scrape complete.")
