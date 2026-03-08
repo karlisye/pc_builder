@@ -1,24 +1,5 @@
 <?php
 
-/**
- * export_to_json.php
- *
- * Exports all PC builder tables to a single JSON file for analysis.
- * Run from anywhere — reads DB credentials from Laravel's .env automatically.
- *
- * Usage:
- *   php export_to_json.php
- *   php export_to_json.php --out=my_export.json
- *   php export_to_json.php --table=cpus
- *   php export_to_json.php --table=cpus,gpus,psus
- *
- * Output: pc_builder_export.json (next to this script, or path from --out)
- */
-
-// ---------------------------------------------------------------------------
-// CLI args
-// ---------------------------------------------------------------------------
-
 $args = [];
 foreach (array_slice($argv, 1) as $arg) {
   if (str_starts_with($arg, '--')) {
@@ -31,10 +12,6 @@ $outputFile = $args['out']    ?? __DIR__ . '/pc_builder_export.json';
 $onlyTables = isset($args['table'])
   ? array_map('trim', explode(',', $args['table']))
   : null;
-
-// ---------------------------------------------------------------------------
-// Load .env  (walks up from this file's directory to find Laravel's .env)
-// ---------------------------------------------------------------------------
 
 function load_env(string $startDir): array
 {
@@ -58,9 +35,9 @@ function load_env(string $startDir): array
 
 $env = load_env(__DIR__);
 
-$host     = $env['DB_HOST']     ?? '127.0.0.1';
-$port     = $env['DB_PORT']     ?? '3306';
-$dbname   = $env['DB_DATABASE'] ?? '';
+$host = $env['DB_HOST'] ?? '127.0.0.1';
+$port = $env['DB_PORT'] ?? '3306';
+$dbname = $env['DB_DATABASE'] ?? '';
 $username = $env['DB_USERNAME'] ?? 'root';
 $password = $env['DB_PASSWORD'] ?? '';
 
@@ -68,10 +45,6 @@ if (!$dbname) {
   fwrite(STDERR, "[ERROR] DB_DATABASE not found. Make sure .env exists in the project root.\n");
   exit(1);
 }
-
-// ---------------------------------------------------------------------------
-// Connect
-// ---------------------------------------------------------------------------
 
 try {
   $pdo = new PDO(
@@ -84,10 +57,6 @@ try {
   fwrite(STDERR, "[ERROR] DB connection failed: {$e->getMessage()}\n");
   exit(1);
 }
-
-// ---------------------------------------------------------------------------
-// Tables to export (matches migration exactly)
-// ---------------------------------------------------------------------------
 
 $allTables = [
   'cpus',
@@ -110,10 +79,6 @@ $unknown = $onlyTables ? array_diff($onlyTables, $allTables) : [];
 if ($unknown) {
   fwrite(STDERR, "[WARN] Unknown tables ignored: " . implode(', ', $unknown) . "\n");
 }
-
-// ---------------------------------------------------------------------------
-// Type casting (PDO returns everything as strings — mirrors migration types)
-// ---------------------------------------------------------------------------
 
 function cast_row(array $row): array
 {
@@ -147,10 +112,10 @@ function cast_row(array $row): array
     'max_cpu_cooler_height',
     'bays_25',
     'bays_35',
+    'psu_wattage',
     // fans
     'size_mm',
     'rpm_max',
-    'rpm_min',
     'units_in_package',
     // psus
     'wattage',
@@ -168,7 +133,6 @@ function cast_row(array $row): array
     'clock_rate',
     'turbo_frequency',
     'pcie_version',
-    'noise_db',
   ];
 
   static $boolCols = [
@@ -177,7 +141,6 @@ function cast_row(array $row): array
     'cooler_included',
     'wifi',
     'modular',
-    'psu_included',
   ];
 
   foreach ($row as $col => &$val) {
@@ -190,20 +153,15 @@ function cast_row(array $row): array
     } elseif (in_array($col, $boolCols, true)) {
       $val = (bool) $val;
     }
-    // strings and timestamps kept as-is
   }
 
   return $row;
 }
 
-// ---------------------------------------------------------------------------
-// Export
-// ---------------------------------------------------------------------------
-
 $export = [
   'exported_at' => date('Y-m-d H:i:s'),
-  'database'    => $dbname,
-  'tables'      => [],
+  'database' => $dbname,
+  'tables' => [],
 ];
 
 foreach ($tables as $table) {
@@ -227,10 +185,6 @@ foreach ($tables as $table) {
 
   echo count($rows) . " rows\n";
 }
-
-// ---------------------------------------------------------------------------
-// Write JSON
-// ---------------------------------------------------------------------------
 
 $json = json_encode(
   $export,
