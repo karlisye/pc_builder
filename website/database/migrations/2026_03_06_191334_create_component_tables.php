@@ -60,7 +60,7 @@ return new class extends Migration
             $table->smallInteger('capacity')->nullable()->index();
             $table->smallInteger('frequency')->nullable()->index();
             $table->tinyInteger('cl_latency')->nullable();
-            $table->tinyInteger('modules_count')->nullable()->index();
+            $table->tinyInteger('modules_count')->default(1)->index();
             $table->timestamp('scraped_at')->nullable();
         });
 

@@ -35,7 +35,7 @@ function load_env(string $startDir): array
 
 $env = load_env(__DIR__);
 
-$host = $env['DB_HOST'] ?? '127.0.0.1';
+$host = '127.0.0.1';
 $port = $env['DB_PORT'] ?? '3306';
 $dbname = $env['DB_DATABASE'] ?? '';
 $username = $env['DB_USERNAME'] ?? 'root';

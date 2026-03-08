@@ -10,7 +10,7 @@ def _parse_kit(value: str) -> int | None:
     if not value:
         return None
     match = re.search(r"\d+", value)
-    return int(match.group()) if match else None
+    return int(match.group()) if match else 1
 
 
 def parse(html, dateks_id, url, price, in_stock, stock_quantity, scraped_at):
