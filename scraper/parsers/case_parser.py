@@ -1,8 +1,20 @@
+import re
 from bs4 import BeautifulSoup
 from database import insert_row
-from parsers.helpers import extract_name, extract_specs, to_int, to_bool
+from parsers.helpers import extract_name, extract_specs, to_int
 
 TABLE = "cases"
+
+def _parse_psu_wattage(value: str) -> int:
+    if not value:
+        return 0
+    v = value.strip().lower()
+    if v in ("nav", "no", "not", ""):
+        return 0
+    match = re.search(r'\d+', value)
+    if match:
+        return int(match.group())
+    return 1
 
 
 def parse(html, dateks_id, url, price, in_stock, stock_quantity, scraped_at):
@@ -21,7 +33,7 @@ def parse(html, dateks_id, url, price, in_stock, stock_quantity, scraped_at):
         "max_cpu_cooler_height": to_int(specs.get("Max. CPU cooler height, mm")),
         "bays_25": to_int(specs.get('2.5" internal HDD/SSD bays')),
         "bays_35": to_int(specs.get('3.5" internal HDD bays')),
-        "psu_included": to_bool(specs.get("PSU")),
+        "psu_wattage": _parse_psu_wattage(specs.get("PSU")), # not implemented yet, leave for later testing
         "scraped_at": scraped_at,
     }
 
