@@ -1,4 +1,5 @@
 import { Link, useForm } from "@inertiajs/react";
+import { useState } from "react";
 
 const Register = () => {
   const { data, errors, post, setData, processing } = useForm({
@@ -8,10 +9,42 @@ const Register = () => {
     password_confirmation: "",
   });
 
+  const [clientErrors, setClientErrors] = useState({});
+
+  const validate = () => {
+    const e = {};
+
+    if (!data.name.trim()) e.name = "Name is required.";
+    else if (data.name.trim().length < 3)
+      e.name = "Name must be at least 3 characters.";
+
+    if (!data.email.trim()) e.email = "Email is required.";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email))
+      e.email = "Please enter a valid email address.";
+
+    if (!data.password) e.password = "Password is required.";
+    else if (data.password.length < 8)
+      e.password = "Password must be at least 8 characters.";
+    else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])/.test(data.password))
+      e.password =
+        "Password must contain uppercase, lowercase, a number, and a symbol.";
+
+    if (!data.password_confirmation)
+      e.password_confirmation = "Please confirm your password.";
+    else if (data.password !== data.password_confirmation)
+      e.password_confirmation = "Passwords do not match.";
+
+    setClientErrors(e);
+    return Object.keys(e).length === 0;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    post("/register");
+    if (validate()) post("/register");
   };
+
+  // Client errors take priority — server errors shown as fallback
+  const err = (field) => clientErrors[field] || errors[field];
 
   return (
     <div>
@@ -24,7 +57,7 @@ const Register = () => {
             value={data.name}
             onChange={(e) => setData("name", e.target.value)}
           />
-          {errors.name && <p>{errors.name}</p>}
+          {err("name") && <p>{err("name")}</p>}
         </div>
 
         <div>
@@ -35,7 +68,7 @@ const Register = () => {
             value={data.email}
             onChange={(e) => setData("email", e.target.value)}
           />
-          {errors.email && <p>{errors.email}</p>}
+          {err("email") && <p>{err("email")}</p>}
         </div>
 
         <div>
@@ -46,7 +79,7 @@ const Register = () => {
             value={data.password}
             onChange={(e) => setData("password", e.target.value)}
           />
-          {errors.password && <p>{errors.password}</p>}
+          {err("password") && <p>{err("password")}</p>}
         </div>
 
         <div>
@@ -57,8 +90,8 @@ const Register = () => {
             value={data.password_confirmation}
             onChange={(e) => setData("password_confirmation", e.target.value)}
           />
-          {errors.password_confirmation && (
-            <p>{errors.password_confirmation}</p>
+          {err("password_confirmation") && (
+            <p>{err("password_confirmation")}</p>
           )}
         </div>
 
@@ -70,7 +103,5 @@ const Register = () => {
     </div>
   );
 };
-
-Register.layout = (page) => page;
 
 export default Register;

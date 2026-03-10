@@ -1,4 +1,5 @@
 import { Link, useForm } from "@inertiajs/react";
+import { useState } from "react";
 
 const Login = () => {
   const { data, errors, post, setData, processing } = useForm({
@@ -6,10 +7,28 @@ const Login = () => {
     password: "",
   });
 
+  const [clientErrors, setClientErrors] = useState({});
+
+  const validate = () => {
+    const e = {};
+
+    if (!data.email.trim()) e.email = "Email is required.";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email))
+      e.email = "Please enter a valid email address.";
+
+    if (!data.password) e.password = "Password is required.";
+
+    setClientErrors(e);
+    return Object.keys(e).length === 0;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!validate()) return;
     post("/login");
   };
+
+  const err = (field) => clientErrors[field] || errors[field];
 
   return (
     <div>
@@ -22,7 +41,7 @@ const Login = () => {
             value={data.email}
             onChange={(e) => setData("email", e.target.value)}
           />
-          {errors.email && <p>{errors.email}</p>}
+          {err("email") && <p>{err("email")}</p>}
         </div>
 
         <div>
@@ -33,7 +52,7 @@ const Login = () => {
             value={data.password}
             onChange={(e) => setData("password", e.target.value)}
           />
-          {errors.password && <p>{errors.password}</p>}
+          {err("password") && <p>{err("password")}</p>}
         </div>
 
         <div>
