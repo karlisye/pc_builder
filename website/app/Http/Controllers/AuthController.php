@@ -23,7 +23,9 @@ class AuthController extends Controller
       'email'    => $credentials['email'],
       'password' => Hash::make($credentials['password']),
     ]);
+
     Auth::login($user);
+    $request->session()->regenerate();
 
     return redirect('/');
   }
