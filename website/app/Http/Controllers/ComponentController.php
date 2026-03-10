@@ -95,7 +95,7 @@ class ComponentController extends Controller
             'efficiency_rating',
             'modular',
             'psu_type',
-            // ssd (capacity, form_factor already listed)
+            // ssd
             'type',
             'interface',
         ]);
