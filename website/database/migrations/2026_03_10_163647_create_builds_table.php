@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('builds', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete()->index();
+            $table->foreignId('user_id')->constrained()->index();
             $table->string('name');
             $table->text('notes')->nullable();
             $table->decimal('total_price', 10, 2)->nullable();
