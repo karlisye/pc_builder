@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 
 class ComponentController extends Controller
 {
+    private const VALID_SORTS = ['price_asc', 'price_desc', 'name_asc', 'name_desc'];
+
     public function __construct(
         private readonly CompatibilityService $compatibility
     ) {}
@@ -46,7 +48,59 @@ class ComponentController extends Controller
             return response()->json(['error' => $e->getMessage()], 400);
         }
 
-        $paginator = $this->compatibility->getCompatible($type, $selected);
+        // validate sort
+        $sort = $request->query('sort');
+        if ($sort && ! in_array($sort, self::VALID_SORTS, true)) {
+            return response()->json([
+                'error' => "'{$sort}' is not a sort option",
+                'valid_sorts' => self::VALID_SORTS,
+            ], 400);
+        }
+
+        // validate price range
+        if ($request->filled('min_price') && ! is_numeric($request->query('min_price'))) {
+            return response()->json(['error' => '`min_price` must be a number'], 400);
+        }
+
+        if ($request->filled('max_price') && ! is_numeric($request->query('max_price'))) {
+            return response()->json(['error' => '`max_price` must be a number'], 400);
+        }
+
+        $filters = $request->only([
+            // global
+            'sort',
+            'search',
+            'min_price',
+            'max_price',
+            // cpu
+            'socket',
+            'cores',
+            'integrated_graphics',
+            'cooler_included',
+            // motherboard
+            'chipset',
+            'form_factor',
+            'memory_type',
+            'wifi',
+            // ram
+            'capacity',
+            'frequency',
+            // gpu
+            'vram',
+            'min_psu',
+            // cooler
+            'tdp_support',
+            // psu
+            'wattage',
+            'efficiency_rating',
+            'modular',
+            'psu_type',
+            // ssd (capacity, form_factor already listed)
+            'type',
+            'interface',
+        ]);
+
+        $paginator = $this->compatibility->getCompatible($type, $selected, $filters);
 
         return response()->json($paginator);
     }

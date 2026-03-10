@@ -49,7 +49,7 @@ class CompatibilityService
         return $resolved;
     }
 
-    public function getCompatible(string $type, array $selected): LengthAwarePaginator
+    public function getCompatible(string $type, array $selected, array $filters = []): LengthAwarePaginator
     {
         $modelClass = self::VALID_TYPES[$type];
 
@@ -72,6 +72,8 @@ class CompatibilityService
 
             default => $query,
         };
+
+        $query = ComponentQueryFilter::apply($query, $type, $filters);
 
         // e.g. if user already has cpu selected, but still wants to see cpus, will return the cpu id
         $selectedIdForType = isset($selected[$type]) ? $selected[$type]->id : null;
