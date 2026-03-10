@@ -104,4 +104,25 @@ class ComponentController extends Controller
 
         return response()->json($paginator);
     }
+
+    public function show(string $type, int $id): JsonResponse
+    {
+        if (! array_key_exists($type, CompatibilityService::VALID_TYPES)) {
+            return response()->json([
+                'error'       => "'{$type}' is not a valid component",
+                'valid_types' => array_keys(CompatibilityService::VALID_TYPES),
+            ], 400);
+        }
+
+        $modelClass = CompatibilityService::VALID_TYPES[$type];
+        $component  = $modelClass::find($id);
+
+        if (! $component) {
+            return response()->json([
+                'error' => "no {$type} found with id {$id}",
+            ], 404);
+        }
+
+        return response()->json($component);
+    }
 }
