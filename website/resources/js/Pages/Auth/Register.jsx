@@ -71,7 +71,7 @@ const Register = () => {
                   Email
                 </label>
                 <input
-                  className={`bg-surface flex-1 p-2 ${clientErrors.name ? "outline-1 outline-danger" : "focus: outline-border"}`}
+                  className={`bg-surface flex-1 p-2 ${clientErrors.email ? "outline-1 outline-danger" : "focus: outline-border"}`}
                   id="email"
                   type="email"
                   value={data.email}
@@ -85,7 +85,7 @@ const Register = () => {
                   Password
                 </label>
                 <input
-                  className={`bg-surface flex-1 p-2 ${clientErrors.name ? "outline-1 outline-danger" : "focus: outline-border"}`}
+                  className={`bg-surface flex-1 p-2 ${clientErrors.password ? "outline-1 outline-danger" : "focus: outline-border"}`}
                   id="password"
                   type="password"
                   value={data.password}
@@ -101,7 +101,7 @@ const Register = () => {
                   Confirm password
                 </label>
                 <input
-                  className={`bg-surface flex-1 p-2 ${clientErrors.name ? "outline-1 outline-danger" : "focus: outline-border"}`}
+                  className={`bg-surface flex-1 p-2 ${clientErrors.password_confirmation ? "outline-1 outline-danger" : "focus: outline-border"}`}
                   id="password_confirmation"
                   type="password"
                   value={data.password_confirmation}
@@ -122,7 +122,7 @@ const Register = () => {
                   className="bg-primary hover:bg-primary-light transition cursor-pointer text-white p-4"
                   disabled={processing}
                 >
-                  Sign up
+                  Sign Up
                 </button>
               </div>
             </form>
