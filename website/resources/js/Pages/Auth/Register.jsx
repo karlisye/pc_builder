@@ -43,63 +43,94 @@ const Register = () => {
     if (validate()) post("/register");
   };
 
-  // Client errors take priority — server errors shown as fallback
   const err = (field) => clientErrors[field] || errors[field];
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="name">Name</label>
-          <input
-            id="name"
-            type="text"
-            value={data.name}
-            onChange={(e) => setData("name", e.target.value)}
-          />
-          {err("name") && <p>{err("name")}</p>}
-        </div>
+    <div className="h-full flex flex-col items-center justify-center">
+      <div className="w-full md:w-200 px-8">
+        <h1 className="text-3xl font-semibold mb-1">Sign Up</h1>
+        <div className="flex w-full shadow">
+          <div className="w-full md:w-1/2 transition-all duration-300 bg-background">
+            <form onSubmit={handleSubmit}>
+              <div className="flex flex-col my-2 mx-4">
+                <label className="text-text" htmlFor="name">
+                  Name
+                </label>
+                <input
+                  className={`bg-surface flex-1 p-2 ${clientErrors.name ? "outline-1 outline-danger" : "focus: outline-border"}`}
+                  id="name"
+                  type="text"
+                  value={data.name}
+                  onChange={(e) => setData("name", e.target.value)}
+                />
+                {err("name") && <p className="text-danger">{err("name")}</p>}
+              </div>
 
-        <div>
-          <label htmlFor="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            value={data.email}
-            onChange={(e) => setData("email", e.target.value)}
-          />
-          {err("email") && <p>{err("email")}</p>}
-        </div>
+              <div className="flex flex-col my-2 mx-4">
+                <label className="text-text" htmlFor="email">
+                  Email
+                </label>
+                <input
+                  className={`bg-surface flex-1 p-2 ${clientErrors.name ? "outline-1 outline-danger" : "focus: outline-border"}`}
+                  id="email"
+                  type="email"
+                  value={data.email}
+                  onChange={(e) => setData("email", e.target.value)}
+                />
+                {err("email") && <p className="text-danger">{err("email")}</p>}
+              </div>
 
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            value={data.password}
-            onChange={(e) => setData("password", e.target.value)}
-          />
-          {err("password") && <p>{err("password")}</p>}
-        </div>
+              <div className="flex flex-col my-2 mx-4">
+                <label className="text-text" htmlFor="password">
+                  Password
+                </label>
+                <input
+                  className={`bg-surface flex-1 p-2 ${clientErrors.name ? "outline-1 outline-danger" : "focus: outline-border"}`}
+                  id="password"
+                  type="password"
+                  value={data.password}
+                  onChange={(e) => setData("password", e.target.value)}
+                />
+                {err("password") && (
+                  <p className="text-danger">{err("password")}</p>
+                )}
+              </div>
 
-        <div>
-          <label htmlFor="password_confirmation">Confirm password</label>
-          <input
-            id="password_confirmation"
-            type="password"
-            value={data.password_confirmation}
-            onChange={(e) => setData("password_confirmation", e.target.value)}
-          />
-          {err("password_confirmation") && (
-            <p>{err("password_confirmation")}</p>
-          )}
-        </div>
+              <div className="flex flex-col my-2 mx-4">
+                <label className="text-text" htmlFor="password_confirmation">
+                  Confirm password
+                </label>
+                <input
+                  className={`bg-surface flex-1 p-2 ${clientErrors.name ? "outline-1 outline-danger" : "focus: outline-border"}`}
+                  id="password_confirmation"
+                  type="password"
+                  value={data.password_confirmation}
+                  onChange={(e) =>
+                    setData("password_confirmation", e.target.value)
+                  }
+                />
+                {err("password_confirmation") && (
+                  <p className="text-danger">{err("password_confirmation")}</p>
+                )}
+              </div>
 
-        <div>
-          <Link href="/login">Already have an account?</Link>
-          <button disabled={processing}>Sign up</button>
+              <div className="flex flex-col mx-4 my-4">
+                <Link className="text-info" href="/login">
+                  Already have an account?
+                </Link>
+                <button
+                  className="bg-primary hover:bg-primary-light transition cursor-pointer text-white p-4"
+                  disabled={processing}
+                >
+                  Sign up
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div className="w-0 md:w-1/2 transition-all duration-300 bg-primary"></div>
         </div>
-      </form>
+      </div>
     </div>
   );
 };

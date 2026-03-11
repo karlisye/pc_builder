@@ -25,7 +25,7 @@ const Layout = ({ children }) => {
           )}
         </nav>
       </header>
-      <main>{children}</main>
+      <main className="h-screen">{children}</main>
     </>
   );
 };

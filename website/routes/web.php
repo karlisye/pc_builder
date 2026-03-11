@@ -7,10 +7,10 @@ use Inertia\Inertia;
 Route::get('/', fn() => Inertia::render('Home'))->name('home');
 
 Route::middleware('guest')->group(function () {
-    Route::get('/register', fn() => Inertia::render('Auth/Register'))->name('home');
+    Route::get('/register', fn() => Inertia::render('Auth/Register'));
     Route::post('/register', [AuthController::class, 'register']);
 
-    Route::get('/login', fn() => Inertia::render('Auth/Login'))->name('home');
+    Route::get('/login', fn() => Inertia::render('Auth/Login'));
     Route::post('/login', [AuthController::class, 'login']);
 });
 
