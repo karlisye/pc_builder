@@ -4,6 +4,7 @@ import { Link, useForm, usePage } from "@inertiajs/react";
 const Layout = ({ children }) => {
   const user = usePage().props.auth.user;
   const { post } = useForm();
+  const { url } = usePage();
   return (
     <>
       <header>
@@ -15,20 +16,29 @@ const Layout = ({ children }) => {
             BUILDER
           </Link>
           {user ? (
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                post("/logout");
-              }}
-            >
-              <button className="py-4 px-6 hover:bg-danger/50 transition hover:cursor-pointer">
-                Sign Out
-              </button>
-            </form>
+            <>
+              <Link
+                className={`py-4 px-6 transition ${url === "/builder" ? "bg-primary hover:bg-primary-light text-muted" : "hover:bg-surface"}`}
+                href="builder"
+              >
+                Build
+              </Link>
+              <form
+                className="ml-auto"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  post("/logout");
+                }}
+              >
+                <button className="py-4 px-6 hover:bg-danger/50 transition hover:cursor-pointer">
+                  Sign Out
+                </button>
+              </form>
+            </>
           ) : (
             <>
               <Link
-                className="py-4 px-6 hover:bg-surface transition"
+                className="py-4 px-6 hover:bg-surface transition ml-auto"
                 href="login"
               >
                 Sign In
