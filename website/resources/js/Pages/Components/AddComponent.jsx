@@ -1,12 +1,60 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useBuilder } from "../../Contexts/BuilderContext";
+import axios from "axios";
 
 const AddComponent = () => {
-  const { currentCompToAdd, setCurrentCompToAdd } = useBuilder();
+  const { currentCompToAdd, setCurrentCompToAdd, selectedComponents } =
+    useBuilder();
+  const [page, setPage] = useState(1);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!currentCompToAdd) return;
+    setPage(1);
+    fetchComponents(1);
+  }, [currentCompToAdd]);
+
+  useEffect(() => {
+    if (!currentCompToAdd || page === 1) return;
+    fetchComponents(page);
+  }, [page]);
+
+  const fetchComponents = async (pageNum = 1) => {
+    setLoading(true);
+    setError("");
+
+    try {
+      const selected = Object.fromEntries(
+        Object.entries(selectedComponents).map(([type, component]) => [
+          type,
+          component?.id,
+        ]),
+      );
+
+      const res = await axios.get(
+        `/api/components/${currentCompToAdd.toLowerCase()}`,
+        {
+          params: {
+            selected: JSON.stringify(selected),
+            page: pageNum,
+          },
+        },
+      );
+
+      console.log(res.data);
+    } catch (error) {
+      setError(error);
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLeave = () => {
     setCurrentCompToAdd(null);
   };
+
   return (
     <div className="border border-border w-full hover:bg-background transition p-4">
       <div className="flex justify-between items-center">

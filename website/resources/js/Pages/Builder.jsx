@@ -6,9 +6,23 @@ import AddComponent from "./Components/AddComponent";
 
 const Builder = () => {
   const [currentCompToAdd, setCurrentCompToAdd] = useState(null);
+  const [selectedComponents, setSelectedComponents] = useState({
+    cpu: null,
+    motherboard: null,
+    ram: null,
+    gpu: null,
+    psu: null,
+    ssd: null,
+    hdd: null,
+    case: null,
+    fan: null,
+    cooler: null,
+  });
 
   return (
-    <BuilderContext value={{ currentCompToAdd, setCurrentCompToAdd }}>
+    <BuilderContext
+      value={{ currentCompToAdd, setCurrentCompToAdd, selectedComponents }}
+    >
       <div className="h-full flex flex-wrap">
         <div className="w-full lg:w-120 bg-primary pt-6">
           <BuildDesc />
