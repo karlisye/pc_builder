@@ -7,8 +7,13 @@ const Layout = ({ children }) => {
   return (
     <>
       <header>
-        <nav>
-          <Link href="/">Home</Link>
+        <nav className="flex items-center bg-background shadow">
+          <Link
+            className="py-4 px-6 bg-primary text-white font-semibold"
+            href="/"
+          >
+            BUILDER
+          </Link>
           {user ? (
             <form
               onSubmit={(e) => {
@@ -16,11 +21,18 @@ const Layout = ({ children }) => {
                 post("/logout");
               }}
             >
-              <button>logout</button>
+              <button className="py-4 px-6 hover:bg-danger/50 transition hover:cursor-pointer">
+                Sign Out
+              </button>
             </form>
           ) : (
             <>
-              <Link href="login">Login</Link>
+              <Link
+                className="py-4 px-6 hover:bg-surface transition"
+                href="login"
+              >
+                Sign In
+              </Link>
             </>
           )}
         </nav>

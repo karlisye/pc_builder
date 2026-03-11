@@ -87,6 +87,4 @@ const Login = () => {
   );
 };
 
-Login.layout = (page) => page;
-
 export default Login;
