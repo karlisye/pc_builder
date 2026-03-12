@@ -57,11 +57,11 @@ const ComponentFilters = () => {
       .catch((err) => console.error("Failed to fetch filters", err));
   }, [currentCompToAdd]);
 
-  const activeColumns = FILTER_CONFIG[currentCompToAdd.toLowerCase()] ?? [];
-
   const updateFilter = (key, value) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
   };
+
+  const activeColumns = FILTER_CONFIG[currentCompToAdd.toLowerCase()] ?? [];
 
   return (
     <div className="space-y-4">
@@ -71,13 +71,13 @@ const ComponentFilters = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder={`Search ${currentCompToAdd}...`}
-          className="bg-secondary text-white p-2 flex-1"
+          className="bg-secondary text-white p-2 flex-1 outline-border focus:outline-1"
         />
 
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value)}
-          className="bg-secondary-light p-2 text-text"
+          className="bg-secondary-light p-2 text-text outline-border focus:outline-1"
         >
           <option value="price_asc">Price: Low to High</option>
           <option value="price_desc">Price: High to Low</option>
@@ -97,7 +97,7 @@ const ComponentFilters = () => {
               onChange={(e) =>
                 updateFilter(column, e.target.value || undefined)
               }
-              className="bg-secondary-light p-2 text-text"
+              className="bg-secondary-light p-2 text-text outline-border focus:outline-1"
               key={column}
             >
               <option value="">{FILTER_LABELS[column] ?? column}: All</option>
@@ -114,6 +114,13 @@ const ComponentFilters = () => {
           );
         })}
       </div>
+
+      <button
+        className="w-full p-4 bg-secondary hover:bg-secondary-dark transition cursor-pointer text-white"
+        onClick={() => setFilters({})}
+      >
+        Clear
+      </button>
     </div>
   );
 };

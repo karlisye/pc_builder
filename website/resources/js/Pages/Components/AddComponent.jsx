@@ -123,7 +123,7 @@ const AddComponent = () => {
           <button
             disabled={pagination.currentPage === 1}
             onClick={() => setPage((p) => p - 1)}
-            className="text-muted hover:text-text disabled:opacity-30 transition"
+            className="text-muted hover:text-text disabled:opacity-30 transition cursor-pointer"
           >
             Previous
           </button>
@@ -133,7 +133,7 @@ const AddComponent = () => {
           <button
             disabled={pagination.currentPage === pagination.lastPage}
             onClick={() => setPage((p) => p + 1)}
-            className="text-muted hover:text-text disabled:opacity-30 transition"
+            className="text-muted hover:text-text disabled:opacity-30 transition cursor-pointer"
           >
             Next
           </button>
