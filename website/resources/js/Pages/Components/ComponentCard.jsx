@@ -2,10 +2,15 @@ import React from "react";
 import { useBuilder } from "../../Contexts/BuilderContext";
 
 const ComponentCard = ({ component, name }) => {
-  const { setCurrentCompToAdd } = useBuilder();
+  const { setCurrentCompToAdd, setFilters, setSearch, setSort } = useBuilder();
+
   const handleAddComponent = () => {
     setCurrentCompToAdd(name);
+    setFilters({});
+    setSearch("");
+    setSort("price_asc");
   };
+
   return (
     <div className="w-full xl:w-80 h-100 border flex flex-col border-border shadow hover:bg-background transition">
       {component ? (

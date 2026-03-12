@@ -33,6 +33,7 @@ const Builder = () => {
         search,
         setSearch,
         filters,
+        setFilters,
         sort,
         setSort,
       }}

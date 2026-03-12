@@ -48,6 +48,7 @@ const AddComponent = () => {
             page: pageNum,
             search: search || undefined,
             sort: sort || undefined,
+            ...filters,
           },
         },
       );
