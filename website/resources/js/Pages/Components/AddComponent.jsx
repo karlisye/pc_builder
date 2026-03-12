@@ -5,6 +5,8 @@ import axios from "axios";
 const AddComponent = () => {
   const { currentCompToAdd, setCurrentCompToAdd, selectedComponents } =
     useBuilder();
+  const [components, setComponents] = useState([]);
+  const [pagination, setPagination] = useState(null);
   const [page, setPage] = useState(1);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -26,10 +28,9 @@ const AddComponent = () => {
 
     try {
       const selected = Object.fromEntries(
-        Object.entries(selectedComponents).map(([type, component]) => [
-          type,
-          component?.id,
-        ]),
+        Object.entries(selectedComponents)
+          .filter(([_, component]) => component !== null)
+          .map(([type, component]) => [type, component.id]),
       );
 
       const res = await axios.get(
@@ -42,10 +43,14 @@ const AddComponent = () => {
         },
       );
 
-      console.log(res.data);
-    } catch (error) {
-      setError(error);
-      console.error(error);
+      setComponents(res.data.data);
+      setPagination({
+        currentPage: res.data.current_page,
+        lastPage: res.data.last_page,
+        total: res.data.total,
+      });
+    } catch (err) {
+      setError(err.response?.data?.error ?? "Failed to fetch components");
     } finally {
       setLoading(false);
     }
@@ -53,6 +58,11 @@ const AddComponent = () => {
 
   const handleLeave = () => {
     setCurrentCompToAdd(null);
+  };
+
+  const handleSelect = (component) => {
+    // add later
+    console.log("selected", component);
   };
 
   return (
@@ -79,6 +89,46 @@ const AddComponent = () => {
           </svg>
         </button>
       </div>
+
+      {loading && <p className="text-muted mt-4">Loading...</p>}
+      {error && <p className="text-danger mt-4">{error}</p>}
+
+      {!loading && !error && (
+        <div className="mt-4 flex flex-col gap-2">
+          {components.map((component) => (
+            <div
+              key={component.id}
+              onClick={() => handleSelect(component)}
+              className="flex justify-between items-center p-3 border border-border bg-surface hover:bg-secondary-light cursor-pointer transition"
+            >
+              <span className="text-text font-medium">{component.name}</span>
+              <span className="text-muted">€{component.price}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {pagination && pagination.lastPage > 1 && (
+        <div className="flex justify-between items-center mt-4">
+          <button
+            disabled={pagination.currentPage === 1}
+            onClick={() => setPage((p) => p - 1)}
+            className="text-muted hover:text-text disabled:opacity-30 transition"
+          >
+            Previous
+          </button>
+          <span className="text-muted text-sm">
+            Page {pagination.currentPage} of {pagination.lastPage}
+          </span>
+          <button
+            disabled={pagination.currentPage === pagination.lastPage}
+            onClick={() => setPage((p) => p + 1)}
+            className="text-muted hover:text-text disabled:opacity-30 transition"
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 };
