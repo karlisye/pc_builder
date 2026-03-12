@@ -4,19 +4,25 @@ import axios from "axios";
 import AddComponentSkeleton from "./Skeletons/AddComponentSkeleton";
 
 const AddComponent = () => {
-  const { currentCompToAdd, setCurrentCompToAdd, selectedComponents } =
-    useBuilder();
+  const {
+    currentCompToAdd,
+    setCurrentCompToAdd,
+    selectedComponents,
+    search,
+    filters,
+    sort,
+  } = useBuilder();
   const [components, setComponents] = useState([]);
   const [pagination, setPagination] = useState(null);
-  const [page, setPage] = useState(1);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     if (!currentCompToAdd) return;
     setPage(1);
     fetchComponents(1);
-  }, [currentCompToAdd]);
+  }, [currentCompToAdd, search, filters, sort]);
 
   useEffect(() => {
     if (!currentCompToAdd || page === 1) return;
@@ -40,6 +46,7 @@ const AddComponent = () => {
           params: {
             selected: JSON.stringify(selected),
             page: pageNum,
+            search: search || undefined,
           },
         },
       );

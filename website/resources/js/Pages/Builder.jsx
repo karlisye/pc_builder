@@ -3,6 +3,7 @@ import ComponentCard from "./Components/ComponentCard";
 import BuildDesc from "./Components/BuildDesc";
 import { BuilderContext } from "../Contexts/BuilderContext";
 import AddComponent from "./Components/AddComponent";
+import ComponentFilters from "./Components/ComponentFilters";
 
 const Builder = () => {
   const [currentCompToAdd, setCurrentCompToAdd] = useState(null);
@@ -19,13 +20,26 @@ const Builder = () => {
     cooler: null,
   });
 
+  const [search, setSearch] = useState("");
+  const [filters, setFilters] = useState({});
+  const [sort, setSort] = useState("price_asc");
+
   return (
     <BuilderContext
-      value={{ currentCompToAdd, setCurrentCompToAdd, selectedComponents }}
+      value={{
+        currentCompToAdd,
+        setCurrentCompToAdd,
+        selectedComponents,
+        search,
+        setSearch,
+        filters,
+        sort,
+      }}
     >
       <div className="h-full flex flex-wrap">
-        <div className="w-full lg:w-120 bg-primary pt-6">
-          <BuildDesc />
+        <div className="w-full lg:w-120 bg-primary pt-6 px-4">
+          <h1 className="text-4xl font-semibold text-white">BUILDER</h1>
+          {currentCompToAdd ? <ComponentFilters /> : <BuildDesc />}
         </div>
         <div className="flex-1 flex flex-wrap justify-center gap-8 px-4 pt-6">
           {currentCompToAdd ? (
