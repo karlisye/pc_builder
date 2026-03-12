@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
   Route::get('/components/{type}', [ComponentController::class, 'index']);
+  Route::get('/components/{type}/filters', [ComponentController::class, 'filters']);
   Route::get('/components/{type}/{id}', [ComponentController::class, 'show']);
   Route::post('/builder', [BuilderController::class, 'generate']);
 
