@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useBuilder } from "../../Contexts/BuilderContext";
 import axios from "axios";
+import AddComponentSkeleton from "./Skeletons/AddComponentSkeleton";
 
 const AddComponent = () => {
   const { currentCompToAdd, setCurrentCompToAdd, selectedComponents } =
@@ -90,7 +91,7 @@ const AddComponent = () => {
         </button>
       </div>
 
-      {loading && <p className="text-muted mt-4">Loading...</p>}
+      {loading && <AddComponentSkeleton />}
       {error && <p className="text-danger mt-4">{error}</p>}
 
       {!loading && !error && (
