@@ -47,6 +47,7 @@ const AddComponent = () => {
             selected: JSON.stringify(selected),
             page: pageNum,
             search: search || undefined,
+            sort: sort || undefined,
           },
         },
       );
