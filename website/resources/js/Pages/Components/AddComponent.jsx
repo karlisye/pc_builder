@@ -17,6 +17,7 @@ const AddComponent = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
+  const [expandedId, setExpandedId] = useState(null);
 
   useEffect(() => {
     if (!currentCompToAdd) return;
@@ -70,6 +71,10 @@ const AddComponent = () => {
     setCurrentCompToAdd(null);
   };
 
+  const handleExpand = (id) => {
+    setExpandedId((prev) => (prev === id ? null : id));
+  };
+
   const handleSelect = (component) => {
     // add later
     console.log("selected", component);
@@ -106,13 +111,81 @@ const AddComponent = () => {
       {!loading && !error && (
         <div className="mt-4 flex flex-col gap-2">
           {components.map((component) => (
-            <div
-              key={component.id}
-              onClick={() => handleSelect(component)}
-              className="flex justify-between items-center p-3 border border-border bg-surface hover:bg-secondary-light cursor-pointer transition"
-            >
-              <span className="text-text font-medium">{component.name}</span>
-              <span className="text-muted">€{component.price}</span>
+            <div key={component.id} className="border border-border">
+              <div
+                key={component.id}
+                onClick={() => handleExpand(component.id)}
+                className="flex justify-between items-center p-3 bg-surface hover:bg-secondary-light cursor-pointer transition"
+              >
+                <span className="text-text font-medium">{component.name}</span>
+                <span className="text-muted">€{component.price}</span>
+              </div>
+              <div
+                className={`bg-background transition-all overflow-hidden grid ${
+                  expandedId === component.id
+                    ? "grid-rows-[1fr]"
+                    : "grid-rows-[0fr]"
+                }`}
+              >
+                <div className="overflow-hidden">
+                  <div className="p-3">
+                    <div className="grid grid-cols-2 gap-2">
+                      {Object.entries(component)
+                        .filter(
+                          ([key, value]) =>
+                            value !== null &&
+                            value !== "" &&
+                            ![
+                              "id",
+                              "dateks_id",
+                              "url",
+                              "scraped_at",
+                              "selected",
+                              "compatibility_warning",
+                            ].includes(key),
+                        )
+                        .map(([key, value]) => (
+                          <div
+                            key={key}
+                            className="flex flex-col wrap-anywhere"
+                          >
+                            <span className="text-muted text-xs capitalize">
+                              {key.replace(/_/g, " ")}
+                            </span>
+                            <span className="text-text text-sm">
+                              {typeof value === "boolean"
+                                ? value
+                                  ? "Yes"
+                                  : "No"
+                                : value === "Nav"
+                                  ? "No"
+                                  : value === "Ir"
+                                    ? "Yes"
+                                    : value}
+                            </span>
+                          </div>
+                        ))}
+                    </div>
+
+                    <div className="flex gap-2 mt-3">
+                      <button
+                        onClick={() => handleSelect(component)}
+                        className="p-4 bg-primary text-white hover:bg-primary-light transition cursor-pointer flex-1"
+                      >
+                        Select
+                      </button>
+
+                      <a
+                        href={component.url}
+                        target="_blank"
+                        className="p-4 bg-surface text-text hover:bg-secondary-light transition cursor-pointer border-border border"
+                      >
+                        See in Shop
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           ))}
         </div>
