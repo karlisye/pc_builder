@@ -1,10 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { useBuilder } from "../../Contexts/BuilderContext";
+import ComponentInfo from "./ComponentInfo";
 
 const ComponentCard = ({ component, name }) => {
-  const { setCurrentCompToAdd, setFilters, setSearch, setSort } = useBuilder();
-
-  if (component) console.log(component);
+  const {
+    setCurrentCompToAdd,
+    setFilters,
+    setSearch,
+    setSort,
+    setSelectedComponents,
+  } = useBuilder();
+  const [isSeeMoreActive, setIsSeeMoreActive] = useState(false);
 
   const handleAddComponent = () => {
     setCurrentCompToAdd(name);
@@ -13,13 +19,25 @@ const ComponentCard = ({ component, name }) => {
     setSort("price_asc");
   };
 
+  const handleSeeMore = () => {
+    setIsSeeMoreActive((p) => !p);
+  };
+
+  const handleRemove = () => {
+    setSelectedComponents((prev) => ({
+      ...prev,
+      [name.toLowerCase()]: null,
+    }));
+    setCurrentCompToAdd(null);
+  };
+
   return (
-    <div className="w-full xl:w-80 h-100 border flex flex-col border-border shadow hover:bg-background transition mx-auto">
+    <div className="w-full xl:w-80 h-100 border flex flex-col border-border shadow hover:bg-background transition">
       {component ? (
         <>
           <div className="relative group p-2">
             <h3 className="text-xl text-muted">{name}</h3>
-            <h2 className="text-text font-semibold text-3xl line-clamp-2">
+            <h2 className="text-text font-semibold text-3xl line-clamp-1">
               {component.name}
             </h2>
             <div className="absolute left-0 mb-1 hidden group-hover:block bg-primary text-white text-xs p-1 whitespace-nowrap z-10">
@@ -27,19 +45,36 @@ const ComponentCard = ({ component, name }) => {
             </div>
           </div>
 
-          <div className="p-2 flex flex-col">
-            <span className="text-muted">Price: €{component.price}</span>
-            <span className="text-muted">
-              Availability:{" "}
-              {component.in_stock
-                ? `In Stock (${component.stock_quantity})`
-                : "Out of Stock"}
-            </span>
-          </div>
+          {isSeeMoreActive ? (
+            <div className="max-h-55 p-2">
+              <div className="overflow-auto h-full">
+                <ComponentInfo component={component} />
+              </div>
+            </div>
+          ) : (
+            <div className="p-2 flex flex-col">
+              <span className="text-muted">Price: €{component.price}</span>
+              <span className="text-muted">
+                Availability:{" "}
+                {component.in_stock
+                  ? `In Stock (${component.stock_quantity})`
+                  : "Out of Stock"}
+              </span>
+            </div>
+          )}
+          <button
+            className="text-info cursor-pointer flex p-2"
+            onClick={handleSeeMore}
+          >
+            {isSeeMoreActive ? "Show less" : "Show more"}
+          </button>
 
           <div className="bg-primary mt-auto flex">
-            <button className="text-white px-8 py-4 flex-1 text-left hover:bg-primary-light cursor-pointer">
-              See More
+            <button
+              className="text-white px-8 py-4 flex-1 text-left hover:bg-danger/50 cursor-pointer transition"
+              onClick={handleRemove}
+            >
+              Remove
             </button>
             <a
               href={component.url}

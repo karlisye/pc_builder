@@ -50,15 +50,21 @@ const Builder = () => {
           ) : (
             <>
               <ComponentCard name="CPU" component={selectedComponents.cpu} />
-              <ComponentCard name="Motherboard" />
-              <ComponentCard name="RAM" />
-              <ComponentCard name="GPU" />
-              <ComponentCard name="PSU" />
-              <ComponentCard name="SSD" />
-              <ComponentCard name="HDD" />
-              <ComponentCard name="Case" />
-              <ComponentCard name="Fan" />
-              <ComponentCard name="Cooler" />
+              <ComponentCard
+                name="Motherboard"
+                component={selectedComponents.motherboard}
+              />
+              <ComponentCard name="RAM" component={selectedComponents.ram} />
+              <ComponentCard name="GPU" component={selectedComponents.gpu} />
+              <ComponentCard name="PSU" component={selectedComponents.psu} />
+              <ComponentCard name="SSD" component={selectedComponents.ssd} />
+              <ComponentCard name="HDD" component={selectedComponents.hdd} />
+              <ComponentCard name="Case" component={selectedComponents.case} />
+              <ComponentCard name="Fan" component={selectedComponents.fan} />
+              <ComponentCard
+                name="Cooler"
+                component={selectedComponents.cooler}
+              />
             </>
           )}
         </div>
