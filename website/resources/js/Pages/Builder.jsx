@@ -30,6 +30,7 @@ const Builder = () => {
         currentCompToAdd,
         setCurrentCompToAdd,
         selectedComponents,
+        setSelectedComponents,
         search,
         setSearch,
         filters,
@@ -48,7 +49,7 @@ const Builder = () => {
             <AddComponent />
           ) : (
             <>
-              <ComponentCard name="CPU" />
+              <ComponentCard name="CPU" component={selectedComponents.cpu} />
               <ComponentCard name="Motherboard" />
               <ComponentCard name="RAM" />
               <ComponentCard name="GPU" />

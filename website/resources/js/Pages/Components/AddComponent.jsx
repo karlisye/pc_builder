@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useBuilder } from "../../Contexts/BuilderContext";
 import axios from "axios";
 import AddComponentSkeleton from "./Skeletons/AddComponentSkeleton";
+import ComponentInfo from "./ComponentInfo";
 
 const AddComponent = () => {
   const {
@@ -11,6 +12,7 @@ const AddComponent = () => {
     search,
     filters,
     sort,
+    setSelectedComponents,
   } = useBuilder();
   const [components, setComponents] = useState([]);
   const [pagination, setPagination] = useState(null);
@@ -76,8 +78,11 @@ const AddComponent = () => {
   };
 
   const handleSelect = (component) => {
-    // add later
-    console.log("selected", component);
+    setSelectedComponents((prev) => ({
+      ...prev,
+      [currentCompToAdd.toLowerCase()]: component,
+    }));
+    setCurrentCompToAdd(null);
   };
 
   return (
@@ -129,43 +134,7 @@ const AddComponent = () => {
               >
                 <div className="overflow-hidden">
                   <div className="p-3">
-                    <div className="grid grid-cols-2 gap-2">
-                      {Object.entries(component)
-                        .filter(
-                          ([key, value]) =>
-                            value !== null &&
-                            value !== "" &&
-                            ![
-                              "id",
-                              "dateks_id",
-                              "url",
-                              "scraped_at",
-                              "selected",
-                              "compatibility_warning",
-                            ].includes(key),
-                        )
-                        .map(([key, value]) => (
-                          <div
-                            key={key}
-                            className="flex flex-col wrap-anywhere"
-                          >
-                            <span className="text-muted text-xs capitalize">
-                              {key.replace(/_/g, " ")}
-                            </span>
-                            <span className="text-text text-sm">
-                              {typeof value === "boolean"
-                                ? value
-                                  ? "Yes"
-                                  : "No"
-                                : value === "Nav"
-                                  ? "No"
-                                  : value === "Ir"
-                                    ? "Yes"
-                                    : value}
-                            </span>
-                          </div>
-                        ))}
-                    </div>
+                    <ComponentInfo component={component} />
 
                     <div className="flex gap-2 mt-3">
                       <button
