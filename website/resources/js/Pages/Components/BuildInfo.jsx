@@ -54,6 +54,12 @@ const BuildInfo = () => {
     }
   };
 
+  const handleClear = () => {
+    setSelectedComponents((prev) =>
+      Object.fromEntries(Object.keys(prev).map((key) => [key, null])),
+    );
+  };
+
   const hasComponents = Object.values(selectedComponents).some(
     (v) => v !== null,
   );
@@ -97,7 +103,7 @@ const BuildInfo = () => {
       )}
 
       {hasComponents && (
-        <div className="space-y-2 pt-4 border-t border-secondary-light">
+        <div className="space-y-4 pt-4 border-t border-secondary-light">
           <input
             type="text"
             value={buildName}
@@ -109,13 +115,20 @@ const BuildInfo = () => {
           {error && <p className="text-danger text-sm">{error}</p>}
           {success && <p className="text-green-500 text-sm">{success}</p>}
 
-          <div className="flex gap-4">
+          <div className="flex">
             <button
               onClick={handleSave}
               disabled={saving}
-              className="w-full p-2 bg-secondary text-white hover:bg-success/50 cursor-pointer disabled:opacity-50 transition"
+              className="p-4 bg-secondary text-white hover:bg-success/50 cursor-pointer disabled:opacity-50 transition flex-1"
             >
               {saving ? "Saving..." : "Save Build"}
+            </button>
+
+            <button
+              className="py-4 px-8 bg-secondary text-white hover:bg-danger/50 cursor-pointer disabled:opacity-50 transition"
+              onClick={handleClear}
+            >
+              Clear Build
             </button>
           </div>
         </div>
