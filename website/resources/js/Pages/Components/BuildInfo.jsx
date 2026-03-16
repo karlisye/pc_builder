@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { useBuilder } from "../../Contexts/BuilderContext";
+import axios from "axios";
 
 const BuildInfo = () => {
   const { selectedComponents, setSelectedComponents, setCurrentCompToAdd } =
     useBuilder();
+  const [buildName, setBuildName] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handleRemove = (name) => {
     setSelectedComponents((prev) => ({
@@ -12,11 +17,52 @@ const BuildInfo = () => {
     }));
     setCurrentCompToAdd(null);
   };
+
+  const handleSave = async () => {
+    if (!buildName.trim()) {
+      setError("Please enter a build name");
+      return;
+    }
+
+    const components = Object.fromEntries(
+      Object.entries(selectedComponents)
+        .filter(([_, component]) => component !== null)
+        .map(([type, component]) => [type, component.id]),
+    );
+
+    if (Object.keys(components).length === 0) {
+      setError("Please select at least one component");
+      return;
+    }
+
+    setSaving(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      await axios.post("/api/builds", {
+        name: buildName,
+        components,
+      });
+      setSuccess("Build saved successfully");
+      setTimeout(() => setSuccess(""), 5000);
+      setBuildName("");
+    } catch (err) {
+      setError(err.response?.data?.error ?? "Failed to save build");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const hasComponents = Object.values(selectedComponents).some(
+    (v) => v !== null,
+  );
+
   return (
     <div className="space-y-4 mt-8">
-      {Object.values(selectedComponents).some((v) => v !== null) ? (
+      {hasComponents ? (
         Object.entries(selectedComponents)
-          .filter(([key, value]) => value)
+          .filter(([_, value]) => value)
           .map(([key, value]) => (
             <div key={key} className="flex border border-secondary-light">
               <div className="overflow-hidden flex">
@@ -48,6 +94,31 @@ const BuildInfo = () => {
           ))
       ) : (
         <p className="text-secondary-light">Select your components</p>
+      )}
+
+      {hasComponents && (
+        <div className="space-y-2 pt-4 border-t border-secondary-light">
+          <input
+            type="text"
+            value={buildName}
+            onChange={(e) => setBuildName(e.target.value)}
+            placeholder="Build name"
+            className="bg-secondary-light focus:outline-1 outline-border text-text p-2 w-full"
+          />
+
+          {error && <p className="text-danger text-sm">{error}</p>}
+          {success && <p className="text-green-500 text-sm">{success}</p>}
+
+          <div className="flex gap-4">
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="w-full p-2 bg-secondary text-white hover:bg-success/50 cursor-pointer disabled:opacity-50 transition"
+            >
+              {saving ? "Saving..." : "Save Build"}
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );
