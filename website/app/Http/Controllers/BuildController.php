@@ -7,17 +7,21 @@ use App\Models\Build;
 use App\Services\CompatibilityService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
 
 class BuildController extends Controller
 {
-  public function index(Request $request): JsonResponse
+  public function index(Request $request): InertiaResponse
   {
     $builds = Build::query()
-      ->when($request->user(), fn($q) => $q->where('user_id', $request->user()->id))
+      ->where('user_id', $request->user()->id)
       ->orderByDesc('created_at')
       ->get();
 
-    return response()->json($builds);
+    return Inertia::render('MyBuilds', [
+      'builds' => $builds
+    ]);
   }
 
   public function store(Request $request): JsonResponse
