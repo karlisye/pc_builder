@@ -119,7 +119,7 @@ const BuildInfo = () => {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="p-4 bg-secondary text-white hover:bg-success/50 cursor-pointer disabled:opacity-50 transition flex-1"
+              className="py-4 px-8 bg-secondary text-left text-white hover:bg-success/50 cursor-pointer disabled:opacity-50 transition flex-1"
             >
               {saving ? "Saving..." : "Save Build"}
             </button>

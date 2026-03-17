@@ -19,7 +19,7 @@ class BuildController extends Controller
       ->orderByDesc('created_at')
       ->get();
 
-    return Inertia::render('MyBuilds', [
+    return Inertia::render('SavedBuilds', [
       'builds' => $builds
     ]);
   }
@@ -100,10 +100,9 @@ class BuildController extends Controller
 
   public function destroy(Request $request, Build $build): JsonResponse
   {
-    // add when auth is implemented
-    // if ($request->user() && $build->user_id !== $request->user()->id) {
-    //     return response()->json(['error' => 'Not found.'], 404);
-    // }
+    if ($request->user() && $build->user_id !== $request->user()->id) {
+      return response()->json(['error' => 'Not found.'], 404);
+    }
 
     $build->delete();
 
