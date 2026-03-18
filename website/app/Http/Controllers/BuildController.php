@@ -73,20 +73,18 @@ class BuildController extends Controller
 
   public function show(Request $request, Build $build): JsonResponse
   {
-    // add when auth is implemented
-    // if ($request->user() && $build->user_id !== $request->user()->id) {
-    //     return response()->json(['error' => 'Not found.'], 404);
-    // }
+    if ($request->user() && $build->user_id !== $request->user()->id) {
+      return response()->json(['error' => 'Not found.'], 404);
+    }
 
     return response()->json($build->loadComponents());
   }
 
   public function update(Request $request, Build $build): JsonResponse
   {
-    // add when auth is implemented
-    // if ($request->user() && $build->user_id !== $request->user()->id) {
-    //     return response()->json(['error' => 'Not found.'], 404);
-    // }
+    if ($request->user() && $build->user_id !== $request->user()->id) {
+      return response()->json(['error' => 'Not found.'], 404);
+    }
 
     $validated = $request->validate([
       'name'  => ['sometimes', 'string', 'max:255'],
