@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { router } from "@inertiajs/react";
 import ComponentInfo from "./Components/ComponentInfo";
+import DetailPanel from "./Components/DetailPanel";
 
 const SLOT_LABELS = {
   cpu: "CPU",
@@ -173,23 +174,35 @@ const SavedBuilds = ({ builds }) => {
                 if (!component) return null;
                 const isExpanded = expandedSlot === slot;
                 return (
-                  <div
-                    key={slot}
-                    className={`border border-border transition-colors ${isExpanded ? "bg-secondary-light" : ""}`}
-                  >
+                  <div key={slot}>
                     <div
-                      onClick={() => handleExpandSlot(slot)}
-                      className="p-4 bg-surface hover:bg-secondary-light cursor-pointer transition-colors"
+                      className={`border border-border transition-colors ${isExpanded ? "bg-secondary-light border-b-0" : ""}`}
                     >
-                      <div className="flex justify-between">
-                        <span className="text-muted text-sm">{label}</span>
-                        <span className="text-muted text-sm">
-                          €{component.price}
+                      <div
+                        onClick={() => handleExpandSlot(slot)}
+                        className="p-4 bg-surface hover:bg-secondary-light cursor-pointer transition-colors"
+                      >
+                        <div className="flex justify-between">
+                          <span className="text-muted text-sm">{label}</span>
+                          <span className="text-muted text-sm">
+                            €{component.price}
+                          </span>
+                        </div>
+                        <span className="text-text line-clamp-1">
+                          {component.name}
                         </span>
                       </div>
-                      <span className="text-text line-clamp-1">
-                        {component.name}
-                      </span>
+                    </div>
+
+                    <div
+                      className="lg:hidden overflow-hidden transition-all"
+                      style={{ maxHeight: isExpanded ? "500px" : "0px" }}
+                    >
+                      <DetailPanel
+                        component={component}
+                        slot={slot}
+                        setExpandedSlot={setExpandedSlot}
+                      />
                     </div>
                   </div>
                 );
@@ -197,27 +210,15 @@ const SavedBuilds = ({ builds }) => {
             </div>
 
             <div
-              className="overflow-hidden transition-all"
+              className="hidden lg:block overflow-hidden transition-all"
               style={{ maxHeight: expandedComponent ? "500px" : "0px" }}
             >
               {expandedComponent && (
-                <div className="border border-border bg-background p-4">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-muted">
-                      {SLOT_LABELS[expandedSlot]}
-                    </span>
-                    <button
-                      onClick={() => setExpandedSlot(null)}
-                      className="text-muted hover:text-text transition text-sm cursor-pointer"
-                    >
-                      Close
-                    </button>
-                  </div>
-                  <span className="text-text font-semibold text-xl">
-                    {expandedComponent.name}
-                  </span>
-                  <ComponentInfo component={expandedComponent} />
-                </div>
+                <DetailPanel
+                  component={expandedComponent}
+                  slot={expandedSlot}
+                  setExpandedSlot={setExpandedSlot}
+                />
               )}
             </div>
           </div>
