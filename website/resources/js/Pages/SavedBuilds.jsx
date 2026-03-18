@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { router } from "@inertiajs/react";
+import ComponentInfo from "./Components/ComponentInfo";
 
 const SLOT_LABELS = {
   cpu: "CPU",
@@ -20,10 +21,16 @@ const SavedBuilds = ({ builds }) => {
   const [loadingBuild, setLoadingBuild] = useState(false);
   const [editing, setEditing] = useState(false);
   const [editData, setEditData] = useState({ name: "", notes: "" });
+  const [expandedSlot, setExpandedSlot] = useState(null);
+
+  const handleExpandSlot = (slot) => {
+    setExpandedSlot((prev) => (prev === slot ? null : slot));
+  };
 
   const handleSelect = async (build) => {
     setLoadingBuild(true);
     setEditing(false);
+    setExpandedSlot(null);
     try {
       const res = await axios.get(`/api/builds/${build.id}`);
       setSelectedBuild(res.data);
@@ -56,6 +63,8 @@ const SavedBuilds = ({ builds }) => {
     }
   };
 
+  const expandedComponent = expandedSlot ? selectedBuild?.[expandedSlot] : null;
+
   return (
     <div className="h-full flex flex-wrap">
       <div className="w-full lg:w-120 bg-primary pt-6 px-4">
@@ -80,7 +89,7 @@ const SavedBuilds = ({ builds }) => {
                 </div>
                 <button
                   onClick={(e) => handleDelete(e, build.id)}
-                  className="text-muted hover:text-danger transition p-2"
+                  className="text-muted hover:text-danger transition p-2 cursor-pointer"
                 >
                   Delete
                 </button>
@@ -120,13 +129,13 @@ const SavedBuilds = ({ builds }) => {
                 <div className="flex gap-2">
                   <button
                     onClick={handleSaveEdit}
-                    className="bg-primary text-white p-2 flex-1 hover:bg-primary-light transition"
+                    className="bg-primary text-white p-2 flex-1 hover:bg-primary-light transition cursor-pointer"
                   >
                     Save
                   </button>
                   <button
                     onClick={() => setEditing(false)}
-                    className="bg-surface text-muted p-2 flex-1 hover:bg-secondary-light transition"
+                    className="bg-surface text-muted p-2 flex-1 hover:bg-secondary-light transition cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -147,7 +156,7 @@ const SavedBuilds = ({ builds }) => {
                 </div>
                 <button
                   onClick={() => setEditing(true)}
-                  className="text-muted hover:text-text transition text-sm"
+                  className="text-muted hover:text-text transition text-sm cursor-pointer"
                 >
                   Edit
                 </button>
@@ -162,23 +171,54 @@ const SavedBuilds = ({ builds }) => {
               {Object.entries(SLOT_LABELS).map(([slot, label]) => {
                 const component = selectedBuild[slot];
                 if (!component) return null;
+                const isExpanded = expandedSlot === slot;
                 return (
                   <div
                     key={slot}
-                    className="border border-border p-4 bg-surface hover:bg-secondary-light transition cursor-pointer"
+                    className={`border border-border transition-colors ${isExpanded ? "bg-secondary-light" : ""}`}
                   >
-                    <div className="flex justify-between">
-                      <span className="text-muted text-sm">{label}</span>
-                      <span className="text-muted text-sm">
-                        €{component.price}
+                    <div
+                      onClick={() => handleExpandSlot(slot)}
+                      className="p-4 bg-surface hover:bg-secondary-light cursor-pointer transition-colors"
+                    >
+                      <div className="flex justify-between">
+                        <span className="text-muted text-sm">{label}</span>
+                        <span className="text-muted text-sm">
+                          €{component.price}
+                        </span>
+                      </div>
+                      <span className="text-text line-clamp-1">
+                        {component.name}
                       </span>
                     </div>
-                    <span className="text-text flex-1 line-clamp-1">
-                      {component.name}
-                    </span>
                   </div>
                 );
               })}
+            </div>
+
+            <div
+              className="overflow-hidden transition-all"
+              style={{ maxHeight: expandedComponent ? "500px" : "0px" }}
+            >
+              {expandedComponent && (
+                <div className="border border-border bg-background p-4">
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="text-muted">
+                      {SLOT_LABELS[expandedSlot]}
+                    </span>
+                    <button
+                      onClick={() => setExpandedSlot(null)}
+                      className="text-muted hover:text-text transition text-sm cursor-pointer"
+                    >
+                      Close
+                    </button>
+                  </div>
+                  <span className="text-text font-semibold text-xl">
+                    {expandedComponent.name}
+                  </span>
+                  <ComponentInfo component={expandedComponent} />
+                </div>
+              )}
             </div>
           </div>
         )}
