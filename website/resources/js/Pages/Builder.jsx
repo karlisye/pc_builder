@@ -6,19 +6,19 @@ import AddComponent from "./Components/AddComponent";
 import ComponentFilters from "./Components/ComponentFilters";
 import BuildInfo from "./Components/BuildInfo";
 
-const Builder = () => {
+const Builder = ({ build }) => {
   const [currentCompToAdd, setCurrentCompToAdd] = useState(null);
   const [selectedComponents, setSelectedComponents] = useState({
-    cpu: null,
-    motherboard: null,
-    ram: null,
-    gpu: null,
-    psu: null,
-    ssd: null,
-    hdd: null,
-    case: null,
-    fan: null,
-    cooler: null,
+    cpu: build?.cpu ?? null,
+    motherboard: build?.motherboard ?? null,
+    ram: build?.ram ?? null,
+    gpu: build?.gpu ?? null,
+    psu: build?.psu ?? null,
+    ssd: build?.ssd ?? null,
+    hdd: build?.hdd ?? null,
+    case: build?.pc_case ?? null,
+    fan: build?.fan ?? null,
+    cooler: build?.cooler ?? null,
   });
 
   const [search, setSearch] = useState("");

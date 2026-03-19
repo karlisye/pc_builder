@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { router } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import ComponentInfo from "./Components/ComponentInfo";
 import DetailPanel from "./Components/DetailPanel";
 
@@ -164,9 +164,18 @@ const SavedBuilds = ({ builds }) => {
               </div>
             )}
 
-            <p className="text-text font-semibold text-2xl">
-              €{selectedBuild.total_price}
-            </p>
+            <div className="flex justify-between items-center">
+              <p className="text-text font-semibold text-2xl">
+                €{selectedBuild.total_price}
+              </p>
+
+              <Link
+                className="py-4 px-8 bg-primary text-white cursor-pointer hover:bg-primary-light transition"
+                href={`/builder?build=${selectedBuild.id}`}
+              >
+                Continue Build
+              </Link>
+            </div>
 
             <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-4">
               {Object.entries(SLOT_LABELS).map(([slot, label]) => {

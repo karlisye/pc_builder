@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Build;
 use App\Services\BuilderService;
 use App\Services\CompatibilityService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
 
 class BuilderController extends Controller
 {
@@ -14,6 +17,22 @@ class BuilderController extends Controller
     private readonly BuilderService $builder,
     private readonly CompatibilityService $compatibility,
   ) {}
+
+  public function index(Request $request): InertiaResponse
+  {
+    $build = null;
+
+    if ($request->has('build')) {
+      $build = Build::where('id', $request->query('build'))
+        ->where('user_id', auth()->id())
+        ->with(['cpu', 'motherboard', 'ram', 'gpu', 'ssd', 'hdd', 'pcCase', 'cooler', 'psu', 'fan'])
+        ->first();
+    }
+
+    return Inertia::render('Builder', [
+      'build' => $build,
+    ]);
+  }
 
   public function generate(Request $request): JsonResponse
   {

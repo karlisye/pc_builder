@@ -18,7 +18,7 @@ const Layout = ({ children }) => {
           {user ? (
             <>
               <Link
-                className={`py-4 px-6 transition ${url === "/builder" ? "bg-primary hover:bg-primary-light text-muted" : "hover:bg-surface"}`}
+                className={`py-4 px-6 transition ${url.startsWith("/builder") ? "bg-primary hover:bg-primary-light text-muted" : "hover:bg-surface"}`}
                 href="builder"
               >
                 Build
