@@ -6,6 +6,7 @@ const BuildInfo = ({ currBuildInfo }) => {
   const { selectedComponents, setSelectedComponents, setCurrentCompToAdd } =
     useBuilder();
   const [buildName, setBuildName] = useState(currBuildInfo?.name ?? "");
+  const [buildNotes, setBuildNotes] = useState(currBuildInfo?.notes ?? "");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -42,6 +43,7 @@ const BuildInfo = ({ currBuildInfo }) => {
     try {
       await axios.post("/api/builds", {
         name: buildName,
+        notes: buildNotes,
         components,
       });
       setSuccess("Build saved successfully");
@@ -104,16 +106,29 @@ const BuildInfo = ({ currBuildInfo }) => {
 
       {hasComponents && (
         <div className="space-y-4 pt-4 border-t border-secondary-light">
+          <label className="text-secondary-light" htmlFor="name">
+            Name
+          </label>
           <input
             type="text"
             value={buildName}
             onChange={(e) => setBuildName(e.target.value)}
-            placeholder="Build name"
+            id="name"
             className="bg-secondary-light focus:outline-1 outline-border text-text p-2 w-full"
           />
 
           {error && <p className="text-danger text-sm">{error}</p>}
           {success && <p className="text-green-500 text-sm">{success}</p>}
+
+          <label className="text-secondary-light" htmlFor="notes">
+            Notes
+          </label>
+          <textarea
+            className="bg-secondary-light focus:outline-1 outline-border text-text p-2 w-full"
+            value={buildNotes}
+            onChange={(e) => setBuildNotes(e.target.value)}
+            id="notes"
+          ></textarea>
 
           <div className="flex">
             <button
