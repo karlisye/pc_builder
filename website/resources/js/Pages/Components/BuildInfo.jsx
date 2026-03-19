@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { useBuilder } from "../../Contexts/BuilderContext";
 import axios from "axios";
 
-const BuildInfo = () => {
+const BuildInfo = ({ currBuildInfo }) => {
   const { selectedComponents, setSelectedComponents, setCurrentCompToAdd } =
     useBuilder();
-  const [buildName, setBuildName] = useState("");
+  const [buildName, setBuildName] = useState(currBuildInfo?.name ?? "");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");

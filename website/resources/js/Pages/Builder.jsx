@@ -44,7 +44,7 @@ const Builder = ({ build }) => {
         <div className="w-full lg:w-120 bg-primary pt-6 px-4">
           <h1 className="text-4xl font-semibold text-white mb-4">BUILDER</h1>
           {currentCompToAdd ? <ComponentFilters /> : <BuildDesc />}
-          <BuildInfo />
+          <BuildInfo currBuildInfo={{ name: build?.name, desc: build?.desc }} />
         </div>
 
         <div className="flex-1 flex flex-wrap justify-center gap-8 px-4 pt-6">
