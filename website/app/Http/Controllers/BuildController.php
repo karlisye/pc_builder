@@ -27,17 +27,19 @@ class BuildController extends Controller
   public function store(Request $request): JsonResponse
   {
     $validated = $request->validate([
-      'name' => ['required', 'string', 'max:255'],
-      'notes' => ['sometimes', 'nullable', 'string', 'max:5000'],
-      'components' => ['required', 'array', 'min:1'],
+      'build_id'     => ['sometimes', 'integer', 'exists:builds,id'],
+      'name'         => ['required', 'string', 'max:255'],
+      'notes'        => ['sometimes', 'nullable', 'string', 'max:5000'],
+      'components'   => ['required', 'array', 'min:1'],
       'components.*' => ['integer', 'min:1'],
     ]);
 
     $slots = Build::componentSlots();
+
     foreach (array_keys($validated['components']) as $type) {
       if (! array_key_exists($type, $slots)) {
         return response()->json([
-          'error' => "'{$type}' is not a valid component",
+          'error'       => "'{$type}' is not a valid component slot.",
           'valid_slots' => array_keys($slots),
         ], 400);
       }
@@ -47,34 +49,42 @@ class BuildController extends Controller
       $modelClass = CompatibilityService::VALID_TYPES[$type];
       if (! $modelClass::find($id)) {
         return response()->json([
-          'error' => "no {$type} found with id {$id}",
+          'error' => "No {$type} found with ID {$id}.",
         ], 404);
       }
     }
 
     $componentFks = [];
     foreach ($validated['components'] as $type => $id) {
-      $fkColumn = $slots[$type];
-      $componentFks[$fkColumn] = $id;
+      $componentFks[$slots[$type]] = $id;
     }
 
     $totalPrice = $this->calculateTotalPrice($validated['components']);
 
-    $build = Build::updateOrCreate(
-      [
-        'user_id' => $request->user()?->id,
-        'name' => $validated['name'],
-      ],
-      [
-        'notes' => $validated['notes'] ?? null,
+    if (isset($validated['build_id'])) {
+      $build = Build::where('id', $validated['build_id'])
+        ->where('user_id', $request->user()?->id)
+        ->firstOrFail();
+
+      $build->update([
+        'name'        => $validated['name'],
+        'notes'       => $validated['notes'] ?? null,
         'total_price' => $totalPrice,
         ...$componentFks,
-      ]
-    );
+      ]);
 
-    $statusCode = $build->wasRecentlyCreated ? 201 : 200;
+      return response()->json($build->loadComponents(), 200);
+    }
 
-    return response()->json($build->loadComponents(), $statusCode);
+    $build = Build::create([
+      'user_id'     => $request->user()?->id,
+      'name'        => $validated['name'],
+      'notes'       => $validated['notes'] ?? null,
+      'total_price' => $totalPrice,
+      ...$componentFks,
+    ]);
+
+    return response()->json($build->loadComponents(), 201);
   }
 
   public function show(Request $request, Build $build): JsonResponse

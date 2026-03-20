@@ -45,7 +45,11 @@ const Builder = ({ build }) => {
           <h1 className="text-4xl font-semibold text-white mb-4">BUILDER</h1>
           {currentCompToAdd ? <ComponentFilters /> : <BuildDesc />}
           <BuildInfo
-            currBuildInfo={{ name: build?.name, notes: build?.notes }}
+            currBuildInfo={{
+              id: build?.id,
+              name: build?.name,
+              notes: build?.notes,
+            }}
           />
         </div>
 

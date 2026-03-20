@@ -42,6 +42,7 @@ const BuildInfo = ({ currBuildInfo }) => {
 
     try {
       await axios.post("/api/builds", {
+        build_id: currBuildInfo?.id ?? undefined,
         name: buildName,
         notes: buildNotes,
         components,
