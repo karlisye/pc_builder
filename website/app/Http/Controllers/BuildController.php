@@ -54,21 +54,27 @@ class BuildController extends Controller
 
     $componentFks = [];
     foreach ($validated['components'] as $type => $id) {
-      $fkColumn  = $slots[$type];
+      $fkColumn = $slots[$type];
       $componentFks[$fkColumn] = $id;
     }
 
     $totalPrice = $this->calculateTotalPrice($validated['components']);
 
-    $build = Build::create([
-      'user_id' => $request->user()?->id,
-      'name' => $validated['name'],
-      'notes' => $validated['notes'] ?? null,
-      'total_price' => $totalPrice,
-      ...$componentFks,
-    ]);
+    $build = Build::updateOrCreate(
+      [
+        'user_id' => $request->user()?->id,
+        'name' => $validated['name'],
+      ],
+      [
+        'notes' => $validated['notes'] ?? null,
+        'total_price' => $totalPrice,
+        ...$componentFks,
+      ]
+    );
 
-    return response()->json($build->loadComponents(), 201);
+    $statusCode = $build->wasRecentlyCreated ? 201 : 200;
+
+    return response()->json($build->loadComponents(), $statusCode);
   }
 
   public function show(Request $request, Build $build): JsonResponse
