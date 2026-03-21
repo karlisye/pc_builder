@@ -3,9 +3,13 @@ import { useBuilder } from "../../Contexts/BuilderContext";
 import axios from "axios";
 
 const BuildInfo = ({ currBuildInfo }) => {
-  const { selectedComponents, setSelectedComponents, setCurrentCompToAdd } =
-    useBuilder();
-  const [buildId, setBuildId] = useState(currBuildInfo?.id ?? undefined);
+  const {
+    selectedComponents,
+    setSelectedComponents,
+    setCurrentCompToAdd,
+    buildId,
+    setBuildId,
+  } = useBuilder();
   const [buildName, setBuildName] = useState(currBuildInfo?.name ?? "");
   const [buildNotes, setBuildNotes] = useState(currBuildInfo?.notes ?? "");
   const [saving, setSaving] = useState(false);

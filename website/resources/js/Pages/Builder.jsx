@@ -21,6 +21,7 @@ const Builder = ({ build }) => {
     fan: build?.fan ?? null,
     cooler: build?.cooler ?? null,
   });
+  const [buildId, setBuildId] = useState(build?.id ?? undefined);
 
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState({});
@@ -39,13 +40,15 @@ const Builder = ({ build }) => {
         setFilters,
         sort,
         setSort,
+        buildId,
+        setBuildId,
       }}
     >
       <div className="h-full flex flex-wrap">
         <div className="w-full lg:w-120 bg-primary pt-6 px-4">
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-4xl font-semibold text-white">BUILDER</h1>
-            {build && (
+            {(build || buildId) && (
               <Link
                 className="px-6 py-2 border text-secondary-light cursor-pointer hover:text-muted transition text-sm"
                 href="builder"
