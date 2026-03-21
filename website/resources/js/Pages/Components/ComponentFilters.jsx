@@ -119,7 +119,7 @@ const ComponentFilters = () => {
         className="w-full p-4 bg-secondary hover:bg-secondary-dark transition cursor-pointer text-white"
         onClick={() => setFilters({})}
       >
-        Clear
+        Clear Filters
       </button>
     </div>
   );
