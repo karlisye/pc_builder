@@ -104,7 +104,9 @@ const SavedBuilds = ({ builds }) => {
         {loadingBuild && <p className="text-muted">Loading...</p>}
 
         {!loadingBuild && !selectedBuild && (
-          <p className="text-muted">Select a build to view details.</p>
+          <p className="text-muted text-center">
+            Select a build to view details.
+          </p>
         )}
 
         {!loadingBuild && selectedBuild && (
@@ -117,7 +119,7 @@ const SavedBuilds = ({ builds }) => {
                   onChange={(e) =>
                     setEditData((prev) => ({ ...prev, name: e.target.value }))
                   }
-                  className="bg-surface border border-border text-text p-2 w-full"
+                  className="bg-surface border border-border text-text p-2 w-full focus:outline-1 outline-border"
                 />
                 <textarea
                   value={editData.notes}
@@ -125,7 +127,7 @@ const SavedBuilds = ({ builds }) => {
                     setEditData((prev) => ({ ...prev, notes: e.target.value }))
                   }
                   placeholder="Notes"
-                  className="bg-surface border border-border text-text p-2 w-full"
+                  className="bg-surface border border-border text-text p-2 w-full focus:outline-1 outline-border"
                 />
                 <div className="flex gap-2">
                   <button
@@ -169,12 +171,20 @@ const SavedBuilds = ({ builds }) => {
                 €{selectedBuild.total_price}
               </p>
 
-              <Link
-                className="py-4 px-8 bg-primary text-white cursor-pointer hover:bg-primary-light transition"
-                href={`/builder?build=${selectedBuild.id}`}
-              >
-                Continue Build
-              </Link>
+              <div className="flex items-center gap-4">
+                <Link
+                  className="py-4 px-8 bg-primary text-white cursor-pointer hover:bg-primary-light transition"
+                  href={`/builder?build=${selectedBuild.id}`}
+                >
+                  Continue Build
+                </Link>
+                <button
+                  className="py-4 px-8 bg-surface text-text cursor-pointer hover:bg-danger/50 transition"
+                  onClick={(e) => handleDelete(e, selectedBuild.id)}
+                >
+                  Delete Build
+                </button>
+              </div>
             </div>
 
             <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-4">

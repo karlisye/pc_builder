@@ -106,7 +106,7 @@ const BuildInfo = ({ currBuildInfo }) => {
         <p className="text-secondary-light">Select your components</p>
       )}
 
-      {buildId && (
+      {(buildId || hasComponents) && (
         <div className="space-y-4 pt-4 border-t border-secondary-light">
           <label className="text-secondary-light" htmlFor="name">
             Name
