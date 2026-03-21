@@ -5,6 +5,7 @@ import axios from "axios";
 const BuildInfo = ({ currBuildInfo }) => {
   const { selectedComponents, setSelectedComponents, setCurrentCompToAdd } =
     useBuilder();
+  const [buildId, setBuildId] = useState(currBuildInfo?.id ?? undefined);
   const [buildName, setBuildName] = useState(currBuildInfo?.name ?? "");
   const [buildNotes, setBuildNotes] = useState(currBuildInfo?.notes ?? "");
   const [saving, setSaving] = useState(false);
@@ -19,7 +20,7 @@ const BuildInfo = ({ currBuildInfo }) => {
     setCurrentCompToAdd(null);
   };
 
-  const handleSave = async () => {
+  const handleSave = async (asNew = false) => {
     if (!buildName.trim()) {
       setError("Please enter a build name");
       return;
@@ -42,12 +43,12 @@ const BuildInfo = ({ currBuildInfo }) => {
 
     try {
       await axios.post("/api/builds", {
-        build_id: currBuildInfo?.id ?? undefined,
+        build_id: asNew ? undefined : buildId,
         name: buildName,
         notes: buildNotes,
         components,
       });
-      setSuccess("Build saved successfully");
+      setSuccess(asNew ? "Saved as new build!" : "Build saved successfully");
       setTimeout(() => setSuccess(""), 5000);
     } catch (err) {
       setError(err.response?.data?.error ?? "Failed to save build");
@@ -132,7 +133,7 @@ const BuildInfo = ({ currBuildInfo }) => {
 
           <div className="flex">
             <button
-              onClick={handleSave}
+              onClick={() => handleSave()}
               disabled={saving}
               className="py-4 px-8 bg-secondary text-left text-white hover:bg-success/50 cursor-pointer disabled:opacity-50 transition flex-1"
             >
@@ -146,6 +147,15 @@ const BuildInfo = ({ currBuildInfo }) => {
               Clear Build
             </button>
           </div>
+
+          {buildId && (
+            <button
+              className="text-secondary-light hover:text-muted transition cursor-pointer border px-4 py-2 text-sm"
+              onClick={() => handleSave(true)}
+            >
+              Save as New Build
+            </button>
+          )}
         </div>
       )}
     </div>
