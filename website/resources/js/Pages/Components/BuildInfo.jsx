@@ -42,12 +42,13 @@ const BuildInfo = ({ currBuildInfo }) => {
     setSuccess("");
 
     try {
-      await axios.post("/api/builds", {
+      const res = await axios.post("/api/builds", {
         build_id: asNew ? undefined : buildId,
         name: buildName,
         notes: buildNotes,
         components,
       });
+      setBuildId(res.data.id);
       setSuccess(asNew ? "Saved as new build!" : "Build saved successfully");
       setTimeout(() => setSuccess(""), 5000);
     } catch (err) {
@@ -105,7 +106,7 @@ const BuildInfo = ({ currBuildInfo }) => {
         <p className="text-secondary-light">Select your components</p>
       )}
 
-      {hasComponents && (
+      {buildId && (
         <div className="space-y-4 pt-4 border-t border-secondary-light">
           <label className="text-secondary-light" htmlFor="name">
             Name
