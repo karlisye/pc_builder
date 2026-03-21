@@ -5,6 +5,7 @@ import { BuilderContext } from "../Contexts/BuilderContext";
 import AddComponent from "./Components/AddComponent";
 import ComponentFilters from "./Components/ComponentFilters";
 import BuildInfo from "./Components/BuildInfo";
+import { Link } from "@inertiajs/react";
 
 const Builder = ({ build }) => {
   const [currentCompToAdd, setCurrentCompToAdd] = useState(null);
@@ -42,7 +43,18 @@ const Builder = ({ build }) => {
     >
       <div className="h-full flex flex-wrap">
         <div className="w-full lg:w-120 bg-primary pt-6 px-4">
-          <h1 className="text-4xl font-semibold text-white mb-4">BUILDER</h1>
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-4xl font-semibold text-white">BUILDER</h1>
+            {build && (
+              <Link
+                className="px-6 py-2 border text-secondary-light cursor-pointer hover:text-muted transition text-sm"
+                href="builder"
+              >
+                New Build
+              </Link>
+            )}
+          </div>
+
           {currentCompToAdd ? <ComponentFilters /> : <BuildDesc />}
           <BuildInfo
             currBuildInfo={{
