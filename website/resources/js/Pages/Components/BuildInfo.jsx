@@ -49,7 +49,6 @@ const BuildInfo = ({ currBuildInfo }) => {
       });
       setSuccess("Build saved successfully");
       setTimeout(() => setSuccess(""), 5000);
-      setBuildName("");
     } catch (err) {
       setError(err.response?.data?.error ?? "Failed to save build");
     } finally {
