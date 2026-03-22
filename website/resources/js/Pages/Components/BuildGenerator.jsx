@@ -1,12 +1,14 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useBuilder } from "../../Contexts/BuilderContext";
+import BudgetSlider from "./BudgetSlider";
 
 const BuildGenerator = () => {
   const { selectedComponents, setSelectedComponents } = useBuilder();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [budget, setBudget] = useState(1500);
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -20,7 +22,7 @@ const BuildGenerator = () => {
 
       const res = await axios.post("/api/builder", {
         selected,
-        budget: 10000,
+        budget,
       });
 
       if (res.data.success) {
@@ -62,12 +64,16 @@ const BuildGenerator = () => {
       <div
         className={`grid transition-all overflow-hidden ${open ? "grid-rows-[1fr] mt-3" : "grid-rows-[0fr]"}`}
       >
-        <div className="overflow-hidden">
-          <p className="text-muted text-sm mb-3">
+        <div className="overflow-hidden space-y-4">
+          <p className="text-muted text-sm">
             Not sure where to start? Let us pick the best compatible components
             for your budget.
           </p>
+
+          <BudgetSlider value={budget} onChange={setBudget} />
+
           {error && <p className="text-danger text-sm mb-2">{error}</p>}
+
           <button
             className="p-4 w-full bg-secondary-light text-text cursor-pointer hover:bg-secondary-light/50 transition disabled:opacity-50"
             onClick={handleGenerate}
