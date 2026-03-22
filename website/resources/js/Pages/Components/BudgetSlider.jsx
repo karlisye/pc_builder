@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const BudgetSlider = ({
   value,
@@ -7,13 +7,41 @@ const BudgetSlider = ({
   max = 10000,
   step = 100,
 }) => {
+  const [inputValue, setInputValue] = useState(value);
+
+  const clamp = (val) => {
+    const num = parseInt(val);
+    if (isNaN(num)) return min;
+    return Math.min(Math.max(num, min), max);
+  };
+
+  const handleBlur = () => {
+    const clamped = clamp(inputValue);
+    setInputValue(clamped);
+    onChange(clamped);
+  };
+
+  const handleSlider = (e) => {
+    const val = parseInt(e.target.value);
+    setInputValue(val);
+    onChange(val);
+  };
+
   return (
     <div className="space-y-2">
       <div className="flex justify-between items-center">
         <span className="text-muted text-sm">Budget</span>
-        <span className="text-secondary-light font-semibold">
-          €{value.toLocaleString()}
-        </span>
+        <div className="flex items-center gap-1">
+          <span className="text-muted text-sm">€</span>
+          <input
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onBlur={handleBlur}
+            onKeyDown={(e) => e.key === "Enter" && e.target.blur()}
+            className="text-secondary-light font-semibold w-13 text-right focus:outline-none"
+          />
+        </div>
       </div>
       <input
         type="range"
@@ -21,7 +49,7 @@ const BudgetSlider = ({
         max={max}
         step={step}
         value={value}
-        onChange={(e) => onChange(parseInt(e.target.value))}
+        onChange={handleSlider}
         className="cursor-pointer w-full accent-secondary-light"
       />
       <div className="flex justify-between">
