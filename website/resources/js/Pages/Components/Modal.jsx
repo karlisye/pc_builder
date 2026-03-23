@@ -10,7 +10,10 @@ const Modal = ({ children, close }) => {
         className="relative bg-background px-10 pt-10 pb-6"
         onClick={(e) => e.stopPropagation()}
       >
-        <button className="absolute top-2 right-2 text-text hover:text-primary-light transition cursor-pointer">
+        <button
+          className="absolute top-2 right-2 text-text hover:text-primary-light transition cursor-pointer"
+          onClick={close}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
