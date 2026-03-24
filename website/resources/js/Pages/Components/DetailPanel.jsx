@@ -2,31 +2,43 @@ import React from "react";
 import ComponentInfo from "./ComponentInfo";
 
 const DetailPanel = ({ component, slot, setExpandedSlot }) => (
-  <div className="border border-border bg-background p-4">
-    <div className="flex justify-between items-center mb-3">
-      <span className="text-muted">{slot}</span>
-      <button
-        onClick={() => setExpandedSlot(null)}
-        className="text-muted hover:text-text transition text-sm cursor-pointer"
+  <div className="border border-border bg-background p-4 relative">
+    <div className="lg:flex justify-between items-center mb-8 lg:mb-4 mr-10">
+      <div className="mb-6">
+        <span className="text-muted block">{slot}</span>
+        <span className="text-text font-semibold text-xl block">
+          {component.name}
+        </span>
+      </div>
+
+      <a
+        className="bg-surface py-4 px-8 hover:bg-success/50 transition cursor-pointer text-nowrap mb-6"
+        target="_blank"
+        href={component.url}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          width="24"
-          height="24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <line x1="5" y1="5" x2="19" y2="19" />
-          <line x1="19" y1="5" x2="5" y2="19" />
-        </svg>
-      </button>
+        See In Store
+      </a>
     </div>
-    <span className="text-text font-semibold text-xl">{component.name}</span>
     <ComponentInfo component={component} />
+    <button
+      onClick={() => setExpandedSlot(null)}
+      className="text-muted hover:text-text transition text-sm cursor-pointer absolute top-4 right-4"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        width="24"
+        height="24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <line x1="5" y1="5" x2="19" y2="19" />
+        <line x1="19" y1="5" x2="5" y2="19" />
+      </svg>
+    </button>
   </div>
 );
 

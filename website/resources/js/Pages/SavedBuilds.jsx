@@ -220,7 +220,7 @@ const SavedBuilds = ({ builds }) => {
                         </div>
 
                         <a
-                          className={`flex items-center transition text-text ${isExpanded ? "px-8 border-l border-border bg-success/30 hover:bg-success/50" : "w-0 overflow-hidden"}`}
+                          className={`flex items-center transition text-text border-l border-border ${isExpanded ? "px-8 bg-success/30 hover:bg-success/50" : "w-0 overflow-hidden"}`}
                           target="_blank"
                           href={component.url}
                         >
