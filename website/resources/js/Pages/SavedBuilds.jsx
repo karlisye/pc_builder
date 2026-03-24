@@ -205,17 +205,27 @@ const SavedBuilds = ({ builds }) => {
                     <div key={slot}>
                       <div
                         onClick={() => handleExpandSlot(slot)}
-                        className={`p-4 cursor-pointer transition-all border border-border ${isExpanded ? "bg-secondary-light hover:bg-secondary-light/80" : "bg-surface hover:bg-secondary-light"}`}
+                        className={`flex cursor-pointer transition-all border border-border ${isExpanded ? "bg-secondary-light hover:bg-secondary-light/80" : "bg-surface hover:bg-secondary-light"}`}
                       >
-                        <div className="flex justify-between">
-                          <span className="text-muted text-sm">{label}</span>
-                          <span className="text-muted text-sm">
-                            €{component.price}
+                        <div className="flex-1 m-4">
+                          <div className="flex justify-between">
+                            <span className="text-muted text-sm">{label}</span>
+                            <span className="text-muted text-sm">
+                              €{component.price}
+                            </span>
+                          </div>
+                          <span className="text-text line-clamp-1">
+                            {component.name}
                           </span>
                         </div>
-                        <span className="text-text line-clamp-1">
-                          {component.name}
-                        </span>
+
+                        <a
+                          className={`flex items-center transition text-text ${isExpanded ? "px-8 border-l border-border bg-success/30 hover:bg-success/50" : "w-0 overflow-hidden"}`}
+                          target="_blank"
+                          href={component.url}
+                        >
+                          Buy
+                        </a>
                       </div>
 
                       {/* show details right under */}
