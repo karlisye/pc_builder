@@ -204,24 +204,21 @@ const SavedBuilds = ({ builds }) => {
                   return (
                     <div key={slot}>
                       <div
-                        className={`border border-border transition-colors ${isExpanded ? "bg-secondary-light border-b-0" : ""}`}
+                        onClick={() => handleExpandSlot(slot)}
+                        className={`p-4 cursor-pointer transition-all border border-border ${isExpanded ? "bg-secondary-light hover:bg-secondary-light/80" : "bg-surface hover:bg-secondary-light"}`}
                       >
-                        <div
-                          onClick={() => handleExpandSlot(slot)}
-                          className="p-4 bg-surface hover:bg-secondary-light cursor-pointer transition-colors"
-                        >
-                          <div className="flex justify-between">
-                            <span className="text-muted text-sm">{label}</span>
-                            <span className="text-muted text-sm">
-                              €{component.price}
-                            </span>
-                          </div>
-                          <span className="text-text line-clamp-1">
-                            {component.name}
+                        <div className="flex justify-between">
+                          <span className="text-muted text-sm">{label}</span>
+                          <span className="text-muted text-sm">
+                            €{component.price}
                           </span>
                         </div>
+                        <span className="text-text line-clamp-1">
+                          {component.name}
+                        </span>
                       </div>
 
+                      {/* show details right under */}
                       <div
                         className="lg:hidden overflow-hidden transition-all"
                         style={{ maxHeight: isExpanded ? "500px" : "0px" }}
@@ -237,6 +234,7 @@ const SavedBuilds = ({ builds }) => {
                 })}
               </div>
 
+              {/* show details under all */}
               <div
                 className="hidden lg:block overflow-hidden transition-all"
                 style={{ maxHeight: expandedComponent ? "500px" : "0px" }}
