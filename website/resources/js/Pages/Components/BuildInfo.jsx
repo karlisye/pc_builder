@@ -107,7 +107,7 @@ const BuildInfo = ({ currBuildInfo }) => {
             </div>
           ))
       ) : (
-        <p className="text-secondary-light">Select your components</p>
+        <p className="text-secondary-light mb-4">Select your components</p>
       )}
 
       {(buildId || hasComponents) && (
@@ -120,6 +120,7 @@ const BuildInfo = ({ currBuildInfo }) => {
             value={buildName}
             onChange={(e) => setBuildName(e.target.value)}
             id="name"
+            placeholder="build name..."
             className="bg-secondary-light focus:outline-1 outline-border text-text p-2 w-full"
           />
 
@@ -132,6 +133,7 @@ const BuildInfo = ({ currBuildInfo }) => {
           <textarea
             className="bg-secondary-light focus:outline-1 outline-border text-text p-2 w-full"
             value={buildNotes}
+            placeholder="build notes..."
             onChange={(e) => setBuildNotes(e.target.value)}
             id="notes"
           ></textarea>

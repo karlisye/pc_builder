@@ -69,7 +69,7 @@ const SavedBuilds = ({ builds }) => {
   return (
     <>
       <div className="h-full flex flex-wrap">
-        <div className="w-full lg:w-120 bg-primary pt-6 px-4">
+        <div className="w-full lg:w-120 bg-primary py-6 px-4">
           <h1 className="text-4xl font-semibold text-white mb-4">
             SAVED BUILDS
           </h1>
@@ -81,7 +81,7 @@ const SavedBuilds = ({ builds }) => {
                 <div
                   key={build.id}
                   onClick={() => handleSelect(build)}
-                  className={`hover:bg-secondary border transition cursor-pointer p-2 flex justify-between items-center border-secondary-light ${
+                  className={`hover:bg-secondary border transition cursor-pointer p-2 flex justify-between items-center border-secondary ${
                     selectedBuild?.id === build.id ? "bg-secondary" : ""
                   }`}
                 >
@@ -110,7 +110,7 @@ const SavedBuilds = ({ builds }) => {
           {loadingBuild && <p className="text-muted">Loading...</p>}
 
           {!loadingBuild && !selectedBuild && (
-            <p className="text-muted text-center">
+            <p className="text-2xl font-semibold text-text text-center">
               Select a build to view details.
             </p>
           )}
@@ -138,16 +138,16 @@ const SavedBuilds = ({ builds }) => {
                     placeholder="Notes"
                     className="bg-surface border border-border text-text p-2 w-full focus:outline-1 outline-border"
                   />
-                  <div className="flex gap-2">
+                  <div className="flex gap-4">
                     <button
                       onClick={handleSaveEdit}
-                      className="bg-primary text-white p-2 flex-1 hover:bg-primary-light transition cursor-pointer"
+                      className="bg-primary text-white p-4 flex-1 hover:bg-primary-light transition cursor-pointer"
                     >
                       Save
                     </button>
                     <button
                       onClick={() => setEditing(false)}
-                      className="bg-surface text-muted p-2 flex-1 hover:bg-secondary-light transition cursor-pointer"
+                      className="bg-surface text-muted p-4 flex-1 hover:bg-secondary-light transition cursor-pointer"
                     >
                       Cancel
                     </button>

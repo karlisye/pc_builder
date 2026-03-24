@@ -3,7 +3,7 @@ import ComponentInfo from "./ComponentInfo";
 
 const DetailPanel = ({ component, slot, setExpandedSlot }) => (
   <div className="border border-border bg-background p-4 relative">
-    <div className="lg:flex justify-between items-center mb-8 lg:mb-4 mr-10">
+    <div className="lg:flex justify-between items-center mb-8 lg:mb-4 mr-14">
       <div className="mb-6">
         <span className="text-muted block">{slot}</span>
         <span className="text-text font-semibold text-xl block">
@@ -22,7 +22,7 @@ const DetailPanel = ({ component, slot, setExpandedSlot }) => (
     <ComponentInfo component={component} />
     <button
       onClick={() => setExpandedSlot(null)}
-      className="text-muted hover:text-text transition text-sm cursor-pointer absolute top-4 right-4"
+      className="w-10 h-10 text-muted hover:cursor-pointer bg-surface hover:bg-secondary-light transition p-2 absolute top-4 right-4"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

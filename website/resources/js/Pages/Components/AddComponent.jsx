@@ -157,7 +157,7 @@ const AddComponent = () => {
                         <a
                           href={component.url}
                           target="_blank"
-                          className="p-4 bg-surface text-text hover:bg-secondary-light transition cursor-pointer border-border border"
+                          className="p-4 bg-surface text-text hover:bg-secondary-light transition cursor-pointer"
                         >
                           See in Shop
                         </a>
