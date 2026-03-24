@@ -23,11 +23,19 @@ const Layout = ({ children }) => {
               >
                 Build
               </Link>
+
               <Link
                 className={`py-4 px-6 transition ${url === "/builds" ? "bg-primary hover:bg-primary-light text-muted" : "hover:bg-surface"}`}
                 href="builds"
               >
                 Saved
+              </Link>
+
+              <Link
+                className={`py-4 px-6 transition ${url === "/guide" ? "bg-primary hover:bg-primary-light text-muted" : "hover:bg-surface"}`}
+                href="guide"
+              >
+                Guide
               </Link>
 
               <form
