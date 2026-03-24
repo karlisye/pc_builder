@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useBuilder } from "../../Contexts/BuilderContext";
 import BudgetSlider from "./BudgetSlider";
-import Modal from "./Modal";
+import { Link } from "@inertiajs/react";
 
 const BuildGenerator = () => {
   const { selectedComponents, setSelectedComponents } = useBuilder();
@@ -10,7 +10,6 @@ const BuildGenerator = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [budget, setBudget] = useState(1500);
-  const [isHelpActive, setIsHelpActive] = useState(false);
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -44,59 +43,52 @@ const BuildGenerator = () => {
   };
 
   return (
-    <>
-      <div className="pt-4 border-t border-secondary">
-        <button
-          onClick={() => setOpen((prev) => !prev)}
-          className="w-full flex justify-between items-center text-secondary-light hover:text-surface transition cursor-pointer"
+    <div className="pt-4 border-t border-secondary">
+      <button
+        onClick={() => setOpen((prev) => !prev)}
+        className="w-full flex justify-between items-center text-secondary-light hover:text-surface transition cursor-pointer"
+      >
+        <span className="text-sm">Auto Generate Build</span>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`}
         >
-          <span className="text-sm">Auto Generate Build</span>
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`}
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </button>
+
+      <div
+        className={`grid transition-all overflow-hidden ${open ? "grid-rows-[1fr] mt-3" : "grid-rows-[0fr]"}`}
+      >
+        <div className="overflow-hidden space-y-4">
+          <p className="text-muted text-sm">
+            Not sure where to start? Let us pick the best compatible components
+            for your budget. For more information visit{" "}
+            <Link className="text-info/80 cursor-pointer hover:underline">
+              Generator Guide
+            </Link>
+            .
+          </p>
+
+          <BudgetSlider value={budget} onChange={setBudget} />
+
+          {error && <p className="text-danger text-sm mb-2">{error}</p>}
+
+          <button
+            className="p-4 w-full bg-secondary-light text-text cursor-pointer hover:bg-secondary-light/50 transition disabled:opacity-50"
+            onClick={handleGenerate}
+            disabled={loading}
           >
-            <polyline points="6 9 12 15 18 9" />
-          </svg>
-        </button>
-
-        <div
-          className={`grid transition-all overflow-hidden ${open ? "grid-rows-[1fr] mt-3" : "grid-rows-[0fr]"}`}
-        >
-          <div className="overflow-hidden space-y-4">
-            <p className="text-muted text-sm">
-              Not sure where to start? Let us pick the best compatible
-              components for your budget. For more information see{" "}
-              <button
-                className="text-info/80 cursor-pointer hover:underline"
-                onClick={() => setIsHelpActive(true)}
-              >
-                Help
-              </button>
-              .
-            </p>
-
-            <BudgetSlider value={budget} onChange={setBudget} />
-
-            {error && <p className="text-danger text-sm mb-2">{error}</p>}
-
-            <button
-              className="p-4 w-full bg-secondary-light text-text cursor-pointer hover:bg-secondary-light/50 transition disabled:opacity-50"
-              onClick={handleGenerate}
-              disabled={loading}
-            >
-              {loading ? <p>Generating...</p> : "Generate"}
-            </button>
-          </div>
+            {loading ? <p>Generating...</p> : "Generate"}
+          </button>
         </div>
       </div>
-
-      {isHelpActive && <Modal close={() => setIsHelpActive(false)}></Modal>}
-    </>
+    </div>
   );
 };
 
