@@ -81,8 +81,8 @@ const SavedBuilds = ({ builds }) => {
                 <div
                   key={build.id}
                   onClick={() => handleSelect(build)}
-                  className={`hover:bg-secondary border transition cursor-pointer p-2 flex justify-between items-center border-secondary ${
-                    selectedBuild?.id === build.id ? "bg-secondary" : ""
+                  className={`hover:bg-secondary border transition-all cursor-pointer p-2 flex justify-between items-center border-secondary ${
+                    selectedBuild?.id === build.id ? "border-l-10" : ""
                   }`}
                 >
                   <div>

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', fn() => Inertia::render('Home'))->name('home');
+Route::get('/guide', fn() => Inertia::render('Guide'))->name('guide');
 
 Route::middleware('guest')->group(function () {
     Route::get('/register', fn() => Inertia::render('Auth/Register'))->name('register');
