@@ -1,35 +1,28 @@
 import React, { useState } from "react";
+import GuideSidebar from "./Components/Guide/GuideSidebar";
+import BuilderSection from "./Components/Guide/Sections/BuilderSection";
+import AutoSection from "./Components/Guide/Sections/AutoSection";
+import SavedSection from "./Components/Guide/Sections/SavedSection";
+
+const SECTIONS = [
+  { id: "builder", label: "Building a PC" },
+  { id: "auto", label: "Automatic Builder" },
+  { id: "saved", label: "Managing Saved Builds" },
+];
+
+const contentMap = {
+  builder: <BuilderSection />,
+  auto: <AutoSection />,
+  saved: <SavedSection />,
+};
 
 const Guide = () => {
-  const [active, setActive] = useState("builder");
+  const [active, setActive] = useState(SECTIONS[0].id);
 
   return (
-    <div className="h-full flex flex-wrap">
-      <div className="w-full lg:w-120 bg-primary py-6 px-4">
-        <h1 className="text-4xl font-semibold text-white">GUIDE</h1>
-        <div className="space-y-4 mt-8">
-          <button
-            className={`p-4 border border-secondary w-full hover:bg-secondary text-white text-left transition-all cursor-pointer ${active === "builder" ? "border-l-10" : ""}`}
-            onClick={() => setActive("builder")}
-          >
-            Building a PC
-          </button>
-
-          <button
-            className={`p-4 border border-secondary w-full hover:bg-secondary text-white text-left transition-all cursor-pointer ${active === "auto" ? "border-l-10" : ""}`}
-            onClick={() => setActive("auto")}
-          >
-            Automatic Builder
-          </button>
-
-          <button
-            className={`p-4 border border-secondary w-full hover:bg-secondary text-white text-left transition-all cursor-pointer ${active === "saved" ? "border-l-10" : ""}`}
-            onClick={() => setActive("saved")}
-          >
-            Managing Saved Builds
-          </button>
-        </div>
-      </div>
+    <div className="min-h-screen flex flex-col lg:flex-row">
+      <GuideSidebar sections={SECTIONS} active={active} onSelect={setActive} />
+      <div className="flex-1 px-4 pt-6">{contentMap[active]}</div>
     </div>
   );
 };
