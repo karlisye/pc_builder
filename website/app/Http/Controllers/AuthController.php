@@ -19,8 +19,8 @@ class AuthController extends Controller
         ->mixedCase()->letters()->symbols()->numbers()]
     ]);
     $user = User::create([
-      'name'     => $credentials['name'],
-      'email'    => $credentials['email'],
+      'name' => $credentials['name'],
+      'email' => $credentials['email'],
       'password' => Hash::make($credentials['password']),
     ]);
 

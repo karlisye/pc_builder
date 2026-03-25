@@ -5,19 +5,19 @@ namespace App\Helpers;
 class CompatibilityHelper
 {
   public const CASE_FITS_MOTHERBOARD = [
-    'XL ATX'       => ['ATX', 'Extended ATX', 'E-ATX', 'EEB', 'SSI-EEB', 'SSI-CEB', 'CEB', 'mATX', 'Micro ATX', 'mDTX', 'mITX', 'Mini-ITX', 'ITX'],
+    'XL ATX' => ['ATX', 'Extended ATX', 'E-ATX', 'EEB', 'SSI-EEB', 'SSI-CEB', 'CEB', 'mATX', 'Micro ATX', 'mDTX', 'mITX', 'Mini-ITX', 'ITX'],
     'Extended ATX' => ['ATX', 'Extended ATX', 'E-ATX', 'EEB', 'SSI-EEB', 'SSI-CEB', 'CEB', 'mATX', 'Micro ATX', 'mDTX', 'mITX', 'Mini-ITX', 'ITX'],
-    'E-ATX'        => ['ATX', 'Extended ATX', 'E-ATX', 'EEB', 'SSI-EEB', 'SSI-CEB', 'CEB', 'mATX', 'Micro ATX', 'mDTX', 'mITX', 'Mini-ITX', 'ITX'],
-    'EEB'          => ['ATX', 'Extended ATX', 'E-ATX', 'EEB', 'SSI-EEB', 'SSI-CEB', 'CEB', 'mATX', 'Micro ATX', 'mDTX', 'mITX', 'Mini-ITX', 'ITX'],
-    'SSI-EEB'      => ['ATX', 'Extended ATX', 'E-ATX', 'EEB', 'SSI-EEB', 'SSI-CEB', 'CEB', 'mATX', 'Micro ATX', 'mDTX', 'mITX', 'Mini-ITX', 'ITX'],
-    'SSI-CEB'      => ['ATX', 'Extended ATX', 'E-ATX', 'EEB', 'SSI-EEB', 'SSI-CEB', 'CEB', 'mATX', 'Micro ATX', 'mDTX', 'mITX', 'Mini-ITX', 'ITX'],
-    'CEB'          => ['ATX', 'Extended ATX', 'E-ATX', 'EEB', 'SSI-EEB', 'SSI-CEB', 'CEB', 'mATX', 'Micro ATX', 'mDTX', 'mITX', 'Mini-ITX', 'ITX'],
-    'ATX'          => ['ATX', 'Extended ATX', 'E-ATX', 'EEB', 'SSI-EEB', 'SSI-CEB', 'CEB', 'mATX', 'Micro ATX', 'mDTX', 'mITX', 'Mini-ITX', 'ITX'],
-    'mATX'         => ['mATX', 'Micro ATX', 'mDTX', 'mITX', 'Mini-ITX', 'ITX'],
-    'Micro ATX'    => ['mATX', 'Micro ATX', 'mDTX', 'mITX', 'Mini-ITX', 'ITX'],
-    'mITX'         => ['mITX', 'Mini-ITX', 'ITX'],
-    'Mini-ITX'     => ['mITX', 'Mini-ITX', 'ITX'],
-    'ITX'          => ['mITX', 'Mini-ITX', 'ITX'],
+    'E-ATX' => ['ATX', 'Extended ATX', 'E-ATX', 'EEB', 'SSI-EEB', 'SSI-CEB', 'CEB', 'mATX', 'Micro ATX', 'mDTX', 'mITX', 'Mini-ITX', 'ITX'],
+    'EEB' => ['ATX', 'Extended ATX', 'E-ATX', 'EEB', 'SSI-EEB', 'SSI-CEB', 'CEB', 'mATX', 'Micro ATX', 'mDTX', 'mITX', 'Mini-ITX', 'ITX'],
+    'SSI-EEB' => ['ATX', 'Extended ATX', 'E-ATX', 'EEB', 'SSI-EEB', 'SSI-CEB', 'CEB', 'mATX', 'Micro ATX', 'mDTX', 'mITX', 'Mini-ITX', 'ITX'],
+    'SSI-CEB' => ['ATX', 'Extended ATX', 'E-ATX', 'EEB', 'SSI-EEB', 'SSI-CEB', 'CEB', 'mATX', 'Micro ATX', 'mDTX', 'mITX', 'Mini-ITX', 'ITX'],
+    'CEB' => ['ATX', 'Extended ATX', 'E-ATX', 'EEB', 'SSI-EEB', 'SSI-CEB', 'CEB', 'mATX', 'Micro ATX', 'mDTX', 'mITX', 'Mini-ITX', 'ITX'],
+    'ATX' => ['ATX', 'Extended ATX', 'E-ATX', 'EEB', 'SSI-EEB', 'SSI-CEB', 'CEB', 'mATX', 'Micro ATX', 'mDTX', 'mITX', 'Mini-ITX', 'ITX'],
+    'mATX' => ['mATX', 'Micro ATX', 'mDTX', 'mITX', 'Mini-ITX', 'ITX'],
+    'Micro ATX' => ['mATX', 'Micro ATX', 'mDTX', 'mITX', 'Mini-ITX', 'ITX'],
+    'mITX' => ['mITX', 'Mini-ITX', 'ITX'],
+    'Mini-ITX' => ['mITX', 'Mini-ITX', 'ITX'],
+    'ITX' => ['mITX', 'Mini-ITX', 'ITX'],
   ];
 
   public const KNOWN_MOTHERBOARD_FORM_FACTORS = [

@@ -27,10 +27,10 @@ class BuildController extends Controller
   public function store(Request $request): JsonResponse
   {
     $validated = $request->validate([
-      'build_id'     => ['sometimes', 'integer', 'exists:builds,id'],
-      'name'         => ['required', 'string', 'max:255'],
-      'notes'        => ['sometimes', 'nullable', 'string', 'max:5000'],
-      'components'   => ['required', 'array', 'min:1'],
+      'build_id' => ['sometimes', 'integer', 'exists:builds,id'],
+      'name' => ['required', 'string', 'max:255'],
+      'notes' => ['sometimes', 'nullable', 'string', 'max:5000'],
+      'components' => ['required', 'array', 'min:1'],
       'components.*' => ['integer', 'min:1'],
     ]);
 
@@ -39,7 +39,7 @@ class BuildController extends Controller
     foreach (array_keys($validated['components']) as $type) {
       if (! array_key_exists($type, $slots)) {
         return response()->json([
-          'error'       => "'{$type}' is not a valid component slot.",
+          'error' => "'{$type}' is not a valid component slot.",
           'valid_slots' => array_keys($slots),
         ], 400);
       }
@@ -67,8 +67,8 @@ class BuildController extends Controller
         ->firstOrFail();
 
       $build->update([
-        'name'        => $validated['name'],
-        'notes'       => $validated['notes'] ?? null,
+        'name' => $validated['name'],
+        'notes' => $validated['notes'] ?? null,
         'total_price' => $totalPrice,
         ...$componentFks,
       ]);
@@ -77,9 +77,9 @@ class BuildController extends Controller
     }
 
     $build = Build::create([
-      'user_id'     => $request->user()?->id,
-      'name'        => $validated['name'],
-      'notes'       => $validated['notes'] ?? null,
+      'user_id' => $request->user()?->id,
+      'name' => $validated['name'],
+      'notes' => $validated['notes'] ?? null,
       'total_price' => $totalPrice,
       ...$componentFks,
     ]);
@@ -103,7 +103,7 @@ class BuildController extends Controller
     }
 
     $validated = $request->validate([
-      'name'  => ['sometimes', 'string', 'max:255'],
+      'name' => ['sometimes', 'string', 'max:255'],
       'notes' => ['sometimes', 'nullable', 'string', 'max:5000'],
     ]);
 

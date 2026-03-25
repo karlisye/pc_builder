@@ -269,7 +269,7 @@ class BuilderService
 
   private function resolveTier(float $budget): string
   {
-    if ($budget < 500)  return 'budget';
+    if ($budget < 500) return 'budget';
     if ($budget <= 1500) return 'mid';
     return 'high';
   }
@@ -309,12 +309,12 @@ class BuilderService
     ?float $estimatedMinimum = null
   ): array {
     return [
-      'success'                  => false,
-      'build'                    => null,
-      'total_price'              => null,
-      'remaining_budget'         => null,
-      'attempts_needed'          => self::MAX_ATTEMPTS,
-      'error'                    => $message,
+      'success' => false,
+      'build' => null,
+      'total_price' => null,
+      'remaining_budget' => null,
+      'attempts_needed' => self::MAX_ATTEMPTS,
+      'error' => $message,
       'estimated_minimum_budget' => $estimatedMinimum,
     ];
   }

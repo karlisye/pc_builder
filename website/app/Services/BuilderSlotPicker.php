@@ -18,14 +18,14 @@ class BuilderSlotPicker
       ->where('price', '<=', $budget);
 
     $query = match ($slot) {
-      'cpu'         => ComponentFilters::cpu($query, $selected),
+      'cpu' => ComponentFilters::cpu($query, $selected),
       'motherboard' => ComponentFilters::motherboard($query, $selected),
-      'ram'         => ComponentFilters::ram($query, $selected),
-      'gpu'         => ComponentFilters::gpu($query, $selected),
-      'case'        => ComponentFilters::case($query, $selected),
-      'cooler'      => ComponentFilters::cooler($query, $selected),
-      'psu'         => ComponentFilters::psu($query, $selected),
-      default       => $query,
+      'ram' => ComponentFilters::ram($query, $selected),
+      'gpu' => ComponentFilters::gpu($query, $selected),
+      'case' => ComponentFilters::case($query, $selected),
+      'cooler' => ComponentFilters::cooler($query, $selected),
+      'psu' => ComponentFilters::psu($query, $selected),
+      default => $query,
     };
 
     $candidates = $query->get();
