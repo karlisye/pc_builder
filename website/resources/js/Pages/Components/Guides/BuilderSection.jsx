@@ -16,7 +16,12 @@ const BuilderSection = () => {
 
         <p className="text-text">
           1. Go to the{" "}
-          <Link className="text-info hover:underline font-medium">Build</Link>{" "}
+          <Link
+            className="text-info hover:underline font-medium"
+            href="/builder"
+          >
+            Build
+          </Link>{" "}
           page by clicking the <span className="font-medium">Build</span> button
           in the navigation bar.
         </p>
@@ -72,11 +77,16 @@ const BuilderSection = () => {
 
         <h2 className="text-2xl font-semibold text-text">Saving Your Build</h2>
 
+        <p className="text-text">
+          6. Make sure to name your build and add the optional notes by filling
+          out their fields.
+        </p>
+
         <div>
           <p className="text-text">
-            6. Once you’ve selected all your components, click the{" "}
-            <span className="font-medium">Save Build</span> button in the build
-            info panel.
+            7. Once you’ve selected all your components and named your build,
+            click the <span className="font-medium">Save Build</span> button in
+            the build info panel.
           </p>
           <Note>
             You can clear the entire build or remove individual components by
