@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useBuilder } from "../../Contexts/BuilderContext";
-import ComponentInfo from "./ComponentInfo";
+import ComponentInfo from "../ComponentInfo";
+import { useBuilder } from "../../../Contexts/BuilderContext";
 
 const ComponentCard = ({ component, name }) => {
   const {

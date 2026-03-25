@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link, router } from "@inertiajs/react";
-import DetailPanel from "./Components/DetailPanel";
+import DetailPanel from "./Components/Saved/DetailPanel";
 import Modal from "./Components/Modal";
 
 const SLOT_LABELS = {

@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { useBuilder } from "../../Contexts/BuilderContext";
+import { useBuilder } from "../../../Contexts/BuilderContext";
 import BudgetSlider from "./BudgetSlider";
 import { Link } from "@inertiajs/react";
 

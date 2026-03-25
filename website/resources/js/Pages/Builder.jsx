@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import ComponentCard from "./Components/ComponentCard";
-import BuildDesc from "./Components/BuildDesc";
+import ComponentCard from "./Components/Builder/ComponentCard";
+import BuildDesc from "./Components/Builder/BuildDesc";
 import { BuilderContext } from "../Contexts/BuilderContext";
-import AddComponent from "./Components/AddComponent";
-import ComponentFilters from "./Components/ComponentFilters";
-import BuildInfo from "./Components/BuildInfo";
+import AddComponent from "./Components/Builder/AddComponent";
+import ComponentFilters from "./Components/Builder/ComponentFilters";
+import BuildInfo from "./Components/Builder/BuildInfo";
 import { Link } from "@inertiajs/react";
-import BuildGenerator from "./Components/BuildGenerator";
+import BuildGenerator from "./Components/Builder/BuildGenerator";
 
 const Builder = ({ build }) => {
   const [currentCompToAdd, setCurrentCompToAdd] = useState(null);

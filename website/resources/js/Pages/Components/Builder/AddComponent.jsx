@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useBuilder } from "../../Contexts/BuilderContext";
+import { useBuilder } from "../../../Contexts/BuilderContext";
 import axios from "axios";
-import AddComponentSkeleton from "./Skeletons/AddComponentSkeleton";
-import ComponentInfo from "./ComponentInfo";
+import AddComponentSkeleton from "../Skeletons/AddComponentSkeleton";
+import ComponentInfo from "../ComponentInfo";
 
 const AddComponent = () => {
   const {

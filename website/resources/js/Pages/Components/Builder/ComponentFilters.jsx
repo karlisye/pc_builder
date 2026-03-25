@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useBuilder } from "../../Contexts/BuilderContext";
 import axios from "axios";
+import { useBuilder } from "../../../Contexts/BuilderContext";
 
 const FILTER_CONFIG = {
   cpu: ["socket", "cores", "integrated_graphics", "cooler_included"],

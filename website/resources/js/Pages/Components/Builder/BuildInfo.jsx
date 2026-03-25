@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useBuilder } from "../../Contexts/BuilderContext";
+import { useBuilder } from "../../../Contexts/BuilderContext";
 import axios from "axios";
 
 const BuildInfo = ({ currBuildInfo }) => {

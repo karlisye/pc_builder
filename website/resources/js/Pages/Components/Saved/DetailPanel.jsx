@@ -1,5 +1,5 @@
 import React from "react";
-import ComponentInfo from "./ComponentInfo";
+import ComponentInfo from "../ComponentInfo";
 
 const DetailPanel = ({ component, slot, setExpandedSlot }) => (
   <div className="border border-border bg-background p-4 relative">
