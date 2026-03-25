@@ -37,7 +37,7 @@ class BuilderService
     ],
   ];
 
-  private const MAX_ATTEMPTS    = 5;
+  private const MAX_ATTEMPTS = 5;
   private const RETRY_REDUCTION = 0.02;
 
   public function __construct(
@@ -58,7 +58,6 @@ class BuilderService
     if ($remainingBudget <= 0) {
       return $this->errorResponse(
         'Selected components already exceed or meet the budget.',
-        $selected,
         $budget
       );
     }
@@ -92,7 +91,6 @@ class BuilderService
     return $this->errorResponse(
       "Could not find compatible parts within the given budget. "
         . "Estimated minimum budget needed: €" . number_format($estimatedMinimum, 2) . ".",
-      $selected,
       $budget,
       $estimatedMinimum
     );
@@ -249,8 +247,8 @@ class BuilderService
   private function shouldSkipPsu(array $build): bool
   {
     $case = $build['case'] ?? null;
-    $cpu = $build['cpu']  ?? null;
-    $gpu = $build['gpu']  ?? null;
+    $cpu = $build['cpu'] ?? null;
+    $gpu = $build['gpu'] ?? null;
 
     if (! $case || $case->psu_wattage <= 1) {
       return false;
@@ -279,6 +277,7 @@ class BuilderService
     return array_sum(array_map(fn($item) => (float) $item->price, $build));
   }
 
+  // get cheapest from each necessary component
   private function estimateMinimumBudget(array $slotsToFill, array $selected, float $selectedCost): float
   {
     $minimum = $selectedCost;
@@ -293,6 +292,7 @@ class BuilderService
     return round($minimum, 2);
   }
 
+  // get only the raw data instead of objects
   private function serializeBuild(array $build): array
   {
     $serialized = [];
@@ -304,8 +304,6 @@ class BuilderService
 
   private function errorResponse(
     string $message,
-    array $selected,
-    float $budget,
     ?float $estimatedMinimum = null
   ): array {
     return [
