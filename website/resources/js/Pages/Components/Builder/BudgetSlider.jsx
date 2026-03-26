@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useBuilder } from "../../../Contexts/BuilderContext";
 
 const BudgetSlider = ({
   value,
@@ -7,8 +8,13 @@ const BudgetSlider = ({
   max = 10000,
   step = 50,
 }) => {
+  const { selectedComponents } = useBuilder();
   const [inputValue, setInputValue] = useState(value);
   const [isUnlimited, setIsUnlimited] = useState(false);
+
+  const filled = Object.values(selectedComponents).filter((v) => v !== null);
+  const total = filled.reduce((sum, c) => sum + parseFloat(c.price ?? 0), 0);
+  const remaining = value - total;
 
   const clamp = (val) => {
     const num = parseInt(val);
@@ -56,18 +62,29 @@ const BudgetSlider = ({
       <div
         className={`flex justify-between items-center transition-opacity ${isUnlimited ? "opacity-40 pointer-events-none" : ""}`}
       >
-        <span className="text-muted text-sm">Budget</span>
+        <span className="text-muted text-sm">Total Budget</span>
         <div className="flex items-center gap-1">
           <span className="text-muted text-sm">€</span>
           <input
             type="text"
-            value={isUnlimited ? "—" : inputValue}
+            value={isUnlimited ? "-" : inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onBlur={handleBlur}
             onKeyDown={(e) => e.key === "Enter" && e.target.blur()}
             disabled={isUnlimited}
             className="text-secondary-light font-semibold w-13 text-right focus:outline-none"
           />
+        </div>
+      </div>
+      <div
+        className={`flex justify-between items-center transition-opacity ${isUnlimited ? "opacity-40 pointer-events-none" : ""}`}
+      >
+        <span className="text-muted text-sm">Remaining Budget</span>
+        <div className="space-x-2">
+          <span className="text-muted text-sm">€</span>
+          <span className="text-secondary-light font-semibold">
+            {isUnlimited ? "-" : remaining}
+          </span>
         </div>
       </div>
       <input
