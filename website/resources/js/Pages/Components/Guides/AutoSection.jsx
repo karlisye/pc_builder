@@ -80,8 +80,9 @@ const AutoSection = () => {
           </p>
 
           <Note>
-            The Fan and HDD components are not generated automatically as they
-            are optional.
+            The fan and HDD components are not automatically included, as they
+            are optional. If the CPU comes with a built-in cooler and the budget
+            is limited, a separate CPU cooler may also be treated as optional.
           </Note>
         </div>
       </div>

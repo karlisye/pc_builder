@@ -83,7 +83,7 @@ const BudgetSlider = ({
         <div className="space-x-2">
           <span className="text-muted text-sm">€</span>
           <span className="text-secondary-light font-semibold">
-            {isUnlimited ? "-" : remaining}
+            {isUnlimited ? "-" : remaining.toFixed(2)}
           </span>
         </div>
       </div>
