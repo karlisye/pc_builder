@@ -78,6 +78,11 @@ const AutoSection = () => {
             5. After generating a build we recommend checking the compatability
             for the build manually before purchasing any of the items.
           </p>
+
+          <Note>
+            The Fan and HDD components are not generated automatically as they
+            are optional.
+          </Note>
         </div>
       </div>
 
