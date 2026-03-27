@@ -69,10 +69,13 @@ const BuildGenerator = () => {
           <p className="text-muted text-sm">
             Not sure where to start? Let us pick the best compatible components
             for your budget. For more information visit{" "}
-            <Link className="text-info/80 cursor-pointer hover:underline">
-              Generator Guide
-            </Link>
-            .
+            <Link
+              className="text-info/80 cursor-pointer hover:underline"
+              href="/guide"
+            >
+              Automatic Builder
+            </Link>{" "}
+            guide .
           </p>
 
           <BudgetSlider value={budget} onChange={setBudget} />
