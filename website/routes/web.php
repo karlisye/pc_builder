@@ -22,3 +22,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/builder', [BuilderController::class, 'index']);
     Route::get('/builds', [BuildController::class, 'index']);
 });
+
+Route::fallback(fn() => Inertia::render('NotFound'));
