@@ -71,7 +71,7 @@ const Builder = ({ build }) => {
           <BuildGenerator />
         </div>
 
-        <div className="flex-1 flex flex-wrap justify-center gap-8 px-4 pt-6">
+        <div className="flex-1 flex flex-wrap justify-center gap-8 px-4 py-6">
           {currentCompToAdd ? (
             <AddComponent />
           ) : (
