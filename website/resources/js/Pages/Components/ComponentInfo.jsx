@@ -23,15 +23,17 @@ const ComponentInfo = ({ component }) => {
               {key.replace(/_/g, " ")}
             </span>
             <span className="text-text text-sm">
-              {typeof value === "boolean"
-                ? value
-                  ? "Yes"
-                  : "No"
-                : value === "Nav"
-                  ? "No"
-                  : value === "Ir"
+              {key === "price"
+                ? "€" + value
+                : typeof value === "boolean"
+                  ? value
                     ? "Yes"
-                    : value}
+                    : "No"
+                  : value === "Nav"
+                    ? "No"
+                    : value === "Ir"
+                      ? "Yes"
+                      : value}
             </span>
           </div>
         ))}

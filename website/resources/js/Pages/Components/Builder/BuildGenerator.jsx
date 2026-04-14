@@ -5,7 +5,8 @@ import BudgetSlider from "./BudgetSlider";
 import { Link } from "@inertiajs/react";
 
 const BuildGenerator = () => {
-  const { selectedComponents, setSelectedComponents } = useBuilder();
+  const { selectedComponents, setSelectedComponents, setCurrentCompToAdd } =
+    useBuilder();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -32,6 +33,7 @@ const BuildGenerator = () => {
           ...res.data.build,
         }));
         setOpen(false);
+        setCurrentCompToAdd(null);
       } else {
         setError(res.data.error);
       }

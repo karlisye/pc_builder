@@ -112,20 +112,22 @@ const BuildInfo = ({ currBuildInfo }) => {
 
       {(buildId || hasComponents) && (
         <div className="space-y-4 pt-4 border-t border-secondary-light">
-          <label className="text-secondary-light" htmlFor="name">
-            Name
-          </label>
-          <input
-            type="text"
-            value={buildName}
-            onChange={(e) => setBuildName(e.target.value)}
-            id="name"
-            placeholder="build name..."
-            className="bg-secondary-light focus:outline-1 outline-border text-text p-2 w-full"
-          />
+          <div>
+            <label className="text-secondary-light" htmlFor="name">
+              Name
+            </label>
+            <input
+              type="text"
+              value={buildName}
+              onChange={(e) => setBuildName(e.target.value)}
+              id="name"
+              placeholder="build name..."
+              className="bg-secondary-light focus:outline-1 outline-border text-text p-2 w-full"
+            />
 
-          {error && <p className="text-danger text-sm">{error}</p>}
-          {success && <p className="text-green-500 text-sm">{success}</p>}
+            {error && <p className="text-danger text-sm">{error}</p>}
+            {success && <p className="text-green-500 text-sm">{success}</p>}
+          </div>
 
           <label className="text-secondary-light" htmlFor="notes">
             Notes

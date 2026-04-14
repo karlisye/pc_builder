@@ -160,7 +160,7 @@ const SavedBuilds = ({ builds }) => {
                       {selectedBuild.name}
                     </h2>
                     <p className="text-muted text-sm">
-                      {new Date(selectedBuild.created_at).toLocaleDateString()}
+                      {new Date(selectedBuild.created_at).toDateString()}
                     </p>
                     {selectedBuild.notes && (
                       <p className="text-muted mt-1">{selectedBuild.notes}</p>
