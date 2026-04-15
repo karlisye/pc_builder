@@ -24,6 +24,9 @@ class Gpu extends Model
     'pcie_version',
     'length_mm',
     'power_connectors',
+    'cuda',
+    'bus',
+    'vram_freq',
     'scraped_at',
   ];
 

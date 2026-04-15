@@ -123,6 +123,9 @@ class BuilderSlotPicker
   {
     $vram = (float) ($item->vram ?? 2);
     $tdp = (float) ($item->tdp ?? 0);
+    // $vramFreq = (float) ($item->vram_freq ?? 0);
+    // $bus = (float) ($item->bus ?? 0);
+    // $cuda = (float) ($item->cuda ?? 0);
 
     // 4GB=527, 8GB=1212, 16GB=2785, 24GB=4531
     $score = pow($vram, 1.2) * 100;
