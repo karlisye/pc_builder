@@ -23,6 +23,9 @@ def parse(html, dateks_id, url, price, in_stock, stock_quantity, scraped_at):
         "pcie_version": parse_pcie_version(specs.get("PCI-E version")),
         "length_mm": to_int(specs.get("Length (mm)")),
         "power_connectors": specs.get("Power sockets"),
+        "cuda": to_int(specs.get("Stream processors / CUDA Cores")),
+        "bus": to_int(specs.get("Bus width")),
+        "vram_freq": to_int(specs.get("Memory type")),
         "scraped_at": scraped_at,
     }
 
