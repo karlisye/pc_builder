@@ -85,9 +85,9 @@ class BuilderSlotPicker
   {
     return match ($slot) {
       'cpu' => $this->scoreCpu($item),
-      'gpu' => (float) ($item->vram ?? 0) + (float) ($item->tdp ?? 0),
-      'ram' => (float) ($item->frequency ?? 0) + (float) ($item->capacity ?? 0),
-      'ssd' => (float) ($item->read_speed ?? 0) + (float) ($item->write_speed ?? 0),
+      'gpu' => $this->scoreGpu($item),
+      'ram' => $this->scoreRam($item),
+      'ssd' => $this->scoreSsd($item),
       default  => (float) ($item->price ?? 0),
     };
   }
@@ -113,8 +113,61 @@ class BuilderSlotPicker
       $score += $clockRate * 50;
     }
 
-    // core count bonus (100-500)
+    // core count bonus (60-180)
     $score += log($cores) * 100;
+
+    return $score;
+  }
+
+  private function scoreGpu(Model $item): float
+  {
+    $vram = (float) ($item->vram ?? 2);
+    $tdp = (float) ($item->tdp ?? 0);
+
+    // 4GB=527, 8GB=1212, 16GB=2785, 24GB=4531
+    $score = pow($vram, 1.2) * 100;
+
+    if ($tdp > 0) {
+      $efficiencyRatio = $vram / $tdp;
+      $score += $efficiencyRatio * 100;
+    }
+
+    // add benchmark score rating later not good enough now
+
+    return $score;
+  }
+
+  private function scoreRam(Model $item): float
+  {
+    $capacity  = (float) ($item->capacity ?? 0);
+    $frequency = (float) ($item->frequency ?? 0);
+    $latency   = (float) ($item->cl_latency ?? 0);
+
+    // 4GB=527, 8GB=1212, 16GB=2785, 24GB=4531
+    $score = pow($capacity, 1.2) * 100;
+
+    if ($frequency > 0 && $latency > 0) {
+      $trueLatency = ($latency / $frequency) * 2000;
+      $score += (20 - $trueLatency) * 200; // more score if lower latency per GB
+    }
+
+    if ($frequency > 0) {
+      $bandwidth = ($frequency * 2 * 64) / 8 / 1000; // GB/s
+      $score += $bandwidth * 10;
+    }
+
+    return $score;
+  }
+
+  private function scoreSsd(Model $item): float
+  {
+    $readSpeed  = (float) ($item->read_speed ?? 0);
+    $writeSpeed = (float) ($item->write_speed ?? 0);
+    $capacity   = (float) ($item->capacity ?? 0);
+
+    $score = log($capacity, 2) * 1000;
+
+    $score += ($readSpeed * 0.6) + ($writeSpeed * 0.4);
 
     return $score;
   }
