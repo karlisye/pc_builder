@@ -24,7 +24,7 @@ class BuilderController extends Controller
 
     if ($request->has('build')) {
       $build = Build::where('id', $request->query('build'))
-        ->where('user_id', auth()->id())
+        ->where('user_id', $request->user()->id)
         ->with(['cpu', 'motherboard', 'ram', 'gpu', 'ssd', 'hdd', 'pcCase', 'cooler', 'psu', 'fan'])
         ->first();
     }

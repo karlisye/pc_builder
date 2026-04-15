@@ -200,6 +200,7 @@ class BuilderService
     ];
   }
 
+  // add indivudual
   private function resolveSlotsToFill(array $selected, array $allocations, string $tier): array
   {
     $orderedSlots = ['cpu', 'gpu', 'motherboard', 'ram', 'cooler', 'case', 'psu', 'ssd', 'fan'];

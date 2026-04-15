@@ -84,11 +84,38 @@ class BuilderSlotPicker
   public function score(string $slot, Model $item): float
   {
     return match ($slot) {
-      'cpu' => (float) ($item->passmark ?? 0),
+      'cpu' => $this->scoreCpu($item),
       'gpu' => (float) ($item->vram ?? 0) + (float) ($item->tdp ?? 0),
       'ram' => (float) ($item->frequency ?? 0) + (float) ($item->capacity ?? 0),
       'ssd' => (float) ($item->read_speed ?? 0) + (float) ($item->write_speed ?? 0),
       default  => (float) ($item->price ?? 0),
     };
+  }
+
+  private function scoreCpu(Model $item): float
+  {
+    $passmark = (float) ($item->passmark ?? 0);
+    $cores = (float) ($item->cores ?? 2);
+    $tdp = (float) ($item->tdp ?? 0);
+    $clockRate = (float) ($item->clock_rate ?? 0);
+
+    // base scoring from PassMark (6500-175500)
+    $score = $passmark;
+
+    // efficiency per watt (around 3000 pts)
+    if ($tdp > 0) {
+      $efficienyRatio = $passmark / $tdp;
+      $score += $efficienyRatio * 10;
+    }
+
+    // clock speed bonus (50-250)
+    if ($clockRate > 0) {
+      $score += $clockRate * 50;
+    }
+
+    // core count bonus (100-500)
+    $score += log($cores) * 100;
+
+    return $score;
   }
 }
