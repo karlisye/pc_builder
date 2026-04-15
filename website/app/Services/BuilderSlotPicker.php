@@ -123,19 +123,27 @@ class BuilderSlotPicker
   {
     $vram = (float) ($item->vram ?? 2);
     $tdp = (float) ($item->tdp ?? 0);
-    // $vramFreq = (float) ($item->vram_freq ?? 0);
-    // $bus = (float) ($item->bus ?? 0);
-    // $cuda = (float) ($item->cuda ?? 0);
+    $vramFreq = (float) ($item->vram_freq ?? 0);
+    $bus = (float) ($item->bus ?? 0);
+    $cuda = (float) ($item->cuda ?? 0);
 
     // 4GB=527, 8GB=1212, 16GB=2785, 24GB=4531
     $score = pow($vram, 1.2) * 100;
 
-    if ($tdp > 0) {
-      $efficiencyRatio = $vram / $tdp;
-      $score += $efficiencyRatio * 100;
+    $bandwidth = 0;
+    if ($vramFreq > 0 && $bus > 0) {
+      $bandwidth = ($vramFreq * 2 * $bus) / 8 / 1000; // GB/s
+      $score += $bandwidth * 50;
     }
 
-    // add benchmark score rating later not good enough now
+    if ($cuda > 0) {
+      $score += log($cuda, 2) * 500;
+    }
+
+    if ($tdp > 0 && $bandwidth > 0) {
+      $efficiencyRatio = $bandwidth / $tdp;
+      $score += $efficiencyRatio * 200;
+    }
 
     return $score;
   }
