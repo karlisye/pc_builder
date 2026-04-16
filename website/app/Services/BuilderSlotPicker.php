@@ -121,31 +121,54 @@ class BuilderSlotPicker
 
   private function scoreGpu(Model $item): float
   {
-    $vram = (float) ($item->vram ?? 2);
-    $tdp = (float) ($item->tdp ?? 0);
+    $vram     = (float) ($item->vram      ?? 0);
+    $tdp      = (float) ($item->tdp       ?? 0);
     $vramFreq = (float) ($item->vram_freq ?? 0);
-    $bus = (float) ($item->bus ?? 0);
-    $cuda = (float) ($item->cuda ?? 0);
+    $bus      = (float) ($item->bus       ?? 0);
+    $cuda     = (float) ($item->cuda      ?? 0);
+    $name     = (string) ($item->name     ?? '');
 
-    // 4GB=527, 8GB=1212, 16GB=2785, 24GB=4531
-    $score = pow($vram, 1.2) * 100;
+    if ($vram <= 0) {
+      return 0.0;
+    }
 
-    $bandwidth = 0;
+    // 4GB ≈ 339  8GB ≈ 689  16GB ≈ 1400  24GB ≈ 2028
+    $vramScore = pow($vram, 1.1) * 65;
+
+    // 384-bit, 2000MHz = 192 GB/s = 288 pts
+    $bandwidth  = 0.0;
+    $bandwidthScore = 0.0;
     if ($vramFreq > 0 && $bus > 0) {
-      $bandwidth = ($vramFreq * 2 * $bus) / 8 / 1000; // GB/s
-      $score += $bandwidth * 50;
+      $bandwidth      = ($vramFreq * 2 * $bus) / 8 / 1000; // GB/s
+      $bandwidthScore = $bandwidth * 1.5;
     }
 
+    // 2048 = 90  4096 = 128  10496 = 205  16384 = 256
+    $cudaScore = 0.0;
     if ($cuda > 0) {
-      $score += log($cuda, 2) * 500;
+      $cudaScore = sqrt($cuda) * 2;
     }
 
+    $efficiencyScore = 0.0;
     if ($tdp > 0 && $bandwidth > 0) {
-      $efficiencyRatio = $bandwidth / $tdp;
-      $score += $efficiencyRatio * 200;
+      $efficiencyRatio  = $bandwidth / $tdp;   // GB/s per watt
+      $efficiencyScore  = $efficiencyRatio * 150;
     }
 
-    return $score;
+    $archMultiplier = match (true) {
+      (bool) preg_match('/RTX\s*50|RX\s*9/i',        $name) => 1.35,
+      (bool) preg_match('/RTX\s*40|RX\s*7/i',        $name) => 1.30,
+      (bool) preg_match('/RTX\s*30|RX\s*6/i',        $name) => 1.25,
+      (bool) preg_match('/RTX\s*20|RX\s*5/i',        $name) => 1.20,
+      (bool) preg_match('/GTX\s*16/i',               $name) => 1.10,
+      (bool) preg_match('/GTX\s*10/i',               $name) => 1.00,
+      default                                                 => 0.90,
+    };
+
+    $raw = ($vramScore + $bandwidthScore + $cudaScore + $efficiencyScore)
+      * $archMultiplier;
+
+    return round($raw, 2);
   }
 
   private function scoreRam(Model $item): float
