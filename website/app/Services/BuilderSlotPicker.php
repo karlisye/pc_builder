@@ -156,13 +156,13 @@ class BuilderSlotPicker
     }
 
     $archMultiplier = match (true) {
-      (bool) preg_match('/RTX\s*50|RX\s*9/i',        $name) => 1.35,
-      (bool) preg_match('/RTX\s*40|RX\s*7/i',        $name) => 1.30,
-      (bool) preg_match('/RTX\s*30|RX\s*6/i',        $name) => 1.25,
-      (bool) preg_match('/RTX\s*20|RX\s*5/i',        $name) => 1.20,
-      (bool) preg_match('/GTX\s*16/i',               $name) => 1.10,
-      (bool) preg_match('/GTX\s*10/i',               $name) => 1.00,
-      default                                                 => 0.90,
+      (bool) preg_match('/RTX\s*50|RX\s*9/i', $name) => 1.35,
+      (bool) preg_match('/RTX\s*40|RX\s*7/i', $name) => 1.30,
+      (bool) preg_match('/RTX\s*30|RX\s*6/i', $name) => 1.25,
+      (bool) preg_match('/RTX\s*20|RX\s*5/i', $name) => 1.20,
+      (bool) preg_match('/GTX\s*16/i', $name) => 1.10,
+      (bool) preg_match('/GTX\s*10/i', $name) => 1.00,
+      default => 0.90,
     };
 
     $raw = ($vramScore + $bandwidthScore + $cudaScore + $efficiencyScore)
