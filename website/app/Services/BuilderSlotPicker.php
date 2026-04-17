@@ -121,12 +121,12 @@ class BuilderSlotPicker
 
   private function scoreGpu(Model $item): float
   {
-    $vram     = (float) ($item->vram      ?? 0);
-    $tdp      = (float) ($item->tdp       ?? 0);
+    $vram = (float) ($item->vram ?? 0);
+    $tdp = (float) ($item->tdp ?? 0);
     $vramFreq = (float) ($item->vram_freq ?? 0);
-    $bus      = (float) ($item->bus       ?? 0);
-    $cuda     = (float) ($item->cuda      ?? 0);
-    $name     = (string) ($item->name     ?? '');
+    $bus = (float) ($item->bus ?? 0);
+    $cuda = (float) ($item->cuda ?? 0);
+    $name = (string) ($item->name ?? '');
 
     if ($vram <= 0) {
       return 0.0;
