@@ -95,28 +95,63 @@ class BuilderSlotPicker
   private function scoreCpu(Model $item): float
   {
     $passmark = (float) ($item->passmark ?? 0);
-    $cores = (float) ($item->cores ?? 2);
-    $tdp = (float) ($item->tdp ?? 0);
+    $cores    = (float) ($item->cores    ?? 2);
+    $tdp      = (float) ($item->tdp      ?? 0);
     $clockRate = (float) ($item->clock_rate ?? 0);
+    $name     = (string) ($item->name    ?? '');
 
-    // base scoring from PassMark (6500-175500)
-    $score = $passmark;
-
-    // efficiency per watt (around 3000 pts)
-    if ($tdp > 0) {
-      $efficienyRatio = $passmark / $tdp;
-      $score += $efficienyRatio * 10;
+    if ($passmark <= 0) {
+      return 0.0;
     }
 
-    // clock speed bonus (50-250)
+    // ~6 500 → ~370   ~30 000 → ~600   ~100 000 → ~870   ~175 500 → ~1 000
+    $passmarkScore = pow($passmark, 0.6) * 2.2;
+
+    // ── 2. Per-core performance (IPC proxy) ─────────────────────────────────
+    // A fast 8-core beats a sluggish 64-core for single-threaded work.
+    // ~1 000 pts/core → 125   ~3 000 pts/core → 215   ~6 000 pts/core → 305
+    $perCoreScore = 0.0;
+    if ($cores > 0) {
+      $perCoreScore = sqrt($passmark / $cores) * 3.5;
+    }
+
+    // ── 3. Core count (parallelism, log-compressed) ──────────────────────────
+    // 4c → 69   8c → 97   16c → 122   64c → 166   192c → 184
+    $coreScore = log($cores + 1) * 50;
+
+    // ── 4. Clock speed bonus ─────────────────────────────────────────────────
+    // Meaningful only when passmark is already competitive.
+    // 3.0 GHz → 60   4.5 GHz → 90   6.0 GHz → 120
+    $clockScore = 0.0;
     if ($clockRate > 0) {
-      $score += $clockRate * 50;
+      $clockScore = sqrt($clockRate) * 45;
     }
 
-    // core count bonus (60-180)
-    $score += log($cores) * 100;
+    // ── 5. Efficiency (passmark per watt) ────────────────────────────────────
+    // ~200 pts/W → 50   ~500 pts/W → 125   ~1 000 pts/W → 250
+    $efficiencyScore = 0.0;
+    if ($tdp > 0) {
+      $efficiencyRatio = $passmark / $tdp;
+      $efficiencyScore = sqrt($efficiencyRatio) * 8;
+    }
 
-    return $score;
+    // Architecture / generation multiplier
+    $archMultiplier = match (true) {
+      // AMD Ryzen 9000 / Intel 14th–15th gen
+      (bool) preg_match('/Ryzen\s*[A-Z]?\s*9\d{3}|Ultra\s*[279]\s*2\d{2}|i[3579]-1[45]\d{3}/i', $name) => 1.30,
+      // AMD Ryzen 7000 / Intel 12th–13th gen
+      (bool) preg_match('/Ryzen\s*[A-Z]?\s*7\d{3}|i[3579]-1[23]\d{3}/i', $name) => 1.20,
+      // AMD Ryzen 5000 / Intel 10th–11th gen
+      (bool) preg_match('/Ryzen\s*[A-Z]?\s*5\d{3}|i[3579]-1[01]\d{3}/i', $name) => 1.12,
+      // AMD Ryzen 3000 / Intel 8th–9th gen
+      (bool) preg_match('/Ryzen\s*[A-Z]?\s*3\d{3}|i[3579]-[89]\d{3}/i', $name) => 1.05,
+      default => 0.95,
+    };
+
+    $raw = ($passmarkScore + $perCoreScore + $coreScore + $clockScore + $efficiencyScore)
+      * $archMultiplier;
+
+    return round($raw, 2);
   }
 
   private function scoreGpu(Model $item): float
