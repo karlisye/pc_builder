@@ -104,38 +104,33 @@ class BuilderSlotPicker
       return 0.0;
     }
 
-    // ~6 500 → ~370   ~30 000 → ~600   ~100 000 → ~870   ~175 500 → ~1 000
+    // 6500 = ~370, 30000 = ~600, 100000 = ~870, 175500 = ~1 000
     $passmarkScore = pow($passmark, 0.6) * 2.2;
 
-    // ── 2. Per-core performance (IPC proxy) ─────────────────────────────────
-    // A fast 8-core beats a sluggish 64-core for single-threaded work.
-    // ~1 000 pts/core → 125   ~3 000 pts/core → 215   ~6 000 pts/core → 305
+    // ~1000 pts/core = 125, ~3000 pts/core = 215, ~6000 pts/core = 305
     $perCoreScore = 0.0;
     if ($cores > 0) {
       $perCoreScore = sqrt($passmark / $cores) * 3.5;
     }
 
-    // ── 3. Core count (parallelism, log-compressed) ──────────────────────────
-    // 4c → 69   8c → 97   16c → 122   64c → 166   192c → 184
+    // 4c = 69, 8c = 97, 16c = 122, 64c = 166, 192c = 184
     $coreScore = log($cores + 1) * 50;
 
-    // ── 4. Clock speed bonus ─────────────────────────────────────────────────
-    // Meaningful only when passmark is already competitive.
-    // 3.0 GHz → 60   4.5 GHz → 90   6.0 GHz → 120
+    // meaningful only when passmark is already competitive.
+    // 3.0 GHz = 60   4.5 GHz = 90   6.0 GHz = 120
     $clockScore = 0.0;
     if ($clockRate > 0) {
       $clockScore = sqrt($clockRate) * 45;
     }
 
-    // ── 5. Efficiency (passmark per watt) ────────────────────────────────────
-    // ~200 pts/W → 50   ~500 pts/W → 125   ~1 000 pts/W → 250
+    // ~200 pts/W = 50, ~500 pts/W = 125, ~1 000 pts/W = 250
     $efficiencyScore = 0.0;
     if ($tdp > 0) {
       $efficiencyRatio = $passmark / $tdp;
       $efficiencyScore = sqrt($efficiencyRatio) * 8;
     }
 
-    // Architecture / generation multiplier
+    // architecture / generation multiplier
     $archMultiplier = match (true) {
       // AMD Ryzen 9000 / Intel 14th–15th gen
       (bool) preg_match('/Ryzen\s*[A-Z]?\s*9\d{3}|Ultra\s*[279]\s*2\d{2}|i[3579]-1[45]\d{3}/i', $name) => 1.30,
@@ -167,7 +162,7 @@ class BuilderSlotPicker
       return 0.0;
     }
 
-    // 4GB ≈ 339  8GB ≈ 689  16GB ≈ 1400  24GB ≈ 2028
+    // 4GB ≈ 339, 8GB ≈ 689, 16GB ≈ 1400, 24GB ≈ 2028
     $vramScore = pow($vram, 1.1) * 65;
 
     // 384-bit, 2000MHz = 192 GB/s = 288 pts
@@ -178,7 +173,7 @@ class BuilderSlotPicker
       $bandwidthScore = $bandwidth * 1.5;
     }
 
-    // 2048 = 90  4096 = 128  10496 = 205  16384 = 256
+    // 2048 = 90, 4096 = 128, 10496 = 205, 16384 = 256
     $cudaScore = 0.0;
     if ($cuda > 0) {
       $cudaScore = sqrt($cuda) * 2;
@@ -186,7 +181,7 @@ class BuilderSlotPicker
 
     $efficiencyScore = 0.0;
     if ($tdp > 0 && $bandwidth > 0) {
-      $efficiencyRatio  = $bandwidth / $tdp;   // GB/s per watt
+      $efficiencyRatio  = $bandwidth / $tdp; // GB/s per watt
       $efficiencyScore  = $efficiencyRatio * 150;
     }
 
