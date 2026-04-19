@@ -40,7 +40,7 @@ class ComponentScorer
     // 4c = 69, 8c = 97, 16c = 122, 64c = 166, 192c = 184
     $coreScore = log($cores + 1) * 50;
 
-    // meaningful only when passmark is already competitive.
+    // meaningful only when passmark is already competitive
     // 3.0 GHz = 60   4.5 GHz = 90   6.0 GHz = 120
     $clockScore = 0.0;
     if ($clockRate > 0) {
@@ -127,31 +127,42 @@ class ComponentScorer
 
   private function scoreRam(Model $item): float
   {
-    $capacity  = (float) ($item->capacity ?? 0);
+    $capacity = (float) ($item->capacity ?? 0);
     $frequency = (float) ($item->frequency ?? 0);
-    $latency   = (float) ($item->cl_latency ?? 0);
+    $latency = (float) ($item->cl_latency ?? 0);
 
-    // 4GB=527, 8GB=1212, 16GB=2785, 24GB=4531
-    $score = pow($capacity, 1.2) * 100;
-
-    if ($frequency > 0 && $latency > 0) {
-      $trueLatency = ($latency / $frequency) * 2000;
-      $score += (20 - $trueLatency) * 200; // more score if lower latency per GB
+    if ($capacity <= 0) {
+      return 0.0;
     }
 
+    // 4GB=277, 8GB=416, 16GB=555, 32GB=693, 64GB=832, 128GB=971
+    $capacityScore = log($capacity + 1, 2) * 200;
+
+    // DDR uses dual-pumped 64-bit bus: GB/s = freq * 2 * 64 / 8 / 1000
+    // 3200=51GB/s=153pts, 6000=96GB/s=288pts, 8000=128GB/s=384pts
+    $bandwidthScore = 0.0;
     if ($frequency > 0) {
       $bandwidth = ($frequency * 2 * 64) / 8 / 1000; // GB/s
-      $score += $bandwidth * 10;
+      $bandwidthScore = $bandwidth * 3;
     }
 
-    return $score;
+    // 8ns=−40, 12ns=−60, 20ns=−100
+    $latencyPenalty = 0.0;
+    if ($frequency > 0 && $latency > 0) {
+      $trueLatencyNs = ($latency / $frequency) * 2000;
+      $latencyPenalty = $trueLatencyNs * 5;
+    }
+
+    $raw = ($capacityScore + $bandwidthScore - $latencyPenalty);
+
+    return round(max($raw, 1.0), 2);
   }
 
   private function scoreSsd(Model $item): float
   {
-    $readSpeed  = (float) ($item->read_speed ?? 0);
+    $readSpeed = (float) ($item->read_speed ?? 0);
     $writeSpeed = (float) ($item->write_speed ?? 0);
-    $capacity   = (float) ($item->capacity ?? 0);
+    $capacity = (float) ($item->capacity ?? 0);
 
     $score = log($capacity, 2) * 1000;
 
