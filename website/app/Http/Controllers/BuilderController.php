@@ -45,6 +45,7 @@ class BuilderController extends Controller
     $selectedIds = $validated['selected'] ?? [];
     $budget = isset($validated['budget']) ? (float) $validated['budget'] : null;
 
+    // check if all selected values are valid ('cpu', 'gpu', etc.)
     foreach (array_keys($selectedIds) as $type) {
       if (! array_key_exists($type, CompatibilityService::VALID_TYPES)) {
         return response()->json([

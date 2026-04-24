@@ -3,70 +3,45 @@ import { Link } from "@inertiajs/react";
 
 const Home = () => {
   return (
-    <div className="bg-primary h-full">
-      <div className="max-w-5xl mx-auto px-6 py-10 text-text">
-        <div className="mb-10">
-          <h1 className="text-4xl text-white font-bold mb-4">Build Your PC</h1>
+    <div className="h-full flex xl:flex-row flex-col">
+      <div className="xl:w-1/2 bg-primary h-full px-6 py-10 text-text">
+        <div className="xl:max-w-2xl ml-auto border-4 border-secondary p-2 overflow-hidden flex xl:flex-col flex-col lg:flex-row gap-8">
+          <div>
+            <h1 className="sm:text-9xl text-7xl font-bold text-surface mb-4 flex flex-wrap">
+              BUILD YOUR PC
+            </h1>
+            <p className="text-xl text-surface">
+              Design your PC using our simple builder. Choose from components
+              available in the Latvian market, all with live, accurate pricing.
+            </p>
+          </div>
 
-          <p className="text-surface max-w-2xl mb-6">
-            Create, customize, and manage your PC builds with ease. Select
-            compatible components, stay within budget, or generate a full build
-            automatically.
-          </p>
-
-          <div className="flex gap-4">
-            <Link
-              href="/builder"
-              className="px-8 py-4 bg-secondary text-white hover:bg-secondary-dark transition"
-            >
-              Start Building
-            </Link>
-
-            <Link
-              href="/builds"
-              className="px-8 py-4 bg-secondary-light hover:bg-secondary-light/50 transition"
-            >
-              View Saved Builds
-            </Link>
+          <div className="h-full w-full self-end min-w-100 min-h-50 flex">
+            <video
+              className="my-auto mx-auto"
+              src="/videos/build_demo.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+            ></video>
           </div>
         </div>
+      </div>
 
-        <div className="grid md:grid-cols-3 gap-4 mb-12">
-          <div className="p-4 border border-muted bg-secondary-light">
-            <h2 className="text-lg font-semibold mb-2">Manual Builder</h2>
-            <p className="text-primary">
-              Choose each component yourself with full control. All parts are
-              checked for compatibility.
+      <div className="xl:w-1/2 h-full px-6 py-10 text-text">
+        <div className="xl:max-w-2xl h-full mr-auto border-4 border-secondary-light p-2 overflow-hidden flex xl:flex-col flex-col lg:flex-row gap-4">
+          <div className="bg-pink-500 h-full w-full min-w-100 min-h-50"></div>
+
+          <div className="self-end">
+            <h1 className="sm:text-9xl text-7xl font-bold text-text mb-4 flex flex-wrap">
+              MAKE THE BUILDING EASY
+            </h1>
+            <p className="text-xl text-text">
+              Automatically complete your build at any stage using our smart
+              auto-builder.
             </p>
           </div>
-
-          <div className="p-4 border border-muted bg-secondary-light">
-            <h2 className="text-lg font-semibold mb-2">Automatic Builder</h2>
-            <p className="text-primary">
-              Set your budget and generate a complete build with optimized
-              component allocation.
-            </p>
-          </div>
-
-          <div className="p-4 border border-muted bg-secondary-light">
-            <h2 className="text-lg font-semibold mb-2">Saved Builds</h2>
-            <p className="text-primary">
-              Save your builds and return to them anytime to continue editing or
-              reviewing components.
-            </p>
-          </div>
-        </div>
-
-        <div>
-          <h2 className="text-2xl text-white font-semibold mb-3">
-            Get Started
-          </h2>
-
-          <p className="text-surface max-w-2xl">
-            Start by building your PC manually or use the automatic builder to
-            generate a configuration based on your budget. You can edit, save,
-            and revisit your builds at any time.
-          </p>
         </div>
       </div>
     </div>
