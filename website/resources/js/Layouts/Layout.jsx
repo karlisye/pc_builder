@@ -6,7 +6,7 @@ const Layout = ({ children }) => {
   const { post } = useForm();
   const { url } = usePage();
   return (
-    <>
+    <div className="h-screen flex flex-col overflow-hidden">
       <header>
         <nav className="flex items-center bg-background shadow">
           <Link
@@ -62,8 +62,8 @@ const Layout = ({ children }) => {
           )}
         </nav>
       </header>
-      <main className="h-screen">{children}</main>
-    </>
+      <main className="flex-1 overflow-y-auto">{children}</main>
+    </div>
   );
 };
 
