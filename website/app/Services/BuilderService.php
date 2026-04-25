@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Database\Eloquent\Model;
+use Pest\Support\Arr;
 
 class BuilderService
 {
@@ -44,10 +45,10 @@ class BuilderService
     private readonly BuilderSlotPicker $picker
   ) {}
 
-  public function generate(array $selected, ?float $budget): array
+  public function generate(array $selected, ?float $budget, array $preferences): array
   {
     if ($budget === null) {
-      return $this->generateUnlimited($selected);
+      return $this->generateUnlimited($selected, $preferences);
     }
 
     $tier = $this->resolveTier($budget);
@@ -67,7 +68,7 @@ class BuilderService
     for ($attempt = 1; $attempt <= self::MAX_ATTEMPTS; $attempt++) {
       $attemptBudget = $remainingBudget * (1 - ($attempt - 1) * self::RETRY_REDUCTION);
 
-      $result = $this->attempt($slotsToFill, $selected, $attemptBudget, $allocations);
+      $result = $this->attempt($slotsToFill, $selected, $attemptBudget, $allocations, $preferences);
 
       if ($result !== null) {
         $build = array_merge($selected, $result);
@@ -100,7 +101,8 @@ class BuilderService
     array $slotsToFill,
     array $selected,
     float $attemptBudget,
-    array $allocations
+    array $allocations,
+    array $preferences
   ): ?array {
     $build = $selected;
     $spentThisRound = 0.0;
@@ -128,7 +130,7 @@ class BuilderService
           $slotBudget = $budgetLeft;
         }
 
-        $picked = $this->picker->pick($slot, $slotBudget, $build);
+        $picked = $this->picker->pick($slot, $slotBudget, $build, $preferences);
 
         if ($picked === null) {
           // cant fill this slot - fail the attempt
@@ -161,7 +163,7 @@ class BuilderService
     return $filled;
   }
 
-  private function generateUnlimited(array $selected): array
+  private function generateUnlimited(array $selected, array $preferences): array
   {
     $allSlots = array_keys(CompatibilityService::VALID_TYPES);
     $slotsToFill = array_diff($allSlots, array_keys($selected), ['fan']); // fan last
@@ -175,14 +177,14 @@ class BuilderService
         continue;
       }
 
-      $picked = $this->picker->pickMostExpensive($slot, $build);
+      $picked = $this->picker->pickMostExpensive($slot, $build, $preferences);
       if ($picked) {
         $build[$slot] = $picked;
       }
     }
 
     // add fan at the end
-    $fan = $this->picker->pickMostExpensive('fan', $build);
+    $fan = $this->picker->pickMostExpensive('fan', $build, $preferences);
     if ($fan) {
       $build['fan'] = $fan;
     }

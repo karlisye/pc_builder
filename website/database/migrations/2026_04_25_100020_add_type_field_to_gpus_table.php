@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('gpus', function (Blueprint $table) {
-            $table->string('type');
+            $table->string('type')->default('other');
         });
     }
 

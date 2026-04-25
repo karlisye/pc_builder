@@ -13,7 +13,7 @@ class BuilderSlotPicker
     private readonly ComponentScorer $scorer
   ) {}
 
-  public function pick(string $slot, float $budget, array $selected): ?Model
+  public function pick(string $slot, float $budget, array $selected, array $preferences): ?Model
   {
     $modelClass = CompatibilityService::VALID_TYPES[$slot];
 
@@ -33,6 +33,14 @@ class BuilderSlotPicker
       default => $query,
     };
 
+    if (isset($preferences['gpu']) && $slot === 'gpu') {
+      $query->where('type', $preferences['gpu']);
+    }
+
+    if (isset($preferences['cpu']) && $slot === 'cpu') {
+      $query->where('type', $preferences['cpu']);
+    }
+
     $candidates = $query->get();
 
     if ($candidates->isEmpty()) {
@@ -42,7 +50,7 @@ class BuilderSlotPicker
     return $candidates->sortByDesc(fn($item) => $this->scorer->score($slot, $item))->first();
   }
 
-  public function pickMostExpensive(string $slot, array $selected): ?Model
+  public function pickMostExpensive(string $slot, array $selected, array $preferences): ?Model
   {
     $modelClass = CompatibilityService::VALID_TYPES[$slot];
 
@@ -60,6 +68,14 @@ class BuilderSlotPicker
       'psu' => ComponentFilters::psu($query, $selected),
       default => $query,
     };
+
+    if (isset($preferences['gpu']) && $slot === 'gpu') {
+      $query->where('type', $preferences['gpu']);
+    }
+
+    if (isset($preferences['cpu']) && $slot === 'cpu') {
+      $query->where('type', $preferences['cpu']);
+    }
 
     return $query->orderByDesc('price')->first();
   }
