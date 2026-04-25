@@ -17,6 +17,7 @@ class Cpu extends Model
     'price',
     'in_stock',
     'stock_quantity',
+    'type',
     'socket',
     'cores',
     'threads',
