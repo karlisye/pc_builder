@@ -1,4 +1,4 @@
-PAGE_DELAY = 1
+PAGE_DELAY = 0.2
 
 CATEGORIES = {
     "cpu": {

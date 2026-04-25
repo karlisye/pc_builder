@@ -11,6 +11,14 @@ const BuildGenerator = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [budget, setBudget] = useState(1500);
+  const [preferences, setPreferences] = useState({
+    gpu: null,
+    cpu: null,
+  });
+
+  const updatePref = (key, value) => {
+    setPreferences((prev) => ({ ...prev, [key]: value }));
+  };
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -25,6 +33,7 @@ const BuildGenerator = () => {
       const res = await axios.post("/api/builder", {
         selected,
         budget,
+        preferences,
       });
 
       if (res.data.success) {
@@ -41,6 +50,11 @@ const BuildGenerator = () => {
       setError(err.response?.data?.error ?? "Something went wrong");
     } finally {
       setLoading(false);
+
+      // clear preferences
+      setPreferences((prev) =>
+        Object.fromEntries(Object.keys(prev).map((k) => [k, null])),
+      );
     }
   };
 
@@ -81,6 +95,41 @@ const BuildGenerator = () => {
           </p>
 
           <BudgetSlider value={budget} onChange={setBudget} />
+
+          <p className="text-muted text-sm mb-1">Preferences</p>
+
+          <div className="flex gap-2">
+            <div className="flex flex-col flex-1">
+              <label className="text-sm text-muted" htmlFor="gpu">
+                GPU
+              </label>
+              <select
+                onChange={(e) => updatePref("gpu", e.target.value)}
+                className="p-1 text-muted text-sm border focus:outline outline-secondary-light"
+                value={preferences.gpu ?? ""}
+              >
+                <option value="">ANY</option>
+                <option value="nvidia">NVIDIA</option>
+                <option value="amd">AMD</option>
+                <option value="intel">INTEL</option>
+              </select>
+            </div>
+
+            <div className="flex flex-col flex-1">
+              <label className="text-sm text-muted" htmlFor="gpu">
+                CPU
+              </label>
+              <select
+                onChange={(e) => updatePref("cpu", e.target.value)}
+                className="p-1 text-muted text-sm border focus:outline outline-secondary-light"
+                value={preferences.cpu ?? ""}
+              >
+                <option value="">ANY</option>
+                <option value="amd">AMD</option>
+                <option value="intel">INTEL</option>
+              </select>
+            </div>
+          </div>
 
           {error && <p className="text-danger text-sm mb-2">{error}</p>}
 

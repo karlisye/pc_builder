@@ -57,6 +57,7 @@ def parse(html, dateks_id, url, price, in_stock, stock_quantity, scraped_at):
         "price": price,
         "in_stock": in_stock,
         "stock_quantity": stock_quantity,
+        "type": "intel" if "procesori-intel" in url else "amd",
         "socket": _normalise_socket(specs.get("Socket")),
         "cores": total_cores,
         "threads": to_int(specs.get("Threads")),

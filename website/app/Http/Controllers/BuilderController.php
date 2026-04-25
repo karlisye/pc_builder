@@ -39,7 +39,8 @@ class BuilderController extends Controller
     $validated = $request->validate([
       'selected' => ['sometimes', 'array'],
       'selected.*' => ['integer', 'min:1'],
-      'budget'   => ['sometimes', 'nullable', 'numeric', 'min:1'],
+      'budget' => ['sometimes', 'nullable', 'numeric', 'min:1'],
+      'preferences' => ['sometimes', 'array'],
     ]);
 
     $selectedIds = $validated['selected'] ?? [];
@@ -61,10 +62,11 @@ class BuilderController extends Controller
       return response()->json(['error' => $e->getMessage()], 400);
     }
 
-    // removes all selected that are null
+    // removes all selected and preferences that are null
     $selected = array_filter($selected);
+    $preferences = array_filter($validated['preferences']);
 
-    $result = $this->builder->generate($selected, $budget);
+    $result = $this->builder->generate($selected, $budget, $preferences);
 
     $statusCode = $result['success'] ? 200 : 400;
 
