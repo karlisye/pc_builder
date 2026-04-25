@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "@inertiajs/react";
+import HoverVideo from "./Components/Common/HoverVideo";
 
 const Home = () => {
   return (
@@ -17,14 +18,11 @@ const Home = () => {
           </div>
 
           <div className="flex h-full">
-            <video
-              className="my-auto opacity-50 hover:opacity-100 transition"
+            <HoverVideo
               src="/videos/build_demo.mp4"
-              // autoPlay
-              loop
-              muted
-              playsInline
-            ></video>
+              className="my-auto opacity-50 hover:opacity-100 transition"
+              resetOnLeave={false}
+            />
           </div>
         </div>
       </div>
