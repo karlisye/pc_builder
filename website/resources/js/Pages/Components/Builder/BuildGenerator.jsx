@@ -84,6 +84,33 @@ const BuildGenerator = () => {
 
           {error && <p className="text-danger text-sm mb-2">{error}</p>}
 
+          <p className="text-muted text-sm mb-1">Preferences</p>
+
+          <div className="flex gap-2">
+            <div className="flex flex-col flex-1">
+              <label className="text-sm text-muted" htmlFor="gpu">
+                GPU
+              </label>
+              <select className="p-1 text-muted text-sm border focus:outline outline-secondary-light">
+                <option value="">ANY</option>
+                <option value="nvidia">NVIDIA</option>
+                <option value="amd">AMD</option>
+                <option value="intel">INTEL</option>
+              </select>
+            </div>
+
+            <div className="flex flex-col flex-1">
+              <label className="text-sm text-muted" htmlFor="gpu">
+                CPU
+              </label>
+              <select className="p-1 text-muted text-sm border focus:outline outline-secondary-light">
+                <option value="">ANY</option>
+                <option value="amd">AMD</option>
+                <option value="intel">INTEL</option>
+              </select>
+            </div>
+          </div>
+
           <button
             className="p-4 w-full bg-secondary-light text-text cursor-pointer hover:bg-secondary-light/50 transition disabled:opacity-50"
             onClick={handleGenerate}
