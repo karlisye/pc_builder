@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 from database import insert_row
-from parsers.helpers import extract_name, extract_specs, to_int, parse_pcie_version
+from parsers.helpers import extract_name, extract_specs, to_int, parse_pcie_version, parse_gpu_type
 
 TABLE = "gpus"
 
@@ -8,14 +8,16 @@ TABLE = "gpus"
 def parse(html, dateks_id, url, price, in_stock, stock_quantity, scraped_at):
     soup = BeautifulSoup(html, "html.parser")
     specs = extract_specs(soup)
+    name = extract_name(soup)
 
     return {
         "dateks_id": dateks_id,
         "url": url,
-        "name": extract_name(soup),
+        "name": name,
         "price": price,
         "in_stock": in_stock,
         "stock_quantity": stock_quantity,
+        "type": parse_gpu_type(name),
         "gpu_model": specs.get("GPU model"),
         "vram": to_int(specs.get("RAM")),
         "tdp": to_int(specs.get("Power consumption (TDP)")),

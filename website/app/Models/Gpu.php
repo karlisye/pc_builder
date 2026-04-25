@@ -17,6 +17,7 @@ class Gpu extends Model
     'price',
     'in_stock',
     'stock_quantity',
+    'type',
     'gpu_model',
     'vram',
     'tdp',

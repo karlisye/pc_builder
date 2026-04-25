@@ -92,3 +92,13 @@ def parse_connector_count(value: str) -> int | None:
         return None
     match = re.match(r"(\d+)\s*[xX]", value.strip())
     return int(match.group(1)) if match else None
+
+def parse_gpu_type(name: str) -> str | None:
+    name_lower = name.lower()
+    if "radeon" in name_lower or " rx " in name_lower:
+        return "amd"
+    if "geforce" in name_lower or "rtx" in name_lower or "gtx" in name_lower:
+        return "nvidia"
+    if "arc" in name_lower or "intel" in name_lower:
+        return "intel"
+    return None
