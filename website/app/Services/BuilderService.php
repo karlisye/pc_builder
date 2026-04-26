@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use Illuminate\Database\Eloquent\Model;
-use Pest\Support\Arr;
 
 class BuilderService
 {
@@ -59,11 +58,10 @@ class BuilderService
     if ($remainingBudget <= 0) {
       return $this->errorResponse(
         'Selected components already exceed or meet the budget.',
-        $budget
       );
     }
 
-    $slotsToFill = $this->resolveSlotsToFill($selected, $allocations, $tier);
+    $slotsToFill = $this->resolveSlotsToFill($selected, $allocations);
 
     for ($attempt = 1; $attempt <= self::MAX_ATTEMPTS; $attempt++) {
       $attemptBudget = $remainingBudget * (1 - ($attempt - 1) * self::RETRY_REDUCTION);
@@ -92,7 +90,6 @@ class BuilderService
     return $this->errorResponse(
       "Could not find compatible parts within the given budget. "
         . "Estimated minimum budget needed: €" . number_format($estimatedMinimum, 2) . ".",
-      $budget,
       $estimatedMinimum
     );
   }
@@ -170,13 +167,6 @@ class BuilderService
     $build = $selected;
 
     foreach ($slotsToFill as $slot) {
-      if ($slot === 'cooler' && $this->shouldSkipCooler($build)) {
-        continue;
-      }
-      if ($slot === 'psu' && $this->shouldSkipPsu($build)) {
-        continue;
-      }
-
       $picked = $this->picker->pickMostExpensive($slot, $build, $preferences);
       if ($picked) {
         $build[$slot] = $picked;
@@ -203,7 +193,7 @@ class BuilderService
   }
 
   // add indivudual
-  private function resolveSlotsToFill(array $selected, array $allocations, string $tier): array
+  private function resolveSlotsToFill(array $selected, array $allocations): array
   {
     $orderedSlots = ['cpu', 'gpu', 'motherboard', 'ram', 'cooler', 'case', 'psu', 'ssd', 'fan'];
 
@@ -305,10 +295,8 @@ class BuilderService
     return $serialized;
   }
 
-  private function errorResponse(
-    string $message,
-    ?float $estimatedMinimum = null
-  ): array {
+  private function errorResponse(string $message, ?float $estimatedMinimum = null): array
+  {
     return [
       'success' => false,
       'build' => null,
