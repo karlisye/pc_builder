@@ -127,7 +127,7 @@ class BuilderService
           $slotBudget = $budgetLeft;
         }
 
-        $picked = $this->picker->pick($slot, $slotBudget, $build, $preferences);
+        $picked = $this->picker->pick($slot, $build, $preferences, $slotBudget);
 
         if ($picked === null) {
           // cant fill this slot - fail the attempt
@@ -167,14 +167,14 @@ class BuilderService
     $build = $selected;
 
     foreach ($slotsToFill as $slot) {
-      $picked = $this->picker->pickMostExpensive($slot, $build, $preferences);
+      $picked = $this->picker->pick($slot, $build, $preferences);
       if ($picked) {
         $build[$slot] = $picked;
       }
     }
 
     // add fan at the end
-    $fan = $this->picker->pickMostExpensive('fan', $build, $preferences);
+    $fan = $this->picker->pick('fan', $build, $preferences);
     if ($fan) {
       $build['fan'] = $fan;
     }

@@ -13,14 +13,17 @@ class BuilderSlotPicker
     private readonly ComponentScorer $scorer
   ) {}
 
-  public function pick(string $slot, float $budget, array $selected, array $preferences): ?Model
+  public function pick(string $slot, array $selected, array $preferences, ?float $budget = null): ?Model
   {
     $modelClass = CompatibilityService::VALID_TYPES[$slot];
 
     $query = $modelClass::query()
       ->whereNotNull('price')
-      ->where('in_stock', true)
-      ->where('price', '<=', $budget);
+      ->where('in_stock', true);
+
+    if ($budget !== null) {
+      $query->where('price', '<=', $budget);
+    }
 
     $query = match ($slot) {
       'cpu' => ComponentFilters::cpu($query, $selected),
@@ -48,36 +51,6 @@ class BuilderSlotPicker
     }
 
     return $candidates->sortByDesc(fn($item) => $this->scorer->score($slot, $item))->first();
-  }
-
-  public function pickMostExpensive(string $slot, array $selected, array $preferences): ?Model
-  {
-    $modelClass = CompatibilityService::VALID_TYPES[$slot];
-
-    $query = $modelClass::query()
-      ->whereNotNull('price')
-      ->where('in_stock', true);
-
-    $query = match ($slot) {
-      'cpu' => ComponentFilters::cpu($query, $selected),
-      'motherboard' => ComponentFilters::motherboard($query, $selected),
-      'ram' => ComponentFilters::ram($query, $selected),
-      'gpu' => ComponentFilters::gpu($query, $selected),
-      'case' => ComponentFilters::case($query, $selected),
-      'cooler' => ComponentFilters::cooler($query, $selected),
-      'psu' => ComponentFilters::psu($query, $selected),
-      default => $query,
-    };
-
-    if (isset($preferences['gpu']) && $slot === 'gpu') {
-      $query->where('type', $preferences['gpu']);
-    }
-
-    if (isset($preferences['cpu']) && $slot === 'cpu') {
-      $query->where('type', $preferences['cpu']);
-    }
-
-    return $query->orderByDesc('price')->first();
   }
 
   // find cheapest to estimate cheapest build price
