@@ -131,7 +131,7 @@ class BuilderService
 
         if ($picked === null) {
           // cant fill this slot - fail the attempt
-          if ($this->isRequired($slot)) {
+          if ($slot !== 'fan') {
             return null;
           }
           // skip optional (fan)
@@ -251,11 +251,6 @@ class BuilderService
     $gpuTdp = $gpu?->tdp ?? 0;
 
     return $case->psu_wattage >= ($cpuTdp + $gpuTdp) * 1.3;
-  }
-
-  private function isRequired(string $slot): bool
-  {
-    return ! in_array($slot, ['fan', 'ssd']);
   }
 
   private function resolveTier(float $budget): string
