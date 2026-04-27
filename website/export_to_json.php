@@ -104,6 +104,9 @@ function cast_row(array $row): array
     'vram',
     'min_psu',
     'length_mm',
+    'cuda',
+    'bus',
+    'vram_freq',
     // ssds / hdds
     'read_speed',
     'write_speed',

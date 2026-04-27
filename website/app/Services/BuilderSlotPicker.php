@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Helpers\CompatibilityHelper;
 use App\Models\{Cpu, Motherboard, Ram, Gpu, Ssd, Hdd, PcCase, Fan, Psu, Cooler};
 use App\Services\ComponentScorer;
 use Illuminate\Database\Eloquent\Model;
@@ -36,10 +35,10 @@ class BuilderSlotPicker
       default => $query,
     };
 
+    // preferences
     if (isset($preferences['gpu']) && $slot === 'gpu') {
       $query->where('type', $preferences['gpu']);
     }
-
     if (isset($preferences['cpu']) && $slot === 'cpu') {
       $query->where('type', $preferences['cpu']);
     }
@@ -50,7 +49,7 @@ class BuilderSlotPicker
       return null;
     }
 
-    return $candidates->sortByDesc(fn($item) => $this->scorer->score($slot, $item))->first();
+    return $candidates->sortByDesc(fn($item) => $this->scorer->score($slot, $item, $preferences))->first();
   }
 
   // find cheapest to estimate cheapest build price

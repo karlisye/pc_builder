@@ -14,7 +14,7 @@ def _parse_psu_wattage(value: str) -> int:
     match = re.search(r'\d+', value)
     if match:
         return int(match.group())
-    return 1
+    return 0
 
 
 def parse(html, dateks_id, url, price, in_stock, stock_quantity, scraped_at):
@@ -33,7 +33,7 @@ def parse(html, dateks_id, url, price, in_stock, stock_quantity, scraped_at):
         "max_cpu_cooler_height": to_int(specs.get("Max. CPU cooler height, mm")),
         "bays_25": to_int(specs.get('2.5" internal HDD/SSD bays')),
         "bays_35": to_int(specs.get('3.5" internal HDD bays')),
-        "psu_wattage": _parse_psu_wattage(specs.get("PSU")), # not implemented yet, leave for later testing
+        "psu_wattage": _parse_psu_wattage(specs.get("PSU")),
         "scraped_at": scraped_at,
     }
 
