@@ -6,34 +6,25 @@ use Illuminate\Database\Eloquent\Model;
 
 class BuilderService
 {
+  // updated tiers, still needs improvements
   private const TIERS = [
     'budget' => [
-      'cpu' => 0.22,
-      'motherboard' => 0.17,
-      'ram' => 0.24,
-      'case' => 0.12,
-      'psu' => 0.10,
-      'ssd' => 0.15,
+      'gaming'    => ['cpu' => 0.20, 'motherboard' => 0.17, 'ram' => 0.20, 'gpu' => 0.17, 'case' => 0.09, 'psu' => 0.09, 'ssd' => 0.08],
+      'office'    => ['cpu' => 0.28, 'motherboard' => 0.22, 'ram' => 0.25, 'case' => 0.09, 'psu' => 0.09, 'ssd' => 0.07],
+      'rendering' => ['cpu' => 0.25, 'motherboard' => 0.20, 'ram' => 0.25, 'case' => 0.09, 'psu' => 0.09, 'ssd' => 0.12],
+      'streaming' => ['cpu' => 0.23, 'motherboard' => 0.18, 'ram' => 0.21, 'gpu' => 0.13, 'case' => 0.09, 'psu' => 0.09, 'ssd' => 0.07],
     ],
     'mid' => [
-      'gpu' => 0.27,
-      'cpu' => 0.14,
-      'motherboard' => 0.10,
-      'ram' => 0.20,
-      'cooler' => 0.03,
-      'case' => 0.07,
-      'psu' => 0.07,
-      'ssd' => 0.12,
+      'gaming'    => ['gpu' => 0.27, 'cpu' => 0.14, 'motherboard' => 0.10, 'ram' => 0.20, 'cooler' => 0.03, 'case' => 0.07, 'psu' => 0.07, 'ssd' => 0.12],
+      'office'    => ['cpu' => 0.25, 'motherboard' => 0.18, 'ram' => 0.30, 'cooler' => 0.03, 'case' => 0.08, 'psu' => 0.08, 'ssd' => 0.08],
+      'rendering' => ['gpu' => 0.22, 'cpu' => 0.18, 'motherboard' => 0.10, 'ram' => 0.25, 'cooler' => 0.03, 'case' => 0.07, 'psu' => 0.07, 'ssd' => 0.08],
+      'streaming' => ['gpu' => 0.20, 'cpu' => 0.20, 'motherboard' => 0.10, 'ram' => 0.20, 'cooler' => 0.03, 'case' => 0.07, 'psu' => 0.07, 'ssd' => 0.13],
     ],
     'high' => [
-      'gpu' => 0.27,
-      'cpu' => 0.12,
-      'motherboard' => 0.10,
-      'ram' => 0.23,
-      'cooler' => 0.02,
-      'case' => 0.06,
-      'psu' => 0.06,
-      'ssd' => 0.14,
+      'gaming'    => ['gpu' => 0.27, 'cpu' => 0.12, 'motherboard' => 0.10, 'ram' => 0.23, 'cooler' => 0.02, 'case' => 0.06, 'psu' => 0.06, 'ssd' => 0.14],
+      'office'    => ['cpu' => 0.22, 'motherboard' => 0.16, 'ram' => 0.35, 'cooler' => 0.02, 'case' => 0.06, 'psu' => 0.06, 'ssd' => 0.13],
+      'rendering' => ['gpu' => 0.25, 'cpu' => 0.15, 'motherboard' => 0.10, 'ram' => 0.28, 'cooler' => 0.02, 'case' => 0.05, 'psu' => 0.05, 'ssd' => 0.10],
+      'streaming' => ['gpu' => 0.22, 'cpu' => 0.20, 'motherboard' => 0.10, 'ram' => 0.22, 'cooler' => 0.02, 'case' => 0.06, 'psu' => 0.06, 'ssd' => 0.12],
     ],
   ];
 
@@ -51,7 +42,10 @@ class BuilderService
     }
 
     $tier = $this->resolveTier($budget);
-    $allocations = self::TIERS[$tier];
+
+    $type = $preferences['type'] ?? 'gaming';
+    $allocations = self::TIERS[$tier][$type] ?? self::TIERS[$tier]['gaming'];
+
     $selectedCost = $this->totalCost($selected);
     $remainingBudget = $budget - $selectedCost;
 
