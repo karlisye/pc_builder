@@ -106,7 +106,7 @@ const BuildGenerator = () => {
               </label>
               <select
                 onChange={(e) => updatePref("gpu", e.target.value)}
-                className="p-1 text-muted text-sm border focus:outline outline-secondary-light"
+                className="p-1 text-muted text-sm border hover:outline focus:outline outline-secondary-light"
                 value={preferences.gpu ?? ""}
               >
                 <option value="">Any</option>
@@ -122,7 +122,7 @@ const BuildGenerator = () => {
               </label>
               <select
                 onChange={(e) => updatePref("cpu", e.target.value)}
-                className="p-1 text-muted text-sm border focus:outline outline-secondary-light"
+                className="p-1 text-muted text-sm border hover:outline focus:outline outline-secondary-light"
                 value={preferences.cpu ?? ""}
               >
                 <option value="">Any</option>
@@ -138,7 +138,7 @@ const BuildGenerator = () => {
             </label>
             <select
               onChange={(e) => updatePref("type", e.target.value)}
-              className="p-1 text-muted text-sm border focus:outline outline-secondary-light"
+              className="p-1 text-muted text-sm border hover:outline focus:outline outline-secondary-light"
               value={preferences.type ?? ""}
             >
               <option value="">Any</option>

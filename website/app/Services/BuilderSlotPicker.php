@@ -35,10 +35,10 @@ class BuilderSlotPicker
       default => $query,
     };
 
+    // preferences
     if (isset($preferences['gpu']) && $slot === 'gpu') {
       $query->where('type', $preferences['gpu']);
     }
-
     if (isset($preferences['cpu']) && $slot === 'cpu') {
       $query->where('type', $preferences['cpu']);
     }

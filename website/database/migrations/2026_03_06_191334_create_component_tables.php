@@ -22,8 +22,8 @@ return new class extends Migration
             $table->decimal('clock_rate', 4, 2)->nullable();
             $table->decimal('turbo_frequency', 4, 2)->nullable();
             $table->smallInteger('tdp')->nullable()->index();
-            $table->boolean('integrated_graphics')->nullable()->index();
-            $table->boolean('cooler_included')->nullable()->index();
+            $table->boolean('integrated_graphics')->default(false)->index();
+            $table->boolean('cooler_included')->default(false)->index();
             $table->integer('passmark')->nullable()->index();
             $table->timestamp('scraped_at')->nullable();
         });
@@ -44,7 +44,7 @@ return new class extends Migration
             $table->smallInteger('memory_max_speed')->nullable()->index();
             $table->tinyInteger('m2_slots')->nullable()->index();
             $table->tinyInteger('sata_ports')->nullable()->index();
-            $table->boolean('wifi')->nullable()->index();
+            $table->boolean('wifi')->default(false)->index();
             $table->timestamp('scraped_at')->nullable();
         });
 
@@ -125,7 +125,7 @@ return new class extends Migration
             $table->smallInteger('max_cpu_cooler_height')->nullable()->index();
             $table->tinyInteger('bays_25')->nullable();
             $table->tinyInteger('bays_35')->nullable();
-            $table->smallInteger('psu_wattage')->default(0)->index(); // changed - if 0 = no psu, if 1 = psu exists, just no wattage, else wattage
+            $table->smallInteger('psu_wattage')->nullable()->index();
             $table->timestamp('scraped_at')->nullable();
         });
 
@@ -155,7 +155,7 @@ return new class extends Migration
             $table->smallInteger('wattage')->nullable()->index();
             $table->string('efficiency_rating')->nullable()->index();
             $table->string('psu_type')->nullable()->index();
-            $table->boolean('modular')->nullable()->index();
+            $table->boolean('modular')->default(false)->index();
             $table->smallInteger('fan_size_mm')->nullable();
             $table->tinyInteger('pcie_connectors')->nullable()->index();
             $table->tinyInteger('eps_connectors')->nullable()->index();

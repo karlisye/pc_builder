@@ -116,7 +116,7 @@ class ComponentFilters
 
     $requiredWattage = ($cpuTdp + $gpuTdp) * 1.3;
 
-    if ($case?->psu_wattage > 1 && $case->psu_wattage >= $requiredWattage) {
+    if ($case?->psu_wattage !== null && $case->psu_wattage >= $requiredWattage) {
       return $query->whereRaw('1 = 0');
     }
 
