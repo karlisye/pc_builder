@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ComponentScorer
 {
-  // Sub-score max contributions per type (must sum to 10)
+  // per type contributions (sum to 10)
   private const CPU_WEIGHTS = [
     'gaming'    => ['passmark' => 1.5, 'perCore' => 4.5, 'cores' => 0.5, 'clock' => 2.5, 'efficiency' => 1.0],
     'office'    => ['passmark' => 2.0, 'perCore' => 2.0, 'cores' => 1.0, 'clock' => 1.0, 'efficiency' => 4.0],
@@ -28,7 +28,7 @@ class ComponentScorer
     'streaming' => ['capacity' => 4.0, 'bandwidth' => 3.5, 'latency' => 2.5],
   ];
 
-  // Normalization ranges derived from actual DB data
+  // normalization ranges
   private const CPU_RANGES = [
     'passmark'   => ['min' => 7000,  'max' => 175500],
     'perCore'    => ['min' => 1484,  'max' => 5542],   // passmark / cores
@@ -69,14 +69,14 @@ class ComponentScorer
     };
   }
 
-  // Normalize a value to 0-1 based on known min/max range
+  // normalize a value to 0-1 based on known min/max range
   private function normalize(float $value, float $min, float $max): float
   {
     if ($max <= $min) return 0.0;
     return min(max(($value - $min) / ($max - $min), 0.0), 1.0);
   }
 
-  // Normalize where lower is better (e.g. latency)
+  // normalize where lower is better (latency)
   private function normalizeInverse(float $value, float $min, float $max): float
   {
     return 1.0 - $this->normalize($value, $min, $max);
@@ -84,10 +84,10 @@ class ComponentScorer
 
   private function scoreCpu(Model $item, string $type): float
   {
-    $passmark = (float) ($item->passmark ?? 0);
-    $cores    = (float) ($item->cores ?? 0);
-    $tdp      = (float) ($item->tdp ?? 0);
-    $clock    = (float) ($item->turbo_frequency ?? 0);
+    $passmark = (float)  ($item->passmark ?? 0);
+    $cores    = (float)  ($item->cores ?? 0);
+    $tdp      = (float)  ($item->tdp ?? 0);
+    $clock    = (float)  ($item->turbo_frequency ?? 0);
     $name     = (string) ($item->name ?? '');
 
     if ($passmark <= 0) {
@@ -133,11 +133,11 @@ class ComponentScorer
 
   private function scoreGpu(Model $item, string $type): float
   {
-    $vram     = (float) ($item->vram ?? 0);
-    $tdp      = (float) ($item->tdp ?? 0);
-    $vramFreq = (float) ($item->vram_freq ?? 0);
-    $bus      = (float) ($item->bus ?? 0);
-    $cuda     = (float) ($item->cuda ?? 0);
+    $vram     = (float)  ($item->vram ?? 0);
+    $tdp      = (float)  ($item->tdp ?? 0);
+    $vramFreq = (float)  ($item->vram_freq ?? 0);
+    $bus      = (float)  ($item->bus ?? 0);
+    $cuda     = (float)  ($item->cuda ?? 0);
     $name     = (string) ($item->name ?? '');
 
     if ($vram <= 0) {
@@ -164,9 +164,9 @@ class ComponentScorer
       (bool) preg_match('/RTX\s*40|RX\s*7/i', $name)  => 1.06,
       (bool) preg_match('/RTX\s*30|RX\s*6/i', $name)  => 1.03,
       (bool) preg_match('/RTX\s*20|RX\s*5/i', $name)  => 1.01,
-      (bool) preg_match('/GTX\s*16/i', $name)          => 0.98,
-      (bool) preg_match('/GTX\s*10/i', $name)          => 0.95,
-      default                                           => 0.90,
+      (bool) preg_match('/GTX\s*16/i', $name)         => 0.98,
+      (bool) preg_match('/GTX\s*10/i', $name)         => 0.95,
+      default                                         => 0.90,
     };
 
     $w = self::GPU_WEIGHTS[$type] ?? self::GPU_WEIGHTS['gaming'];

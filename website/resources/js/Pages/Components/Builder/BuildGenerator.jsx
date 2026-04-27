@@ -14,6 +14,7 @@ const BuildGenerator = () => {
   const [preferences, setPreferences] = useState({
     gpu: null,
     cpu: null,
+    type: null,
   });
 
   const updatePref = (key, value) => {
@@ -108,7 +109,7 @@ const BuildGenerator = () => {
                 className="p-1 text-muted text-sm border focus:outline outline-secondary-light"
                 value={preferences.gpu ?? ""}
               >
-                <option value="">ANY</option>
+                <option value="">Any</option>
                 <option value="nvidia">NVIDIA</option>
                 <option value="amd">AMD</option>
                 <option value="intel">INTEL</option>
@@ -124,11 +125,28 @@ const BuildGenerator = () => {
                 className="p-1 text-muted text-sm border focus:outline outline-secondary-light"
                 value={preferences.cpu ?? ""}
               >
-                <option value="">ANY</option>
+                <option value="">Any</option>
                 <option value="amd">AMD</option>
                 <option value="intel">INTEL</option>
               </select>
             </div>
+          </div>
+
+          <div className="flex flex-col flex-1">
+            <label className="text-sm text-muted" htmlFor="gpu">
+              Usage
+            </label>
+            <select
+              onChange={(e) => updatePref("type", e.target.value)}
+              className="p-1 text-muted text-sm border focus:outline outline-secondary-light"
+              value={preferences.type ?? ""}
+            >
+              <option value="">Any</option>
+              <option value="gaming">Gaming</option>
+              <option value="office">Office</option>
+              <option value="rendering">Rendering</option>
+              <option value="streaming">Streaming</option>
+            </select>
           </div>
 
           {error && <p className="text-danger text-sm mb-2">{error}</p>}
