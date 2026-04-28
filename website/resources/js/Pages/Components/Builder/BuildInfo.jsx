@@ -66,6 +66,8 @@ const BuildInfo = ({ currBuildInfo }) => {
     setSelectedComponents((prev) =>
       Object.fromEntries(Object.keys(prev).map((key) => [key, null])),
     );
+    setBuildName("");
+    setBuildNotes("");
   };
 
   const hasComponents = Object.values(selectedComponents).some(
