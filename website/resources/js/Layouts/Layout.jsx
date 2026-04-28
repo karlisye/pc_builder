@@ -84,6 +84,10 @@ const Layout = ({ children }) => {
                 <Link className={navLinkClass("/guide")} href="/guide">
                   Guide
                 </Link>
+
+                <Link className={navLinkClass("/shared")} href="/shared">
+                  Shared
+                </Link>
               </div>
 
               <button

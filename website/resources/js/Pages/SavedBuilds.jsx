@@ -70,7 +70,7 @@ const SavedBuilds = ({ builds }) => {
   return (
     <>
       <div className="h-full flex flex-wrap">
-        <div className="w-full lg:w-120 bg-primary py-6 px-4">
+        <div className="w-full lg:w-120.5 bg-primary py-6 px-4">
           <h1 className="text-4xl font-semibold text-white mb-4">
             SAVED BUILDS
           </h1>

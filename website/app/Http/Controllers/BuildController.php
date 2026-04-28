@@ -12,7 +12,15 @@ use Inertia\Response as InertiaResponse;
 
 class BuildController extends Controller
 {
-  public function publish(Request $request, Build $build)
+  public function shared(): InertiaResponse
+  {
+    $builds = Build::where('is_public', true)
+      ->paginate(10);
+
+    return Inertia::render('Shared', ['buildData' => $builds]);
+  }
+
+  public function publish(Build $build): JsonResponse
   {
     $build->is_public = !$build->is_public;
     $build->save();
