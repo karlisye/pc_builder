@@ -42,6 +42,9 @@ class BuilderSlotPicker
     if (isset($preferences['cpu']) && $slot === 'cpu') {
       $query->where('type', $preferences['cpu']);
     }
+    if (isset($preferences['integrated_graphics']) && $slot === 'cpu') {
+      $query->where('integrated_graphics', true);
+    }
 
     $candidates = $query->get();
 

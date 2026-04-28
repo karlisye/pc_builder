@@ -46,6 +46,11 @@ class BuilderService
     $type = $preferences['type'] ?? 'gaming';
     $allocations = self::TIERS[$tier][$type] ?? self::TIERS[$tier]['gaming'];
 
+    // if allocations dont have gpu, then intergated graphics is a must
+    if (!isset($allocations['gpu'])) {
+      $preferences['integrated_graphics'] = true;
+    }
+
     $selectedCost = $this->totalCost($selected);
     $remainingBudget = $budget - $selectedCost;
 
