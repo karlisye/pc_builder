@@ -12,6 +12,19 @@ use Inertia\Response as InertiaResponse;
 
 class BuildController extends Controller
 {
+  public function publish(Request $request, Build $build)
+  {
+    $build->is_public = !$build->is_public;
+    $build->save();
+
+    return response()->json([
+      'success' => $build->is_public
+        ? 'Build is now public!'
+        : 'Build is now private.',
+      'is_public' => $build->is_public,
+    ]);
+  }
+
   public function index(Request $request): InertiaResponse
   {
     $builds = Build::query()

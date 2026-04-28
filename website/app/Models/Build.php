@@ -22,6 +22,7 @@ class Build extends Model
     'cooler_id',
     'psu_id',
     'fan_id',
+    'is_public'
   ];
 
   protected $casts = [

@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Link, router } from "@inertiajs/react";
 import DetailPanel from "./Components/Saved/DetailPanel";
-import Modal from "./Components/Modal";
+import Modal from "./Components/Common/Modal";
+import BuildVisibility from "./Components/Saved/BuildVisibility";
 
 const SLOT_LABELS = {
   cpu: "CPU",
@@ -195,6 +196,11 @@ const SavedBuilds = ({ builds }) => {
                   </button>
                 </div>
               </div>
+
+              <BuildVisibility
+                build={selectedBuild}
+                setBuild={setSelectedBuild}
+              />
 
               <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-4">
                 {Object.entries(SLOT_LABELS).map(([slot, label]) => {
