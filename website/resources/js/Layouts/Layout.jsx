@@ -7,8 +7,11 @@ const Layout = ({ children }) => {
   const { url } = usePage();
 
   const [profileActive, setProfileActive] = useState(false);
+  const [menuActive, setMenuActive] = useState(false);
   const dropdownRef = useRef(null);
   const buttonRef = useRef(null);
+  const menuRef = useRef(null);
+  const menuButtonRef = useRef(null);
 
   // close dropdown when clicking outside
   useEffect(() => {
@@ -20,20 +23,36 @@ const Layout = ({ children }) => {
       ) {
         setProfileActive(false);
       }
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        !menuButtonRef.current.contains(event.target)
+      ) {
+        setMenuActive(false);
+      }
     };
 
-    if (profileActive) {
+    if (profileActive || menuActive) {
       document.addEventListener("mousedown", handleClickOutside);
 
       return () => {
         document.removeEventListener("mousedown", handleClickOutside);
       };
     }
-  }, [profileActive]);
+  }, [profileActive, menuActive]);
 
   const navLinkClass = (path) => {
     const isActive = url.startsWith(path);
     return `py-4 px-6 transition ${
+      isActive
+        ? "bg-primary text-white hover:bg-primary-light"
+        : "hover:bg-surface text-text"
+    }`;
+  };
+
+  const menuLinkClass = (path) => {
+    const isActive = url.startsWith(path);
+    return `block py-3 px-4 transition ${
       isActive
         ? "bg-primary text-white hover:bg-primary-light"
         : "hover:bg-surface text-text"
@@ -53,17 +72,69 @@ const Layout = ({ children }) => {
 
           {user ? (
             <>
-              <Link className={navLinkClass("/builder")} href="/builder">
-                Build
-              </Link>
+              <div className="hidden md:flex">
+                <Link className={navLinkClass("/builder")} href="/builder">
+                  Build
+                </Link>
 
-              <Link className={navLinkClass("/builds")} href="/builds">
-                Saved
-              </Link>
+                <Link className={navLinkClass("/builds")} href="/builds">
+                  Saved
+                </Link>
 
-              <Link className={navLinkClass("/guide")} href="/guide">
-                Guide
-              </Link>
+                <Link className={navLinkClass("/guide")} href="/guide">
+                  Guide
+                </Link>
+              </div>
+
+              <button
+                ref={menuButtonRef}
+                className={`md:hidden py-4 px-6 transition flex items-center gap-2 ${
+                  menuActive
+                    ? "bg-primary text-white"
+                    : "hover:bg-surface text-text"
+                }`}
+                onClick={() => setMenuActive((prev) => !prev)}
+              >
+                <svg
+                  className="w-6 h-6 transition"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+
+              <div
+                ref={menuRef}
+                className={`md:hidden absolute left-0 top-14 w-screen bg-background overflow-hidden transition-all shadow z-10 ${
+                  menuActive ? "h-36" : "h-0"
+                }`}
+              >
+                <Link
+                  className={menuLinkClass("/builder")}
+                  href="/builder"
+                  onClick={() => setMenuActive(false)}
+                >
+                  Build
+                </Link>
+
+                <Link
+                  className={menuLinkClass("/builds")}
+                  href="/builds"
+                  onClick={() => setMenuActive(false)}
+                >
+                  Saved
+                </Link>
+
+                <Link
+                  className={menuLinkClass("/guide")}
+                  href="/guide"
+                  onClick={() => setMenuActive(false)}
+                >
+                  Guide
+                </Link>
+              </div>
 
               {/* profile element */}
               <div className="ml-auto relative">
