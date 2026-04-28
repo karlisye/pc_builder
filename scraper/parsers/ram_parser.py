@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from database import insert_row
 from parsers.helpers import extract_name, extract_specs, to_int, to_float
 
-TABLE = "ram"
+TABLE = "rams"
 
 
 def _parse_kit(value: str) -> int | None:
