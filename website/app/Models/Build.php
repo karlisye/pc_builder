@@ -29,6 +29,9 @@ class Build extends Model
     'total_price' => 'decimal:2',
   ];
 
+  // to show "components" in json
+  protected $appends = ['components'];
+
   public function user(): BelongsTo
   {
     return $this->belongsTo(User::class);
@@ -116,5 +119,38 @@ class Build extends Model
     ]);
 
     return $this;
+  }
+
+  // eager load components (when need to return arrays)
+  public function getComponentsAttribute(): array
+  {
+    return [
+      'cpu' => $this->cpu,
+      'motherboard' => $this->motherboard,
+      'ram' => $this->ram,
+      'gpu' => $this->gpu,
+      'ssd' => $this->ssd,
+      'hdd' => $this->hdd,
+      'case' => $this->pcCase,
+      'cooler' => $this->cooler,
+      'psu' => $this->psu,
+      'fan' => $this->fan,
+    ];
+  }
+
+  public function scopeWithComponents($query)
+  {
+    return $query->with([
+      'cpu',
+      'motherboard',
+      'ram',
+      'gpu',
+      'ssd',
+      'hdd',
+      'pcCase',
+      'cooler',
+      'psu',
+      'fan',
+    ]);
   }
 }

@@ -15,7 +15,8 @@ class BuildController extends Controller
   public function shared(): InertiaResponse
   {
     $builds = Build::where('is_public', true)
-      ->paginate(10);
+      ->withComponents()
+      ->paginate(6);
 
     return Inertia::render('Shared', ['buildData' => $builds]);
   }
