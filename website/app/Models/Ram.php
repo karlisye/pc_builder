@@ -8,7 +8,7 @@ class Ram extends Model
 {
   public $timestamps = false;
 
-  protected $table = 'ram';
+  protected $table = 'rams';
 
   protected $fillable = [
     'dateks_id',

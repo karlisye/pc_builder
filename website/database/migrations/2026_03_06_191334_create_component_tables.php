@@ -48,22 +48,6 @@ return new class extends Migration
             $table->timestamp('scraped_at')->nullable();
         });
 
-        Schema::create('ram', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedInteger('dateks_id')->unique()->index();
-            $table->string('url');
-            $table->string('name');
-            $table->decimal('price', 10, 2)->nullable()->index();
-            $table->boolean('in_stock')->default(false)->index();
-            $table->string('stock_quantity')->nullable();
-            $table->string('memory_type')->nullable()->index();
-            $table->smallInteger('capacity')->nullable()->index();
-            $table->smallInteger('frequency')->nullable()->index();
-            $table->tinyInteger('cl_latency')->nullable();
-            $table->tinyInteger('modules_count')->default(1)->index();
-            $table->timestamp('scraped_at')->nullable();
-        });
-
         Schema::create('gpus', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('dateks_id')->unique()->index();
@@ -188,7 +172,6 @@ return new class extends Migration
         Schema::dropIfExists('hdds');
         Schema::dropIfExists('ssds');
         Schema::dropIfExists('gpus');
-        Schema::dropIfExists('ram');
         Schema::dropIfExists('motherboards');
         Schema::dropIfExists('cpus');
     }

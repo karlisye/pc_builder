@@ -17,7 +17,7 @@ return new class extends Migration
 
             $table->foreignId('cpu_id')->nullable()->constrained('cpus')->nullOnDelete();
             $table->foreignId('motherboard_id')->nullable()->constrained('motherboards')->nullOnDelete();
-            $table->foreignId('ram_id')->nullable()->constrained('ram')->nullOnDelete();
+            $table->foreignId('ram_id')->nullable()->constrained('rams')->nullOnDelete();
             $table->foreignId('gpu_id')->nullable()->constrained('gpus')->nullOnDelete();
             $table->foreignId('ssd_id')->nullable()->constrained('ssds')->nullOnDelete();
             $table->foreignId('hdd_id')->nullable()->constrained('hdds')->nullOnDelete();

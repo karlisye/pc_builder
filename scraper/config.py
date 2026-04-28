@@ -22,7 +22,7 @@ CATEGORIES = {
             "https://www.dateks.lv/en/cenas/atmina-ram",
         ],
         "parser": "ram_parser",
-        "table": "ram",
+        "table": "rams",
     },
     "gpu": {
         "urls": [
