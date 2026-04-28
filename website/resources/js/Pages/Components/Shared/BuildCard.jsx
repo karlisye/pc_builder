@@ -1,6 +1,31 @@
-import React from "react";
+import { Link } from "@inertiajs/react";
+import axios from "axios";
+import React, { useState } from "react";
 
 const BuildCard = ({ build }) => {
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSave = async () => {
+    const components = Object.fromEntries(
+      Object.entries(build.components)
+        .filter(([_, component]) => component !== null)
+        .map(([type, component]) => [type, component.id]),
+    );
+
+    try {
+      await axios.post("/api/builds", {
+        name: build.name + " (copy)",
+        notes: build.notes,
+        components,
+      });
+      setSuccess("Build saved successfully");
+      setTimeout(() => setSuccess(""), 5000);
+    } catch (err) {
+      setError(err.response?.data?.error ?? "Failed to save build");
+    }
+  };
+
   return (
     <div className="w-full border flex flex-col border-border shadow hover:bg-background transition overflow-hidden">
       <div className="flex gap-2 items-center justify-between">
@@ -38,13 +63,22 @@ const BuildCard = ({ build }) => {
         </div>
       </div>
 
-      <div className="bg-primary mt-auto flex">
-        <button className="text-white px-8 py-4 flex-1 hover:bg-primary-light cursor-pointer transition">
-          Continue
-        </button>
+      {success && <p className="text-success ml-auto px-2">{success}</p>}
+      {error && <p className="text-danger ml-auto px-2">{error}</p>}
 
-        <button className="text-white px-8 py-4 flex-1 hover:bg-primary-light cursor-pointer transition">
-          Save
+      <div className="bg-primary mt-auto flex">
+        <Link
+          className="text-white px-8 py-4 flex-1 text-center hover:bg-primary-light cursor-pointer transition"
+          href={`/builder?build=${build.id}`}
+        >
+          Continue
+        </Link>
+
+        <button
+          className="text-white px-8 py-4 flex-1 hover:bg-primary-light cursor-pointer transition"
+          onClick={handleSave}
+        >
+          Save as a copy
         </button>
       </div>
     </div>
