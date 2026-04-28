@@ -9,10 +9,10 @@ class BuilderService
   // updated tiers, still needs improvements
   private const TIERS = [
     'budget' => [
-      'gaming'    => ['cpu' => 0.20, 'motherboard' => 0.17, 'ram' => 0.20, 'gpu' => 0.17, 'case' => 0.09, 'psu' => 0.09, 'ssd' => 0.08],
+      'gaming'    => ['cpu' => 0.25, 'motherboard' => 0.20, 'ram' => 0.25, 'case' => 0.10, 'psu' => 0.10, 'ssd' => 0.10],
       'office'    => ['cpu' => 0.28, 'motherboard' => 0.22, 'ram' => 0.25, 'case' => 0.09, 'psu' => 0.09, 'ssd' => 0.07],
-      'rendering' => ['cpu' => 0.25, 'motherboard' => 0.20, 'ram' => 0.25, 'case' => 0.09, 'psu' => 0.09, 'ssd' => 0.12],
-      'streaming' => ['cpu' => 0.23, 'motherboard' => 0.18, 'ram' => 0.21, 'gpu' => 0.13, 'case' => 0.09, 'psu' => 0.09, 'ssd' => 0.07],
+      'rendering' => ['cpu' => 0.25, 'motherboard' => 0.20, 'ram' => 0.25, 'case' => 0.10, 'psu' => 0.10, 'ssd' => 0.10],
+      'streaming' => ['cpu' => 0.27, 'motherboard' => 0.20, 'ram' => 0.23, 'case' => 0.10, 'psu' => 0.10, 'ssd' => 0.10],
     ],
     'mid' => [
       'gaming'    => ['gpu' => 0.27, 'cpu' => 0.14, 'motherboard' => 0.10, 'ram' => 0.20, 'cooler' => 0.03, 'case' => 0.07, 'psu' => 0.07, 'ssd' => 0.12],
@@ -146,6 +146,11 @@ class BuilderService
         $pickedAny = true;
 
         $remainingSlots = $this->reEvaluateSkips($remainingSlots, $build);
+
+        // if picked cpu has no bundled cooler and cooler isn't already queued or filled
+        if ($slot === 'cpu' && !$picked->cooler_included && !in_array('cooler', $remainingSlots) && !isset($filled['cooler'])) {
+          $remainingSlots[] = 'cooler';
+        }
 
         break; // restart loop with updated budget after each pick
       }
