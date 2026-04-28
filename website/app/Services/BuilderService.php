@@ -84,7 +84,7 @@ class BuilderService
     }
 
     // all attempts failed - estimate minimum budget
-    $estimatedMinimum = $this->estimateMinimumBudget($slotsToFill, $selected, $selectedCost);
+    $estimatedMinimum = $this->estimateMinimumBudget($slotsToFill, $selected, $selectedCost, $preferences);
 
     return $this->errorResponse(
       "Could not find compatible parts within the given budget. "
@@ -265,12 +265,12 @@ class BuilderService
   }
 
   // get cheapest from each necessary component
-  private function estimateMinimumBudget(array $slotsToFill, array $selected, float $selectedCost): float
+  private function estimateMinimumBudget(array $slotsToFill, array $selected, float $selectedCost, array $preferences): float
   {
     $minimum = $selectedCost;
 
     foreach ($slotsToFill as $slot) {
-      $cheapest = $this->picker->cheapest($slot, $selected);
+      $cheapest = $this->picker->cheapest($slot, $selected, $preferences);
       if ($cheapest) {
         $minimum += (float) $cheapest->price;
       }

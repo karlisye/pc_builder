@@ -56,7 +56,7 @@ class BuilderSlotPicker
   }
 
   // find cheapest to estimate cheapest build price
-  public function cheapest(string $slot, array $selected): ?Model
+  public function cheapest(string $slot, array $selected, array $preferences): ?Model
   {
     $modelClass = CompatibilityService::VALID_TYPES[$slot];
 
@@ -74,6 +74,16 @@ class BuilderSlotPicker
       'psu' => ComponentFilters::psu($query, $selected),
       default => $query,
     };
+
+    if (isset($preferences['gpu']) && $slot === 'gpu') {
+      $query->where('type', $preferences['gpu']);
+    }
+    if (isset($preferences['cpu']) && $slot === 'cpu') {
+      $query->where('type', $preferences['cpu']);
+    }
+    if (isset($preferences['integrated_graphics']) && $slot === 'cpu') {
+      $query->where('integrated_graphics', true);
+    }
 
     return $query->orderBy('price')->first();
   }
