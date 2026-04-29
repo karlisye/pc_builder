@@ -7,8 +7,10 @@ const BuildCard = ({ build }) => {
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
 
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(build.liked ?? false);
   const [saved, setSaved] = useState(false);
+
+  const [likesCount, setLikesCount] = useState(build.likes_count ?? 0);
 
   const handleSave = async () => {
     const components = Object.fromEntries(
@@ -33,7 +35,10 @@ const BuildCard = ({ build }) => {
   const like = async () => {
     try {
       const res = await axios.post(`/api/builds/${build.id}/like`);
-      if (res.status === 200) setLiked((prev) => !prev);
+      if (res.status === 200) {
+        setLiked((prev) => !prev);
+        setLikesCount((prev) => (liked ? prev - 1 : prev + 1));
+      }
     } catch (err) {
       setError(err.response?.data?.error ?? "Failed to like");
     }
@@ -61,7 +66,7 @@ const BuildCard = ({ build }) => {
 
           <div className="p-2 border border-border mt-auto">
             <div className="flex">
-              <span className="flex-1">
+              <span className="flex-1 flex otems-center gap-2">
                 <button onClick={like}>
                   <HeartIcon
                     filled={liked}
@@ -72,6 +77,8 @@ const BuildCard = ({ build }) => {
                     }
                   />
                 </button>
+
+                <span className="text-muted">{likesCount ?? 0}</span>
               </span>
               <span className="flex-1">
                 <button onClick={save}>

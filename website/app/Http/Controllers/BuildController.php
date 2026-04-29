@@ -36,6 +36,11 @@ class BuildController extends Controller
   {
     $builds = Build::where('is_public', true)
       ->withComponents()
+      // get a boolean "liked" for each returned build
+      ->withExists([
+        'likes as liked' => fn($query) => $query->where('user_id', auth()->id())
+      ])
+      ->withCount('likes')
       ->paginate(6);
 
     return Inertia::render('Shared', ['buildData' => $builds]);
