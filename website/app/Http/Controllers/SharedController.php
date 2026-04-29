@@ -6,6 +6,7 @@ use App\Models\Build;
 use App\Models\BuildBookmark;
 use App\Models\BuildLike;
 use App\Models\BuildReview;
+use App\Services\BuildQueryFilter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -23,6 +24,15 @@ class SharedController extends Controller
     $query = Build::query()
       ->where('is_public', true);
 
+
+    // validate filters later
+
+    $filters = $request->only([
+      'search'
+    ]);
+
+    $query = BuildQueryFilter::apply($query, $filters);
+
     $userId = $request->user()->id;
     $query->withComponents()
       // get a boolean "liked" for each returned build
@@ -31,7 +41,7 @@ class SharedController extends Controller
       // get "likes_count"
       ->withCount('likes')
       ->withCount('bookmarks')
-      ->with(['reviews' => fn($q) => $q->where('user_id', auth()->id())])
+      ->with(['reviews' => fn($q) => $q->where('user_id', $userId)])
       ->withAvg('reviews', 'rating')
       ->with('user')
       ->paginate(6);

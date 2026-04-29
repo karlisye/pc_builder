@@ -3,15 +3,21 @@ import BuildCard from "./Components/Shared/BuildCard";
 import axios from "axios";
 import PaginationControls from "./Components/Common/PaginationControls";
 import SharedBuildsSkeleton from "./Components/Skeletons/SharedBuildsSkeleton";
+import BuildFilters from "./Components/Shared/BuildFilters";
 
 const Shared = () => {
-  // const builds = buildData.data;
-
   const [pagination, setPagination] = useState(null);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [error, setError] = useState("");
   const [builds, setBuilds] = useState([]);
+
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    setPage(1);
+    fetchBuilds(1);
+  }, [search]);
 
   useEffect(() => {
     fetchBuilds(page);
@@ -25,6 +31,7 @@ const Shared = () => {
       const res = await axios.get(`/api/shared`, {
         params: {
           page: pageNum,
+          search: search || undefined,
         },
       });
 
@@ -43,7 +50,9 @@ const Shared = () => {
 
   return (
     <div className="h-full flex flex-wrap">
-      <div className="w-full lg:w-120.5 bg-primary py-6 px-4"></div>
+      <div className="w-full lg:w-120.5 bg-primary py-6 px-4">
+        <BuildFilters search={search} setSearch={setSearch} />
+      </div>
 
       {loading && <SharedBuildsSkeleton />}
       {error && <p className="text-danger mt-6 mx-auto">{error}</p>}
