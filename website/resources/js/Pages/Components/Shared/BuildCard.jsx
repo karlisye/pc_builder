@@ -30,8 +30,13 @@ const BuildCard = ({ build }) => {
     }
   };
 
-  const like = () => {
-    setLiked((prev) => !prev);
+  const like = async () => {
+    try {
+      const res = await axios.post(`/api/builds/${build.id}/like`);
+      if (res.status === 200) setLiked((prev) => !prev);
+    } catch (err) {
+      setError(err.response?.data?.error ?? "Failed to like");
+    }
   };
 
   const save = () => {

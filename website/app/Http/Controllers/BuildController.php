@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Build;
+use App\Models\BuildLike;
 use App\Services\CompatibilityService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -12,6 +13,25 @@ use Inertia\Response as InertiaResponse;
 
 class BuildController extends Controller
 {
+  public function like(Request $request, Build $build): JsonResponse
+  {
+    $existingLike = BuildLike::where('user_id', $request->user()->id)
+      ->where('build_id', $build->id)
+      ->first();
+
+    if ($existingLike) {
+      $existingLike->delete();
+      return response()->json(['message' => 'unliked'], 200);
+    }
+
+    BuildLike::create([
+      'user_id' => $request->user()->id,
+      'build_id' => $build->id
+    ]);
+
+    return response()->json(['message' => 'liked'], 200);
+  }
+
   public function shared(): InertiaResponse
   {
     $builds = Build::where('is_public', true)

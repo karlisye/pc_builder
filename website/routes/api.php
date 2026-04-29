@@ -16,4 +16,5 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::patch('/builds/{build}', [BuildController::class, 'update']);
   Route::delete('/builds/{build}', [BuildController::class, 'destroy']);
   Route::patch('/builds/{build}/publish', [BuildController::class, 'publish']);
+  Route::post('/builds/{build}/like', [BuildController::class, 'like']);
 });
