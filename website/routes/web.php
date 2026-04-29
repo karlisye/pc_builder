@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BuildController;
 use App\Http\Controllers\BuilderController;
+use App\Http\Controllers\SharedController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -21,7 +22,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/builder', [BuilderController::class, 'index']);
     Route::get('/builds', [BuildController::class, 'index']);
-    Route::get('/shared', [BuildController::class, 'shared']);
+    Route::get('/shared', [SharedController::class, 'index']);
 });
 
 Route::fallback(fn() => Inertia::render('NotFound'));

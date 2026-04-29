@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import BuildCard from "./Components/Shared/BuildCard";
 
 const Shared = ({ buildData }) => {
   console.log(buildData);
   const builds = buildData.data;
-  const links = buildData.links;
+
+  const [pagination, setPagination] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+
   return (
     <div className="h-full flex flex-wrap">
       <div className="w-full lg:w-120.5 bg-primary py-6 px-4"></div>

@@ -45,7 +45,7 @@ const BuildCard = ({ build }) => {
 
   const like = async () => {
     try {
-      const res = await axios.post(`/api/builds/${build.id}/like`);
+      const res = await axios.post(`/api/shared/${build.id}/like`);
       if (res.status === 200) {
         setLiked((prev) => !prev);
         setLikesCount((prev) => (liked ? prev - 1 : prev + 1));
@@ -57,7 +57,7 @@ const BuildCard = ({ build }) => {
 
   const bookmark = async () => {
     try {
-      const res = await axios.post(`/api/builds/${build.id}/bookmark`);
+      const res = await axios.post(`/api/shared/${build.id}/bookmark`);
       if (res.status === 200) {
         setBookmarked((prev) => !prev);
         setBookmarksCount((prev) => (bookmarked ? prev - 1 : prev + 1));
@@ -70,7 +70,7 @@ const BuildCard = ({ build }) => {
   const submitReview = async (rating) => {
     setUserRating(rating);
     try {
-      await axios.post(`/api/builds/${build.id}/review`, { rating });
+      await axios.post(`/api/shared/${build.id}/review`, { rating });
     } catch (err) {
       setError(err.response?.data?.error ?? "Failed to submit review");
     }
