@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import BuildCard from "./Components/Shared/BuildCard";
 import axios from "axios";
 import PaginationControls from "./Components/Common/PaginationControls";
+import SharedBuildsSkeleton from "./Components/Skeletons/SharedBuildsSkeleton";
 
 const Shared = () => {
   // const builds = buildData.data;
@@ -43,18 +44,40 @@ const Shared = () => {
   return (
     <div className="h-full flex flex-wrap">
       <div className="w-full lg:w-120.5 bg-primary py-6 px-4"></div>
-      <div className="flex-1">
-        <div className="flex flex-col items-center gap-8 px-4 pt-6">
-          {builds &&
-            builds.map((build) => <BuildCard key={build.id} build={build} />)}
-        </div>
 
-        <div className="w-full px-4 pb-6">
-          {pagination && pagination.lastPage > 1 && (
-            <PaginationControls pagination={pagination} setPage={setPage} />
+      {loading && <SharedBuildsSkeleton />}
+      {error && <p className="text-danger mt-6 mx-auto">{error}</p>}
+
+      {!loading && !error && (
+        <div className="flex-1">
+          {builds.length === 0 ? (
+            <div className="mx-auto text-center mt-6">
+              <p className="text-2xl font-semibold text-text">
+                No Builds Found
+              </p>
+              <span className="text-muted">Try adjusting your filters</span>
+            </div>
+          ) : (
+            <>
+              <div className="flex flex-col items-center gap-8 px-4 pt-6">
+                {builds &&
+                  builds.map((build) => (
+                    <BuildCard key={build.id} build={build} />
+                  ))}
+              </div>
+
+              <div className="w-full px-4 pb-6">
+                {pagination && pagination.lastPage > 1 && (
+                  <PaginationControls
+                    pagination={pagination}
+                    setPage={setPage}
+                  />
+                )}
+              </div>
+            </>
           )}
         </div>
-      </div>
+      )}
     </div>
   );
 };
