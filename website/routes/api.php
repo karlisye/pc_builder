@@ -22,4 +22,5 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::post('/shared/{build}/like', [SharedController::class, 'like']);
   Route::post('/shared/{build}/bookmark', [SharedController::class, 'bookmark']);
   Route::post('/shared/{build}/review', [SharedController::class, 'review']);
+  Route::get('/shared', [SharedController::class, 'fetchBuilds']);
 });

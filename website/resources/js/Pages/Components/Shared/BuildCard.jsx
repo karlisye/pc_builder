@@ -95,7 +95,7 @@ const BuildCard = ({ build }) => {
             <h1 className="text-2xl uppercase text-text font-semibold">
               {build.name}
             </h1>
-            <p className="text-muted">@{build.user.name}</p>
+            <p className="text-muted">@{build.user?.name}</p>
           </div>
           <p className="text-text font-semibold text-xl">
             €{build.total_price}
