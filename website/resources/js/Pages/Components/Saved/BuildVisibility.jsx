@@ -60,7 +60,8 @@ const BuildVisibility = ({ build, setBuild }) => {
       {publishing && (
         <Modal close={() => setPublishing(false)}>
           <h1 className="text-text text-3xl mb-10">
-            Are you sure you want to publish {build.name} build?
+            Are you sure you want to {build.is_public ? "private" : "publish"}{" "}
+            {build.name} build?
           </h1>
 
           <div className="flex gap-4">

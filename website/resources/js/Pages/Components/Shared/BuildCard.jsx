@@ -3,12 +3,14 @@ import axios from "axios";
 import React, { useState } from "react";
 import { HeartIcon, SavedIcon, StarIcon } from "../Common/Icons";
 import StarRating from "../Common/StarRating";
+import Modal from "../Common/Modal";
 
 const BuildCard = ({ build }) => {
   const { user } = usePage().props.auth;
 
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+  const [privating, setPrivating] = useState(false);
 
   const [liked, setLiked] = useState(build.liked ?? false);
   const [bookmarked, setBookmarked] = useState(build.bookmarked ?? false);
@@ -78,6 +80,7 @@ const BuildCard = ({ build }) => {
     try {
       const res = await axios.patch(`/api/builds/${build.id}/publish`);
       setSuccess(res.data.success);
+      setPrivating(false);
       setTimeout(() => router.reload(), 1000);
     } catch (err) {
       console.error(err);
@@ -85,129 +88,158 @@ const BuildCard = ({ build }) => {
   };
 
   return (
-    <div className="w-full border flex flex-col border-border shadow hover:bg-background transition overflow-hidden">
-      <div className="flex gap-2 items-center justify-between m-2">
-        <div>
-          <h1 className="text-2xl uppercase text-text font-semibold">
-            {build.name}
-          </h1>
-          <p className="text-muted">@{build.user.name}</p>
+    <>
+      <div className="w-full border flex flex-col border-border shadow hover:bg-background transition overflow-hidden">
+        <div className="flex gap-2 items-center justify-between m-2">
+          <div>
+            <h1 className="text-2xl uppercase text-text font-semibold">
+              {build.name}
+            </h1>
+            <p className="text-muted">@{build.user.name}</p>
+          </div>
+          <p className="text-text font-semibold text-xl">
+            €{build.total_price}
+          </p>
         </div>
-        <p className="text-text font-semibold text-xl">€{build.total_price}</p>
-      </div>
 
-      <div className="flex">
-        <div className="flex-1 m-2 flex flex-col">
-          <span className="text-muted font-medium">Notes</span>
-          <p className="text-text mt-4">{build.notes}</p>
+        <div className="flex">
+          <div className="flex-1 m-2 flex flex-col">
+            <span className="text-muted font-medium">Notes</span>
+            <p className="text-text mt-4">{build.notes}</p>
 
-          <div className="p-2 border border-border mt-auto">
-            <div className="flex justify-around">
-              <span
-                className="flex items-center gap-2"
-                title={"Like this post"}
-              >
-                <button onClick={like}>
-                  <HeartIcon
-                    filled={liked}
-                    className={
-                      liked
-                        ? "text-danger transition hover:text-danger/90"
-                        : "transition text-muted hover:text-text"
-                    }
-                  />
-                </button>
-
-                <span className="text-muted">{likesCount ?? 0}</span>
-              </span>
-              <span
-                className="flex items-center gap-2"
-                title={"Bookmark this post"}
-              >
-                <button onClick={bookmark}>
-                  <SavedIcon
-                    filled={bookmarked}
-                    className={
-                      bookmarked
-                        ? "text-alert transition hover:text-alert/90"
-                        : "transition text-muted hover:text-text"
-                    }
-                  />
-                </button>
-
-                <span className="text-muted">{bookmarksCount ?? 0}</span>
-              </span>
-
-              <span
-                className="flex items-center gap-2"
-                title={"Average rating"}
-              >
-                <StarIcon filled className={"text-alert"} />
-
-                <span className="text-muted">
-                  {Math.round(build.reviews_avg_rating ?? 0)}
-                </span>
-              </span>
-            </div>
-
-            <div className="w-9/10 mx-auto border border-border my-2"></div>
-
-            {build.user_id !== user.id ? (
-              <div className="flex w-full justify-center">
-                <StarRating value={userRating} onChange={submitReview} />
-              </div>
-            ) : (
-              <div className="flex justify-center">
-                <button
-                  onClick={makePrivate}
-                  className="text-text hover:text-danger transition"
+            <div className="p-2 border border-border mt-auto">
+              <div className="flex justify-around">
+                <span
+                  className="flex items-center gap-2"
+                  title={"Like this post"}
                 >
-                  Make Private
-                </button>
+                  <button onClick={like}>
+                    <HeartIcon
+                      filled={liked}
+                      className={
+                        liked
+                          ? "text-danger transition hover:text-danger/90"
+                          : "transition text-muted hover:text-text"
+                      }
+                    />
+                  </button>
+
+                  <span className="text-muted">{likesCount ?? 0}</span>
+                </span>
+                <span
+                  className="flex items-center gap-2"
+                  title={"Bookmark this post"}
+                >
+                  <button onClick={bookmark}>
+                    <SavedIcon
+                      filled={bookmarked}
+                      className={
+                        bookmarked
+                          ? "text-alert transition hover:text-alert/90"
+                          : "transition text-muted hover:text-text"
+                      }
+                    />
+                  </button>
+
+                  <span className="text-muted">{bookmarksCount ?? 0}</span>
+                </span>
+
+                <span
+                  className="flex items-center gap-2"
+                  title={"Average rating"}
+                >
+                  <StarIcon filled className={"text-alert"} />
+
+                  <span className="text-muted">
+                    {Math.round(build.reviews_avg_rating ?? 0)}
+                  </span>
+                </span>
               </div>
-            )}
+
+              <div className="w-9/10 mx-auto border border-border my-2"></div>
+
+              {build.user_id !== user.id ? (
+                <div className="flex w-full justify-center">
+                  <StarRating value={userRating} onChange={submitReview} />
+                </div>
+              ) : (
+                <div className="flex justify-center">
+                  <button
+                    onClick={() => setPrivating(true)}
+                    className="text-text hover:text-danger transition"
+                  >
+                    Make Private
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex-2 m-2">
+            <span className="text-muted font-medium">Components</span>
+            <div className="grid grid-cols-2 gap-2 mt-4">
+              {build.components &&
+                Object.entries(build.components).map(([key, component]) => {
+                  if (!component) return null;
+
+                  return (
+                    <div key={key}>
+                      <span className="text-muted uppercase text-sm">
+                        {key}
+                      </span>
+                      <p className="text-text text-sm truncate">
+                        {component.name}
+                      </p>
+                    </div>
+                  );
+                })}
+            </div>
           </div>
         </div>
 
-        <div className="flex-2 m-2">
-          <span className="text-muted font-medium">Components</span>
-          <div className="grid grid-cols-2 gap-2 mt-4">
-            {build.components &&
-              Object.entries(build.components).map(([key, component]) => {
-                if (!component) return null;
+        {success && <p className="text-success ml-auto px-2">{success}</p>}
+        {error && <p className="text-danger ml-auto px-2">{error}</p>}
 
-                return (
-                  <div key={key}>
-                    <span className="text-muted uppercase text-sm">{key}</span>
-                    <p className="text-text text-sm truncate">
-                      {component.name}
-                    </p>
-                  </div>
-                );
-              })}
-          </div>
+        <div className="bg-primary mt-auto flex">
+          <Link
+            className="text-white px-8 py-4 flex-1 text-center hover:bg-primary-light cursor-pointer transition"
+            href={`/builder?build=${build.id}`}
+          >
+            Continue
+          </Link>
+
+          <button
+            className="text-white px-8 py-4 flex-1 hover:bg-primary-light cursor-pointer transition"
+            onClick={handleSave}
+          >
+            Copy to saved
+          </button>
         </div>
       </div>
 
-      {success && <p className="text-success ml-auto px-2">{success}</p>}
-      {error && <p className="text-danger ml-auto px-2">{error}</p>}
+      {privating && (
+        <Modal close={() => setPrivating(false)}>
+          <h1 className="text-text text-3xl mb-10">
+            Are you sure you want to private {build.name} build?
+          </h1>
 
-      <div className="bg-primary mt-auto flex">
-        <Link
-          className="text-white px-8 py-4 flex-1 text-center hover:bg-primary-light cursor-pointer transition"
-          href={`/builder?build=${build.id}`}
-        >
-          Continue
-        </Link>
-
-        <button
-          className="text-white px-8 py-4 flex-1 hover:bg-primary-light cursor-pointer transition"
-          onClick={handleSave}
-        >
-          Copy to saved
-        </button>
-      </div>
-    </div>
+          <div className="flex gap-4">
+            <button
+              className="flex-1 p-4 bg-primary text-background cursor-pointer hover:bg-primary-light transition"
+              onClick={makePrivate}
+            >
+              Make Private
+            </button>
+            <button
+              className="flex-1 p-4 bg-surface text-text cursor-pointer hover:bg-secondary-light transition"
+              onClick={() => setPrivating(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        </Modal>
+      )}
+    </>
   );
 };
 
