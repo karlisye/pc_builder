@@ -14,6 +14,8 @@ use Inertia\Response as InertiaResponse;
 
 class SharedController extends Controller
 {
+  private const VALID_SORTS = ['price_asc', 'price_desc', 'date_asc', 'date_desc', 'likes_asc', 'likes_desc', 'rating_asc', 'rating_desc'];
+
   public function index(): InertiaResponse
   {
     return Inertia::render('Shared');
@@ -25,7 +27,23 @@ class SharedController extends Controller
       ->where('is_public', true);
 
 
-    // validate filters later
+    // validate sort
+    $sort = $request->query('sort');
+    if ($sort && ! in_array($sort, self::VALID_SORTS, true)) {
+      return response()->json([
+        'error' => "'{$sort}' is not a sort option",
+        'valid_sorts' => self::VALID_SORTS,
+      ], 400);
+    }
+
+    // validate price range
+    if ($request->filled('min_price') && ! is_numeric($request->query('min_price'))) {
+      return response()->json(['error' => '`min_price` must be a number'], 400);
+    }
+
+    if ($request->filled('max_price') && ! is_numeric($request->query('max_price'))) {
+      return response()->json(['error' => '`max_price` must be a number'], 400);
+    }
 
     $filters = $request->only([
       'search',
