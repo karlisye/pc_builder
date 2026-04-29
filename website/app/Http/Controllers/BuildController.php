@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Build;
 use App\Models\BuildBookmark;
 use App\Models\BuildLike;
+use App\Models\BuildReview;
 use App\Services\CompatibilityService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -14,6 +15,18 @@ use Inertia\Response as InertiaResponse;
 
 class BuildController extends Controller
 {
+  public function review(Request $request, Build $build): JsonResponse
+  {
+    $request->validate(['rating' => 'required|integer|min:1|max:5']);
+
+    $review = BuildReview::updateOrCreate(
+      ['user_id' => $request->user()->id, 'build_id' => $build->id],
+      ['rating' => $request->rating]
+    );
+
+    return response()->json($review, 200);
+  }
+
   public function bookmark(Request $request, Build $build): JsonResponse
   {
     $existingBookmark = BuildBookmark::where('user_id', $request->user()->id)
@@ -54,17 +67,18 @@ class BuildController extends Controller
 
   public function shared(): InertiaResponse
   {
+    $userId = auth()->id();
+
     $builds = Build::where('is_public', true)
       ->withComponents()
       // get a boolean "liked" for each returned build
-      ->withExists([
-        'likes as liked' => fn($query) => $query->where('user_id', auth()->id())
-      ])
+      ->withExists(['likes as liked' => fn($q) => $q->where('user_id', $userId)])
+      ->withExists(['bookmarks as bookmarked' => fn($q) => $q->where('user_id', $userId)])
+      // get "likes_count"
       ->withCount('likes')
-      ->withExists([
-        'bookmarks as bookmarked' => fn($query) => $query->where('user_id', auth()->id())
-      ])
       ->withCount('bookmarks')
+      ->with(['reviews' => fn($q) => $q->where('user_id', auth()->id())])
+      ->withAvg('reviews', 'rating')
       ->paginate(6);
 
     return Inertia::render('Shared', ['buildData' => $builds]);

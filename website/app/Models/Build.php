@@ -164,4 +164,9 @@ class Build extends Model
   {
     return $this->hasMany(BuildBookmark::class);
   }
+
+  public function reviews(): HasMany
+  {
+    return $this->hasMany(BuildReview::class);
+  }
 }

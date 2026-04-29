@@ -1,9 +1,12 @@
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import axios from "axios";
 import React, { useState } from "react";
-import { HeartIcon, SavedIcon } from "../Common/Icons";
+import { HeartIcon, SavedIcon, StarIcon } from "../Common/Icons";
+import StarRating from "../Common/StarRating";
 
 const BuildCard = ({ build }) => {
+  const { user } = usePage().props.auth;
+
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
 
@@ -13,6 +16,9 @@ const BuildCard = ({ build }) => {
   const [likesCount, setLikesCount] = useState(build.likes_count ?? 0);
   const [bookmarksCount, setBookmarksCount] = useState(
     build.bookmarks_count ?? 0,
+  );
+  const [userRating, setUserRating] = useState(
+    build.reviews?.[0]?.rating ?? null,
   );
 
   const handleSave = async () => {
@@ -59,6 +65,15 @@ const BuildCard = ({ build }) => {
     }
   };
 
+  const submitReview = async (rating) => {
+    setUserRating(rating);
+    try {
+      await axios.post(`/api/builds/${build.id}/review`, { rating });
+    } catch (err) {
+      setError(err.response?.data?.error ?? "Failed to submit review");
+    }
+  };
+
   return (
     <div className="w-full border flex flex-col border-border shadow hover:bg-background transition overflow-hidden">
       <div className="flex gap-2 items-center justify-between">
@@ -76,8 +91,11 @@ const BuildCard = ({ build }) => {
           <p className="text-text mt-4">{build.notes}</p>
 
           <div className="p-2 border border-border mt-auto">
-            <div className="flex">
-              <span className="flex-1 flex otems-center gap-2">
+            <div className="flex justify-around">
+              <span
+                className="flex items-center gap-2"
+                title={"Like this post"}
+              >
                 <button onClick={like}>
                   <HeartIcon
                     filled={liked}
@@ -91,7 +109,10 @@ const BuildCard = ({ build }) => {
 
                 <span className="text-muted">{likesCount ?? 0}</span>
               </span>
-              <span className="flex-1 flex otems-center gap-2">
+              <span
+                className="flex items-center gap-2"
+                title={"Bookmark this post"}
+              >
                 <button onClick={bookmark}>
                   <SavedIcon
                     filled={bookmarked}
@@ -105,6 +126,24 @@ const BuildCard = ({ build }) => {
 
                 <span className="text-muted">{bookmarksCount ?? 0}</span>
               </span>
+
+              <span
+                className="flex items-center gap-2"
+                title={"Average rating"}
+              >
+                <StarIcon filled className={"text-alert"} />
+
+                <span className="text-muted">
+                  {Math.round(build.reviews_avg_rating ?? 0)}
+                </span>
+              </span>
+            </div>
+
+            <div className="w-9/10 mx-auto border border-border my-2"></div>
+
+            <div className="flex w-full justify-center">
+              {/* {build.user_id !== user.id && ()} */}
+              <StarRating value={userRating} onChange={submitReview} />
             </div>
           </div>
         </div>

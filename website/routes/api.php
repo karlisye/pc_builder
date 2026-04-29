@@ -18,4 +18,5 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::patch('/builds/{build}/publish', [BuildController::class, 'publish']);
   Route::post('/builds/{build}/like', [BuildController::class, 'like']);
   Route::post('/builds/{build}/bookmark', [BuildController::class, 'bookmark']);
+  Route::post('/builds/{build}/review', [BuildController::class, 'review']);
 });
