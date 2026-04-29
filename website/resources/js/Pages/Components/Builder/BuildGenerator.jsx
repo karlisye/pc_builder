@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useBuilder } from "../../../Contexts/BuilderContext";
 import BudgetSlider from "./BudgetSlider";
 import { Link } from "@inertiajs/react";
+import { ArrowIcon } from "../Common/Icons";
 
 const BuildGenerator = () => {
   const { selectedComponents, setSelectedComponents, setCurrentCompToAdd } =
@@ -66,17 +67,7 @@ const BuildGenerator = () => {
         className="w-full flex justify-between items-center text-secondary-light hover:text-surface transition cursor-pointer"
       >
         <span className="text-sm">Auto Generate Build</span>
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`}
-        >
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
+        <ArrowIcon active={open} />
       </button>
 
       <div

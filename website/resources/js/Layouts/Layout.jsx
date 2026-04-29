@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useForm, usePage } from "@inertiajs/react";
+import { ArrowIcon, MenuIcon } from "../Pages/Components/Common/Icons";
 
 const Layout = ({ children }) => {
   const user = usePage().props.auth.user;
@@ -99,14 +100,7 @@ const Layout = ({ children }) => {
                 }`}
                 onClick={() => setMenuActive((prev) => !prev)}
               >
-                <svg
-                  className="w-6 h-6 transition"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
+                <MenuIcon />
               </button>
 
               <div
@@ -154,16 +148,7 @@ const Layout = ({ children }) => {
                   <span className="w-6 h-6 rounded-full bg-secondary-light flex items-center justify-center text-xs font-bold">
                     {user.name?.charAt(0).toUpperCase()}
                   </span>
-                  <svg
-                    className={`w-4 h-4 transition ${
-                      profileActive ? "rotate-180" : ""
-                    }`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
+                  <ArrowIcon active={profileActive} />
                 </button>
 
                 {/* dropdown */}

@@ -1,6 +1,7 @@
 import { Link } from "@inertiajs/react";
 import axios from "axios";
 import React, { useState } from "react";
+import { HeartIcon, SavedIcon } from "../Common/Icons";
 
 const BuildCard = ({ build }) => {
   const [success, setSuccess] = useState("");
@@ -38,9 +39,20 @@ const BuildCard = ({ build }) => {
       </div>
 
       <div className="flex">
-        <div className="flex-1 m-2">
+        <div className="flex-1 m-2 flex flex-col">
           <span className="text-muted font-medium">Notes</span>
           <p className="text-text mt-4">{build.notes}</p>
+
+          <div className="p-2 border border-border mt-auto">
+            <div className="flex">
+              <span className="flex-1">
+                <HeartIcon />
+              </span>
+              <span className="flex-1">
+                <SavedIcon />
+              </span>
+            </div>
+          </div>
         </div>
 
         <div className="flex-2 m-2">

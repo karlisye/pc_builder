@@ -1,5 +1,6 @@
 import React from "react";
 import ComponentInfo from "../ComponentInfo";
+import { CloseIcon } from "../Common/Icons";
 
 const DetailPanel = ({ component, slot, setExpandedSlot }) => (
   <div className="border border-border bg-background p-4 relative">
@@ -24,20 +25,7 @@ const DetailPanel = ({ component, slot, setExpandedSlot }) => (
       onClick={() => setExpandedSlot(null)}
       className="w-10 h-10 text-muted hover:cursor-pointer bg-surface hover:bg-secondary-light transition p-2 absolute top-4 right-4"
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        width="24"
-        height="24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <line x1="5" y1="5" x2="19" y2="19" />
-        <line x1="19" y1="5" x2="5" y2="19" />
-      </svg>
+      <CloseIcon />
     </button>
   </div>
 );

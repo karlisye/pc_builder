@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "@inertiajs/react";
 import Note from "./Note";
+import { AddIcon, CloseIcon } from "../Common/Icons";
 
 const BuilderSection = () => {
   return (
@@ -29,20 +30,7 @@ const BuilderSection = () => {
         <p className="text-text">
           2. Find the component list section and click the{" "}
           <button className="bg-surface border border-secondary-light p-1 text-muted hover:bg-secondary-light transition cursor-pointer">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              width="16"
-              height="16"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
+            <AddIcon />
           </button>{" "}
           button to add a new component.
         </p>
@@ -92,20 +80,7 @@ const BuilderSection = () => {
             You can clear the entire build or remove individual components by
             clicking the Clear Build button or pressing the{" "}
             <button className="p-1 bg-secondary text-muted hover:bg-danger/20 hover:text-danger cursor-pointer transition border border-secondary-light">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width="16"
-                height="16"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="5" y1="5" x2="19" y2="19" />
-                <line x1="19" y1="5" x2="5" y2="19" />
-              </svg>
+              <CloseIcon />
             </button>{" "}
             icon next to each component.
           </Note>
