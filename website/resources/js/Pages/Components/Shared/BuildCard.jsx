@@ -1,4 +1,4 @@
-import { Link, usePage } from "@inertiajs/react";
+import { Link, router, usePage } from "@inertiajs/react";
 import axios from "axios";
 import React, { useState } from "react";
 import { HeartIcon, SavedIcon, StarIcon } from "../Common/Icons";
@@ -74,15 +74,26 @@ const BuildCard = ({ build }) => {
     }
   };
 
+  const makePrivate = async () => {
+    try {
+      const res = await axios.patch(`/api/builds/${build.id}/publish`);
+      setSuccess(res.data.success);
+      setTimeout(() => router.reload(), 1000);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div className="w-full border flex flex-col border-border shadow hover:bg-background transition overflow-hidden">
-      <div className="flex gap-2 items-center justify-between">
-        <h1 className="text-2xl uppercase m-2 text-text font-semibold">
-          {build.name}
-        </h1>
-        <p className="text-text font-semibold text-xl m-2">
-          €{build.total_price}
-        </p>
+      <div className="flex gap-2 items-center justify-between m-2">
+        <div>
+          <h1 className="text-2xl uppercase text-text font-semibold">
+            {build.name}
+          </h1>
+          <p className="text-muted">@{build.user.name}</p>
+        </div>
+        <p className="text-text font-semibold text-xl">€{build.total_price}</p>
       </div>
 
       <div className="flex">
@@ -141,10 +152,20 @@ const BuildCard = ({ build }) => {
 
             <div className="w-9/10 mx-auto border border-border my-2"></div>
 
-            <div className="flex w-full justify-center">
-              {/* {build.user_id !== user.id && ()} */}
-              <StarRating value={userRating} onChange={submitReview} />
-            </div>
+            {build.user_id !== user.id ? (
+              <div className="flex w-full justify-center">
+                <StarRating value={userRating} onChange={submitReview} />
+              </div>
+            ) : (
+              <div className="flex justify-center">
+                <button
+                  onClick={makePrivate}
+                  className="text-text hover:text-danger transition"
+                >
+                  Make Private
+                </button>
+              </div>
+            )}
           </div>
         </div>
 

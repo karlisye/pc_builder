@@ -79,13 +79,18 @@ class BuildController extends Controller
       ->withCount('bookmarks')
       ->with(['reviews' => fn($q) => $q->where('user_id', auth()->id())])
       ->withAvg('reviews', 'rating')
+      ->with('user')
       ->paginate(6);
 
     return Inertia::render('Shared', ['buildData' => $builds]);
   }
 
-  public function publish(Build $build): JsonResponse
+  public function publish(Request $request, Build $build): JsonResponse
   {
+    if ($build->user_id !== $request->user()->id) {
+      return response()->json(['error' => 'Not found.'], 404);
+    }
+
     $build->is_public = !$build->is_public;
     $build->save();
 
