@@ -29,7 +29,9 @@ class SharedController extends Controller
 
     $filters = $request->only([
       'search',
-      'sort'
+      'sort',
+      'min_price',
+      'max_price'
     ]);
 
     $query = BuildQueryFilter::apply($query, $filters);

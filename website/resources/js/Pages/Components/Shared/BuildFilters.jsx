@@ -1,6 +1,17 @@
 import React from "react";
 
-const BuildFilters = ({ search, setSearch, sort, setSort }) => {
+const BuildFilters = ({
+  search,
+  setSearch,
+  sort,
+  setSort,
+  filters,
+  setFilters,
+}) => {
+  const updateFilter = (key, value) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex gap-2">
@@ -28,11 +39,33 @@ const BuildFilters = ({ search, setSearch, sort, setSort }) => {
         </select>
       </div>
 
-      <div className="grid grid-cols-2 gap-2"></div>
+      <div className="grid grid-cols-2 gap-2">
+        <input
+          type="number"
+          id="minPrice"
+          className="bg-secondary p-2 text-white outline-border focus:outline-1"
+          placeholder="Min price (€)"
+          value={filters["min_price"] ?? ""}
+          onChange={(e) =>
+            updateFilter("min_price", e.target.value || undefined)
+          }
+        />
+
+        <input
+          type="number"
+          id="maxPrice"
+          className="bg-secondary p-2 text-white outline-border focus:outline-1"
+          placeholder="Max price (€)"
+          value={filters["max_price"] ?? ""}
+          onChange={(e) =>
+            updateFilter("max_price", e.target.value || undefined)
+          }
+        />
+      </div>
 
       <button
         className="w-full p-4 bg-secondary hover:bg-secondary-dark transition cursor-pointer text-white"
-        // onClick={() => setFilters({})}
+        onClick={() => setFilters({})}
       >
         Clear Filters
       </button>

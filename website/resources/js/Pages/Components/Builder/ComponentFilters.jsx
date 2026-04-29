@@ -87,6 +87,28 @@ const ComponentFilters = () => {
       </div>
 
       <div className="grid grid-cols-2 gap-2">
+        <input
+          type="number"
+          id="minPrice"
+          className="bg-secondary p-2 text-white outline-border focus:outline-1"
+          placeholder="Min price (€)"
+          value={filters["min_price"] ?? ""}
+          onChange={(e) =>
+            updateFilter("min_price", e.target.value || undefined)
+          }
+        />
+
+        <input
+          type="number"
+          id="maxPrice"
+          className="bg-secondary p-2 text-white outline-border focus:outline-1"
+          placeholder="Max price (€)"
+          value={filters["max_price"] ?? ""}
+          onChange={(e) =>
+            updateFilter("max_price", e.target.value || undefined)
+          }
+        />
+
         {activeColumns.map((column) => {
           const values = availableFilters[column] ?? [];
           if (values.length === 0) return null;

@@ -14,11 +14,12 @@ const Shared = () => {
 
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("");
+  const [filters, setFilters] = useState({});
 
   useEffect(() => {
     setPage(1);
     fetchBuilds(1);
-  }, [search, sort]);
+  }, [search, sort, filters]);
 
   useEffect(() => {
     fetchBuilds(page);
@@ -34,6 +35,7 @@ const Shared = () => {
           page: pageNum,
           search: search || undefined,
           sort: sort || undefined,
+          ...filters,
         },
       });
 
@@ -58,6 +60,8 @@ const Shared = () => {
           setSearch={setSearch}
           sort={sort}
           setSort={setSort}
+          filters={filters}
+          setFilters={setFilters}
         />
       </div>
 

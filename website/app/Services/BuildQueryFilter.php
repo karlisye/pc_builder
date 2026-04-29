@@ -23,6 +23,15 @@ class BuildQueryFilter
         });
     }
 
+    // price range
+    if (isset($filters['min_price']) && is_numeric($filters['min_price'])) {
+      $query->where('total_price', '>=', (float) $filters['min_price']);
+    }
+
+    if (isset($filters['max_price']) && is_numeric($filters['max_price'])) {
+      $query->where('total_price', '<=', (float) $filters['max_price']);
+    }
+
     return $query;
   }
 
