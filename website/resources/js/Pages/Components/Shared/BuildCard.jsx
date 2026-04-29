@@ -7,6 +7,9 @@ const BuildCard = ({ build }) => {
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
 
+  const [liked, setLiked] = useState(false);
+  const [saved, setSaved] = useState(false);
+
   const handleSave = async () => {
     const components = Object.fromEntries(
       Object.entries(build.components)
@@ -25,6 +28,14 @@ const BuildCard = ({ build }) => {
     } catch (err) {
       setError(err.response?.data?.error ?? "Failed to save build");
     }
+  };
+
+  const like = () => {
+    setLiked((prev) => !prev);
+  };
+
+  const save = () => {
+    setSaved((prev) => !prev);
   };
 
   return (
@@ -46,10 +57,28 @@ const BuildCard = ({ build }) => {
           <div className="p-2 border border-border mt-auto">
             <div className="flex">
               <span className="flex-1">
-                <HeartIcon />
+                <button onClick={like}>
+                  <HeartIcon
+                    filled={liked}
+                    className={
+                      liked
+                        ? "text-danger transition hover:text-danger/90"
+                        : "transition text-muted hover:text-text"
+                    }
+                  />
+                </button>
               </span>
               <span className="flex-1">
-                <SavedIcon />
+                <button onClick={save}>
+                  <SavedIcon
+                    filled={saved}
+                    className={
+                      saved
+                        ? "text-alert transition hover:text-alert/90"
+                        : "transition text-muted hover:text-text"
+                    }
+                  />
+                </button>
               </span>
             </div>
           </div>
