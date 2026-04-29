@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Build;
+use App\Models\BuildBookmark;
 use App\Models\BuildLike;
 use App\Services\CompatibilityService;
 use Illuminate\Http\JsonResponse;
@@ -13,6 +14,25 @@ use Inertia\Response as InertiaResponse;
 
 class BuildController extends Controller
 {
+  public function bookmark(Request $request, Build $build): JsonResponse
+  {
+    $existingBookmark = BuildBookmark::where('user_id', $request->user()->id)
+      ->where('build_id', $build->id)
+      ->first();
+
+    if ($existingBookmark) {
+      $existingBookmark->delete();
+      return response()->json(['message' => 'unbookmarked'], 200);
+    }
+
+    BuildBookmark::create([
+      'user_id' => $request->user()->id,
+      'build_id' => $build->id
+    ]);
+
+    return response()->json(['message' => 'bookmarked'], 200);
+  }
+
   public function like(Request $request, Build $build): JsonResponse
   {
     $existingLike = BuildLike::where('user_id', $request->user()->id)
@@ -41,6 +61,10 @@ class BuildController extends Controller
         'likes as liked' => fn($query) => $query->where('user_id', auth()->id())
       ])
       ->withCount('likes')
+      ->withExists([
+        'bookmarks as bookmarked' => fn($query) => $query->where('user_id', auth()->id())
+      ])
+      ->withCount('bookmarks')
       ->paginate(6);
 
     return Inertia::render('Shared', ['buildData' => $builds]);

@@ -159,4 +159,9 @@ class Build extends Model
   {
     return $this->hasMany(BuildLike::class);
   }
+
+  public function bookmarks(): HasMany
+  {
+    return $this->hasMany(BuildBookmark::class);
+  }
 }

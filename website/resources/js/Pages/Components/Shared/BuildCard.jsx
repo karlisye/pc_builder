@@ -8,9 +8,12 @@ const BuildCard = ({ build }) => {
   const [error, setError] = useState("");
 
   const [liked, setLiked] = useState(build.liked ?? false);
-  const [saved, setSaved] = useState(false);
+  const [bookmarked, setBookmarked] = useState(build.bookmarked ?? false);
 
   const [likesCount, setLikesCount] = useState(build.likes_count ?? 0);
+  const [bookmarksCount, setBookmarksCount] = useState(
+    build.bookmarks_count ?? 0,
+  );
 
   const handleSave = async () => {
     const components = Object.fromEntries(
@@ -44,8 +47,16 @@ const BuildCard = ({ build }) => {
     }
   };
 
-  const save = () => {
-    setSaved((prev) => !prev);
+  const bookmark = async () => {
+    try {
+      const res = await axios.post(`/api/builds/${build.id}/bookmark`);
+      if (res.status === 200) {
+        setBookmarked((prev) => !prev);
+        setBookmarksCount((prev) => (bookmarked ? prev - 1 : prev + 1));
+      }
+    } catch (err) {
+      setError(err.response?.data?.error ?? "Failed to bookmark");
+    }
   };
 
   return (
@@ -80,17 +91,19 @@ const BuildCard = ({ build }) => {
 
                 <span className="text-muted">{likesCount ?? 0}</span>
               </span>
-              <span className="flex-1">
-                <button onClick={save}>
+              <span className="flex-1 flex otems-center gap-2">
+                <button onClick={bookmark}>
                   <SavedIcon
-                    filled={saved}
+                    filled={bookmarked}
                     className={
-                      saved
+                      bookmarked
                         ? "text-alert transition hover:text-alert/90"
                         : "transition text-muted hover:text-text"
                     }
                   />
                 </button>
+
+                <span className="text-muted">{bookmarksCount ?? 0}</span>
               </span>
             </div>
           </div>
@@ -131,7 +144,7 @@ const BuildCard = ({ build }) => {
           className="text-white px-8 py-4 flex-1 hover:bg-primary-light cursor-pointer transition"
           onClick={handleSave}
         >
-          Save as a copy
+          Copy to saved
         </button>
       </div>
     </div>
