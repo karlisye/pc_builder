@@ -1,6 +1,6 @@
 import React from "react";
 
-const BuildFilters = ({ search, setSearch }) => {
+const BuildFilters = ({ search, setSearch, sort, setSort }) => {
   return (
     <div className="space-y-4">
       <div className="flex gap-2">
@@ -13,18 +13,18 @@ const BuildFilters = ({ search, setSearch }) => {
         />
 
         <select
-          // value={sort}
-          // onChange={(e) => setSort(e.target.value)}
+          value={sort}
+          onChange={(e) => setSort(e.target.value)}
           className="bg-secondary-light p-2 text-text outline-border focus:outline-1"
         >
           <option value="date_asc">Date: Newest</option>
           <option value="date_desc">Date: Oldest</option>
           <option value="price_asc">Price: Low to High</option>
           <option value="price_desc">Price: High to Low</option>
-          <option value="likes_asc">Likes: High to Low</option>
-          <option value="likes_desc">Likes: Low to High</option>
-          <option value="rating_asc">Rating: High to Low</option>
-          <option value="rating_desc">Rating: Low to High</option>
+          <option value="likes_asc">Likes: Low to High</option>
+          <option value="likes_desc">Likes: High to Low</option>
+          <option value="rating_asc">Rating: Low to High</option>
+          <option value="rating_desc">Rating: High to Low</option>
         </select>
       </div>
 

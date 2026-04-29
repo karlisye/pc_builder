@@ -28,7 +28,8 @@ class SharedController extends Controller
     // validate filters later
 
     $filters = $request->only([
-      'search'
+      'search',
+      'sort'
     ]);
 
     $query = BuildQueryFilter::apply($query, $filters);

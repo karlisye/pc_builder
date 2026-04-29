@@ -13,11 +13,12 @@ const Shared = () => {
   const [builds, setBuilds] = useState([]);
 
   const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("");
 
   useEffect(() => {
     setPage(1);
     fetchBuilds(1);
-  }, [search]);
+  }, [search, sort]);
 
   useEffect(() => {
     fetchBuilds(page);
@@ -32,6 +33,7 @@ const Shared = () => {
         params: {
           page: pageNum,
           search: search || undefined,
+          sort: sort || undefined,
         },
       });
 
@@ -51,7 +53,12 @@ const Shared = () => {
   return (
     <div className="h-full flex flex-wrap">
       <div className="w-full lg:w-120.5 bg-primary py-6 px-4">
-        <BuildFilters search={search} setSearch={setSearch} />
+        <BuildFilters
+          search={search}
+          setSearch={setSearch}
+          sort={sort}
+          setSort={setSort}
+        />
       </div>
 
       {loading && <SharedBuildsSkeleton />}
