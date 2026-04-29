@@ -32,7 +32,14 @@ class SharedController extends Controller
     if ($sort && ! in_array($sort, self::VALID_SORTS, true)) {
       return response()->json([
         'error' => "'{$sort}' is not a sort option",
-        'valid_sorts' => self::VALID_SORTS,
+      ], 400);
+    }
+
+    // validate show
+    $show = $request->query('show');
+    if ($show && ! in_array($show, ['liked', 'bookmarked', 'personal'], true)) {
+      return response()->json([
+        'error' => "'{$show}' is not a show option",
       ], 400);
     }
 
@@ -49,7 +56,9 @@ class SharedController extends Controller
       'search',
       'sort',
       'min_price',
-      'max_price'
+      'max_price',
+      'show',
+      'rating'
     ]);
 
     $query = BuildQueryFilter::apply($query, $filters);

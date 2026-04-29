@@ -32,6 +32,19 @@ class BuildQueryFilter
       $query->where('total_price', '<=', (float) $filters['max_price']);
     }
 
+    if (isset($filters['show'])) {
+      match ($filters['show']) {
+        'liked' => $query->whereHas('likes', fn($q) => $q->where('user_id', auth()->id())),
+        'bookmarked' => $query->whereHas('bookmarks', fn($q) => $q->where('user_id', auth()->id())),
+        'personal' => $query->where('user_id', auth()->id()),
+        default => null,
+      };
+    }
+
+    if (isset($filters['rating'])) {
+      $query->having('reviews_avg_rating', '>=', (int) $filters['rating']);
+    }
+
     return $query;
   }
 

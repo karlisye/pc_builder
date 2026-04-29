@@ -61,6 +61,40 @@ const BuildFilters = ({
             updateFilter("max_price", e.target.value || undefined)
           }
         />
+
+        <select
+          value={filters["rating"] ?? ""}
+          onChange={(e) => updateFilter("rating", e.target.value || undefined)}
+          className="bg-secondary-light p-2 text-text outline-border focus:outline-1"
+        >
+          <option value="">Min rating: Any</option>
+          <option value="1">Min rating: 1 star</option>
+          <option value="2">Min rating: 2 stars</option>
+          <option value="3">Min rating: 3 stars</option>
+          <option value="4">Min rating: 4 stars</option>
+          <option value="5">Min rating: 5 stars</option>
+        </select>
+
+        {/* add cpu/gpu preferences and build type */}
+
+        {/* add tags filter */}
+      </div>
+
+      <div>
+        <label htmlFor="show" className="text-muted block">
+          Show
+        </label>
+        <select
+          className="w-full p-1 text-muted text-sm border hover:outline focus:outline outline-secondary-light"
+          id="show"
+          value={filters["show"] ?? ""}
+          onChange={(e) => updateFilter("show", e.target.value || undefined)}
+        >
+          <option value="">All</option>
+          <option value="liked">Liked</option>
+          <option value="bookmarked">Bookmarked</option>
+          <option value="personal">Personal</option>
+        </select>
       </div>
 
       <button
