@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BuildController;
 use App\Http\Controllers\BuilderController;
 use App\Http\Controllers\SharedController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -23,6 +24,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/builder', [BuilderController::class, 'index']);
     Route::get('/builds', [BuildController::class, 'index']);
     Route::get('/shared', [SharedController::class, 'index']);
+    Route::get('/profile', [UserController::class, 'index']);
 });
 
 Route::fallback(fn() => Inertia::render('NotFound'));

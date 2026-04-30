@@ -31,13 +31,21 @@ class BuildController extends Controller
 
   public function index(Request $request): InertiaResponse
   {
+    if ($request->buildId) {
+      $selected = Build::find($request->buildId)->withCount('likes')
+        ->withCount('bookmarks')->first();
+    }
+
     $builds = Build::query()
       ->where('user_id', $request->user()->id)
       ->orderByDesc('created_at')
+      ->withCount('likes')
+      ->withCount('bookmarks')
       ->get();
 
     return Inertia::render('SavedBuilds', [
-      'builds' => $builds
+      'builds' => $builds,
+      'selected' => $selected ?? null
     ]);
   }
 

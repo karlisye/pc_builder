@@ -18,8 +18,10 @@ const SLOT_LABELS = {
   fan: "Fan",
 };
 
-const SavedBuilds = ({ builds }) => {
-  const [selectedBuild, setSelectedBuild] = useState(null);
+const SavedBuilds = ({ builds, selected }) => {
+  const [selectedBuild, setSelectedBuild] = useState(
+    selected ? selected : builds[0],
+  );
   const [loadingBuild, setLoadingBuild] = useState(false);
   const [editing, setEditing] = useState(false);
   const [editData, setEditData] = useState({ name: "", notes: "" });

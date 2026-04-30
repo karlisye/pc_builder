@@ -58,8 +58,6 @@ const ComponentGenerator = () => {
       } else {
         setError(res.data.error);
       }
-
-      console.log(res);
     } catch (err) {
       setError(err.response?.data?.error ?? "Something went wrong");
     } finally {

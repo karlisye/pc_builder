@@ -32,7 +32,7 @@ class Build extends Model
   ];
 
   // to show "components" in json
-  protected $appends = ['components'];
+  protected $appends = ['components', 'selected_components_count'];
 
   public function user(): BelongsTo
   {
@@ -154,6 +154,13 @@ class Build extends Model
       'psu',
       'fan',
     ]);
+  }
+
+  public function getSelectedComponentsCountAttribute(): int
+  {
+    return collect(self::componentSlots())
+      ->filter(fn($idColumn) => !is_null($this->$idColumn))
+      ->count();
   }
 
   public function likes(): HasMany
