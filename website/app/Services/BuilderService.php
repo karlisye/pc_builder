@@ -38,7 +38,7 @@ class BuilderService
   public function generate(array $selected, ?float $budget, array $preferences, ?string $slotToFill = null): array
   {
     if ($slotToFill !== null) {
-      return $this->generateComponent($selected, $slotToFill, $budget);
+      return $this->generateComponent($selected, $slotToFill, $budget, $preferences);
     }
 
     if ($budget === null) {
@@ -168,19 +168,19 @@ class BuilderService
     return $filled;
   }
 
-  private function generateComponent(array $selected, string $slot, ?float $budget): ?array
+  private function generateComponent(array $selected, string $slot, ?float $budget, array $preferences): ?array
   {
     $build = $selected;
-    $picked = $this->picker->pick($slot, $build, [], $budget);
+    $picked = $this->picker->pick($slot, $build, $preferences, $budget);
 
     if (! $picked) {
       $totalCost = $this->totalCost($build);
-      $minimum_budget = $this->picker->cheapest($slot, $selected, [])->price;
+      $minimum_budget = $this->picker->cheapest($slot, $selected, $preferences)->price;
       return [
         'success' => false,
         'build' => $this->serializeBuild($build),
         'total_price' => round($totalCost, 2),
-        'error' => "Couldn't find compatable components. Try to increase the budget.",
+        'error' => "Couldn't find compatable components within the budget. Estimated minimum budget is €{$minimum_budget}.",
         'estimated_minimum_budget' => $minimum_budget,
       ];
     }

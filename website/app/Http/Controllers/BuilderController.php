@@ -39,7 +39,8 @@ class BuilderController extends Controller
     $validated = $request->validate([
       'selected' => ['sometimes', 'array'],
       'selected.*' => ['integer', 'min:1'],
-      'budget' => ['sometimes', 'nullable', 'numeric', 'min:1']
+      'budget' => ['sometimes', 'nullable', 'numeric', 'min:1'],
+      'preferences' => ['sometimes', 'array'],
     ]);
 
     // check if type exists from get request
@@ -60,9 +61,8 @@ class BuilderController extends Controller
     }
 
     $selected = array_filter($selected);
+    $preferences = array_filter($validated['preferences']);
     $slotToFill = $type;
-
-    $preferences = [];
 
     $result = $this->builder->generate($selected, $budget, $preferences, $slotToFill);
 

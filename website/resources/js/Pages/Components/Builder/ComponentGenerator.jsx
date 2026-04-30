@@ -17,6 +17,14 @@ const ComponentGenerator = () => {
   const [budget, setBudget] = useState(150);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [preferences, setPreferences] = useState({
+    gpu: null,
+    cpu: null,
+  });
+
+  const updatePref = (key, value) => {
+    setPreferences((prev) => ({ ...prev, [key]: value }));
+  };
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -33,6 +41,7 @@ const ComponentGenerator = () => {
         {
           budget,
           selected,
+          preferences,
         },
       );
 
@@ -42,6 +51,9 @@ const ComponentGenerator = () => {
           ...res.data.build,
         }));
         setOpen(false);
+        setPreferences((prev) =>
+          Object.fromEntries(Object.keys(prev).map((k) => [k, null])),
+        );
         setCurrentCompToAdd(null);
       } else {
         setError(res.data.error);
@@ -89,6 +101,47 @@ const ComponentGenerator = () => {
             value={budget}
             onChange={setBudget}
           />
+
+          {currentCompToAdd === "CPU" && (
+            <>
+              <p className="text-muted text-sm mb-1">Preferences</p>
+              <div className="flex flex-col flex-1">
+                <label className="text-sm text-muted" htmlFor="cpu">
+                  CPU
+                </label>
+                <select
+                  onChange={(e) => updatePref("cpu", e.target.value)}
+                  className="p-1 text-muted text-sm border hover:outline focus:outline outline-secondary-light"
+                  value={preferences.cpu ?? ""}
+                >
+                  <option value="">Any</option>
+                  <option value="amd">AMD</option>
+                  <option value="intel">INTEL</option>
+                </select>
+              </div>
+            </>
+          )}
+
+          {currentCompToAdd === "GPU" && (
+            <>
+              <p className="text-muted text-sm mb-1">Preferences</p>
+              <div className="flex flex-col flex-1">
+                <label className="text-sm text-muted" htmlFor="gpu">
+                  GPU
+                </label>
+                <select
+                  onChange={(e) => updatePref("gpu", e.target.value)}
+                  className="p-1 text-muted text-sm border hover:outline focus:outline outline-secondary-light"
+                  value={preferences.gpu ?? ""}
+                >
+                  <option value="">Any</option>
+                  <option value="nvidia">NVIDIA</option>
+                  <option value="amd">AMD</option>
+                  <option value="intel">INTEL</option>
+                </select>
+              </div>
+            </>
+          )}
 
           {error && <p className="text-danger text-sm mb-2">{error}</p>}
 
