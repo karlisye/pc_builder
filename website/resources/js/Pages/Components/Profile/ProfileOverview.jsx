@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { HeartIcon, SavedIcon, StarIcon } from "../Common/Icons";
 import { Link, router } from "@inertiajs/react";
 import Modal from "../Common/Modal";
+import axios from "axios";
 
 const ProfileOverview = ({ user, builds }) => {
   const [description, setDescription] = useState(
@@ -9,6 +10,9 @@ const ProfileOverview = ({ user, builds }) => {
   );
   const [publishing, setPublishing] = useState(false);
   const [build, setBuild] = useState(null);
+
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const publish = async () => {
     try {
@@ -18,6 +22,22 @@ const ProfileOverview = ({ user, builds }) => {
       console.error(err);
     } finally {
       setPublishing(false);
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      await axios.patch(`/api/users/${user.id}`, {
+        description,
+      });
+      setSuccess("About Me saved");
+    } catch (err) {
+      setError(err.response.data.errors ?? "Failed to update About Me");
+    } finally {
+      setTimeout(() => {
+        setError("");
+        setSuccess("");
+      }, 3000);
     }
   };
 
@@ -42,11 +62,23 @@ const ProfileOverview = ({ user, builds }) => {
         <div className="mb-4">
           <h2 className="text-2xl font-semibold mb-2">About Me</h2>
           <textarea
-            className="border border-border text-muted w-full min-h-40 p-2"
+            className="border border-border text-muted w-full min-h-40 p-2 focus:outline outline-border"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             id=""
           ></textarea>
+
+          <div className="flex gap-2 items-center">
+            <button
+              className="px-8 py-2 bg-primary text-white mt-2 hover:bg-primary-light cursor-pointer"
+              onClick={handleSave}
+            >
+              Save
+            </button>
+
+            {error && <p className="text-danger">{error}</p>}
+            {success && <p className="text-success">{success}</p>}
+          </div>
         </div>
 
         <div className="grid xl:grid-cols-2 grid-cols-1 gap-4">

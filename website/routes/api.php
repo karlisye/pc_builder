@@ -4,6 +4,7 @@ use App\Http\Controllers\BuildController;
 use App\Http\Controllers\BuilderController;
 use App\Http\Controllers\ComponentController;
 use App\Http\Controllers\SharedController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -24,4 +25,6 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::post('/shared/{build}/bookmark', [SharedController::class, 'bookmark']);
   Route::post('/shared/{build}/review', [SharedController::class, 'review']);
   Route::get('/shared', [SharedController::class, 'fetchBuilds']);
+
+  Route::patch('/users/{user}', [UserController::class, 'update']);
 });
