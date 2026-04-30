@@ -22,7 +22,7 @@ const Guide = () => {
     <div className="min-h-screen flex flex-col lg:flex-row">
       <div className="w-full lg:w-120.5 bg-primary py-6 px-4 shrink-0">
         <h1 className="text-4xl font-semibold text-white">GUIDE</h1>
-        <div className="space-y-4 mt-8">
+        <div className="space-y-4 mt-4">
           {sections.map((section) => (
             <button
               key={section.id}

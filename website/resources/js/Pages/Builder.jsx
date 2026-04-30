@@ -7,6 +7,7 @@ import ComponentFilters from "./Components/Builder/ComponentFilters";
 import BuildInfo from "./Components/Builder/BuildInfo";
 import { Link } from "@inertiajs/react";
 import BuildGenerator from "./Components/Builder/BuildGenerator";
+import ComponentGenerator from "./Components/Builder/ComponentGenerator";
 
 const Builder = ({ build }) => {
   const [currentCompToAdd, setCurrentCompToAdd] = useState(null);
@@ -72,7 +73,7 @@ const Builder = ({ build }) => {
             }}
           />
 
-          <BuildGenerator />
+          {currentCompToAdd ? <ComponentGenerator /> : <BuildGenerator />}
         </div>
 
         <div className="flex-1 flex flex-wrap justify-center gap-8 px-4 py-6">

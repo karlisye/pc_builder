@@ -35,8 +35,12 @@ class BuilderService
     private readonly BuilderSlotPicker $picker
   ) {}
 
-  public function generate(array $selected, ?float $budget, array $preferences): array
+  public function generate(array $selected, ?float $budget, array $preferences, ?string $slotToFill = null): array
   {
+    if ($slotToFill !== null) {
+      return $this->generateComponent($selected, $slotToFill, $budget);
+    }
+
     if ($budget === null) {
       return $this->generateUnlimited($selected, $preferences);
     }
@@ -162,6 +166,37 @@ class BuilderService
     }
 
     return $filled;
+  }
+
+  private function generateComponent(array $selected, string $slot, ?float $budget): ?array
+  {
+    $build = $selected;
+    $picked = $this->picker->pick($slot, $build, [], $budget);
+
+    if (! $picked) {
+      $totalCost = $this->totalCost($build);
+      $minimum_budget = $this->picker->cheapest($slot, $selected, [])->price;
+      return [
+        'success' => false,
+        'build' => $this->serializeBuild($build),
+        'total_price' => round($totalCost, 2),
+        'error' => "Couldn't find compatable components. Try to increase the budget.",
+        'estimated_minimum_budget' => $minimum_budget,
+      ];
+    }
+
+    $build[$slot] = $picked;
+    $totalCost = $this->totalCost($build);
+
+    return [
+      'success' => true,
+      'build' => $this->serializeBuild($build),
+      'total_price' => round($totalCost, 2),
+      'remaining_budget' => null,
+      'attempts_needed' => 1,
+      'error' => null,
+      'estimated_minimum_budget' => null,
+    ];
   }
 
   private function generateUnlimited(array $selected, array $preferences): array

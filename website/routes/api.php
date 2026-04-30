@@ -12,6 +12,7 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::get('/components/{type}/{id}', [ComponentController::class, 'show']);
 
   Route::post('/builder', [BuilderController::class, 'generate']);
+  Route::post('/builder/{type}', [BuilderController::class, 'generateComp']);
 
   Route::post('/builds', [BuildController::class, 'store']);
   Route::get('/builds/{build}', [BuildController::class, 'show']);

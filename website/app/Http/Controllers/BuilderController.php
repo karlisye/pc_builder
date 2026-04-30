@@ -34,6 +34,42 @@ class BuilderController extends Controller
     ]);
   }
 
+  public function generateComp(Request $request, string $type): JsonResponse
+  {
+    $validated = $request->validate([
+      'selected' => ['sometimes', 'array'],
+      'selected.*' => ['integer', 'min:1'],
+      'budget' => ['sometimes', 'nullable', 'numeric', 'min:1']
+    ]);
+
+    // check if type exists from get request
+    if (! array_key_exists($type, CompatibilityService::VALID_TYPES)) {
+      return response()->json([
+        'error' => "'{$type}' is not a valid component type",
+        'valid_types' => array_keys(CompatibilityService::VALID_TYPES),
+      ], 400);
+    }
+
+    $selectedIds = $validated['selected'] ?? [];
+    $budget = isset($validated['budget']) ? (float) $validated['budget'] : null;
+
+    try {
+      $selected = $this->compatibility->resolveSelected($selectedIds);
+    } catch (\InvalidArgumentException $e) {
+      return response()->json(['error' => $e->getMessage()], 400);
+    }
+
+    $selected = array_filter($selected);
+    $slotToFill = $type;
+
+    $preferences = [];
+
+    $result = $this->builder->generate($selected, $budget, $preferences, $slotToFill);
+
+
+    return response()->json($result);
+  }
+
   public function generate(Request $request): JsonResponse
   {
     $validated = $request->validate([

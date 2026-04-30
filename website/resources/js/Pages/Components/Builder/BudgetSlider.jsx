@@ -7,6 +7,7 @@ const BudgetSlider = ({
   min = 350,
   max = 10000,
   step = 50,
+  showRemaining = true,
 }) => {
   const { selectedComponents } = useBuilder();
   const [inputValue, setInputValue] = useState(value);
@@ -76,17 +77,19 @@ const BudgetSlider = ({
           />
         </div>
       </div>
-      <div
-        className={`flex justify-between items-center transition-opacity ${isUnlimited ? "opacity-40 pointer-events-none" : ""}`}
-      >
-        <span className="text-muted text-sm">Remaining Budget</span>
-        <div className="space-x-2">
-          <span className="text-muted text-sm">€</span>
-          <span className="text-secondary-light font-semibold">
-            {isUnlimited ? "-" : remaining.toFixed(2)}
-          </span>
+      {showRemaining && (
+        <div
+          className={`flex justify-between items-center transition-opacity ${isUnlimited ? "opacity-40 pointer-events-none" : ""}`}
+        >
+          <span className="text-muted text-sm">Remaining Budget</span>
+          <div className="space-x-2">
+            <span className="text-muted text-sm">€</span>
+            <span className="text-secondary-light font-semibold">
+              {isUnlimited ? "-" : remaining.toFixed(2)}
+            </span>
+          </div>
         </div>
-      </div>
+      )}
       <input
         type="range"
         min={min}
