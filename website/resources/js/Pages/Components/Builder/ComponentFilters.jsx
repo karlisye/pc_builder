@@ -61,6 +61,12 @@ const ComponentFilters = () => {
     setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
+  const clearFilters = () => {
+    setSearch("");
+    setSort("");
+    setFilters({});
+  };
+
   const activeColumns = FILTER_CONFIG[currentCompToAdd.toLowerCase()] ?? [];
 
   return (
@@ -139,7 +145,7 @@ const ComponentFilters = () => {
 
       <button
         className="w-full p-4 bg-secondary hover:bg-secondary-dark transition cursor-pointer text-white"
-        onClick={() => setFilters({})}
+        onClick={clearFilters}
       >
         Clear Filters
       </button>

@@ -12,6 +12,12 @@ const BuildFilters = ({
     setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
+  const clearFilters = () => {
+    setSearch("");
+    setSort("");
+    setFilters({});
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex gap-2">
@@ -87,8 +93,6 @@ const BuildFilters = ({
           <option value="streaming">Type: Streaming</option>
         </select>
 
-        {/* add cpu/gpu preferences */}
-
         <select
           onChange={(e) => updateFilter("gpu_pref", e.target.value)}
           className="bg-secondary-light p-2 text-text outline-border focus:outline-1"
@@ -110,7 +114,7 @@ const BuildFilters = ({
           <option value="intel">CPU: INTEL</option>
         </select>
 
-        {/* add tags filter */}
+        {/* TODO: add tags filter */}
       </div>
 
       <div>
@@ -132,7 +136,7 @@ const BuildFilters = ({
 
       <button
         className="w-full p-4 bg-secondary hover:bg-secondary-dark transition cursor-pointer text-white"
-        onClick={() => setFilters({})}
+        onClick={clearFilters}
       >
         Clear Filters
       </button>
