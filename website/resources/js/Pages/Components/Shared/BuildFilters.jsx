@@ -88,6 +88,28 @@ const BuildFilters = ({
         </select>
 
         {/* add cpu/gpu preferences */}
+
+        <select
+          onChange={(e) => updateFilter("gpu_pref", e.target.value)}
+          className="bg-secondary-light p-2 text-text outline-border focus:outline-1"
+          value={filters["gpu_pref"] ?? ""}
+        >
+          <option value="">GPU: Any</option>
+          <option value="nvidia">GPU: NVIDIA</option>
+          <option value="amd">GPU: AMD</option>
+          <option value="intel">GPU: INTEL</option>
+        </select>
+
+        <select
+          onChange={(e) => updateFilter("cpu_pref", e.target.value)}
+          className="bg-secondary-light p-2 text-text outline-border focus:outline-1"
+          value={filters["cpu_pref"] ?? ""}
+        >
+          <option value="">CPU: Any</option>
+          <option value="amd">CPU: AMD</option>
+          <option value="intel">CPU: INTEL</option>
+        </select>
+
         {/* add tags filter */}
       </div>
 

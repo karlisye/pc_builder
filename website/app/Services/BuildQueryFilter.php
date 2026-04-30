@@ -49,6 +49,13 @@ class BuildQueryFilter
       $query->where('type', $filters['type']);
     }
 
+    if (isset($filters['gpu_pref'])) {
+      $query->whereHas('gpu', fn($q) => $q->where('type', $filters['gpu_pref']));
+    }
+    if (isset($filters['cpu_pref'])) {
+      $query->whereHas('cpu', fn($q) => $q->where('type', $filters['cpu_pref']));
+    }
+
     return $query;
   }
 

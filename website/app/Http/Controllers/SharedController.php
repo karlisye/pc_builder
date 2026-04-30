@@ -51,6 +51,20 @@ class SharedController extends Controller
       ], 400);
     }
 
+    // validate cpu/gpu preferences
+    $gpu_pref = $request->query('gpu_pref');
+    if ($gpu_pref && ! in_array($gpu_pref, ['nvidia', 'amd', 'intel'], true)) {
+      return response()->json([
+        'error' => "'{$gpu_pref}' is not a GPU preference option",
+      ], 400);
+    }
+    $cpu_pref = $request->query('cpu_pref');
+    if ($cpu_pref && ! in_array($cpu_pref, ['amd', 'intel'], true)) {
+      return response()->json([
+        'error' => "'{$cpu_pref}' is not a CPU preference option",
+      ], 400);
+    }
+
     // validate price range
     if ($request->filled('min_price') && ! is_numeric($request->query('min_price'))) {
       return response()->json(['error' => '`min_price` must be a number'], 400);
@@ -67,7 +81,9 @@ class SharedController extends Controller
       'max_price',
       'show',
       'rating',
-      'type'
+      'type',
+      'gpu_pref',
+      'cpu_pref',
     ]);
 
     $query = BuildQueryFilter::apply($query, $filters);
