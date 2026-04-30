@@ -45,6 +45,10 @@ class BuildQueryFilter
       $query->having('reviews_avg_rating', '>=', (int) $filters['rating']);
     }
 
+    if (isset($filters['type'])) {
+      $query->where('type', $filters['type']);
+    }
+
     return $query;
   }
 

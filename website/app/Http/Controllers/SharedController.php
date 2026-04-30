@@ -43,6 +43,14 @@ class SharedController extends Controller
       ], 400);
     }
 
+    // validate type
+    $type = $request->query('type');
+    if ($type && ! in_array($type, ['gaming', 'office', 'rendering', 'streaming'], true)) {
+      return response()->json([
+        'error' => "'{$type}' is not a type option",
+      ], 400);
+    }
+
     // validate price range
     if ($request->filled('min_price') && ! is_numeric($request->query('min_price'))) {
       return response()->json(['error' => '`min_price` must be a number'], 400);
@@ -58,7 +66,8 @@ class SharedController extends Controller
       'min_price',
       'max_price',
       'show',
-      'rating'
+      'rating',
+      'type'
     ]);
 
     $query = BuildQueryFilter::apply($query, $filters);

@@ -75,8 +75,19 @@ const BuildFilters = ({
           <option value="5">Min rating: 5 stars</option>
         </select>
 
-        {/* add cpu/gpu preferences and build type */}
+        <select
+          value={filters["type"] ?? ""}
+          onChange={(e) => updateFilter("type", e.target.value || undefined)}
+          className="bg-secondary-light p-2 text-text outline-border focus:outline-1"
+        >
+          <option value="">Type: All</option>
+          <option value="gaming">Type: Gaming</option>
+          <option value="office">Type: Office</option>
+          <option value="rendering">Type: Rendering</option>
+          <option value="streaming">Type: Streaming</option>
+        </select>
 
+        {/* add cpu/gpu preferences */}
         {/* add tags filter */}
       </div>
 
