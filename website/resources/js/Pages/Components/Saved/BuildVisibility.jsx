@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Modal from "../Common/Modal";
 import axios from "axios";
 import { router } from "@inertiajs/react";
+import { HeartIcon, SavedIcon, StarIcon } from "../Common/Icons";
 
 const BuildVisibility = ({ build, setBuild }) => {
   const [publishing, setPublishing] = useState(false);
@@ -27,14 +28,33 @@ const BuildVisibility = ({ build, setBuild }) => {
 
   return (
     <>
-      <div className="border border-border bg-background p-2 flex justify-between">
+      <div className="border border-border bg-background p-2 flex justify-between md:gap-6 gap-2 md:flex-row flex-col">
         {build.is_public ? (
           <>
-            <p className="text-text mt-auto">
-              Your build is currently public...
+            <p className="mt-auto text-text">
+              Your build is currently
+              <span className="text-success"> public</span>
             </p>
+
+            <div className="flex gap-4">
+              <div className="flex gap-2">
+                <HeartIcon filled className={"text-danger"} />
+                <span>{build.likes_count}</span>
+              </div>
+
+              <div className="flex gap-2">
+                <SavedIcon filled className={"text-alert"} />
+                <span>{build.bookmarks_count}</span>
+              </div>
+
+              <div className="flex gap-2">
+                <StarIcon filled className={"text-alert"} />
+                <span>{Math.round(build.reviews_avg_rating ?? 0)}</span>
+              </div>
+            </div>
+
             <button
-              className="py-4 px-8 bg-surface text-text cursor-pointer hover:bg-danger/50 transition text-nowrap"
+              className="text-text cursor-pointer hover:text-danger transition text-nowrap text-left underline"
               onClick={() => setPublishing(true)}
             >
               Make my build private
@@ -42,12 +62,14 @@ const BuildVisibility = ({ build, setBuild }) => {
           </>
         ) : (
           <>
-            <p className="text-text mt-auto">
-              Your build is currently not published and can't be accessed by
-              other people...
+            <p className="mt-auto text-text">
+              Your build is currently
+              <span className="text-danger"> not published </span>
+              and can't be accessed by other people
             </p>
+
             <button
-              className="py-4 px-8 bg-surface text-text cursor-pointer hover:bg-success/50 transition text-nowrap"
+              className="text-text cursor-pointer hover:text-success transition text-nowrap text-left underline"
               onClick={() => setPublishing(true)}
             >
               Publish my build

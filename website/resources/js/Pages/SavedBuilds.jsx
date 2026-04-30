@@ -157,9 +157,17 @@ const SavedBuilds = ({ builds }) => {
               ) : (
                 <div className="flex justify-between items-start">
                   <div>
-                    <h2 className="text-text font-semibold text-3xl">
-                      {selectedBuild.name}
-                    </h2>
+                    <div className="flex gap-4 items-center">
+                      <h2 className="text-text font-semibold text-3xl uppercase">
+                        {selectedBuild.name}
+                      </h2>
+
+                      {selectedBuild.type && (
+                        <span className="py-0.5 px-3 text-text border border-border bg-secondary-light">
+                          {selectedBuild.type}
+                        </span>
+                      )}
+                    </div>
                     <p className="text-muted text-sm">
                       {new Date(selectedBuild.created_at).toDateString()}
                     </p>

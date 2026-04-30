@@ -113,7 +113,7 @@ class BuildController extends Controller
       return response()->json(['error' => 'Not found.'], 404);
     }
 
-    return response()->json($build->loadComponents());
+    return response()->json($build->loadComponents()->loadCount('likes')->loadCount('bookmarks')->loadAvg('reviews', 'rating'));
   }
 
   public function update(Request $request, Build $build): JsonResponse
