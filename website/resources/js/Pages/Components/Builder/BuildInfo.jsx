@@ -10,6 +10,8 @@ const BuildInfo = ({ currBuildInfo }) => {
     setCurrentCompToAdd,
     buildId,
     setBuildId,
+    buildType,
+    setBuildType,
   } = useBuilder();
   const [buildName, setBuildName] = useState(currBuildInfo?.name ?? "");
   const [buildNotes, setBuildNotes] = useState(currBuildInfo?.notes ?? "");
@@ -51,6 +53,7 @@ const BuildInfo = ({ currBuildInfo }) => {
         build_id: asNew ? undefined : buildId,
         name: buildName,
         notes: buildNotes,
+        type: buildType,
         components,
       });
       setBuildId(res.data.id);
@@ -69,6 +72,7 @@ const BuildInfo = ({ currBuildInfo }) => {
     );
     setBuildName("");
     setBuildNotes("");
+    setBuildType("");
   };
 
   const hasComponents = Object.values(selectedComponents).some(
@@ -129,6 +133,24 @@ const BuildInfo = ({ currBuildInfo }) => {
             onChange={(e) => setBuildNotes(e.target.value)}
             id="notes"
           ></textarea>
+
+          <div className="flex flex-col flex-1">
+            <label htmlFor="buildType" className="text-secondary-light">
+              Build Type
+            </label>
+            <select
+              onChange={(e) => setBuildType(e.target.value)}
+              className="p-2 text-secondary-light text-sm border hover:outline focus:outline outline-surface transition"
+              value={buildType}
+              id="buildType"
+            >
+              <option value="">None</option>
+              <option value="gaming">Gaming</option>
+              <option value="office">Office</option>
+              <option value="rendering">Rendering</option>
+              <option value="streaming">Streaming</option>
+            </select>
+          </div>
 
           <div className="flex">
             <button

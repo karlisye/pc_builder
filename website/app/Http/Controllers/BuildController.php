@@ -47,6 +47,7 @@ class BuildController extends Controller
       'build_id' => ['sometimes', 'integer', 'exists:builds,id'],
       'name' => ['required', 'string', 'max:255'],
       'notes' => ['sometimes', 'nullable', 'string', 'max:5000'],
+      'type' => ['sometimes', 'nullable', 'string', 'in:gaming,office,rendering,streaming'],
       'components' => ['required', 'array', 'min:1'],
       'components.*' => ['integer', 'min:1'],
     ]);
@@ -86,6 +87,7 @@ class BuildController extends Controller
       $build->update([
         'name' => $validated['name'],
         'notes' => $validated['notes'] ?? null,
+        'type' => $validated['type'] ?? null,
         'total_price' => $totalPrice,
         ...$componentFks,
       ]);
@@ -97,6 +99,7 @@ class BuildController extends Controller
       'user_id' => $request->user()?->id,
       'name' => $validated['name'],
       'notes' => $validated['notes'] ?? null,
+      'type' => $validated['type'] ?? null,
       'total_price' => $totalPrice,
       ...$componentFks,
     ]);

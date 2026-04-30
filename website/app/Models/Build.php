@@ -12,6 +12,7 @@ class Build extends Model
     'user_id',
     'name',
     'notes',
+    'type',
     'total_price',
     'cpu_id',
     'motherboard_id',

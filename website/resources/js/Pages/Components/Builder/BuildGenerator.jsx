@@ -6,8 +6,12 @@ import { Link } from "@inertiajs/react";
 import { ArrowIcon } from "../Common/Icons";
 
 const BuildGenerator = () => {
-  const { selectedComponents, setSelectedComponents, setCurrentCompToAdd } =
-    useBuilder();
+  const {
+    selectedComponents,
+    setSelectedComponents,
+    setCurrentCompToAdd,
+    setBuildType,
+  } = useBuilder();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -43,6 +47,7 @@ const BuildGenerator = () => {
           ...prev,
           ...res.data.build,
         }));
+        setBuildType(res.data.type);
         setOpen(false);
         setCurrentCompToAdd(null);
       } else {
@@ -61,7 +66,7 @@ const BuildGenerator = () => {
   };
 
   return (
-    <div className="pt-4 border-t border-secondary">
+    <div className="pt-4 border-t mt-4 border-secondary">
       <button
         onClick={() => setOpen((prev) => !prev)}
         className="w-full flex justify-between items-center text-secondary-light hover:text-surface transition cursor-pointer"

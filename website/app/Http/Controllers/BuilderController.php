@@ -68,6 +68,10 @@ class BuilderController extends Controller
 
     $result = $this->builder->generate($selected, $budget, $preferences);
 
+    if (isset($preferences['type'])) {
+      $result['type'] = $preferences['type'];
+    }
+
     $statusCode = $result['success'] ? 200 : 400;
 
     return response()->json($result, $statusCode);

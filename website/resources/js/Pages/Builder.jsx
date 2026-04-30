@@ -28,6 +28,8 @@ const Builder = ({ build }) => {
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState("price_asc");
 
+  const [buildType, setBuildType] = useState(build?.type ?? "");
+
   return (
     <BuilderContext
       value={{
@@ -43,6 +45,8 @@ const Builder = ({ build }) => {
         setSort,
         buildId,
         setBuildId,
+        buildType,
+        setBuildType,
       }}
     >
       <div className="h-full flex flex-wrap">
