@@ -25,8 +25,8 @@ class UserController extends Controller
     public function update(Request $request, User $user): JsonResponse
     {
         $validated = $request->validate([
-            'name'     => ['sometimes', 'string', 'max:255'],
-            'email'    => ['sometimes', 'email', 'unique:users,email,' . $user->id],
+            'name' => ['sometimes', 'string', 'min:3', 'max:255'],
+            'email' => ['sometimes', 'email', 'unique:users,email,' . $user->id],
             'description' => ['sometimes', 'nullable', 'string'],
             'password' => ['sometimes', 'string', 'min:8', 'confirmed'],
         ]);
