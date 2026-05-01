@@ -1,5 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
+import Modal from "../Common/Modal";
+import { router } from "@inertiajs/react";
 
 const AccountSettings = ({ user }) => {
   const [editActive, setEditActive] = useState(false);
@@ -15,6 +17,10 @@ const AccountSettings = ({ user }) => {
 
   const [passSuccess, setPassSuccess] = useState("");
   const [passError, setPassError] = useState("");
+
+  const [deleting, setDeleting] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState("");
+  const [deleteError, setDeleteError] = useState("");
 
   const handleEdit = async (e) => {
     e.preventDefault();
@@ -84,8 +90,23 @@ const AccountSettings = ({ user }) => {
     }
   };
 
+  const handleDeleteAccount = async () => {
+    if (deleteConfirm !== "delete-my-account") {
+      setDeleteError("Delete confirmation is incorrect");
+      return;
+    }
+
+    try {
+      await axios.delete(`/api/users/${user.id}`);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      router.reload();
+    }
+  };
+
   return (
-    <div>
+    <>
       <h1 className="text-4xl font-semibold mb-4">Personal Information</h1>
       <form>
         <div className="grid xl:grid-cols-2 gap-4">
@@ -144,6 +165,7 @@ const AccountSettings = ({ user }) => {
           )}
         </div>
       </form>
+
       <h1 className="text-4xl font-semibold my-4">Change Password</h1>
       <form onSubmit={updatePassword}>
         <div className="grid xl:grid-cols-2 gap-4">
@@ -198,7 +220,60 @@ const AccountSettings = ({ user }) => {
           Save
         </button>
       </form>
-    </div>
+
+      <h1 className="text-4xl font-semibold my-4">Delete my account</h1>
+      <button
+        className="py-4 px-8 bg-primary text-white hover:bg-danger cursor-pointer mt-2 transition disabled:text-muted"
+        onClick={() => setDeleting(true)}
+      >
+        Delete my account
+      </button>
+
+      {deleting && (
+        <Modal close={() => setDeleting(false)}>
+          <h1 className="text-text font-semibold text-3xl">
+            Are you sure you want to delete your account?
+          </h1>
+          <p className="text-muted text-sm mb-4">
+            This action is permanent and cannot be undone
+          </p>
+
+          <div className="w-full flex flex-col mb-4">
+            <span className="text-muted">
+              Please type
+              <span className="text-danger"> delete-my-account </span> to
+              confirm
+            </span>
+            <input
+              type="text"
+              className="text-danger p-2 bg-surface focus:outline outline-border"
+              value={deleteConfirm}
+              onChange={(e) => setDeleteConfirm(e.target.value)}
+            />
+          </div>
+
+          {deleteError && <p className="text-danger text-sm">{deleteError}</p>}
+
+          <div className="flex gap-4">
+            <button
+              className="flex-1 p-4 bg-primary text-background cursor-pointer hover:bg-primary-light transition"
+              onClick={handleDeleteAccount}
+            >
+              Delete
+            </button>
+            <button
+              className="flex-1 p-4 bg-surface text-text cursor-pointer hover:bg-secondary-light transition"
+              onClick={() => {
+                setDeleting(false);
+                setDeleteError("");
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </Modal>
+      )}
+    </>
   );
 };
 

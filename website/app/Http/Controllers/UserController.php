@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Build;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
@@ -49,5 +50,11 @@ class UserController extends Controller
         $user->update(Arr::except($validated, ['new_password', 'new_password_confirmation']));
 
         return response()->json($user, 200);
+    }
+
+    public function destroy(User $user): JsonResponse
+    {
+        $user->delete();
+        return response()->json(null, 204);
     }
 }

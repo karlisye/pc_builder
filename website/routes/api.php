@@ -27,4 +27,5 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::get('/shared', [SharedController::class, 'fetchBuilds']);
 
   Route::patch('/users/{user}', [UserController::class, 'update']);
+  Route::delete('/users/{user}', [UserController::class, 'destroy']);
 });
