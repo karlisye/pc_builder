@@ -20,7 +20,7 @@ const SLOT_LABELS = {
 
 const SavedBuilds = ({ builds, selected }) => {
   const [selectedBuild, setSelectedBuild] = useState(
-    selected ? selected : builds[0],
+    selected ? selected : null,
   );
   const [loadingBuild, setLoadingBuild] = useState(false);
   const [editing, setEditing] = useState(false);
