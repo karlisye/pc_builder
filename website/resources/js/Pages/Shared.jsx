@@ -13,13 +13,24 @@ const Shared = () => {
   const [builds, setBuilds] = useState([]);
 
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
   const [sort, setSort] = useState("");
   const [filters, setFilters] = useState({});
 
   useEffect(() => {
     setPage(1);
     fetchBuilds(1);
-  }, [search, sort, filters]);
+  }, [debouncedSearch, sort, filters]);
+
+  // debounced search to delay search request until user stops typing
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [search]);
 
   useEffect(() => {
     fetchBuilds(page);

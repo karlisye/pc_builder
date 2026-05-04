@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ComponentCard from "./Components/Builder/ComponentCard";
 import BuildDesc from "./Components/Builder/BuildDesc";
 import { BuilderContext } from "../Contexts/BuilderContext";
@@ -26,6 +26,16 @@ const Builder = ({ build }) => {
   const [buildId, setBuildId] = useState(build?.id ?? undefined);
 
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [search]);
+
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState("price_asc");
 
@@ -48,6 +58,7 @@ const Builder = ({ build }) => {
         setBuildId,
         buildType,
         setBuildType,
+        debouncedSearch,
       }}
     >
       <div className="h-full flex flex-wrap">

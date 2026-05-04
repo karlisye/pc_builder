@@ -15,6 +15,7 @@ const AddComponent = () => {
     filters,
     sort,
     setSelectedComponents,
+    debouncedSearch,
   } = useBuilder();
   const [components, setComponents] = useState([]);
   const [pagination, setPagination] = useState(null);
@@ -27,7 +28,7 @@ const AddComponent = () => {
     if (!currentCompToAdd) return;
     setPage(1);
     fetchComponents(1);
-  }, [currentCompToAdd, search, filters, sort]);
+  }, [currentCompToAdd, debouncedSearch, filters, sort]);
 
   useEffect(() => {
     if (!currentCompToAdd || page === 1) return;

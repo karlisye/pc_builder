@@ -39,11 +39,13 @@ class BuildQueryFilter
       $query->where('total_price', '<=', (float) $filters['max_price']);
     }
 
+    $userId = auth()->id();
+
     if (isset($filters['show'])) {
       match ($filters['show']) {
-        'liked' => $query->whereHas('likes', fn($q) => $q->where('user_id', auth()->id())),
-        'bookmarked' => $query->whereHas('bookmarks', fn($q) => $q->where('user_id', auth()->id())),
-        'personal' => $query->where('user_id', auth()->id()),
+        'liked' => $query->whereHas('likes', fn($q) => $q->where('user_id', $userId)),
+        'bookmarked' => $query->whereHas('bookmarks', fn($q) => $q->where('user_id', $userId)),
+        'personal' => $query->where('user_id', $userId),
         default => null,
       };
     }
