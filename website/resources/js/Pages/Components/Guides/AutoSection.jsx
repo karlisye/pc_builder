@@ -13,7 +13,6 @@ const AutoSection = () => {
       <h1 className="text-4xl font-semibold mb-8 text-text">
         Using the Automatic Builder
       </h1>
-
       <div className="space-y-5">
         <h2 className="text-2xl font-semibold text-text">
           Selecting Components
@@ -22,7 +21,8 @@ const AutoSection = () => {
         <div>
           <p className="text-text">
             1. Optionally, start by adding any components you want included in
-            your build.
+            your build. You can also use the automatic component generator under
+            the filters to find a compatable component automatically.
           </p>
           <Note>
             This step is optional. You can skip it to generate a fully automatic
@@ -87,6 +87,7 @@ const AutoSection = () => {
         </div>
       </div>
 
+      {/* TODO: fix after improving scorer */}
       <div>
         <h2 className="text-2xl font-semibold text-text my-5">
           Budget Allocations

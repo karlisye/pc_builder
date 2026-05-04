@@ -81,7 +81,7 @@ const ProfileOverview = ({ user, builds }) => {
           </div>
         </div>
 
-        <div className="grid xl:grid-cols-2 grid-cols-1 gap-4">
+        <div className="grid xl:grid-cols-2 grid-cols-1 gap-4 mb-6">
           <div className="">
             <h2 className="text-2xl font-semibold mb-2">Public Builds</h2>
 
@@ -169,9 +169,10 @@ const ProfileOverview = ({ user, builds }) => {
               })}
             </div>
           </div>
+
           <div className="">
             <h2 className="text-2xl font-semibold mb-2">Private Builds</h2>
-            <div>
+            <div className="space-y-4">
               {builds.map((build) => {
                 if (build.is_public) return;
                 return (
@@ -198,7 +199,7 @@ const ProfileOverview = ({ user, builds }) => {
 
                     <div className="border border-border w-9/10 my-4 mx-auto"></div>
 
-                    <div className="flex gap-4 m-2">
+                    <div className="flex gap-4 m-2 overflow-y-auto">
                       <div className="flex-1">
                         <span className="text-sm block text-muted">Notes</span>
                         {build.notes ? (

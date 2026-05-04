@@ -91,18 +91,25 @@ const BuildCard = ({ build }) => {
     <>
       <div className="w-full border flex flex-col border-border shadow hover:bg-background transition overflow-hidden">
         <div className="flex gap-2 items-center justify-between m-2">
-          <div>
-            <h1 className="text-2xl uppercase text-text font-semibold">
-              {build.name}
-            </h1>
-            <p className="text-muted">@{build.user?.name}</p>
+          <div className="flex gap-2">
+            <span className="w-12 h-12 rounded-full bg-secondary-light flex items-center justify-center font-bold">
+              {build.user.name?.charAt(0).toUpperCase()}
+            </span>
+
+            <div>
+              <h1 className="text-2xl uppercase text-text font-semibold">
+                {build.name}
+              </h1>
+              <p className="text-muted">@{build.user?.name}</p>
+            </div>
           </div>
+
           <p className="text-text font-semibold text-xl">
             €{build.total_price}
           </p>
         </div>
 
-        <div className="flex">
+        <div className="flex max-h-100 overflow-y-auto">
           <div className="flex-1 m-2 flex flex-col">
             <span className="text-muted font-medium">Notes</span>
             <p className="text-text mt-4">{build.notes}</p>

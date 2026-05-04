@@ -106,7 +106,7 @@ const Layout = ({ children }) => {
               <div
                 ref={menuRef}
                 className={`md:hidden absolute left-0 top-14 w-screen bg-background overflow-hidden transition-all shadow z-10 ${
-                  menuActive ? "h-36" : "h-0"
+                  menuActive ? "h-48" : "h-0"
                 }`}
               >
                 <Link
@@ -131,6 +131,14 @@ const Layout = ({ children }) => {
                   onClick={() => setMenuActive(false)}
                 >
                   Guide
+                </Link>
+
+                <Link
+                  className={menuLinkClass("/shared")}
+                  href="/shared"
+                  onClick={() => setMenuActive(false)}
+                >
+                  Shared
                 </Link>
               </div>
 
