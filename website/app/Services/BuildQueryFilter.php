@@ -17,10 +17,17 @@ class BuildQueryFilter
   {
     // search by name
     if (! empty($filters['search'])) {
-      $query->where('name', 'like', '%' . $filters['search'] . '%')
-        ->orWhereHas('user', function ($q) use ($filters) {
-          $q->where('name', 'like', '%' . $filters['search'] . '%');
-        });
+      // split each word to search by each word not whole sentence
+      $searchTerms = array_filter(explode(' ', $filters['search']));
+
+      $query->where(function ($query) use ($searchTerms) {
+        foreach ($searchTerms as $term) {
+          $query->where(function ($q) use ($term) {
+            $q->where('name', 'like', '%' . $term . '%')
+              ->orWhereHas('user', fn($q) => $q->where('name', 'like', '%' . $term . '%'));
+          });
+        }
+      });
     }
 
     // price range
