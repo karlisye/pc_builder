@@ -203,7 +203,7 @@ const BuildCard = ({ build }) => {
         <div className="bg-primary mt-auto flex">
           <Link
             className="text-white px-8 py-4 flex-1 text-center hover:bg-primary-light cursor-pointer transition"
-            href={`/builder?build=${build.id}`}
+            href={`/builder?build=${build.id}&shared=true`}
           >
             Continue
           </Link>

@@ -23,10 +23,17 @@ class BuilderController extends Controller
     $build = null;
 
     if ($request->has('build')) {
-      $build = Build::where('id', $request->query('build'))
-        ->where('user_id', $request->user()->id)
-        ->with(['cpu', 'motherboard', 'ram', 'gpu', 'ssd', 'hdd', 'pcCase', 'cooler', 'psu', 'fan'])
-        ->first();
+      $query = Build::where('id', $request->query('build'))
+        ->with(['cpu', 'motherboard', 'ram', 'gpu', 'ssd', 'hdd', 'pcCase', 'cooler', 'psu', 'fan']);
+
+      // if request is sent with a shared tag, check if build is public, else check if build belongs to user
+      if ($request->boolean('shared')) {
+        $query->where('is_public', true);
+      } else {
+        $query->where('user_id', $request->user()->id);
+      }
+
+      $build = $query->first();
     }
 
     return Inertia::render('Builder', [
