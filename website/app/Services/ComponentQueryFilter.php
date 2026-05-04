@@ -19,7 +19,13 @@ class ComponentQueryFilter
   {
     // search by name
     if (! empty($filters['search'])) {
-      $query->where('name', 'like', '%' . $filters['search'] . '%');
+      $searchTerms = array_filter(explode(' ', $filters['search']));
+
+      $query->where(function ($query) use ($searchTerms) {
+        foreach ($searchTerms as $term) {
+          $query->where('name', 'like', '%' . $term . '%');
+        }
+      });
     }
 
     // price range
