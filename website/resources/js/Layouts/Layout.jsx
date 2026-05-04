@@ -196,7 +196,40 @@ const Layout = ({ children }) => {
           )}
         </nav>
       </header>
-      <main className="flex-1 overflow-y-auto">{children}</main>
+
+      <div className="flex flex-col h-full overflow-y-auto">
+        <main className="flex-1">{children}</main>
+
+        <footer className="bg-primary border-t border-primary-light">
+          <div className="max-w-348 mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex flex-col items-center sm:items-start">
+              <span className="font-bold text-white">BUILDER</span>
+              <p className="text-surface text-sm mt-1">
+                Build and share your PC.
+              </p>
+            </div>
+
+            <div className="flex gap-6 text-sm text-surface">
+              <Link href="/builder" className="hover:text-white transition">
+                Build
+              </Link>
+              <Link href="/builds" className="hover:text-white transition">
+                Saved
+              </Link>
+              <Link href="/guide" className="hover:text-white transition">
+                Guide
+              </Link>
+              <Link href="/shared" className="hover:text-white transition">
+                Shared
+              </Link>
+            </div>
+
+            <p className="text-surface text-sm">
+              © {new Date().getFullYear()} Builder.
+            </p>
+          </div>
+        </footer>
+      </div>
     </div>
   );
 };
