@@ -224,9 +224,13 @@ const Layout = ({ children }) => {
               </Link>
             </div>
 
-            <p className="text-surface text-sm">
-              © {new Date().getFullYear()} Builder.
-            </p>
+            <a
+              href="https://github.com/karlisye"
+              target="_blank"
+              className="text-surface hover:text-white transition text-sm"
+            >
+              @karlisye
+            </a>
           </div>
         </footer>
       </div>
