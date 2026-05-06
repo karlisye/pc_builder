@@ -91,7 +91,16 @@ const SavedSection = () => {
           Publishing your build
         </h2>
 
-        <p className="text-text">1. ...</p>
+        <p className="text-text">
+          1. Press on the button under components to publish your build. A popup
+          window will show up to confirm changing builds visibility.
+        </p>
+
+        <p className="text-text">
+          2. Once the build is public, you can see it in the Shared section and
+          you can private it by following the first step again on the same
+          build.
+        </p>
       </div>
     </div>
   );
