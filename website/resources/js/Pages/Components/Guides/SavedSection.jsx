@@ -86,6 +86,12 @@ const SavedSection = () => {
           2. A confirmation popup will appear. Confirm to permanently delete the
           build.
         </p>
+
+        <h2 className="text-2xl font-semibold text-text">
+          Publishing your build
+        </h2>
+
+        <p className="text-text">1. ...</p>
       </div>
     </div>
   );
