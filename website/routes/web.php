@@ -12,19 +12,19 @@ Route::get('/', fn() => Inertia::render('Home'))->name('home');
 Route::get('/guide', fn() => Inertia::render('Guide'))->name('guide');
 
 Route::middleware('guest')->group(function () {
-    Route::get('/register', fn() => Inertia::render('Auth/Register'))->name('register');
-    Route::post('/register', [AuthController::class, 'register']);
+  Route::get('/register', fn() => Inertia::render('Auth/Register'))->name('register');
+  Route::post('/register', [AuthController::class, 'register']);
 
-    Route::get('/login', fn() => Inertia::render('Auth/Login'))->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
+  Route::get('/login', fn() => Inertia::render('Auth/Login'))->name('login');
+  Route::post('/login', [AuthController::class, 'login']);
 });
 
 Route::middleware('auth')->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::get('/builder', [BuilderController::class, 'index']);
-    Route::get('/builds', [BuildController::class, 'index']);
-    Route::get('/shared', [SharedController::class, 'index']);
-    Route::get('/profile', [UserController::class, 'index']);
+  Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+  Route::get('/builder', [BuilderController::class, 'index']);
+  Route::get('/builds', [BuildController::class, 'index']);
+  Route::get('/shared', [SharedController::class, 'index']);
+  Route::get('/profile', [UserController::class, 'index']);
 });
 
 Route::fallback(fn() => Inertia::render('NotFound'));

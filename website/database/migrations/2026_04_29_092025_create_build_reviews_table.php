@@ -6,26 +6,26 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
-    {
-        Schema::create('build_reviews', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('build_id')->constrained()->cascadeOnDelete();
-            $table->tinyInteger('rating')->unsigned();
-            $table->unique(['user_id', 'build_id']);
-            $table->timestamps();
-        });
-    }
+  /**
+   * Run the migrations.
+   */
+  public function up(): void
+  {
+    Schema::create('build_reviews', function (Blueprint $table) {
+      $table->id();
+      $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+      $table->foreignId('build_id')->constrained()->cascadeOnDelete();
+      $table->tinyInteger('rating')->unsigned();
+      $table->unique(['user_id', 'build_id']);
+      $table->timestamps();
+    });
+  }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('build_reviews');
-    }
+  /**
+   * Reverse the migrations.
+   */
+  public function down(): void
+  {
+    Schema::dropIfExists('build_reviews');
+  }
 };
