@@ -152,7 +152,7 @@ const ComponentFilters = () => {
           );
         })}
 
-        {error && <p className="text-danger">{error}</p>}
+        {error && <p className="text-danger text-sm">{error}</p>}
       </div>
 
       <button
