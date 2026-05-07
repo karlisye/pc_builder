@@ -50,12 +50,19 @@ const ComponentFilters = () => {
   useEffect(() => {
     if (!currentCompToAdd) return;
     setAvailableFilters({});
-
-    axios
-      .get(`/api/components/${currentCompToAdd.toLowerCase()}/filters`)
-      .then((res) => setAvailableFilters(res.data))
-      .catch((err) => console.error("Failed to fetch filters", err));
+    fetchFilters();
   }, [currentCompToAdd]);
+
+  const fetchFilters = async () => {
+    try {
+      const res = await axios.get(
+        `/api/components/${currentCompToAdd.toLowerCase()}/filters`,
+      );
+      setAvailableFilters(res.data);
+    } catch (err) {
+      console.error("Failed to fetch filters", err);
+    }
+  };
 
   const updateFilter = (key, value) => {
     setFilters((prev) => ({ ...prev, [key]: value }));

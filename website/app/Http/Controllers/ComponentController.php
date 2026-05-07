@@ -141,7 +141,7 @@ class ComponentController extends Controller
   {
     if (! array_key_exists($type, CompatibilityService::VALID_TYPES)) {
       return response()->json([
-        'error'       => "'{$type}' is not a valid component",
+        'error' => "'{$type}' is not a valid component",
         'valid_types' => array_keys(CompatibilityService::VALID_TYPES),
       ], 400);
     }
