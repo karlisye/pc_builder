@@ -46,9 +46,11 @@ const ComponentFilters = () => {
     currentCompToAdd,
   } = useBuilder();
   const [availableFilters, setAvailableFilters] = useState({});
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (!currentCompToAdd) return;
+    setError("");
     setAvailableFilters({});
     fetchFilters();
   }, [currentCompToAdd]);
@@ -61,6 +63,7 @@ const ComponentFilters = () => {
       setAvailableFilters(res.data);
     } catch (err) {
       console.error("Failed to fetch filters", err);
+      setError("Failed to fetch filters");
     }
   };
 
@@ -148,6 +151,8 @@ const ComponentFilters = () => {
             </select>
           );
         })}
+
+        {error && <p className="text-danger">{error}</p>}
       </div>
 
       <button
