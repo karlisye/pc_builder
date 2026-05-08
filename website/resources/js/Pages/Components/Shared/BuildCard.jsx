@@ -109,8 +109,8 @@ const BuildCard = ({ build }) => {
           </p>
         </div>
 
-        <div className="flex max-h-100 overflow-y-auto">
-          <div className="flex-1 m-2 flex flex-col">
+        <div className="flex xl:flex-row flex-col max-h-100 overflow-y-auto">
+          <div className="flex-1 m-2 flex flex-col gap-4">
             <span className="text-muted font-medium">Notes</span>
             <p className="text-text mt-4">{build.notes}</p>
 
