@@ -223,7 +223,7 @@ const AccountSettings = ({ user }) => {
 
       <h1 className="text-4xl font-semibold my-4">Delete my account</h1>
       <button
-        className="py-4 px-8 bg-primary text-white hover:bg-danger cursor-pointer mt-2 transition disabled:text-muted"
+        className="py-4 px-8 bg-primary text-white hover:bg-danger/80 cursor-pointer mt-2 transition disabled:text-muted mb-6"
         onClick={() => setDeleting(true)}
       >
         Delete my account

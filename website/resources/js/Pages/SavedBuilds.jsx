@@ -4,6 +4,7 @@ import { Link, router } from "@inertiajs/react";
 import DetailPanel from "./Components/Saved/DetailPanel";
 import Modal from "./Components/Common/Modal";
 import BuildVisibility from "./Components/Saved/BuildVisibility";
+import { ArrowIcon } from "./Components/Common/Icons";
 
 const SLOT_LABELS = {
   cpu: "CPU",
@@ -27,6 +28,8 @@ const SavedBuilds = ({ builds, selected }) => {
   const [editData, setEditData] = useState({ name: "", notes: "" });
   const [expandedSlot, setExpandedSlot] = useState(null);
   const [deleting, setDeleting] = useState(null);
+
+  const [expanded, setExpanded] = useState(false);
 
   const handleExpandSlot = (slot) => {
     setExpandedSlot((prev) => (prev === slot ? null : slot));
@@ -71,45 +74,57 @@ const SavedBuilds = ({ builds, selected }) => {
 
   return (
     <>
-      <div className="h-full flex flex-wrap">
+      <div className="flex flex-col lg:h-full lg:flex-row">
         <div className="w-full lg:w-120.5 bg-primary py-6 px-4">
-          <h1 className="text-4xl font-semibold text-white mb-4">
-            SAVED BUILDS
-          </h1>
-          <div className="space-y-4">
-            {builds.length === 0 ? (
-              <p className="text-muted">You have no saved builds yet.</p>
-            ) : (
-              builds.map((build) => (
-                <div
-                  key={build.id}
-                  onClick={() => handleSelect(build)}
-                  className={`hover:bg-secondary border transition-all cursor-pointer p-2 flex justify-between items-center border-secondary ${
-                    selectedBuild?.id === build.id ? "border-l-10" : ""
-                  }`}
-                >
-                  <div>
-                    <h2 className="text-white font-semibold text-xl">
-                      {build.name}
-                    </h2>
-                    <p className="text-muted text-sm">€{build.total_price}</p>
-                  </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setDeleting(build.id);
-                    }}
-                    className="text-muted hover:text-danger transition p-2 cursor-pointer"
+          <div
+            onClick={() => setExpanded((prev) => !prev)}
+            className="flex gap-2 justify-between items-center"
+          >
+            <h1 className="text-4xl font-semibold text-white">SAVED BUILDS</h1>
+
+            <span className="text-surface lg:opacity-0">
+              <ArrowIcon active={expanded} size={24} />
+            </span>
+          </div>
+
+          <div
+            className={`grid transition-all lg:mt-4 ${expanded ? "grid-rows-[1fr] mt-4" : "grid-rows-[0fr] lg:grid-rows-[1fr]"}`}
+          >
+            <div className="space-y-4 overflow-hidden">
+              {builds.length === 0 ? (
+                <p className="text-muted">You have no saved builds yet.</p>
+              ) : (
+                builds.map((build) => (
+                  <div
+                    key={build.id}
+                    onClick={() => handleSelect(build)}
+                    className={`hover:bg-secondary border transition-all cursor-pointer p-2 flex justify-between items-center border-secondary ${
+                      selectedBuild?.id === build.id ? "border-l-10" : ""
+                    }`}
                   >
-                    Delete
-                  </button>
-                </div>
-              ))
-            )}
+                    <div>
+                      <h2 className="text-white font-semibold text-xl">
+                        {build.name}
+                      </h2>
+                      <p className="text-muted text-sm">€{build.total_price}</p>
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setDeleting(build.id);
+                      }}
+                      className="text-muted hover:text-danger transition p-2 cursor-pointer"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
 
-        <div className="flex-1 pt-6 px-4">
+        <div className="flex-1 pt-6 px-4 mb-6">
           {loadingBuild && <p className="text-muted">Loading...</p>}
 
           {!loadingBuild && !selectedBuild && (

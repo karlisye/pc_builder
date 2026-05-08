@@ -8,6 +8,7 @@ import BuildInfo from "./Components/Builder/BuildInfo";
 import { Link } from "@inertiajs/react";
 import BuildGenerator from "./Components/Builder/BuildGenerator";
 import ComponentGenerator from "./Components/Builder/ComponentGenerator";
+import { ArrowIcon } from "./Components/Common/Icons";
 
 const Builder = ({ build }) => {
   const [currentCompToAdd, setCurrentCompToAdd] = useState(null);
@@ -27,6 +28,8 @@ const Builder = ({ build }) => {
 
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -63,28 +66,43 @@ const Builder = ({ build }) => {
     >
       <div className="h-full flex flex-wrap">
         <div className="w-full lg:w-120.5 bg-primary py-6 px-4">
-          <div className="flex justify-between items-center mb-4">
+          <div
+            className="flex justify-between items-center"
+            onClick={() => setExpanded((prev) => !prev)}
+          >
             <h1 className="text-4xl font-semibold text-white">BUILDER</h1>
+
             {(build || buildId) && (
               <Link
-                className="px-6 py-2 border text-secondary-light cursor-pointer hover:text-muted transition text-sm"
+                className="px-6 py-2 border text-secondary-light cursor-pointer hover:text-muted transition text-sm ml-auto"
                 href="builder"
               >
                 New Build
               </Link>
             )}
+
+            <span className="text-surface lg:hidden ml-4">
+              <ArrowIcon active={expanded} size={24} />
+            </span>
           </div>
 
-          {currentCompToAdd ? <ComponentFilters /> : <BuildDesc />}
-          <BuildInfo
-            currBuildInfo={{
-              id: build?.id,
-              name: build?.name,
-              notes: build?.notes,
-            }}
-          />
+          <div
+            className={`grid transition-all lg:mt-4 ${expanded ? "grid-rows-[1fr] mt-4" : "grid-rows-[0fr] lg:grid-rows-[1fr]"}`}
+          >
+            <div className="overflow-hidden">
+              {currentCompToAdd ? <ComponentFilters /> : <BuildDesc />}
 
-          {currentCompToAdd ? <ComponentGenerator /> : <BuildGenerator />}
+              <BuildInfo
+                currBuildInfo={{
+                  id: build?.id,
+                  name: build?.name,
+                  notes: build?.notes,
+                }}
+              />
+
+              {currentCompToAdd ? <ComponentGenerator /> : <BuildGenerator />}
+            </div>
+          </div>
         </div>
 
         <div className="flex-1 flex flex-wrap justify-center gap-8 px-4 py-6">
