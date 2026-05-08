@@ -68,12 +68,12 @@ export function MenuIcon({ size = 24, className = "transition" }) {
   );
 }
 
-export function ArrowIcon({ size = 24, active }) {
+export function ArrowIcon({ size = 16, active }) {
   return (
     <svg
       width={size}
       height={size}
-      className={`w-4 h-4 transition ${active ? "rotate-180" : ""}`}
+      className={`transition ${active ? "rotate-180" : ""}`}
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"

@@ -4,6 +4,7 @@ import axios from "axios";
 import PaginationControls from "./Components/Common/PaginationControls";
 import SharedBuildsSkeleton from "./Components/Skeletons/SharedBuildsSkeleton";
 import BuildFilters from "./Components/Shared/BuildFilters";
+import { ArrowIcon } from "./Components/Common/Icons";
 
 const Shared = () => {
   const [pagination, setPagination] = useState(null);
@@ -17,6 +18,8 @@ const Shared = () => {
 
   const [sort, setSort] = useState("");
   const [filters, setFilters] = useState({});
+
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     setPage(1);
@@ -66,9 +69,17 @@ const Shared = () => {
   return (
     <div className="h-full flex flex-wrap">
       <div className="w-full lg:w-120.5 bg-primary py-6 px-4">
-        <h1 className="text-4xl font-semibold text-white mb-4">
-          SHARED BUILDS
-        </h1>
+        <div
+          onClick={() => setExpanded((prev) => !prev)}
+          className="flex gap-2 justify-between items-center"
+        >
+          <h1 className="text-4xl font-semibold text-white">SHARED BUILDS</h1>
+
+          <span className="text-surface lg:opacity-0">
+            <ArrowIcon active={expanded} size={24} />
+          </span>
+        </div>
+
         <BuildFilters
           search={search}
           setSearch={setSearch}
@@ -76,6 +87,7 @@ const Shared = () => {
           setSort={setSort}
           filters={filters}
           setFilters={setFilters}
+          expanded={expanded}
         />
       </div>
 
