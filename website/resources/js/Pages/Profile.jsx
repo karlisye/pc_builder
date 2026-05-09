@@ -18,7 +18,7 @@ const Profile = ({ user, builds }) => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row">
+    <div className="h-full flex flex-col lg:flex-row">
       <div className="w-full lg:w-120.5 bg-primary py-6 px-4 shrink-0">
         <div
           onClick={() => setExpanded((prev) => !prev)}
