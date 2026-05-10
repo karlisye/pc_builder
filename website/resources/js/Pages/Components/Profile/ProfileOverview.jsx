@@ -5,7 +5,7 @@ import Modal from "../Common/Modal";
 import axios from "axios";
 import BuildsList from "./BuildsList";
 
-const ProfileOverview = ({ user, publicBuilds, privateBuilds }) => {
+const ProfileOverview = ({ user, publicBuildData, privateBuildData }) => {
   const [description, setDescription] = useState(
     user.description ?? "Add an About Me",
   );
@@ -84,14 +84,14 @@ const ProfileOverview = ({ user, publicBuilds, privateBuilds }) => {
 
         <div className="grid xl:grid-cols-2 grid-cols-1 gap-4 mb-6">
           <BuildsList
-            builds={publicBuilds}
+            buildData={publicBuildData}
             setBuild={setBuild}
             setPublishing={setPublishing}
             isPublic
           />
 
           <BuildsList
-            builds={privateBuilds}
+            buildData={privateBuildData}
             setBuild={setBuild}
             setPublishing={setPublishing}
           />

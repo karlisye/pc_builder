@@ -22,7 +22,7 @@ const Guide = () => {
 
   return (
     <div className="h-full flex flex-col lg:flex-row">
-      <div className="w-full lg:w-120.5 bg-primary py-6 px-4 shrink-0">
+      <div className="w-full lg:w-120.5 bg-primary py-6 px-4">
         <div
           onClick={() => setExpanded((prev) => !prev)}
           className="flex gap-2 justify-between items-center"

@@ -8,7 +8,7 @@ const sections = [
   { id: "account", label: "Account" },
 ];
 
-const Profile = ({ user, publicBuilds, privateBuilds }) => {
+const Profile = ({ user, publicBuildData, privateBuildData }) => {
   const [active, setActive] = useState(sections[0].id);
   const [expanded, setExpanded] = useState(false);
 
@@ -16,8 +16,8 @@ const Profile = ({ user, publicBuilds, privateBuilds }) => {
     overview: (
       <ProfileOverview
         user={user}
-        publicBuilds={publicBuilds}
-        privateBuilds={privateBuilds}
+        publicBuildData={publicBuildData}
+        privateBuildData={privateBuildData}
       />
     ),
     account: <AccountSettings user={user} />,
@@ -25,7 +25,7 @@ const Profile = ({ user, publicBuilds, privateBuilds }) => {
 
   return (
     <div className="h-full flex flex-col lg:flex-row">
-      <div className="w-full lg:w-120.5 bg-primary py-6 px-4 shrink-0">
+      <div className="w-full lg:w-120.5 bg-primary py-6 px-4">
         <div
           onClick={() => setExpanded((prev) => !prev)}
           className="flex gap-2 justify-between items-center"
@@ -46,10 +46,10 @@ const Profile = ({ user, publicBuilds, privateBuilds }) => {
                 key={section.id}
                 onClick={() => setActive(section.id)}
                 className={`
-              p-4 border border-secondary w-full text-white text-left
-              transition-all cursor-pointer hover:bg-secondary
-              ${active === section.id ? "border-l-10" : ""}
-            `}
+                  p-4 border border-secondary w-full text-white text-left
+                  transition-all cursor-pointer hover:bg-secondary
+                  ${active === section.id ? "border-l-10" : ""}
+                `}
               >
                 {section.label}
               </button>

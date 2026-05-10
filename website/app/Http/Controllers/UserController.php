@@ -24,10 +24,10 @@ class UserController extends Controller
       ->withCount('bookmarks')
       ->withAvg('reviews', 'rating');
 
-    $privateBuilds = $shared()->where('is_public', false)->get();
-    $publicBuilds  = $shared()->where('is_public', true)->get();
+    $privateBuilds = $shared()->where('is_public', false)->paginate(2, ['*'], 'privateSection');
+    $publicBuilds  = $shared()->where('is_public', true)->paginate(2, ['*'], 'publicSection');
 
-    return Inertia::render('Profile', ['user' => $user, 'privateBuilds' => $privateBuilds, 'publicBuilds' => $publicBuilds]);
+    return Inertia::render('Profile', ['user' => $user, 'privateBuildData' => $privateBuilds, 'publicBuildData' => $publicBuilds]);
   }
 
   public function update(Request $request, User $user): JsonResponse
