@@ -1,9 +1,25 @@
 from bs4 import BeautifulSoup
+import re
 from database import insert_row
-from parsers.helpers import extract_name, extract_specs, to_int, parse_pcie_version, parse_gpu_type
+from parsers.helpers import extract_name, extract_specs, to_int
 
 TABLE = "gpus"
 
+def _parse_pcie_version(value: str) -> float | None:
+    if not value:
+        return None
+    match = re.match(r"(\d+\.\d+)", value.strip())
+    return float(match.group(1)) if match else None
+
+def _parse_gpu_type(name: str) -> str | None:
+    name_lower = name.lower()
+    if "radeon" in name_lower or " rx " in name_lower:
+        return "amd"
+    if "geforce" in name_lower or "rtx" in name_lower or "gtx" in name_lower:
+        return "nvidia"
+    if "arc" in name_lower or "intel" in name_lower:
+        return "intel"
+    return None
 
 def parse(html, dateks_id, url, price, in_stock, stock_quantity, scraped_at):
     soup = BeautifulSoup(html, "html.parser")
@@ -17,12 +33,12 @@ def parse(html, dateks_id, url, price, in_stock, stock_quantity, scraped_at):
         "price": price,
         "in_stock": in_stock,
         "stock_quantity": stock_quantity,
-        "type": parse_gpu_type(name),
+        "type": _parse_gpu_type(name),
         "gpu_model": specs.get("GPU model"),
         "vram": to_int(specs.get("RAM")),
         "tdp": to_int(specs.get("Power consumption (TDP)")),
         "min_psu": to_int(specs.get("Minimum power supply output")),
-        "pcie_version": parse_pcie_version(specs.get("PCI-E version")),
+        "pcie_version": _parse_pcie_version(specs.get("PCI-E version")),
         "length_mm": to_int(specs.get("Length (mm)")),
         "power_connectors": specs.get("Power sockets"),
         "cuda": to_int(specs.get("Stream processors / CUDA Cores")),

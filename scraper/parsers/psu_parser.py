@@ -5,7 +5,6 @@ from parsers.helpers import (
     extract_name,
     extract_specs,
     to_int,
-    parse_connector_count,
 )
 
 TABLE = "psus"
@@ -21,13 +20,18 @@ def _parse_modular(value: str) -> bool | None:
         return True
     return None
 
+def _parse_connector_count(value: str) -> int | None:
+    if not value:
+        return None
+    match = re.match(r"(\d+)\s*[xX]", value.strip())
+    return int(match.group(1)) if match else None
 
 def _parse_pcie_connectors(specs: dict) -> int | None:
-    return parse_connector_count(specs.get("PCI-E"))
+    return _parse_connector_count(specs.get("PCI-E"))
 
 
 def _parse_eps_connectors(specs: dict) -> int | None:
-    return parse_connector_count(specs.get("Processor plug-in"))
+    return _parse_connector_count(specs.get("Processor plug-in"))
 
 
 def _parse_sata_connectors(specs: dict) -> int | None:
