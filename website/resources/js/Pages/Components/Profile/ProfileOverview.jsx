@@ -4,7 +4,9 @@ import { Link, router } from "@inertiajs/react";
 import Modal from "../Common/Modal";
 import axios from "axios";
 
-const ProfileOverview = ({ user, builds }) => {
+const ProfileOverview = ({ user, publicBuilds, privateBuilds }) => {
+  console.log(publicBuilds);
+
   const [description, setDescription] = useState(
     user.description ?? "Add an About Me",
   );
@@ -86,8 +88,8 @@ const ProfileOverview = ({ user, builds }) => {
             <h2 className="text-2xl font-semibold mb-2">Public Builds</h2>
 
             <div className="space-y-4">
-              {builds.map((build) => {
-                if (!build.is_public) return;
+              {publicBuilds.map((build) => {
+                // if (!build.is_public) return;
                 return (
                   <div key={build.id} className="border border-border">
                     <div className="h-15">
@@ -173,8 +175,8 @@ const ProfileOverview = ({ user, builds }) => {
           <div className="">
             <h2 className="text-2xl font-semibold mb-2">Private Builds</h2>
             <div className="space-y-4">
-              {builds.map((build) => {
-                if (build.is_public) return;
+              {privateBuilds.map((build) => {
+                // if (build.is_public) return;
                 return (
                   <div
                     key={build.id}

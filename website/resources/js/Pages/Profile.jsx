@@ -8,12 +8,18 @@ const sections = [
   { id: "account", label: "Account" },
 ];
 
-const Profile = ({ user, builds }) => {
+const Profile = ({ user, publicBuilds, privateBuilds }) => {
   const [active, setActive] = useState(sections[0].id);
   const [expanded, setExpanded] = useState(false);
 
   const contentMap = {
-    overview: <ProfileOverview user={user} builds={builds} />,
+    overview: (
+      <ProfileOverview
+        user={user}
+        publicBuilds={publicBuilds}
+        privateBuilds={privateBuilds}
+      />
+    ),
     account: <AccountSettings user={user} />,
   };
 

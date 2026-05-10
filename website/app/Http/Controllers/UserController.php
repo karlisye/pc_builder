@@ -17,13 +17,17 @@ class UserController extends Controller
   public function index(Request $request): InertiaResponse
   {
     $user = $request->user();
-    $builds = Build::where('user_id', $user->id)
+
+    $shared = fn() => Build::query()
+      ->where('user_id', $user->id)
       ->withCount('likes')
       ->withCount('bookmarks')
-      ->withAvg('reviews', 'rating')
-      ->get();
+      ->withAvg('reviews', 'rating');
 
-    return Inertia::render('Profile', ['user' => $user, 'builds' => $builds]);
+    $privateBuilds = $shared()->where('is_public', false)->get();
+    $publicBuilds  = $shared()->where('is_public', true)->get();
+
+    return Inertia::render('Profile', ['user' => $user, 'privateBuilds' => $privateBuilds, 'publicBuilds' => $publicBuilds]);
   }
 
   public function update(Request $request, User $user): JsonResponse
