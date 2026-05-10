@@ -122,7 +122,7 @@ const BuildsList = ({
                     Edit
                   </Link>
                   <button
-                    className="text-white flex-1 p-4 hover:bg-danger/50 transition cursor-pointer"
+                    className={`text-white flex-1 p-4 ${isPublic ? "hover:bg-danger/50" : "hover:bg-success/50"} transition cursor-pointer`}
                     onClick={() => {
                       setPublishing(true);
                       setBuild(build);

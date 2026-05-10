@@ -77,7 +77,7 @@ def main():
                 print(f"  [SKIP] {e}")
                 if error_count >= MAX_ERRORS_PER_CATEGORY:
                     print(
-                        f"\n[ABORT] {category_key.upper()} reached {MAX_ERRORS_PER_CATEGORY} errors — stopping category."
+                        f"\n[ABORT] {category_key.upper()} reached {MAX_ERRORS_PER_CATEGORY} errors. Stopping category."
                     )
                     break
 

@@ -1,7 +1,7 @@
 import re
 from bs4 import BeautifulSoup
 
-
+# global helpers
 def extract_name(soup) -> str | None:
     tag = soup.select_one("h1.name")
     if tag:
@@ -68,30 +68,12 @@ def tb_to_gb(value: str) -> int | None:
         return int(num * 1000)
     return int(num)
 
-
+# gpu helpers 
 def parse_pcie_version(value: str) -> float | None:
     if not value:
         return None
     match = re.match(r"(\d+\.\d+)", value.strip())
     return float(match.group(1)) if match else None
-
-
-def parse_memory_speeds(value: str):
-    if not value:
-        return None, None
-    numbers = re.findall(r"\b(\d{4,5})\b", value)
-    if len(numbers) >= 2:
-        return int(numbers[0]), int(numbers[1])
-    if len(numbers) == 1:
-        return int(numbers[0]), int(numbers[0])
-    return None, None
-
-
-def parse_connector_count(value: str) -> int | None:
-    if not value:
-        return None
-    match = re.match(r"(\d+)\s*[xX]", value.strip())
-    return int(match.group(1)) if match else None
 
 def parse_gpu_type(name: str) -> str | None:
     name_lower = name.lower()
@@ -102,3 +84,33 @@ def parse_gpu_type(name: str) -> str | None:
     if "arc" in name_lower or "intel" in name_lower:
         return "intel"
     return None
+
+# motherboard helpers
+def parse_memory_speeds(value: str):
+    if not value:
+        return None, None
+    numbers = re.findall(r"\b(\d{4,5})\b", value)
+    if len(numbers) >= 2:
+        return int(numbers[0]), int(numbers[1])
+    if len(numbers) == 1:
+        return int(numbers[0]), int(numbers[0])
+    return None, None
+
+def normalise_socket(value: str) -> str | None:
+    if not value:
+        return None
+    s = re.sub(r"^[Ss]ocket\s+", "", value.strip())
+    return s.replace(" ", "") or None
+
+def normalise_chipset(value: str) -> str | None:
+    if not value:
+        return None
+    return re.sub(r"^(Intel|AMD|NVIDIA)\s+", "", value.strip()) or None
+
+
+# psu helpers
+def parse_connector_count(value: str) -> int | None:
+    if not value:
+        return None
+    match = re.match(r"(\d+)\s*[xX]", value.strip())
+    return int(match.group(1)) if match else None

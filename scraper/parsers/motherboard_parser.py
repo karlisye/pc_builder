@@ -7,23 +7,11 @@ from parsers.helpers import (
     to_bool,
     to_int,
     parse_memory_speeds,
+    normalise_socket,
+    normalise_chipset
 )
 
 TABLE = "motherboards"
-
-
-def _normalise_socket(value: str) -> str | None:
-    if not value:
-        return None
-    s = re.sub(r"^[Ss]ocket\s+", "", value.strip())
-    return s.replace(" ", "") or None
-
-
-def _normalise_chipset(value: str) -> str | None:
-    if not value:
-        return None
-    return re.sub(r"^(Intel|AMD|NVIDIA)\s+", "", value.strip()) or None
-
 
 def parse(html, dateks_id, url, price, in_stock, stock_quantity, scraped_at):
     soup = BeautifulSoup(html, "html.parser")
@@ -44,8 +32,8 @@ def parse(html, dateks_id, url, price, in_stock, stock_quantity, scraped_at):
         "price": price,
         "in_stock": in_stock,
         "stock_quantity": stock_quantity,
-        "socket": _normalise_socket(raw_socket),
-        "chipset": _normalise_chipset(specs.get("Chipset")),
+        "socket": normalise_socket(raw_socket),
+        "chipset": normalise_chipset(specs.get("Chipset")),
         "form_factor": form_factor,
         "memory_type": specs.get("Type"),
         "memory_slots": to_int(specs.get("RAM Slots")),
