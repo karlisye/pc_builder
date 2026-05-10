@@ -11,12 +11,29 @@ const BuildsList = ({
   const builds = buildData.data;
   const links = buildData.links;
 
+  console.log(links);
+
   const next = () => {
-    router.get(`${links[links.length - 1].url}`, {}, { preserveState: true });
+    const url = new URL(links[links.length - 1].url);
+    const current = new URL(window.location.href);
+    // merge current params with new ones
+    current.searchParams.forEach((value, key) => {
+      if (!url.searchParams.has(key)) url.searchParams.set(key, value);
+    });
+    router.get(url, {
+      preserveState: true,
+    });
   };
 
   const previous = () => {
-    router.get(`${links[0].url}`, {}, { preserveState: true });
+    const url = new URL(links[0].url);
+    const current = new URL(window.location.href);
+    current.searchParams.forEach((value, key) => {
+      if (!url.searchParams.has(key)) url.searchParams.set(key, value);
+    });
+    router.get(url, {
+      preserveState: true,
+    });
   };
 
   return (

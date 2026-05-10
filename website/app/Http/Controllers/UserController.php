@@ -24,8 +24,8 @@ class UserController extends Controller
       ->withCount('bookmarks')
       ->withAvg('reviews', 'rating');
 
-    $privateBuilds = $shared()->where('is_public', false)->paginate(2, ['*'], 'privateSection');
-    $publicBuilds  = $shared()->where('is_public', true)->paginate(2, ['*'], 'publicSection');
+    $privateBuilds = $shared()->where('is_public', false)->paginate(2, ['*'], 'privatePage');
+    $publicBuilds  = $shared()->where('is_public', true)->paginate(2, ['*'], 'publicPage');
 
     return Inertia::render('Profile', ['user' => $user, 'privateBuildData' => $privateBuilds, 'publicBuildData' => $publicBuilds]);
   }
