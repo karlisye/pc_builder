@@ -55,7 +55,7 @@ const BuildsList = ({
           {builds.map((build) => {
             return (
               <div key={build.id} className="border border-border">
-                <div className="h-15">
+                <div className="">
                   <div className="flex gap-4 justify-between items-center mb-1 m-2">
                     <div className="flex gap-2 items-center">
                       <h3 className="uppercase text-xl font-semibold">

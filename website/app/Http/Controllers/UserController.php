@@ -24,7 +24,17 @@ class UserController extends Controller
       ->where('is_public', true)
       ->paginate(4);
 
-    return Inertia::render('Components/Profile/PublicProfile', ['user' => $user, 'buildData' => $builds]);
+    $totalLikes = $user->totalLikes();
+    $totalBookmarks = $user->totalBookmarks();
+    $avgRating = $user->averageRating();
+
+    return Inertia::render('Components/Profile/PublicProfile', [
+      'user' => $user,
+      'buildData' => $builds,
+      'totalLikes' => $totalLikes,
+      'totalBookmarks' => $totalBookmarks,
+      'avgRating' => $avgRating
+    ]);
   }
 
   public function index(Request $request): InertiaResponse

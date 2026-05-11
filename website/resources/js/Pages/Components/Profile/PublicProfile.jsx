@@ -2,7 +2,13 @@ import React, { useState } from "react";
 import { ArrowIcon, HeartIcon, SavedIcon, StarIcon } from "../Common/Icons";
 import { Link, router } from "@inertiajs/react";
 
-const PublicProfile = ({ user, buildData }) => {
+const PublicProfile = ({
+  user,
+  buildData,
+  totalLikes,
+  totalBookmarks,
+  avgRating,
+}) => {
   const [expanded, setExpanded] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
@@ -53,6 +59,50 @@ const PublicProfile = ({ user, buildData }) => {
             <ArrowIcon active={expanded} size={24} />
           </span>
         </div>
+
+        <div
+          className={`grid transition-all lg:mt-4 ${expanded ? "grid-rows-[1fr] mt-4" : "grid-rows-[0fr] lg:grid-rows-[1fr]"}`}
+        >
+          <div className="space-y-4 overflow-hidden">
+            <div className="border border-secondary p-4 space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-secondary-light text-sm">
+                  Total Likes
+                </span>
+                <div className="flex gap-1 items-center">
+                  <span className="text-secondary-light font-semibold text-xl">
+                    {totalLikes}
+                  </span>
+                  <HeartIcon className={"text-secondary-light"} size={20} />
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <span className="text-secondary-light text-sm">
+                  Total Bookmarks
+                </span>
+                <div className="flex gap-1 items-center">
+                  <span className="text-secondary-light font-semibold text-xl">
+                    {totalBookmarks}
+                  </span>
+                  <SavedIcon className={"text-secondary-light"} size={20} />
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <span className="text-secondary-light text-sm">
+                  Average Rating
+                </span>
+                <div className="flex gap-1 items-center">
+                  <span className="text-secondary-light font-semibold text-xl">
+                    {avgRating.toFixed(1)}
+                  </span>
+                  <StarIcon className={"text-secondary-light"} size={20} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="py-6 px-4 flex-1">
@@ -79,6 +129,9 @@ const PublicProfile = ({ user, buildData }) => {
         </div>
 
         <div className="">
+          <h2 className="text-2xl font-semibold mb-2">
+            {user.name}'s shared builds
+          </h2>
           {success && <p className="text-success ml-auto px-2">{success}</p>}
           {error && <p className="text-danger ml-auto px-2">{error}</p>}
           <div className="flex gap-1">
@@ -92,11 +145,11 @@ const PublicProfile = ({ user, buildData }) => {
               </span>
             </button>
 
-            <div className="space-y-4 flex-1 grid xl:grid-cols-2 grid-cols-1 gap-4">
+            <div className="flex-1 grid xl:grid-cols-2 grid-cols-1 gap-4">
               {builds.map((build) => {
                 return (
                   <div key={build.id} className="border border-border">
-                    <div className="h-15">
+                    <div className="">
                       <div className="flex gap-4 justify-between items-center mb-1 m-2">
                         <div className="flex gap-2 items-center">
                           <h3 className="uppercase text-xl font-semibold">

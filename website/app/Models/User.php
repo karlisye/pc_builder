@@ -35,4 +35,20 @@ class User extends Authenticatable
   {
     return $this->hasMany(Build::class);
   }
+
+  public function totalLikes(): int
+  {
+    return BuildLike::whereHas('build', fn($q) => $q->where('user_id', $this->id)->where('is_public', true))->count();
+  }
+
+  public function totalBookmarks(): int
+  {
+    return BuildBookmark::whereHas('build', fn($q) => $q->where('user_id', $this->id)->where('is_public', true))->count();
+  }
+
+  public function averageRating(): float
+  {
+    return BuildReview::whereHas('build', fn($q) => $q->where('user_id', $this->id)->where('is_public', true))
+      ->avg('rating') ?? 0;
+  }
 }

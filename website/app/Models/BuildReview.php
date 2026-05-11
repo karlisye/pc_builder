@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BuildReview extends Model
 {
@@ -13,4 +14,9 @@ class BuildReview extends Model
     'build_id',
     'rating'
   ];
+
+  public function build(): BelongsTo
+  {
+    return $this->belongsTo(Build::class);
+  }
 }
