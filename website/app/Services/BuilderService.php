@@ -132,6 +132,7 @@ class BuilderService
 
         $picked = $this->picker->pick($slot, $build, $preferences, $slotBudget);
 
+
         if ($picked === null) {
           // cant fill this slot - fail the attempt
           if ($slot !== 'fan') {
@@ -201,8 +202,8 @@ class BuilderService
 
   private function generateUnlimited(array $selected, array $preferences): array
   {
-    $allSlots = array_keys(CompatibilityService::VALID_TYPES);
-    $slotsToFill = array_diff($allSlots, array_keys($selected), ['fan']); // fan last
+    $orderedSlots = ['ssd', 'case', 'psu', 'cooler', 'ram', 'motherboard', 'cpu', 'gpu'];
+    $slotsToFill = array_diff($orderedSlots, array_keys($selected));
     $build = $selected;
 
     foreach ($slotsToFill as $slot) {
@@ -234,7 +235,7 @@ class BuilderService
   // add indivudual
   private function resolveSlotsToFill(array $selected, array $allocations): array
   {
-    $orderedSlots = ['cpu', 'gpu', 'motherboard', 'ram', 'cooler', 'case', 'psu', 'ssd', 'fan'];
+    $orderedSlots = ['ssd', 'case', 'psu', 'cooler', 'ram', 'motherboard', 'cpu', 'gpu', 'fan'];
 
     $slotsToFill = [];
 
@@ -243,7 +244,7 @@ class BuilderService
         continue;
       }
 
-      // if not needed for the budget or is ssd or fan - skip
+      // if not needed for the budget or is fan - skip
       if (! isset($allocations[$slot]) && ! in_array($slot, ['ssd', 'fan'])) {
         continue;
       }
@@ -308,11 +309,13 @@ class BuilderService
   private function estimateMinimumBudget(array $slotsToFill, array $selected, float $selectedCost, array $preferences): float
   {
     $minimum = $selectedCost;
+    $build = $selected;
 
     foreach ($slotsToFill as $slot) {
-      $cheapest = $this->picker->cheapest($slot, $selected, $preferences);
+      $cheapest = $this->picker->cheapest($slot, $build, $preferences);
       if ($cheapest) {
         $minimum += (float) $cheapest->price;
+        $build[$slot] = $cheapest; // add to build so next slot filters compatibly
       }
     }
 

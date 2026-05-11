@@ -65,7 +65,7 @@ class ComponentScorer
       'gpu' => $this->scoreGpu($item, $type),
       'ram' => $this->scoreRam($item, $type),
       'ssd' => $this->scoreSsd($item),
-      default => 0.0,
+      default => (float) ($item->price ?? 0),
     };
   }
 
@@ -108,7 +108,7 @@ class ComponentScorer
 
     $archMultiplier = match (true) {
       // Ryzen 9xxx/8xxx series + Intel 14th-15th gen + Ultra 200
-      (bool) preg_match('/Ryzen\s+\d+\s+[98]\d{3}|Ultra\s+[279]\s+[22][0-9]{2}|i[3579]-1[45]\d{3}/i', $name) => 1.20,
+      (bool) preg_match('/Ryzen\s+\d+\s+[98]\d{3}|Ultra\s+[5-9]\s+2\d{2}|i[3579]-1[45]\d{3}/i', $name) => 1.20,
       // Ryzen 7xxx series + Intel 12th-13th gen
       (bool) preg_match('/Ryzen\s+\d+\s+7\d{3}|i[3579]-1[23]\d{3}/i', $name) => 1.10,
       // Ryzen 5xxx series + Intel 10th-11th gen
