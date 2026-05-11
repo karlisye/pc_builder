@@ -35,7 +35,7 @@ const BuildsList = ({
   };
 
   return (
-    <div className="">
+    <div className="my-6">
       <h2 className="text-2xl font-semibold mb-2">
         {isPublic ? "Public Builds" : "Private Builds"}
       </h2>
@@ -51,7 +51,7 @@ const BuildsList = ({
           </span>
         </button>
 
-        <div className="space-y-4 flex-1">
+        <div className="flex-1 grid xl:grid-cols-2 grid-cols-1 gap-4">
           {builds.map((build) => {
             return (
               <div key={build.id} className="border border-border">

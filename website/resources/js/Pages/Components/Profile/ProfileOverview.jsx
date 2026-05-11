@@ -82,7 +82,7 @@ const ProfileOverview = ({ user, publicBuildData, privateBuildData }) => {
           </div>
         </div>
 
-        <div className="grid xl:grid-cols-2 grid-cols-1 gap-4 mb-6">
+        <div className="">
           <BuildsList
             buildData={publicBuildData}
             setBuild={setBuild}
