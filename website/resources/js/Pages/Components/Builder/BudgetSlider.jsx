@@ -6,6 +6,7 @@ const BudgetSlider = ({
   onChange,
   min = 350,
   max = 10000,
+  recommended = 1,
   step = 50,
   showRemaining = true,
 }) => {
@@ -16,6 +17,9 @@ const BudgetSlider = ({
   const filled = Object.values(selectedComponents).filter((v) => v !== null);
   const total = filled.reduce((sum, c) => sum + parseFloat(c.price ?? 0), 0);
   const remaining = value - total;
+
+  const percentage = (((isUnlimited ? min : value) - min) / (max - min)) * 100;
+  const reccomendedPercentage = ((recommended - min) / (max - min)) * 100;
 
   const clamp = (val) => {
     const num = parseInt(val);
@@ -90,16 +94,35 @@ const BudgetSlider = ({
           </div>
         </div>
       )}
-      <input
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={isUnlimited ? min : value}
-        onChange={handleSlider}
-        disabled={isUnlimited}
-        className={`w-full accent-secondary-light transition-opacity ${isUnlimited ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
-      />
+
+      <div className="relative">
+        <div
+          className="absolute left-0 top-1/2 -translate-y-1/2 h-2 rounded-full bg-danger/50 pointer-events-none z-15"
+          style={{ width: `${reccomendedPercentage}%` }}
+        />
+
+        <div className="absolute w-full left-0 top-1/2 -translate-y-1/2 h-2 rounded-full bg-secondary pointer-events-none z-5" />
+
+        <div
+          className="absolute left-0 top-1/2 -translate-y-1/2 h-2 rounded-full bg-secondary-light pointer-events-none z-10"
+          style={{ width: `${percentage}%` }}
+        />
+
+        <input
+          type="range"
+          min={min}
+          max={max}
+          step={step}
+          value={isUnlimited ? min : value}
+          onChange={handleSlider}
+          disabled={isUnlimited}
+          className={`relative z-20 w-full h-2 appearance-none bg-transparent transition-opacity 
+            ${isUnlimited ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}
+            ${value <= recommended ? "accent-danger/80" : "accent-secondary-light"}
+          `}
+        />
+      </div>
+
       <div className="flex justify-between">
         <span className="text-muted text-xs">€{min.toLocaleString()}</span>
         <span className="text-muted text-xs">€{max.toLocaleString()}</span>

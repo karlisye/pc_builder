@@ -21,6 +21,15 @@ const BuildGenerator = () => {
     cpu: null,
     type: null,
   });
+  const [note, setNote] = useState("");
+
+  const recommendedBudget =
+    {
+      gaming: 1000,
+      office: 600,
+      streaming: 1200,
+      rendering: 1500,
+    }[preferences.type] ?? 600;
 
   const updatePref = (key, value) => {
     setPreferences((prev) => ({ ...prev, [key]: value }));
@@ -65,6 +74,14 @@ const BuildGenerator = () => {
     }
   };
 
+  const updateBudget = (value) => {
+    if (recommendedBudget > value)
+      setNote("We recommend increasing your budget for this type of build.");
+    else setNote("");
+
+    setBudget(value);
+  };
+
   return (
     <div className="pt-4 border-t mt-4 border-secondary">
       <button
@@ -91,7 +108,17 @@ const BuildGenerator = () => {
             guide .
           </p>
 
-          <BudgetSlider value={budget} onChange={setBudget} />
+          <BudgetSlider
+            value={budget}
+            onChange={updateBudget}
+            recommended={recommendedBudget}
+          />
+
+          {note && (
+            <div className="p-2 border border-secondary">
+              <p className="text-secondary-light text-sm">{note}</p>
+            </div>
+          )}
 
           <p className="text-muted text-sm mb-1">Preferences</p>
 
