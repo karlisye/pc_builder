@@ -11,8 +11,6 @@ const BuildsList = ({
   const builds = buildData.data;
   const links = buildData.links;
 
-  console.log(links);
-
   const next = () => {
     const url = new URL(links[links.length - 1].url);
     const current = new URL(window.location.href);

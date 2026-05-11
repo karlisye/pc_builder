@@ -25,6 +25,7 @@ Route::middleware('auth')->group(function () {
   Route::get('/builds', [BuildController::class, 'index']);
   Route::get('/shared', [SharedController::class, 'index']);
   Route::get('/profile', [UserController::class, 'index']);
+  Route::get('/profile/{user}', [UserController::class, 'show']);
 });
 
 Route::fallback(fn() => Inertia::render('NotFound'));

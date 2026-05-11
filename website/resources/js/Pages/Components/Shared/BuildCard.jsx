@@ -92,15 +92,20 @@ const BuildCard = ({ build }) => {
       <div className="w-full border flex flex-col border-border shadow hover:bg-background transition overflow-hidden">
         <div className="flex gap-2 items-center justify-between m-2">
           <div className="flex gap-2">
-            <span className="w-12 h-12 rounded-full bg-secondary-light flex items-center justify-center font-bold">
+            <Link
+              className="w-12 h-12 rounded-full bg-secondary-light flex items-center justify-center font-bold"
+              href={`/profile/${build.user?.id}`}
+            >
               {build.user.name?.charAt(0).toUpperCase()}
-            </span>
+            </Link>
 
             <div>
               <h1 className="text-2xl uppercase text-text font-semibold">
                 {build.name}
               </h1>
-              <p className="text-muted">@{build.user?.name}</p>
+              <Link className="text-muted" href={`/profile/${build.user?.id}`}>
+                @{build.user?.name}
+              </Link>
             </div>
           </div>
 

@@ -14,6 +14,19 @@ use Inertia\Response as InertiaResponse;
 
 class UserController extends Controller
 {
+  public function show(Request $request, User $user): InertiaResponse
+  {
+    $builds = Build::query()
+      ->where('user_id', $user->id)
+      ->withCount('likes')
+      ->withCount('bookmarks')
+      ->withAvg('reviews', 'rating')
+      ->where('is_public', true)
+      ->paginate(4);
+
+    return Inertia::render('Components/Profile/PublicProfile', ['user' => $user, 'buildData' => $builds]);
+  }
+
   public function index(Request $request): InertiaResponse
   {
     $user = $request->user();
