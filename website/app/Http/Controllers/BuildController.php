@@ -87,20 +87,23 @@ class BuildController extends Controller
 
     $totalPrice = $this->calculateTotalPrice($validated['components']);
 
+    // if request comes with a build id update it if belongs to user
     if (isset($validated['build_id'])) {
       $build = Build::where('id', $validated['build_id'])
-        ->where('user_id', $request->user()?->id)
-        ->firstOrFail();
+        ->where('user_id', $request->user()->id)
+        ->first();
 
-      $build->update([
-        'name' => $validated['name'],
-        'notes' => $validated['notes'] ?? null,
-        'type' => $validated['type'] ?? null,
-        'total_price' => $totalPrice,
-        ...$componentFks,
-      ]);
+      if ($build) {
+        $build->update([
+          'name' => $validated['name'],
+          'notes' => $validated['notes'] ?? null,
+          'type' => $validated['type'] ?? null,
+          'total_price' => $totalPrice,
+          ...$componentFks,
+        ]);
 
-      return response()->json($build->loadComponents(), 200);
+        return response()->json($build->loadComponents(), 200);
+      }
     }
 
     $build = Build::create([
