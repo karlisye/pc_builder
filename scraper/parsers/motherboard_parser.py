@@ -10,26 +10,30 @@ from parsers.helpers import (
 
 TABLE = "motherboards"
 
+
 def _parse_memory_speeds(value: str):
-  if not value:
-      return None, None
-  numbers = re.findall(r"\b(\d{4,5})\b", value)
-  if len(numbers) >= 2:
-      return int(numbers[0]), int(numbers[1])
-  if len(numbers) == 1:
-      return int(numbers[0]), int(numbers[0])
-  return None, None
+    if not value:
+        return None, None
+    numbers = re.findall(r"\b(\d{4,5})\b", value)
+    if len(numbers) >= 2:
+        return int(numbers[0]), int(numbers[1])
+    if len(numbers) == 1:
+        return int(numbers[0]), int(numbers[0])
+    return None, None
+
 
 def _normalise_socket(value: str) -> str | None:
-  if not value:
-      return None
-  s = re.sub(r"^[Ss]ocket\s+", "", value.strip())
-  return s.replace(" ", "") or None
+    if not value:
+        return None
+    s = re.sub(r"^[Ss]ocket\s+", "", value.strip())
+    return s.replace(" ", "") or None
+
 
 def _normalise_chipset(value: str) -> str | None:
-  if not value:
-      return None
-  return re.sub(r"^(Intel|AMD|NVIDIA)\s+", "", value.strip()) or None
+    if not value:
+        return None
+    return re.sub(r"^(Intel|AMD|NVIDIA)\s+", "", value.strip()) or None
+
 
 def parse(html, dateks_id, url, price, in_stock, stock_quantity, scraped_at):
     soup = BeautifulSoup(html, "html.parser")

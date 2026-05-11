@@ -20,11 +20,13 @@ def _parse_modular(value: str) -> bool | None:
         return True
     return None
 
+
 def _parse_connector_count(value: str) -> int | None:
     if not value:
         return None
     match = re.match(r"(\d+)\s*[xX]", value.strip())
     return int(match.group(1)) if match else None
+
 
 def _parse_pcie_connectors(specs: dict) -> int | None:
     return _parse_connector_count(specs.get("PCI-E"))

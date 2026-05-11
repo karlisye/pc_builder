@@ -5,11 +5,13 @@ from parsers.helpers import extract_name, extract_specs, to_int
 
 TABLE = "gpus"
 
+
 def _parse_pcie_version(value: str) -> float | None:
     if not value:
         return None
     match = re.match(r"(\d+\.\d+)", value.strip())
     return float(match.group(1)) if match else None
+
 
 def _parse_gpu_type(name: str) -> str | None:
     name_lower = name.lower()
@@ -20,6 +22,7 @@ def _parse_gpu_type(name: str) -> str | None:
     if "arc" in name_lower or "intel" in name_lower:
         return "intel"
     return None
+
 
 def parse(html, dateks_id, url, price, in_stock, stock_quantity, scraped_at):
     soup = BeautifulSoup(html, "html.parser")

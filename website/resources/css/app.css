@@ -31,3 +31,12 @@
   --color-alert: #eab308;
   --color-info: #2563eb;
 }
+
+@keyframes scrollUp {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}

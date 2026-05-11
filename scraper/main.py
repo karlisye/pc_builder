@@ -67,10 +67,10 @@ def main():
                 if data:
                     parser_module.insert(conn, data)
             except Exception as e:
-                if hasattr(e, 'errno') and e.errno == 1062:
+                if hasattr(e, "errno") and e.errno == 1062:
                     print(f"  [DUP] {url}")
                     continue
-                
+
                 error_count += 1
                 skipped.append((url, str(e)))
                 print(f"  [SKIP {error_count}/{MAX_ERRORS_PER_CATEGORY}] {url}")

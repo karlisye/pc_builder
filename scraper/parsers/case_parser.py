@@ -5,13 +5,14 @@ from parsers.helpers import extract_name, extract_specs, to_int
 
 TABLE = "cases"
 
+
 def _parse_psu_wattage(value: str) -> int:
     if not value:
         return 0
     v = value.strip().lower()
     if v in ("nav", "no", "not", ""):
         return 0
-    match = re.search(r'\d+', value)
+    match = re.search(r"\d+", value)
     if match:
         return int(match.group())
     return 0

@@ -1,6 +1,7 @@
 import re
 from bs4 import BeautifulSoup
 
+
 # global helpers
 def extract_name(soup) -> str | None:
     tag = soup.select_one("h1.name")
@@ -67,4 +68,3 @@ def tb_to_gb(value: str) -> int | None:
     if "TB" in v:
         return int(num * 1000)
     return int(num)
-
