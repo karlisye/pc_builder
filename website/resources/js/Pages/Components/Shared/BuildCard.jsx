@@ -112,7 +112,7 @@ const BuildCard = ({ build }) => {
         <div className="flex xl:flex-row flex-col max-h-100 overflow-y-auto">
           <div className="flex-1 m-2 flex flex-col gap-4">
             <span className="text-muted font-medium">Notes</span>
-            <p className="text-text mt-4">{build.notes}</p>
+            <p className="text-text">{build.notes}</p>
 
             <div className="p-2 border border-border mt-auto">
               <div className="flex justify-around">
@@ -191,12 +191,16 @@ const BuildCard = ({ build }) => {
 
                   return (
                     <div key={key}>
-                      <span className="text-muted uppercase text-sm">
+                      <span className="text-muted uppercase text-sm block">
                         {key}
                       </span>
-                      <p className="text-text text-sm truncate">
+                      <a
+                        target="_blank"
+                        href={component.url}
+                        className="text-text text-sm text-wrap hover:underline cursor-pointer"
+                      >
                         {component.name}
-                      </p>
+                      </a>
                     </div>
                   );
                 })}
