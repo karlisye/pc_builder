@@ -35,11 +35,7 @@ const BuildsList = ({
   };
 
   return (
-    <div className="my-6">
-      <h2 className="text-2xl font-semibold mb-2">
-        {isPublic ? "Public Builds" : "Private Builds"}
-      </h2>
-
+    <div className="">
       <div className="flex gap-1">
         <button
           className={`bg-primary hover:bg-primary-light flex items-center cursor-pointer overflow-hidden transition-all ${links[0].url ? "w-10" : "w-0"}`}

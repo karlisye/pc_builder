@@ -82,7 +82,8 @@ const ProfileOverview = ({ user, publicBuildData, privateBuildData }) => {
           </div>
         </div>
 
-        <div className="">
+        <div className="my-6">
+          <h2 className="text-2xl font-semibold mb-2">Public Builds</h2>
           <BuildsList
             buildData={publicBuildData}
             setBuild={setBuild}
@@ -90,6 +91,7 @@ const ProfileOverview = ({ user, publicBuildData, privateBuildData }) => {
             isPublic
           />
 
+          <h2 className="text-2xl font-semibold mb-2 mt-4">Private Builds</h2>
           <BuildsList
             buildData={privateBuildData}
             setBuild={setBuild}

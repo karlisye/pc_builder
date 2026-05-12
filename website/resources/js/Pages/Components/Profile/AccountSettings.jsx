@@ -107,7 +107,13 @@ const AccountSettings = ({ user }) => {
 
   return (
     <>
-      <h1 className="text-4xl font-semibold mb-4">Personal Information</h1>
+      <h1 className="text-4xl text-text font-semibold mb-4">
+        Account Settings
+      </h1>
+
+      <h2 className="text-2xl text-text font-semibold mb-4">
+        Personal Information
+      </h2>
       <form>
         <div className="grid xl:grid-cols-2 gap-4">
           <div className="">
@@ -166,7 +172,7 @@ const AccountSettings = ({ user }) => {
         </div>
       </form>
 
-      <h1 className="text-4xl font-semibold my-4">Change Password</h1>
+      <h2 className="text-2xl text-text font-semibold my-4">Change Password</h2>
       <form onSubmit={updatePassword}>
         <div className="grid xl:grid-cols-2 gap-4">
           <div className="">
@@ -221,7 +227,9 @@ const AccountSettings = ({ user }) => {
         </button>
       </form>
 
-      <h1 className="text-4xl font-semibold my-4">Delete my account</h1>
+      <h2 className="text-2xl text-text font-semibold my-4">
+        Delete my account
+      </h2>
       <button
         className="py-4 px-8 bg-primary text-white hover:bg-danger/80 cursor-pointer mt-2 transition disabled:text-muted mb-6"
         onClick={() => setDeleting(true)}

@@ -2,13 +2,20 @@ import React, { useState } from "react";
 import ProfileOverview from "./Components/Profile/ProfileOverview";
 import AccountSettings from "./Components/Profile/AccountSettings";
 import { ArrowIcon } from "./Components/Common/Icons";
+import BookmarkedBuilds from "./Components/Profile/BookmarkedBuilds";
 
 const sections = [
   { id: "overview", label: "Overview" },
   { id: "account", label: "Account" },
+  { id: "bookmarked", label: "Bookmarked" },
 ];
 
-const Profile = ({ user, publicBuildData, privateBuildData }) => {
+const Profile = ({
+  user,
+  publicBuildData,
+  privateBuildData,
+  bookmarkedBuildData,
+}) => {
   const [active, setActive] = useState(sections[0].id);
   const [expanded, setExpanded] = useState(false);
 
@@ -21,6 +28,7 @@ const Profile = ({ user, publicBuildData, privateBuildData }) => {
       />
     ),
     account: <AccountSettings user={user} />,
+    bookmarked: <BookmarkedBuilds buildData={bookmarkedBuildData} />,
   };
 
   return (

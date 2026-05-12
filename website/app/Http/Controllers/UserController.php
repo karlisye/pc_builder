@@ -41,16 +41,26 @@ class UserController extends Controller
   {
     $user = $request->user();
 
-    $shared = fn() => Build::query()
-      ->where('user_id', $user->id)
+    $buildQuery = fn() => Build::query()
       ->withCount('likes')
       ->withCount('bookmarks')
       ->withAvg('reviews', 'rating');
 
-    $privateBuilds = $shared()->where('is_public', false)->paginate(2, ['*'], 'privatePage');
-    $publicBuilds  = $shared()->where('is_public', true)->paginate(2, ['*'], 'publicPage');
+    $privateBuilds    = $buildQuery()->where('user_id', $user->id)->where('is_public', false)->paginate(2, ['*'], 'privatePage');
+    $publicBuilds     = $buildQuery()->where('user_id', $user->id)->where('is_public', true)->paginate(2, ['*'], 'publicPage');
+    $bookmarkedBuilds = $buildQuery()->whereHas('bookmarks', fn($q) => $q->where('user_id', $user->id))
+      ->with('user')
+      ->withExists(['likes as liked' => fn($q) => $q->where('user_id', $user->id)])
+      ->withExists(['bookmarks as bookmarked' => fn($q) => $q->where('user_id', $user->id)])
+      ->with(['reviews' => fn($q) => $q->where('user_id', $user->id)])
+      ->paginate(4);
 
-    return Inertia::render('Profile', ['user' => $user, 'privateBuildData' => $privateBuilds, 'publicBuildData' => $publicBuilds]);
+    return Inertia::render('Profile', [
+      'user' => $user,
+      'privateBuildData' => $privateBuilds,
+      'publicBuildData' => $publicBuilds,
+      'bookmarkedBuildData' => $bookmarkedBuilds
+    ]);
   }
 
   public function update(Request $request, User $user): JsonResponse
