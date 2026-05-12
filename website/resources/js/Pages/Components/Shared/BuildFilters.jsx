@@ -29,7 +29,7 @@ const BuildFilters = ({
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder={`Search build or author...`}
+            placeholder={`Search by build or author...`}
             className="bg-secondary text-white p-2 flex-1 outline-border focus:outline-1"
           />
 

@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
 import BuildsList from "./BuildsList";
 import PaginationControls from "../Common/PaginationControls";
-import BuildCard from "../Shared/BuildCard";
 import { router } from "@inertiajs/react";
+import BuildCard from "../Common/BuildCard";
 
 const BookmarkedBuilds = ({ buildData }) => {
   const [page, setPage] = useState(1);
 
-  console.log(buildData);
   const builds = buildData.data;
-
   useEffect(() => {
     router.get("/profile", { page: page }, { preserveState: true });
   }, [page]);
@@ -28,10 +26,7 @@ const BookmarkedBuilds = ({ buildData }) => {
 
       <div className="flex-1">
         {builds.length === 0 ? (
-          <div className="mx-auto text-center mt-6">
-            <p className="text-2xl font-semibold text-text">No Builds Found</p>
-            <span className="text-muted">Try adjusting your filters</span>
-          </div>
+          <span className="text-muted mt-6">No bookmarked builds yet.</span>
         ) : (
           <>
             <div className="flex flex-col items-center gap-8 px-4 pt-6">

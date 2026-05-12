@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import BuildCard from "./Components/Shared/BuildCard";
 import axios from "axios";
 import PaginationControls from "./Components/Common/PaginationControls";
 import SharedBuildsSkeleton from "./Components/Skeletons/SharedBuildsSkeleton";
 import BuildFilters from "./Components/Shared/BuildFilters";
 import { ArrowIcon } from "./Components/Common/Icons";
+import BuildCard from "./Components/Common/BuildCard";
 
 const Shared = () => {
   const [pagination, setPagination] = useState(null);

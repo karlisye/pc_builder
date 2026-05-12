@@ -128,115 +128,123 @@ const PublicProfile = ({
           </p>
         </div>
 
-        <div className="">
-          <h2 className="text-2xl font-semibold mb-2">
-            {user.name}'s shared builds
-          </h2>
-          {success && <p className="text-success ml-auto px-2">{success}</p>}
-          {error && <p className="text-danger ml-auto px-2">{error}</p>}
-          <div className="flex gap-1">
-            <button
-              className={`bg-primary hover:bg-primary-light flex items-center cursor-pointer overflow-hidden transition-all ${links[0].url ? "w-10" : "w-0"}`}
-              onClick={previous}
-              disabled={!links[0].url}
-            >
-              <span className="rotate-90 text-white p-2">
-                <ArrowIcon size={24} />
-              </span>
-            </button>
+        {builds.length === 0 ? (
+          <p className="text-muted">{user.name} has no shared builds yet.</p>
+        ) : (
+          <div className="">
+            <h2 className="text-2xl font-semibold mb-2">
+              {user.name}'s shared builds
+            </h2>
+            {success && <p className="text-success ml-auto px-2">{success}</p>}
+            {error && <p className="text-danger ml-auto px-2">{error}</p>}
+            <div className="flex gap-1">
+              <button
+                className={`bg-primary hover:bg-primary-light flex items-center cursor-pointer overflow-hidden transition-all ${links[0].url ? "w-10" : "w-0"}`}
+                onClick={previous}
+                disabled={!links[0].url}
+              >
+                <span className="rotate-90 text-white p-2">
+                  <ArrowIcon size={24} />
+                </span>
+              </button>
 
-            <div className="flex-1 grid xl:grid-cols-2 grid-cols-1 gap-4">
-              {builds.map((build) => {
-                return (
-                  <div key={build.id} className="border border-border">
-                    <div className="">
-                      <div className="flex gap-4 justify-between items-center mb-1 m-2">
-                        <div className="flex gap-2 items-center">
-                          <h3 className="uppercase text-xl font-semibold">
-                            {build.name}
-                          </h3>
-                          {build.type && (
-                            <span className="bg-secondary-light px-3 py-0.5 text-text border border-border text-sm">
-                              {build.type}
+              <div className="flex-1 grid xl:grid-cols-2 grid-cols-1 gap-4">
+                {builds.map((build) => {
+                  return (
+                    <div key={build.id} className="border border-border">
+                      <div className="">
+                        <div className="flex gap-4 justify-between items-center mb-1 m-2">
+                          <div className="flex gap-2 items-center">
+                            <h3 className="uppercase text-xl font-semibold">
+                              {build.name}
+                            </h3>
+                            {build.type && (
+                              <span className="bg-secondary-light px-3 py-0.5 text-text border border-border text-sm">
+                                {build.type}
+                              </span>
+                            )}
+                          </div>
+
+                          <span>€{build.total_price}</span>
+                        </div>
+
+                        <div className="flex gap-4 m-2">
+                          <div className="flex gap-2">
+                            <HeartIcon filled className={"text-danger"} />
+                            <span className="text-text">
+                              {build.likes_count}
                             </span>
+                          </div>
+
+                          <div className="flex gap-2">
+                            <SavedIcon filled className={"text-alert"} />
+                            <span className="text-text">
+                              {build.bookmarks_count}
+                            </span>
+                          </div>
+
+                          <div className="flex gap-2">
+                            <StarIcon filled className={"text-alert"} />
+                            <span className="text-text">
+                              {Math.round(build.reviews_avg_rating)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="border border-border w-9/10 my-4 mx-auto"></div>
+
+                      <div className="flex gap-4 m-2 h-30 overflow-y-auto">
+                        <div className="flex-1">
+                          <span className="text-sm block text-muted">
+                            Notes
+                          </span>
+                          {build.notes ? (
+                            <p className="text-text text-sm">{build.notes}</p>
+                          ) : (
+                            <p className="text-text text-sm">-</p>
                           )}
                         </div>
-
-                        <span>€{build.total_price}</span>
-                      </div>
-
-                      <div className="flex gap-4 m-2">
-                        <div className="flex gap-2">
-                          <HeartIcon filled className={"text-danger"} />
-                          <span className="text-text">{build.likes_count}</span>
-                        </div>
-
-                        <div className="flex gap-2">
-                          <SavedIcon filled className={"text-alert"} />
-                          <span className="text-text">
-                            {build.bookmarks_count}
+                        <div className="flex-1">
+                          <span className="text-sm block text-muted">
+                            Components
                           </span>
-                        </div>
-
-                        <div className="flex gap-2">
-                          <StarIcon filled className={"text-alert"} />
-                          <span className="text-text">
-                            {Math.round(build.reviews_avg_rating)}
-                          </span>
+                          <span className="text-text">{`[${build.selected_components_count}/10]`}</span>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="border border-border w-9/10 my-4 mx-auto"></div>
+                      <div className="bg-primary mt-auto flex">
+                        <Link
+                          className="text-white px-8 py-4 flex-1 text-center hover:bg-primary-light cursor-pointer transition"
+                          href={`/builder?build=${build.id}&shared=true`}
+                        >
+                          Continue
+                        </Link>
 
-                    <div className="flex gap-4 m-2 h-30 overflow-y-auto">
-                      <div className="flex-1">
-                        <span className="text-sm block text-muted">Notes</span>
-                        {build.notes ? (
-                          <p className="text-text text-sm">{build.notes}</p>
-                        ) : (
-                          <p className="text-text text-sm">-</p>
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        <span className="text-sm block text-muted">
-                          Components
-                        </span>
-                        <span className="text-text">{`[${build.selected_components_count}/10]`}</span>
+                        <button
+                          className="text-white px-8 py-4 flex-1 hover:bg-primary-light cursor-pointer transition"
+                          onClick={() => handleSave(build)}
+                        >
+                          Copy to saved
+                        </button>
                       </div>
                     </div>
+                  );
+                })}
+              </div>
 
-                    <div className="bg-primary mt-auto flex">
-                      <Link
-                        className="text-white px-8 py-4 flex-1 text-center hover:bg-primary-light cursor-pointer transition"
-                        href={`/builder?build=${build.id}&shared=true`}
-                      >
-                        Continue
-                      </Link>
-
-                      <button
-                        className="text-white px-8 py-4 flex-1 hover:bg-primary-light cursor-pointer transition"
-                        onClick={() => handleSave(build)}
-                      >
-                        Copy to saved
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
+              <button
+                className={`bg-primary hover:bg-primary-light flex items-center cursor-pointer overflow-hidden transition-all ${links[links.length - 1].url ? "w-10" : "w-0"}`}
+                onClick={next}
+                disabled={!links[links.length - 1].url}
+              >
+                <span className="rotate-270 text-white p-2">
+                  <ArrowIcon size={24} />
+                </span>
+              </button>
             </div>
-
-            <button
-              className={`bg-primary hover:bg-primary-light flex items-center cursor-pointer overflow-hidden transition-all ${links[links.length - 1].url ? "w-10" : "w-0"}`}
-              onClick={next}
-              disabled={!links[links.length - 1].url}
-            >
-              <span className="rotate-270 text-white p-2">
-                <ArrowIcon size={24} />
-              </span>
-            </button>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
