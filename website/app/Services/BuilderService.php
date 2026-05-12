@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class BuilderService
 {
@@ -65,6 +66,8 @@ class BuilderService
     }
 
     $slotsToFill = $this->resolveSlotsToFill($selected, $allocations);
+
+    // Log::debug('preferences: ' . json_encode($preferences));
 
     for ($attempt = 1; $attempt <= self::MAX_ATTEMPTS; $attempt++) {
       $attemptBudget = $remainingBudget * (1 - ($attempt - 1) * self::RETRY_REDUCTION);
@@ -132,9 +135,16 @@ class BuilderService
 
         $picked = $this->picker->pick($slot, $build, $preferences, $slotBudget);
 
+        // if nothing found within allocation, try cheapest compatible option within remaining budget
+        if ($picked === null) {
+          $cheapest = $this->picker->cheapest($slot, $build, $preferences);
+          if ($cheapest && (float) $cheapest->price <= $budgetLeft) {
+            $picked = $cheapest;
+          }
+        }
 
         if ($picked === null) {
-          // cant fill this slot - fail the attempt
+          // cant fill this slot, fail the attempt
           if ($slot !== 'fan') {
             return null;
           }
@@ -311,11 +321,15 @@ class BuilderService
     $minimum = $selectedCost;
     $build = $selected;
 
-    foreach ($slotsToFill as $slot) {
+    // compatibility-first order so filters apply correctly
+    $compatibilityOrder = ['cpu', 'motherboard', 'ram', 'gpu', 'case', 'cooler', 'psu', 'ssd', 'fan'];
+    $ordered = array_values(array_intersect($compatibilityOrder, $slotsToFill));
+
+    foreach ($ordered as $slot) {
       $cheapest = $this->picker->cheapest($slot, $build, $preferences);
       if ($cheapest) {
         $minimum += (float) $cheapest->price;
-        $build[$slot] = $cheapest; // add to build so next slot filters compatibly
+        $build[$slot] = $cheapest;
       }
     }
 
