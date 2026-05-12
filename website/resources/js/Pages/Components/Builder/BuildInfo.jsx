@@ -82,12 +82,15 @@ const BuildInfo = ({ currBuildInfo }) => {
   );
 
   return (
-    <div className="space-y-4 mt-8">
+    <div className="space-y-4 mt-4">
       {hasComponents ? (
         Object.entries(selectedComponents)
           .filter(([_, value]) => value)
           .map(([key, value]) => (
-            <div key={key} className="flex border border-secondary-light">
+            <div
+              key={key}
+              className="flex border border-muted hover:bg-primary-light transition"
+            >
               <div className="overflow-hidden flex">
                 <span className="capitalize text-secondary-light p-2">
                   {key}:{" "}
@@ -95,7 +98,7 @@ const BuildInfo = ({ currBuildInfo }) => {
                 <span className="text-surface p-2 truncate">{value.name}</span>
               </div>
               <button
-                className="p-2 bg-secondary text-secondary-light hover:bg-danger/50 hover:text-danger/70 cursor-pointer transition border-l border-secondary-light ml-auto"
+                className="p-2 bg-secondary text-muted hover:bg-danger/50 hover:text-danger/70 cursor-pointer transition border-l border-muted ml-auto"
                 onClick={() => handleRemove(key)}
               >
                 <CloseIcon />
@@ -107,7 +110,7 @@ const BuildInfo = ({ currBuildInfo }) => {
       )}
 
       {(buildId || hasComponents) && (
-        <div className="space-y-4 pt-4 border-t border-secondary-light">
+        <div className="space-y-4 pt-4 border-t border-primary-light">
           <div>
             <label className="text-secondary-light" htmlFor="name">
               Name
