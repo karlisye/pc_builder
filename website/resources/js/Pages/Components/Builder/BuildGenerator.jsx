@@ -52,7 +52,6 @@ const BuildGenerator = () => {
         budget,
         preferences,
       });
-      console.log(res);
 
       if (res.data.success) {
         setSelectedComponents((prev) => ({

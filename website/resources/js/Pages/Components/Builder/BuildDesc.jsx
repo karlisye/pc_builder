@@ -43,7 +43,7 @@ const BuildDesc = () => {
           </div>
 
           <div
-            className={`grid transition-all ${warningActive ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+            className={`grid transition-all ${warningActive ? "grid-rows-[1fr] border-b pb-4 border-b-primary-light" : "grid-rows-[0fr]"}`}
           >
             <div className="space-y-2 overflow-hidden">
               {warnings.map((warning, i) => (
@@ -54,6 +54,11 @@ const BuildDesc = () => {
                   <p className="text-danger text-sm">{warning}</p>
                 </div>
               ))}
+
+              <p className="text-sm text-muted border-l pl-4">
+                Your build is fully functional. These are just recommendations
+                to get the best experience.
+              </p>
             </div>
           </div>
         </div>

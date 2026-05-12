@@ -385,7 +385,37 @@ class BuilderService
       };
       if ($ram->capacity < $recommendedCapacity) {
         $warnings[] = "RAM is below recommended {$recommendedCapacity}GB for {$type} builds at this budget tier.";
-        $warnings[] = "RAM is below recommended {$recommendedCapacity}GB for {$type} builds at this budget tier.";
+      }
+    }
+
+    // GPU warnings
+    $gpu = $build['gpu'] ?? null;
+    if (!$gpu && in_array($type, ['gaming', 'streaming'])) {
+      $warnings[] = "No GPU was found within the budget for a {$type} build. Consider increasing your budget.";
+    }
+
+    if ($gpu) {
+      $recommendedVram = match ($type) {
+        'rendering' => match ($tier) {
+          'budget' => 0,
+          'mid' => 12,
+          default => 16
+        },
+        'gaming'    => match ($tier) {
+          'budget' => 0,
+          'mid' => 8,
+          default => 12
+        },
+        'streaming' => match ($tier) {
+          'budget' => 0,
+          'mid' => 8,
+          default => 8
+        },
+        default => 0,
+      };
+
+      if ($recommendedVram > 0 && $gpu->vram < $recommendedVram) {
+        $warnings[] = "GPU VRAM ({$gpu->vram}GB) is below recommended {$recommendedVram}GB for {$type} builds at this budget tier.";
       }
     }
 
