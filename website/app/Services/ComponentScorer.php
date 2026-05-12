@@ -63,7 +63,7 @@ class ComponentScorer
     return match ($slot) {
       'cpu' => $this->scoreCpu($item, $type),
       'gpu' => $this->scoreGpu($item, $type),
-      'ram' => $this->scoreRam($item, $type),
+      'ram' => $this->scoreRam($item, $type, $preferences),
       'ssd' => $this->scoreSsd($item),
       default => (float) ($item->price ?? 0),
     };
@@ -181,7 +181,7 @@ class ComponentScorer
     return round(min($raw, 10.0), 2);
   }
 
-  private function scoreRam(Model $item, string $type): float
+  private function scoreRam(Model $item, string $type, array $preferences): float
   {
     $capacity  = (float) ($item->capacity ?? 0);
     $frequency = (float) ($item->frequency ?? 0);
@@ -202,10 +202,26 @@ class ComponentScorer
 
     $w = self::RAM_WEIGHTS[$type] ?? self::RAM_WEIGHTS['gaming'];
 
+    $tier = $preferences['tier'] ?? 'mid';
+    $recommendedCapacity = match ($type) {
+      'rendering' => match ($tier) {
+        'budget' => 16,
+        'mid' => 32,
+        default => 64
+      },
+      'gaming', 'streaming' => match ($tier) {
+        'budget' => 8,
+        default => 16
+      },
+      default => 8,
+    };
+    $capacityBonus = $capacity >= $recommendedCapacity ? 2.0 : 0.0;
+
     $raw = (
       $capacityNorm  * $w['capacity'] +
       $bandwidthNorm * $w['bandwidth'] +
-      $latencyNorm   * $w['latency']
+      $latencyNorm   * $w['latency'] +
+      $capacityBonus
     );
 
     return round(min($raw, 10.0), 2);

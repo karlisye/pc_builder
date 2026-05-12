@@ -47,6 +47,7 @@ class BuilderService
     }
 
     $tier = $this->resolveTier($budget);
+    $preferences['tier'] = $tier;
 
     $type = $preferences['type'] ?? 'gaming';
     $allocations = self::TIERS[$tier][$type] ?? self::TIERS[$tier]['gaming'];
@@ -83,6 +84,7 @@ class BuilderService
           'build' => $this->serializeBuild($build),
           'total_price' => round($totalCost, 2),
           'remaining_budget' => round($budget - $totalCost, 2),
+          'warnings' => $this->generateWarnings($build, $preferences),
           'attempts_needed' => $attempt,
           'error' => null,
           'estimated_minimum_budget'  => null,
@@ -353,9 +355,40 @@ class BuilderService
       'build' => null,
       'total_price' => null,
       'remaining_budget' => null,
+      'warnings' => [],
       'attempts_needed' => self::MAX_ATTEMPTS,
       'error' => $message,
       'estimated_minimum_budget' => $estimatedMinimum,
     ];
+  }
+
+  private function generateWarnings(array $build, array $preferences): array
+  {
+    $warnings = [];
+    $type = $preferences['type'] ?? 'gaming';
+    $tier = $preferences['tier'] ?? 'mid';
+
+    // ram capacity check
+    $ram = $build['ram'] ?? null;
+    if ($ram) {
+      $recommendedCapacity = match ($type) {
+        'rendering' => match ($tier) {
+          'budget' => 16,
+          'mid' => 32,
+          default => 64
+        },
+        'gaming', 'streaming' => match ($tier) {
+          'budget' => 8,
+          default => 16
+        },
+        default => 8,
+      };
+      if ($ram->capacity < $recommendedCapacity) {
+        $warnings[] = "RAM is below recommended {$recommendedCapacity}GB for {$type} builds at this budget tier.";
+        $warnings[] = "RAM is below recommended {$recommendedCapacity}GB for {$type} builds at this budget tier.";
+      }
+    }
+
+    return $warnings;
   }
 }

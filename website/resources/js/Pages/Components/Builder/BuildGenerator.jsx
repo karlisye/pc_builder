@@ -11,6 +11,7 @@ const BuildGenerator = () => {
     setSelectedComponents,
     setCurrentCompToAdd,
     setBuildType,
+    setWarnings,
   } = useBuilder();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -38,6 +39,7 @@ const BuildGenerator = () => {
   const handleGenerate = async () => {
     setLoading(true);
     setError("");
+    setWarnings([]);
     try {
       const selected = Object.fromEntries(
         Object.entries(selectedComponents)
@@ -50,6 +52,7 @@ const BuildGenerator = () => {
         budget,
         preferences,
       });
+      console.log(res);
 
       if (res.data.success) {
         setSelectedComponents((prev) => ({
@@ -59,6 +62,7 @@ const BuildGenerator = () => {
         setBuildType(res.data.type);
         setOpen(false);
         setCurrentCompToAdd(null);
+        setWarnings(res.data.warnings);
       } else {
         setError(res.data.error);
       }

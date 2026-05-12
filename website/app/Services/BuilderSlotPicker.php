@@ -46,14 +46,6 @@ class BuilderSlotPicker
     if (isset($preferences['integrated_graphics']) && $slot === 'cpu') {
       $query->where('integrated_graphics', true);
     }
-    // if ($slot === 'ram') {
-    //   $minCapacity = match ($preferences['type'] ?? 'gaming') {
-    //     'rendering' => 32,
-    //     'gaming', 'streaming' => 16,
-    //     default => 8,
-    //   };
-    //   $query->where('capacity', '>=', $minCapacity);
-    // }
 
     $candidates = $query->get();
 
