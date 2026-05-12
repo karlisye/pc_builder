@@ -3,6 +3,7 @@ import ProfileOverview from "./Components/Profile/ProfileOverview";
 import AccountSettings from "./Components/Profile/AccountSettings";
 import { ArrowIcon } from "./Components/Common/Icons";
 import BookmarkedBuilds from "./Components/Profile/BookmarkedBuilds";
+import BuildFilters from "./Components/Common/BuildFilters";
 
 const sections = [
   { id: "overview", label: "Overview" },
@@ -62,6 +63,8 @@ const Profile = ({
                 {section.label}
               </button>
             ))}
+
+            {/* <BuildFilters /> */}
           </div>
         </div>
       </div>

@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import PaginationControls from "./Components/Common/PaginationControls";
 import SharedBuildsSkeleton from "./Components/Skeletons/SharedBuildsSkeleton";
-import BuildFilters from "./Components/Shared/BuildFilters";
 import { ArrowIcon } from "./Components/Common/Icons";
 import BuildCard from "./Components/Common/BuildCard";
+import BuildFilters from "./Components/Common/BuildFilters";
 
 const Shared = () => {
   const [pagination, setPagination] = useState(null);

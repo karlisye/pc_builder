@@ -98,7 +98,7 @@ const BuildGenerator = () => {
       <div
         className={`grid transition-all overflow-hidden ${open ? "grid-rows-[1fr] mt-3" : "grid-rows-[0fr]"}`}
       >
-        <div className="overflow-hidden space-y-4">
+        <div className="overflow-hidden space-y-4 p-px">
           <p className="text-muted text-sm">
             Not sure where to start? Let us pick the best compatible components
             for your budget. For more information visit{" "}

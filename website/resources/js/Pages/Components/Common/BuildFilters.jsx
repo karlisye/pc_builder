@@ -23,7 +23,7 @@ const BuildFilters = ({
     <div
       className={`grid transition-all lg:mt-4 ${expanded ? "grid-rows-[1fr] mt-4" : "grid-rows-[0fr] lg:grid-rows-[1fr]"}`}
     >
-      <div className="overflow-hidden space-y-4">
+      <div className="overflow-hidden space-y-4 p-px">
         <div className="flex gap-2">
           <input
             type="text"
