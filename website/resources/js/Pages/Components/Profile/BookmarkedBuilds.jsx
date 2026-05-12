@@ -3,13 +3,14 @@ import BuildsList from "./BuildsList";
 import PaginationControls from "../Common/PaginationControls";
 import { router } from "@inertiajs/react";
 import BuildCard from "../Common/BuildCard";
+import ProfileLayout from "../../../Layouts/ProfileLayout";
 
 const BookmarkedBuilds = ({ buildData }) => {
   const [page, setPage] = useState(1);
 
   const builds = buildData.data;
   useEffect(() => {
-    router.get("/profile", { page: page }, { preserveState: true });
+    router.get("/profile/bookmarked", { page: page }, { preserveState: true });
   }, [page]);
 
   const pagination = {
@@ -47,5 +48,7 @@ const BookmarkedBuilds = ({ buildData }) => {
     </>
   );
 };
+
+BookmarkedBuilds.layout = (page) => <ProfileLayout>{page}</ProfileLayout>;
 
 export default BookmarkedBuilds;

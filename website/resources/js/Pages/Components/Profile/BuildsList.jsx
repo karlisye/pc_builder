@@ -8,8 +8,8 @@ const BuildsList = ({
   setPublishing,
   isPublic = false,
 }) => {
-  const builds = buildData.data;
-  const links = buildData.links;
+  const builds = buildData?.data;
+  const links = buildData?.links;
 
   const next = () => {
     const url = new URL(links[links.length - 1].url);
@@ -36,7 +36,7 @@ const BuildsList = ({
 
   return (
     <div className="">
-      {builds.length === 0 ? (
+      {!builds || builds?.length === 0 ? (
         <p className="text-muted">
           No {isPublic ? "public" : "private"} builds yet.
         </p>

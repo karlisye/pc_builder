@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import Modal from "../Common/Modal";
 import { router } from "@inertiajs/react";
+import ProfileLayout from "../../../Layouts/ProfileLayout";
 
 const AccountSettings = ({ user }) => {
   const [editActive, setEditActive] = useState(false);
@@ -284,5 +285,7 @@ const AccountSettings = ({ user }) => {
     </>
   );
 };
+
+AccountSettings.layout = (page) => <ProfileLayout>{page}</ProfileLayout>;
 
 export default AccountSettings;

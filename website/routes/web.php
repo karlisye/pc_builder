@@ -5,6 +5,7 @@ use App\Http\Controllers\BuildController;
 use App\Http\Controllers\BuilderController;
 use App\Http\Controllers\SharedController;
 use App\Http\Controllers\UserController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -25,6 +26,8 @@ Route::middleware('auth')->group(function () {
   Route::get('/builds', [BuildController::class, 'index']);
   Route::get('/shared', [SharedController::class, 'index']);
   Route::get('/profile', [UserController::class, 'index']);
+  Route::get('/profile/account', [UserController::class, 'indexAccount']);
+  Route::get('/profile/bookmarked', [UserController::class, 'indexBookmarked']);
   Route::get('/profile/{user}', [UserController::class, 'show']);
 });
 

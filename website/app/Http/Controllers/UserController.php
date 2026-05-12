@@ -42,25 +42,42 @@ class UserController extends Controller
     $user = $request->user();
 
     $buildQuery = fn() => Build::query()
+      ->where('user_id', $user->id)
       ->withCount('likes')
       ->withCount('bookmarks')
       ->withAvg('reviews', 'rating');
 
-    $privateBuilds    = $buildQuery()->where('user_id', $user->id)->where('is_public', false)->paginate(2, ['*'], 'privatePage');
-    $publicBuilds     = $buildQuery()->where('user_id', $user->id)->where('is_public', true)->paginate(2, ['*'], 'publicPage');
-    $bookmarkedBuilds = $buildQuery()->whereHas('bookmarks', fn($q) => $q->where('user_id', $user->id))
-      ->with('user')
-      ->withExists(['likes as liked' => fn($q) => $q->where('user_id', $user->id)])
-      ->withExists(['bookmarks as bookmarked' => fn($q) => $q->where('user_id', $user->id)])
-      ->with(['reviews' => fn($q) => $q->where('user_id', $user->id)])
-      ->paginate(4);
+    $privateBuilds = $buildQuery()->where('is_public', false)->paginate(2, ['*'], 'privatePage');
+    $publicBuilds  = $buildQuery()->where('user_id', $user->id)->where('is_public', true)->paginate(2, ['*'], 'publicPage');
 
     return Inertia::render('Profile', [
       'user' => $user,
       'privateBuildData' => $privateBuilds,
       'publicBuildData' => $publicBuilds,
-      'bookmarkedBuildData' => $bookmarkedBuilds
     ]);
+  }
+
+  public function indexBookmarked(Request $request): InertiaResponse
+  {
+    $user = $request->user();
+
+    $bookmarkedBuilds = Build::query()
+      ->whereHas('bookmarks', fn($q) => $q->where('user_id', $user->id))
+      ->withExists(['likes as liked' => fn($q) => $q->where('user_id', $user->id)])
+      ->withExists(['bookmarks as bookmarked' => fn($q) => $q->where('user_id', $user->id)])
+      ->withCount('likes')
+      ->withCount('bookmarks')
+      ->withAvg('reviews', 'rating')
+      ->with('user')
+      ->with(['reviews' => fn($q) => $q->where('user_id', $user->id)])
+      ->paginate(4);
+
+    return Inertia::render('Components/Profile/BookmarkedBuilds', ['buildData' => $bookmarkedBuilds]);
+  }
+
+  public function indexAccount(Request $request): InertiaResponse
+  {
+    return Inertia::render('Components/Profile/AccountSettings', ['user' => $request->user()]);
   }
 
   public function update(Request $request, User $user): JsonResponse
