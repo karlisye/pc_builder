@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useBuilder } from "../../../Contexts/BuilderContext";
 import axios from "axios";
 import AddComponentSkeleton from "../Skeletons/AddComponentSkeleton";
-import ComponentInfo from "../ComponentInfo";
+import ComponentInfo from "../Common/ComponentInfo";
 import { CloseIcon } from "../Common/Icons";
 import PaginationControls from "../Common/PaginationControls";
 

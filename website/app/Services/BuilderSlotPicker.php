@@ -19,7 +19,7 @@ class BuilderSlotPicker
 
     $query = $modelClass::query()
       ->whereNotNull('price')
-      ->where('in_stock', true);
+      ->whereIn('stock_status', ['in_stock', 'orderable']);
 
     if ($budget !== null) {
       $query->where('price', '<=', $budget);
@@ -63,7 +63,7 @@ class BuilderSlotPicker
 
     $query = $modelClass::query()
       ->whereNotNull('price')
-      ->where('in_stock', true);
+      ->whereIn('stock_status', ['in_stock', 'orderable']);
 
     $query = match ($slot) {
       'cpu' => ComponentFilters::cpu($query, $selected),

@@ -15,7 +15,7 @@ class Psu extends Model
     'url',
     'name',
     'price',
-    'in_stock',
+    'stock_status',
     'stock_quantity',
     'wattage',
     'efficiency_rating',
@@ -29,7 +29,6 @@ class Psu extends Model
   ];
 
   protected $casts = [
-    'in_stock' => 'boolean',
     'modular' => 'boolean',
     'price' => 'decimal:2',
   ];

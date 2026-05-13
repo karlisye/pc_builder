@@ -15,7 +15,7 @@ class Hdd extends Model
     'url',
     'name',
     'price',
-    'in_stock',
+    'stock_status',
     'stock_quantity',
     'capacity',
     'interface',
@@ -23,7 +23,6 @@ class Hdd extends Model
   ];
 
   protected $casts = [
-    'in_stock' => 'boolean',
     'price' => 'decimal:2',
   ];
 }

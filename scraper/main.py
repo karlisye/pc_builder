@@ -55,14 +55,14 @@ def main():
         error_count = 0
         skipped = []
 
-        for i, (dateks_id, url, price, in_stock, stock_quantity) in enumerate(
+        for i, (dateks_id, url, price, stock_status, stock_quantity) in enumerate(
             all_urls, 1
         ):
             print(f"  [{i}/{len(all_urls)}] Scraping: {url}")
             try:
                 html = scrape_detail_page(url)
                 data = parser_module.parse(
-                    html, dateks_id, url, price, in_stock, stock_quantity, scraped_at
+                    html, dateks_id, url, price, stock_status, stock_quantity, scraped_at
                 )
                 if data:
                     parser_module.insert(conn, data)

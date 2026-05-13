@@ -15,7 +15,7 @@ class Cooler extends Model
     'url',
     'name',
     'price',
-    'in_stock',
+    'stock_status',
     'stock_quantity',
     'compatibility',
     'tdp_support',
@@ -25,7 +25,6 @@ class Cooler extends Model
   ];
 
   protected $casts = [
-    'in_stock' => 'boolean',
     'price' => 'decimal:2',
   ];
 }

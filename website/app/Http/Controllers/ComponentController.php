@@ -155,7 +155,7 @@ class ComponentController extends Controller
     foreach ($columns as $column) {
       $result[$column] = $modelClass::query()
         ->whereNotNull($column)
-        ->where('in_stock', true)
+        ->whereIn('stock_status', ['in_stock', 'orderable'])
         ->whereNotNull('price')
         ->distinct()
         ->orderBy($column)

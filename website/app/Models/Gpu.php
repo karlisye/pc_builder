@@ -15,7 +15,7 @@ class Gpu extends Model
     'url',
     'name',
     'price',
-    'in_stock',
+    'stock_status',
     'stock_quantity',
     'type',
     'gpu_model',
@@ -32,7 +32,6 @@ class Gpu extends Model
   ];
 
   protected $casts = [
-    'in_stock' => 'boolean',
     'price' => 'decimal:2',
   ];
 }

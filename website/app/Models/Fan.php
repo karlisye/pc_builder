@@ -15,7 +15,7 @@ class Fan extends Model
     'url',
     'name',
     'price',
-    'in_stock',
+    'stock_status',
     'stock_quantity',
     'size_mm',
     'connector',
@@ -25,7 +25,6 @@ class Fan extends Model
   ];
 
   protected $casts = [
-    'in_stock' => 'boolean',
     'price' => 'decimal:2',
   ];
 }

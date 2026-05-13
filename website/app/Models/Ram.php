@@ -15,7 +15,7 @@ class Ram extends Model
     'url',
     'name',
     'price',
-    'in_stock',
+    'stock_status',
     'stock_quantity',
     'memory_type',
     'capacity',
@@ -26,7 +26,6 @@ class Ram extends Model
   ];
 
   protected $casts = [
-    'in_stock' => 'boolean',
     'price' => 'decimal:2',
   ];
 }

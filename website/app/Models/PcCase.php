@@ -15,7 +15,7 @@ class PcCase extends Model
     'url',
     'name',
     'price',
-    'in_stock',
+    'stock_status',
     'stock_quantity',
     'form_factor',
     'max_gpu_length',
@@ -27,7 +27,6 @@ class PcCase extends Model
   ];
 
   protected $casts = [
-    'in_stock' => 'boolean',
     'price' => 'decimal:2',
   ];
 }

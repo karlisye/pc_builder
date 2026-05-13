@@ -139,7 +139,6 @@ function cast_row(array $row): array
   ];
 
   static $boolCols = [
-    'in_stock',
     'integrated_graphics',
     'cooler_included',
     'wifi',

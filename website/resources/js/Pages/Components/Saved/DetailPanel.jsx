@@ -1,5 +1,5 @@
 import React from "react";
-import ComponentInfo from "../ComponentInfo";
+import ComponentInfo from "../Common/ComponentInfo";
 import { CloseIcon } from "../Common/Icons";
 
 const DetailPanel = ({ component, slot, setExpandedSlot }) => (

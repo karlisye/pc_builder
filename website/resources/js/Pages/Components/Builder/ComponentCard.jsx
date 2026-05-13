@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ComponentInfo from "../ComponentInfo";
+import ComponentInfo from "../Common/ComponentInfo";
 import { useBuilder } from "../../../Contexts/BuilderContext";
 import { AddIcon } from "../Common/Icons";
 
@@ -59,9 +59,11 @@ const ComponentCard = ({ component, name }) => {
               )}
               <span className="text-muted">
                 Availability:{" "}
-                {component.in_stock
+                {component.stock_status === "in_stock"
                   ? `In Stock (${component.stock_quantity})`
-                  : "Out of Stock"}
+                  : component.stock_status === "orderable"
+                    ? `Can be ordered (${component.stock_quantity})`
+                    : "Out of Stock"}
               </span>
             </div>
           )}

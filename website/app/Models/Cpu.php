@@ -15,7 +15,7 @@ class Cpu extends Model
     'url',
     'name',
     'price',
-    'in_stock',
+    'stock_status',
     'stock_quantity',
     'type',
     'socket',
@@ -31,7 +31,6 @@ class Cpu extends Model
   ];
 
   protected $casts = [
-    'in_stock' => 'boolean',
     'integrated_graphics' => 'boolean',
     'cooler_included' => 'boolean',
     'price' => 'decimal:2',

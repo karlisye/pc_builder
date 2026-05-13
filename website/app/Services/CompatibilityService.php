@@ -92,7 +92,7 @@ class CompatibilityService
       $item->selected = ($item->id === $selectedIdForType);
       $item->compatibility_warning = $warning;
       $item->compatible = in_array($item->id, $compatibleIds);
-      $item->out_of_stock = !$item->in_stock;
+      $item->out_of_stock = $item->stock_status === 'out_of_stock';
       return $item;
     });
 
