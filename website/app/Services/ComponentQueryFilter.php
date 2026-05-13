@@ -11,7 +11,7 @@ class ComponentQueryFilter
   {
     $query = self::applyGlobal($query, $filters, $compatibleIds);
     $query = self::applyPerType($query, $type, $filters);
-    $query = self::applySort($query, $filters['sort'] ?? null);
+    $query = self::applySort($query, $filters['sort'] ?? null, $compatibleIds);
 
     return $query;
   }
@@ -196,8 +196,17 @@ class ComponentQueryFilter
     return $query;
   }
 
-  private static function applySort(Builder $query, ?string $sort): Builder
+  private static function applySort(Builder $query, ?string $sort, array $compatibleIds = []): Builder
   {
+    if (!empty($compatibleIds)) {
+      $placeholders = implode(',', array_fill(0, count($compatibleIds), '?'));
+
+      $query->orderByRaw(
+        "CASE WHEN id IN ($placeholders) THEN 0 ELSE 1 END",
+        $compatibleIds
+      );
+    }
+
     return match ($sort) {
       'price_asc' => $query->orderBy('price'),
       'price_desc' => $query->orderByDesc('price'),
