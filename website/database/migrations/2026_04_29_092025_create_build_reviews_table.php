@@ -15,7 +15,7 @@ return new class extends Migration
       $table->id();
       $table->foreignId('user_id')->constrained()->cascadeOnDelete();
       $table->foreignId('build_id')->constrained()->cascadeOnDelete();
-      $table->tinyInteger('rating')->unsigned();
+      $table->tinyInteger('rating')->unsigned()->index();
       $table->unique(['user_id', 'build_id']);
       $table->timestamps();
     });

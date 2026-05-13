@@ -35,7 +35,7 @@ def _normalise_chipset(value: str) -> str | None:
     return re.sub(r"^(Intel|AMD|NVIDIA)\s+", "", value.strip()) or None
 
 
-def parse(html, dateks_id, url, price, in_stock, stock_quantity, scraped_at):
+def parse(html, dateks_id, url, price, stock_status, stock_quantity, scraped_at):
     soup = BeautifulSoup(html, "html.parser")
     specs = extract_specs(soup)
 
@@ -52,7 +52,7 @@ def parse(html, dateks_id, url, price, in_stock, stock_quantity, scraped_at):
         "url": url,
         "name": extract_name(soup),
         "price": price,
-        "in_stock": in_stock,
+        "stock_status": stock_status,
         "stock_quantity": stock_quantity,
         "socket": _normalise_socket(raw_socket),
         "chipset": _normalise_chipset(specs.get("Chipset")),

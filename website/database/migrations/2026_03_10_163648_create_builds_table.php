@@ -10,10 +10,12 @@ return new class extends Migration
   {
     Schema::create('builds', function (Blueprint $table) {
       $table->id();
-      $table->foreignId('user_id')->constrained()->index();
-      $table->string('name');
+      $table->foreignId('user_id')->constrained();
+      $table->string('name')->index();
       $table->text('notes')->nullable();
-      $table->decimal('total_price', 10, 2)->nullable();
+      $table->decimal('total_price', 10, 2)->nullable()->index();
+      $table->boolean('is_public')->default(false)->index();
+      $table->string('type')->nullable()->index();
 
       $table->foreignId('cpu_id')->nullable()->constrained('cpus')->nullOnDelete();
       $table->foreignId('motherboard_id')->nullable()->constrained('motherboards')->nullOnDelete();

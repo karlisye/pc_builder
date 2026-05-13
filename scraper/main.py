@@ -13,7 +13,7 @@ def prompt_user():
     keys = list(CATEGORIES.keys())
     for i, key in enumerate(keys, 1):
         print(f"  {i}. {key}")
-    print("  all. Scrape everything")
+    print("  11. all")
     choice = (
         input("\nEnter category name(s) separated by comma, or 'all': ").strip().lower()
     )
@@ -90,7 +90,7 @@ def main():
         if skipped:
             print(f"  Skipped URLs:")
             for url, err in skipped:
-                print(f"    {url}  →  {err}")
+                print(f"    [{url}] {err}")
         print()
 
     conn.close()

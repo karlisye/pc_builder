@@ -38,7 +38,7 @@ def get_product_urls(base_url: str) -> list:
 
             prod = link.find_parent(class_="prod")
             price = None
-            in_stock = False
+            stock_status = "out_of_stock"
             stock_quantity = None
 
             if prod:
@@ -57,14 +57,23 @@ def get_product_urls(base_url: str) -> list:
 
                 avail_tag = prod.select_one(".avail")
                 if avail_tag:
-                    avail_text = avail_tag.get_text(strip=True)
-                    in_stock = avail_text.lower().startswith(
-                        "in stock"
-                    ) or avail_text.lower().startswith("in office")
+                    avail_text = avail_tag.get_text(strip=True).lower()
+
+                    # stock status
+                    if avail_text.startswith("in stock") or avail_text.startswith("in office"):
+                        stock_status = "in_stock"
+                    elif "can be ordered" in avail_text or avail_text.startswith("order"):
+                        stock_status = "orderable"
+                    else:
+                        stock_status = "out_of_stock"
+
                     qty_match = re.search(r"(>?\d+)\s+units", avail_text)
                     stock_quantity = qty_match.group(1) if qty_match else None
+                else:
+                    stock_status = "out_of_stock"
+                    stock_quantity = None
 
-            results.append((dateks_id, full_url, price, in_stock, stock_quantity))
+            results.append((dateks_id, full_url, price, stock_status, stock_quantity))
 
         print(f"    Page {page + 1}: {len(product_links)} products")
         page += 1

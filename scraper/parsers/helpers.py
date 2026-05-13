@@ -31,7 +31,7 @@ def to_bool(value: str) -> bool | None:
         return True
     if v in ("nav", "no", "not", "nav norādīts", ""):
         return False
-    return None
+    return False
 
 
 def to_int(value: str) -> int | None:
