@@ -58,8 +58,7 @@ class CompatibilityService
     $query = $modelClass::query();
 
     // get only available components
-    $compatibleQuery = $modelClass::query()
-      ->whereNotNull('price');
+    $compatibleQuery = $modelClass::query();
 
     // add filters for the specific component
     $compatibleQuery = match ($type) {

@@ -20,7 +20,8 @@ class ComponentQueryFilter
   {
     // compatibility and stock filters
     if (filter_var($filters['hide_out_of_stock'] ?? true, FILTER_VALIDATE_BOOLEAN)) {
-      $query->where('in_stock', true);
+      $query->where('in_stock', true)
+        ->whereNotNull('price');
     }
 
     if (filter_var($filters['hide_incompatible'] ?? true, FILTER_VALIDATE_BOOLEAN)) {
