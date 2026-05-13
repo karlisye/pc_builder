@@ -53,13 +53,16 @@ class CompatibilityService
   {
     $modelClass = self::VALID_TYPES[$type];
 
+    // get ALL components
+    $query = $modelClass::query();
+
     // get only available components
-    $query = $modelClass::query()
+    $compatibleQuery = $modelClass::query()
       ->whereNotNull('price')
       ->where('in_stock', true);
 
     // add filters for the specific component
-    $query = match ($type) {
+    $compatibleQuery = match ($type) {
       'cpu' => ComponentFilters::cpu($query, $selected),
       'motherboard' => ComponentFilters::motherboard($query, $selected),
       'ram' => ComponentFilters::ram($query, $selected),
@@ -70,8 +73,10 @@ class CompatibilityService
 
       // ssd, hdd, fan - no compatibility rules yet. Add later
 
-      default => $query,
+      default => $compatibleQuery,
     };
+
+    $compatibleIds = $compatibleQuery->pluck('id')->toArray();
 
     $query = ComponentQueryFilter::apply($query, $type, $filters);
 
@@ -82,9 +87,12 @@ class CompatibilityService
     $paginator = $query->paginate(15);
 
     // add the selected boolean and manual check warning to each component
-    $paginator->getCollection()->transform(function ($item) use ($selectedIdForType, $warning) {
+    // add compatible and out_of_stock flags to each component
+    $paginator->getCollection()->transform(function ($item) use ($selectedIdForType, $warning, $compatibleIds) {
       $item->selected = ($item->id === $selectedIdForType);
       $item->compatibility_warning = $warning;
+      $item->out_of_stock = !$item->in_stock;
+      $item->compatible = in_array($item->id, $compatibleIds) && $item->in_stock;
       return $item;
     });
 

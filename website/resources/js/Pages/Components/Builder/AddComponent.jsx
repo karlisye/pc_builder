@@ -24,6 +24,8 @@ const AddComponent = () => {
   const [page, setPage] = useState(1);
   const [expandedId, setExpandedId] = useState(null);
 
+  console.log(components);
+
   useEffect(() => {
     if (!currentCompToAdd) return;
     setPage(1);
@@ -120,7 +122,7 @@ const AddComponent = () => {
                 <div
                   key={component.id}
                   onClick={() => handleExpand(component.id)}
-                  className="flex justify-between items-center p-3 bg-surface hover:bg-secondary-light cursor-pointer transition"
+                  className={`flex justify-between items-center p-3 cursor-pointer transition ${component.compatible ? "bg-surface hover:bg-secondary-light" : "bg-muted hover:bg-muted/80"}`}
                 >
                   <span className="text-text font-medium">
                     {component.name}
