@@ -6,6 +6,7 @@ use App\Helpers\CompatibilityHelper;
 use App\Models\{Cpu, Motherboard, Ram, Gpu, Ssd, Hdd, PcCase, Fan, Psu, Cooler};
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
 
 class CompatibilityService
 {
@@ -63,13 +64,13 @@ class CompatibilityService
 
     // add filters for the specific component
     $compatibleQuery = match ($type) {
-      'cpu' => ComponentFilters::cpu($query, $selected),
-      'motherboard' => ComponentFilters::motherboard($query, $selected),
-      'ram' => ComponentFilters::ram($query, $selected),
-      'gpu' => ComponentFilters::gpu($query, $selected),
-      'case' => ComponentFilters::case($query, $selected),
-      'cooler' => ComponentFilters::cooler($query, $selected),
-      'psu' => ComponentFilters::psu($query, $selected),
+      'cpu' => ComponentFilters::cpu($compatibleQuery, $selected),
+      'motherboard' => ComponentFilters::motherboard($compatibleQuery, $selected),
+      'ram' => ComponentFilters::ram($compatibleQuery, $selected),
+      'gpu' => ComponentFilters::gpu($compatibleQuery, $selected),
+      'case' => ComponentFilters::case($compatibleQuery, $selected),
+      'cooler' => ComponentFilters::cooler($compatibleQuery, $selected),
+      'psu' => ComponentFilters::psu($compatibleQuery, $selected),
 
       // ssd, hdd, fan - no compatibility rules yet. Add later
 
@@ -78,7 +79,7 @@ class CompatibilityService
 
     $compatibleIds = $compatibleQuery->pluck('id')->toArray();
 
-    $query = ComponentQueryFilter::apply($query, $type, $filters);
+    $query = ComponentQueryFilter::apply($query, $type, $filters, $compatibleIds);
 
     // e.g. if user already has cpu selected, but still wants to see cpus, will return the cpu id
     $selectedIdForType = isset($selected[$type]) ? $selected[$type]->id : null;
@@ -91,8 +92,8 @@ class CompatibilityService
     $paginator->getCollection()->transform(function ($item) use ($selectedIdForType, $warning, $compatibleIds) {
       $item->selected = ($item->id === $selectedIdForType);
       $item->compatibility_warning = $warning;
+      $item->compatible = in_array($item->id, $compatibleIds);
       $item->out_of_stock = !$item->in_stock;
-      $item->compatible = in_array($item->id, $compatibleIds) && $item->in_stock;
       return $item;
     });
 

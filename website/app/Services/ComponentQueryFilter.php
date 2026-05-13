@@ -3,20 +3,38 @@
 namespace App\Services;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
 
 class ComponentQueryFilter
 {
-  public static function apply(Builder $query, string $type, array $filters): Builder
+  public static function apply(Builder $query, string $type, array $filters, array $compatibleIds): Builder
   {
-    $query = self::applyGlobal($query, $filters);
+    $query = self::applyGlobal($query, $filters, $compatibleIds);
     $query = self::applyPerType($query, $type, $filters);
     $query = self::applySort($query, $filters['sort'] ?? null);
 
     return $query;
   }
 
-  private static function applyGlobal(Builder $query, array $filters): Builder
+  private static function applyGlobal(Builder $query, array $filters, array $compatibleIds): Builder
   {
+    if (filter_var($filters['hide_out_of_stock'] ?? true, FILTER_VALIDATE_BOOLEAN)) {
+      $query->where('in_stock', true);
+    }
+
+    if (filter_var($filters['hide_incompatible'] ?? true, FILTER_VALIDATE_BOOLEAN)) {
+      if (!empty($compatibleIds)) {
+        $query->whereIn('id', $compatibleIds);
+      } else {
+        $query->whereRaw('1 = 0'); // no compatible items, return nothing
+      }
+    }
+    Log::debug('hide filters', [
+      'hide_out_of_stock' => $filters['hide_out_of_stock'] ?? 'NOT SET',
+      'hide_incompatible' => $filters['hide_incompatible'] ?? 'NOT SET',
+      'hide_incompatible_bool' => filter_var($filters['hide_incompatible'] ?? true, FILTER_VALIDATE_BOOLEAN),
+    ]);
+
     // search by name
     if (! empty($filters['search'])) {
       $searchTerms = array_filter(explode(' ', $filters['search']));

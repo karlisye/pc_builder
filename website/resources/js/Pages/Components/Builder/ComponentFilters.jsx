@@ -155,6 +155,44 @@ const ComponentFilters = () => {
         {error && <p className="text-danger text-sm">{error}</p>}
       </div>
 
+      <div className="flex gap-2">
+        <div className="flex flex-1 gap-2 items-center">
+          <input
+            className="accent-secondary-light"
+            id="hide_out_of_stock"
+            type="checkbox"
+            checked={filters["hide_out_of_stock"] ?? true}
+            onChange={(e) =>
+              updateFilter("hide_out_of_stock", e.target.checked)
+            }
+          />
+          <label
+            className="text-secondary-light text-sm"
+            htmlFor="hide_out_of_stock"
+          >
+            Hide Out Of Stock
+          </label>
+        </div>
+
+        <div className="flex flex-1 gap-2 items-center">
+          <input
+            className="accent-secondary-light"
+            id="hide_incompatible"
+            type="checkbox"
+            checked={filters["hide_incompatible"] ?? true}
+            onChange={(e) =>
+              updateFilter("hide_incompatible", e.target.checked)
+            }
+          />
+          <label
+            className="text-secondary-light text-sm"
+            htmlFor="hide_incompatible"
+          >
+            Hide Incompatible
+          </label>
+        </div>
+      </div>
+
       <button
         className="w-full p-4 bg-secondary hover:bg-secondary-dark transition cursor-pointer text-white"
         onClick={clearFilters}
