@@ -18,8 +18,15 @@ class BuilderSlotPicker
     $modelClass = CompatibilityService::VALID_TYPES[$slot];
 
     $query = $modelClass::query()
-      ->whereNotNull('price')
-      ->whereIn('stock_status', ['in_stock', 'orderable']);
+      ->whereNotNull('price');
+
+    $shouldIncludeOrderable = filter_var($preferences['include_orderable'] ?? false, FILTER_VALIDATE_BOOLEAN);
+
+    if ($shouldIncludeOrderable) {
+      $query->whereIn('stock_status', ['in_stock', 'orderable']);
+    } else {
+      $query->where('stock_status', 'in_stock');
+    }
 
     if ($budget !== null) {
       $query->where('price', '<=', $budget);

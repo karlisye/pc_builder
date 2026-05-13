@@ -21,6 +21,7 @@ const BuildGenerator = () => {
     gpu: null,
     cpu: null,
     type: null,
+    include_orderable: true,
   });
   const [note, setNote] = useState("");
 
@@ -47,6 +48,7 @@ const BuildGenerator = () => {
           .map(([type, component]) => [type, component.id]),
       );
 
+      console.log(preferences);
       const res = await axios.post("/api/builder", {
         selected,
         budget,
@@ -71,9 +73,12 @@ const BuildGenerator = () => {
       setLoading(false);
 
       // clear preferences
-      setPreferences((prev) =>
-        Object.fromEntries(Object.keys(prev).map((k) => [k, null])),
-      );
+      // setPreferences((prev) => ({
+      //   gpu: null,
+      //   cpu: null,
+      //   type: null,
+      //   include_orderable: true, // keep default boolean
+      // }));
     }
   };
 
@@ -118,21 +123,21 @@ const BuildGenerator = () => {
           />
 
           {note && (
-            <div className="p-2 border border-secondary">
+            <div className="p-2 border border-muted">
               <p className="text-secondary-light text-sm">{note}</p>
             </div>
           )}
 
-          <p className="text-muted text-sm mb-1">Preferences</p>
+          <p className="text-secondary-light text-sm mb-1">Preferences</p>
 
           <div className="flex gap-2">
             <div className="flex flex-col flex-1">
-              <label className="text-sm text-muted" htmlFor="gpu">
+              <label className="text-sm text-secondary-light" htmlFor="gpu">
                 GPU
               </label>
               <select
                 onChange={(e) => updatePref("gpu", e.target.value)}
-                className="p-1 text-muted text-sm border hover:outline focus:outline outline-secondary-light"
+                className="p-1 text-secondary-light text-sm border border-muted hover:outline focus:outline outline-secondary-light"
                 value={preferences.gpu ?? ""}
               >
                 <option value="">Any</option>
@@ -143,12 +148,12 @@ const BuildGenerator = () => {
             </div>
 
             <div className="flex flex-col flex-1">
-              <label className="text-sm text-muted" htmlFor="gpu">
+              <label className="text-sm text-secondary-light" htmlFor="gpu">
                 CPU
               </label>
               <select
                 onChange={(e) => updatePref("cpu", e.target.value)}
-                className="p-1 text-muted text-sm border hover:outline focus:outline outline-secondary-light"
+                className="p-1 text-secondary-light text-sm border border-muted hover:outline focus:outline outline-secondary-light"
                 value={preferences.cpu ?? ""}
               >
                 <option value="">Any</option>
@@ -159,12 +164,12 @@ const BuildGenerator = () => {
           </div>
 
           <div className="flex flex-col flex-1">
-            <label className="text-sm text-muted" htmlFor="gpu">
+            <label className="text-sm text-secondary-light" htmlFor="gpu">
               Usage
             </label>
             <select
               onChange={(e) => updatePref("type", e.target.value)}
-              className="p-1 text-muted text-sm border hover:outline focus:outline outline-secondary-light"
+              className="p-1 text-secondary-light text-sm border border-muted hover:outline focus:outline outline-secondary-light"
               value={preferences.type ?? ""}
             >
               <option value="">Any</option>
@@ -173,6 +178,24 @@ const BuildGenerator = () => {
               <option value="rendering">Rendering</option>
               <option value="streaming">Streaming</option>
             </select>
+          </div>
+
+          <div className="flex gap-2 items-center">
+            <input
+              className="accent-secondary-light"
+              id="include_orderable"
+              type="checkbox"
+              checked={preferences.include_orderable}
+              onChange={(e) =>
+                updatePref("include_orderable", e.target.checked)
+              }
+            />
+            <label
+              className="text-secondary-light text-sm"
+              htmlFor="include_orderable"
+            >
+              Include Only Orderable Items
+            </label>
           </div>
 
           {error && <p className="text-danger text-sm mb-2">{error}</p>}

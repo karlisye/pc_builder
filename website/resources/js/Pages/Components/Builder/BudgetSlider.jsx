@@ -60,14 +60,14 @@ const BudgetSlider = ({
           checked={isUnlimited}
           onChange={handleUnlimited}
         />
-        <label className="text-sm text-muted" htmlFor="unlimited">
+        <label className="text-sm text-secondary-light" htmlFor="unlimited">
           Any Budget
         </label>
       </div>
       <div
         className={`flex justify-between items-center transition-opacity ${isUnlimited ? "opacity-40 pointer-events-none" : ""}`}
       >
-        <span className="text-muted text-sm">Total Budget</span>
+        <span className="text-secondary-light text-sm">Total Budget</span>
         <div className="flex items-center gap-1">
           <span className="text-muted text-sm">€</span>
           <input
@@ -85,7 +85,7 @@ const BudgetSlider = ({
         <div
           className={`flex justify-between items-center transition-opacity ${isUnlimited ? "opacity-40 pointer-events-none" : ""}`}
         >
-          <span className="text-muted text-sm">Remaining Budget</span>
+          <span className="text-secondary-light text-sm">Remaining Budget</span>
           <div className="space-x-2">
             <span className="text-muted text-sm">€</span>
             <span className="text-secondary-light font-semibold">

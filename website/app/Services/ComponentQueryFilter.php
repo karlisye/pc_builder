@@ -198,6 +198,7 @@ class ComponentQueryFilter
 
   private static function applySort(Builder $query, ?string $sort, array $compatibleIds = []): Builder
   {
+    // display compatible first
     if (!empty($compatibleIds)) {
       $placeholders = implode(',', array_fill(0, count($compatibleIds), '?'));
 
