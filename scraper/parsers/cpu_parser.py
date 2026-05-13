@@ -23,10 +23,9 @@ def _normalise_socket(value: str) -> str | None:
 
 def _parse_integrated_graphics(value: str) -> bool | None:
     if value is None:
-        return None
-    result = to_bool(value)
-    if result is not None:
-        return result
+        return False
+    if value.strip().lower() in ("nav", "no", "not", "nav norādīts", ""):
+        return False
     return True if value.strip() else None
 
 

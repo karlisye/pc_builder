@@ -48,7 +48,6 @@ const BuildGenerator = () => {
           .map(([type, component]) => [type, component.id]),
       );
 
-      console.log(preferences);
       const res = await axios.post("/api/builder", {
         selected,
         budget,
@@ -71,14 +70,6 @@ const BuildGenerator = () => {
       setError(err.response?.data?.error ?? "Something went wrong");
     } finally {
       setLoading(false);
-
-      // clear preferences
-      // setPreferences((prev) => ({
-      //   gpu: null,
-      //   cpu: null,
-      //   type: null,
-      //   include_orderable: true, // keep default boolean
-      // }));
     }
   };
 

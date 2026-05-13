@@ -29,8 +29,6 @@ def to_bool(value: str) -> bool | None:
     v = value.strip().lower()
     if v in ("ir", "yes", "is", "true", "1"):
         return True
-    if v in ("nav", "no", "not", "nav norādīts", ""):
-        return False
     return False
 
 
