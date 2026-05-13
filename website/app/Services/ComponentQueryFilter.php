@@ -19,16 +19,30 @@ class ComponentQueryFilter
   private static function applyGlobal(Builder $query, array $filters, array $compatibleIds): Builder
   {
     // compatibility and stock filters
-    if (filter_var($filters['hide_out_of_stock'] ?? true, FILTER_VALIDATE_BOOLEAN)) {
-      $query->whereIn('stock_status', ['in_stock', 'orderable'])
-        ->whereNotNull('price');
+    $showInStock = filter_var($filters['show_in_stock'] ?? true, FILTER_VALIDATE_BOOLEAN);
+    $showOrderable = filter_var($filters['show_orderable'] ?? true, FILTER_VALIDATE_BOOLEAN);
+    $showCompatibleOnly = filter_var($filters['show_compatible_only'] ?? false, FILTER_VALIDATE_BOOLEAN);
+    $stockStatuses = [];
+
+    if ($showInStock) {
+      $stockStatuses[] = 'in_stock';
+    }
+    if ($showOrderable) {
+      $stockStatuses[] = 'orderable';
     }
 
-    if (filter_var($filters['hide_incompatible'] ?? true, FILTER_VALIDATE_BOOLEAN)) {
+    if (!empty($stockStatuses)) {
+      $query->whereIn('stock_status', $stockStatuses)
+        ->whereNotNull('price');
+    } else {
+      $query->where('stock_status', 'out_of_stock');
+    }
+
+    if ($showCompatibleOnly) {
       if (!empty($compatibleIds)) {
         $query->whereIn('id', $compatibleIds);
       } else {
-        $query->whereRaw('1 = 0'); // no compatible items, return nothing
+        $query->whereRaw('1 = 0');
       }
     }
 

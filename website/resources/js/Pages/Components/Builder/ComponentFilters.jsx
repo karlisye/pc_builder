@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useBuilder } from "../../../Contexts/BuilderContext";
+import { ArrowIcon } from "../Common/Icons";
 
 const FILTER_CONFIG = {
   cpu: ["socket", "cores", "integrated_graphics", "cooler_included"],
@@ -47,6 +48,7 @@ const ComponentFilters = () => {
   } = useBuilder();
   const [availableFilters, setAvailableFilters] = useState({});
   const [error, setError] = useState("");
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (!currentCompToAdd) return;
@@ -155,41 +157,73 @@ const ComponentFilters = () => {
         {error && <p className="text-danger text-sm">{error}</p>}
       </div>
 
-      <div className="flex gap-2">
-        <div className="flex flex-1 gap-2 items-center">
-          <input
-            className="accent-secondary-light"
-            id="hide_out_of_stock"
-            type="checkbox"
-            checked={filters["hide_out_of_stock"] ?? true}
-            onChange={(e) =>
-              updateFilter("hide_out_of_stock", e.target.checked)
-            }
-          />
-          <label
-            className="text-secondary-light text-sm"
-            htmlFor="hide_out_of_stock"
-          >
-            Hide Out Of Stock
-          </label>
-        </div>
+      <div>
+        <button
+          onClick={() => setOpen((prev) => !prev)}
+          className="w-full flex justify-between items-center text-secondary-light hover:text-surface transition cursor-pointer"
+        >
+          <span className="">Display</span>
+          <ArrowIcon active={open} />
+        </button>
 
-        <div className="flex flex-1 gap-2 items-center">
-          <input
-            className="accent-secondary-light"
-            id="hide_incompatible"
-            type="checkbox"
-            checked={filters["hide_incompatible"] ?? true}
-            onChange={(e) =>
-              updateFilter("hide_incompatible", e.target.checked)
-            }
-          />
-          <label
-            className="text-secondary-light text-sm"
-            htmlFor="hide_incompatible"
-          >
-            Hide Incompatible
-          </label>
+        <div
+          className={`grid transition-all ${open ? "grid-rows-[1fr] mt-2" : "grid-rows-[0fr]"}`}
+        >
+          <div className="grid grid-cols-2 gap-2 overflow-hidden">
+            <div className="flex gap-2 items-center">
+              <input
+                className="accent-secondary-light"
+                id="show_in_stock"
+                type="checkbox"
+                checked={filters["show_in_stock"] ?? true}
+                onChange={(e) =>
+                  updateFilter("show_in_stock", e.target.checked)
+                }
+              />
+              <label
+                className="text-secondary-light text-sm"
+                htmlFor="show_in_stock"
+              >
+                In Stock
+              </label>
+            </div>
+
+            <div className="flex gap-2 items-center">
+              <input
+                className="accent-secondary-light"
+                id="show_orderable"
+                type="checkbox"
+                checked={filters["show_orderable"] ?? true}
+                onChange={(e) =>
+                  updateFilter("show_orderable", e.target.checked)
+                }
+              />
+              <label
+                className="text-secondary-light text-sm"
+                htmlFor="show_orderable"
+              >
+                Can Be Ordered
+              </label>
+            </div>
+
+            <div className="flex col-span-2 gap-2 items-center">
+              <input
+                className="accent-secondary-light"
+                id="show_compatible_only"
+                type="checkbox"
+                checked={filters["show_compatible_only"] ?? false}
+                onChange={(e) =>
+                  updateFilter("show_compatible_only", e.target.checked)
+                }
+              />
+              <label
+                className="text-secondary-light text-sm"
+                htmlFor="show_compatible_only"
+              >
+                Compatible Only
+              </label>
+            </div>
+          </div>
         </div>
       </div>
 

@@ -83,8 +83,9 @@ class ComponentController extends Controller
       'search',
       'min_price',
       'max_price',
-      'hide_out_of_stock',
-      'hide_incompatible',
+      'show_in_stock',
+      'show_orderable',
+      'show_compatible_only',
       // cpu
       'socket',
       'cores',
