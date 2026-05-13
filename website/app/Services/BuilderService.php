@@ -56,6 +56,9 @@ class BuilderService
     if (!isset($allocations['gpu'])) {
       $preferences['integrated_graphics'] = true;
     }
+    if (!isset($allocations['cooler'])) {
+      $preferences['cooler_included'] = true;
+    }
 
     $selectedCost = $this->totalCost($selected);
     $remainingBudget = $budget - $selectedCost;
@@ -130,7 +133,7 @@ class BuilderService
 
         $slotBudget = $budgetLeft * $slotShare;
 
-        // for slots with no allocation key (ssd, fan)
+        // for slots with no allocation key (fan)
         if (! isset($allocations[$slot])) {
           $slotBudget = $budgetLeft;
         }
@@ -168,6 +171,9 @@ class BuilderService
         if ($slot === 'cpu' && !$picked->cooler_included && !in_array('cooler', $remainingSlots) && !isset($filled['cooler'])) {
           $remainingSlots[] = 'cooler';
         }
+
+        // Log::debug('Component picked: ' . json_encode($picked));
+        // Log::debug('Total spent: ' . $spentThisRound);
 
         break; // restart loop with updated budget after each pick
       }
@@ -214,7 +220,7 @@ class BuilderService
 
   private function generateUnlimited(array $selected, array $preferences): array
   {
-    $orderedSlots = ['ssd', 'case', 'psu', 'cooler', 'ram', 'motherboard', 'cpu', 'gpu'];
+    $orderedSlots = ['cpu', 'motherboard', 'ram', 'gpu', 'case', 'cooler', 'psu', 'ssd', 'fan'];
     $slotsToFill = array_diff($orderedSlots, array_keys($selected));
     $build = $selected;
 
@@ -247,7 +253,7 @@ class BuilderService
   // add indivudual
   private function resolveSlotsToFill(array $selected, array $allocations): array
   {
-    $orderedSlots = ['ssd', 'case', 'psu', 'cooler', 'ram', 'motherboard', 'cpu', 'gpu', 'fan'];
+    $orderedSlots = ['cpu', 'motherboard', 'ram', 'gpu', 'case', 'cooler', 'psu', 'ssd', 'fan'];
 
     $slotsToFill = [];
 
@@ -256,7 +262,7 @@ class BuilderService
         continue;
       }
 
-      // if not needed for the budget or is fan - skip
+      // if not needed for the budget or is fan or ssd - skip
       if (! isset($allocations[$slot]) && ! in_array($slot, ['ssd', 'fan'])) {
         continue;
       }
@@ -323,7 +329,6 @@ class BuilderService
     $minimum = $selectedCost;
     $build = $selected;
 
-    // compatibility-first order so filters apply correctly
     $compatibilityOrder = ['cpu', 'motherboard', 'ram', 'gpu', 'case', 'cooler', 'psu', 'ssd', 'fan'];
     $ordered = array_values(array_intersect($compatibilityOrder, $slotsToFill));
 

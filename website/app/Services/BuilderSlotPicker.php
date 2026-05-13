@@ -53,6 +53,9 @@ class BuilderSlotPicker
     if (isset($preferences['integrated_graphics']) && $slot === 'cpu') {
       $query->where('integrated_graphics', true);
     }
+    if (isset($preferences['cooler_included']) && $slot === 'cpu') {
+      $query->where('cooler_included', true);
+    }
 
     $candidates = $query->get();
 
@@ -69,8 +72,15 @@ class BuilderSlotPicker
     $modelClass = CompatibilityService::VALID_TYPES[$slot];
 
     $query = $modelClass::query()
-      ->whereNotNull('price')
-      ->whereIn('stock_status', ['in_stock', 'orderable']);
+      ->whereNotNull('price');
+
+    $shouldIncludeOrderable = filter_var($preferences['include_orderable'] ?? false, FILTER_VALIDATE_BOOLEAN);
+
+    if ($shouldIncludeOrderable) {
+      $query->whereIn('stock_status', ['in_stock', 'orderable']);
+    } else {
+      $query->where('stock_status', 'in_stock');
+    }
 
     $query = match ($slot) {
       'cpu' => ComponentFilters::cpu($query, $selected),
@@ -91,6 +101,9 @@ class BuilderSlotPicker
     }
     if (isset($preferences['integrated_graphics']) && $slot === 'cpu') {
       $query->where('integrated_graphics', true);
+    }
+    if (isset($preferences['cooler_included']) && $slot === 'cpu') {
+      $query->where('cooler_included', true);
     }
 
     return $query->orderBy('price')->first();
