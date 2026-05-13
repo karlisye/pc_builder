@@ -122,12 +122,21 @@ const AddComponent = () => {
                 <div
                   key={component.id}
                   onClick={() => handleExpand(component.id)}
-                  className={`flex justify-between items-center p-3 cursor-pointer transition ${component.compatible ? "bg-surface hover:bg-secondary-light" : "bg-muted hover:bg-muted/80"}`}
+                  className={`flex justify-between items-center p-3 cursor-pointer transition ${component.compatible ? "bg-surface hover:bg-secondary-light" : "bg-muted/50 hover:bg-muted/80"}`}
                 >
-                  <span className="text-text font-medium">
+                  <span
+                    className={`font-medium ${component.compatible ? "text-text" : "text-text/50"}`}
+                  >
                     {component.name}
                   </span>
-                  <span className="text-muted">€{component.price}</span>
+
+                  <span className="text-muted">
+                    {component.out_of_stock
+                      ? "Out Of Stock"
+                      : !component.compatible
+                        ? "Not Compatible"
+                        : `€${component.price}`}
+                  </span>
                 </div>
                 <div
                   className={`bg-background transition-all overflow-hidden grid ${
