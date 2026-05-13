@@ -59,8 +59,7 @@ class CompatibilityService
 
     // get only available components
     $compatibleQuery = $modelClass::query()
-      ->whereNotNull('price')
-      ->where('in_stock', true);
+      ->whereNotNull('price');
 
     // add filters for the specific component
     $compatibleQuery = match ($type) {
@@ -72,11 +71,12 @@ class CompatibilityService
       'cooler' => ComponentFilters::cooler($compatibleQuery, $selected),
       'psu' => ComponentFilters::psu($compatibleQuery, $selected),
 
-      // ssd, hdd, fan - no compatibility rules yet. Add later
+      // TODO: ssd, hdd, fan - no compatibility rules yet. Add later
 
       default => $compatibleQuery,
     };
 
+    // get all compatible ids from query into an array
     $compatibleIds = $compatibleQuery->pluck('id')->toArray();
 
     $query = ComponentQueryFilter::apply($query, $type, $filters, $compatibleIds);

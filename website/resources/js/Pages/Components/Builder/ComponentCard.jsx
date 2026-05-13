@@ -54,7 +54,9 @@ const ComponentCard = ({ component, name }) => {
             </div>
           ) : (
             <div className="p-2 flex flex-col">
-              <span className="text-muted">Price: €{component.price}</span>
+              {!component.out_of_stock && (
+                <span className="text-muted">Price: €{component.price}</span>
+              )}
               <span className="text-muted">
                 Availability:{" "}
                 {component.in_stock

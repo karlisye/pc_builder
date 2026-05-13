@@ -18,6 +18,7 @@ class ComponentQueryFilter
 
   private static function applyGlobal(Builder $query, array $filters, array $compatibleIds): Builder
   {
+    // compatibility and stock filters
     if (filter_var($filters['hide_out_of_stock'] ?? true, FILTER_VALIDATE_BOOLEAN)) {
       $query->where('in_stock', true);
     }
@@ -29,11 +30,6 @@ class ComponentQueryFilter
         $query->whereRaw('1 = 0'); // no compatible items, return nothing
       }
     }
-    Log::debug('hide filters', [
-      'hide_out_of_stock' => $filters['hide_out_of_stock'] ?? 'NOT SET',
-      'hide_incompatible' => $filters['hide_incompatible'] ?? 'NOT SET',
-      'hide_incompatible_bool' => filter_var($filters['hide_incompatible'] ?? true, FILTER_VALIDATE_BOOLEAN),
-    ]);
 
     // search by name
     if (! empty($filters['search'])) {
