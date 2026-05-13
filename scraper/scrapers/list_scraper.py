@@ -47,7 +47,7 @@ def get_product_urls(base_url: str) -> list:
                     price_text = (
                         price_tag.get_text(strip=True)
                         .replace("€", "")
-                        .replace(",", ".")
+                        .replace(",", "")
                         .strip()
                     )
                     try:
