@@ -26,6 +26,7 @@ const Builder = ({ build }) => {
   });
   const [buildId, setBuildId] = useState(build?.id ?? undefined);
   const [warnings, setWarnings] = useState([]);
+  const [notes, setNotes] = useState([]);
 
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -65,6 +66,8 @@ const Builder = ({ build }) => {
         debouncedSearch,
         setWarnings,
         warnings,
+        setNotes,
+        notes,
       }}
     >
       <div className="h-full flex flex-wrap">

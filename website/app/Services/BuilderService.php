@@ -88,6 +88,7 @@ class BuilderService
           'total_price' => round($totalCost, 2),
           'remaining_budget' => round($budget - $totalCost, 2),
           'warnings' => $this->generateWarnings($build, $preferences),
+          'notes' => $this->generateNotes($build, $preferences),
           'attempts_needed' => $attempt,
           'error' => null,
           'estimated_minimum_budget'  => null,
@@ -390,9 +391,9 @@ class BuilderService
       }
     }
 
-    // GPU warnings
+    // gpu warnings
     $gpu = $build['gpu'] ?? null;
-    if (!$gpu && in_array($type, ['gaming', 'streaming'])) {
+    if (!$gpu && in_array($type, ['gaming', 'streaming']) && $tier !== 'budget') {
       $warnings[] = "No GPU was found within the budget for a {$type} build. Consider increasing your budget.";
     }
 
@@ -421,6 +422,34 @@ class BuilderService
       }
     }
 
+    // storage warnings
+    $ssd = $build['ssd'] ?? null;
+    if ($ssd && $ssd->capacity < 256) {
+      $warnings[] = "SSD has less than 256GB of storage, which may not provide enough space for your operating system, applications, and files.";
+    }
+    if ($ssd && in_array($type, ['gaming', 'streaming']) && $tier !== 'budget' && $ssd->capacity < 512) {
+      $warnings[] = "A larger SSD is recommended for storing modern games and applications.";
+    }
+
     return $warnings;
+  }
+
+  private function generateNotes(array $build, array $preferences): array
+  {
+    $notes = [];
+
+    $cpu = $build['cpu'] ?? null;
+    $cooler = $build['cooler'] ?? null;
+    $gpu = $build['gpu'] ?? null;
+
+    if ($cpu->cooler_included && ! $cooler) {
+      $notes[] = "CPU comes with an included cooler to save costs at this budget tier.";
+    }
+
+    if ($cpu->integrated_graphics && ! $gpu) {
+      $notes[] = "CPU comes with integrated graphics to save costs at this budget tier.";
+    }
+
+    return $notes;
   }
 }

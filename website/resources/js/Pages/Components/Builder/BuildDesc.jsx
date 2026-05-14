@@ -3,7 +3,7 @@ import { useBuilder } from "../../../Contexts/BuilderContext";
 import { ArrowIcon } from "../Common/Icons";
 
 const BuildDesc = () => {
-  const { selectedComponents, warnings } = useBuilder();
+  const { selectedComponents, warnings, notes } = useBuilder();
 
   const filled = Object.values(selectedComponents).filter((v) => v !== null);
   const total = filled.reduce((sum, c) => sum + parseFloat(c.price ?? 0), 0);
@@ -29,13 +29,13 @@ const BuildDesc = () => {
         </div>
       </div>
 
-      {warnings?.length > 0 && (
+      {(warnings?.length > 0 || notes?.length > 0) && (
         <div>
           <div
-            className={`flex gap-2 justify-between items-center ${warningActive ? "text-danger/80" : "text-secondary-light"} hover:text-danger cursor-pointer transition`}
+            className={`flex gap-2 justify-between items-center text-secondary-light hover:text-surface cursor-pointer transition`}
             onClick={() => setWarningActive((prev) => !prev)}
           >
-            <h2 className="text-medium">Warnings</h2>
+            <h2 className="text-medium">About This Build</h2>
 
             <span className="">
               <ArrowIcon active={warningActive} />
@@ -43,9 +43,18 @@ const BuildDesc = () => {
           </div>
 
           <div
-            className={`grid transition-all ${warningActive ? "grid-rows-[1fr] border-b pb-4 border-b-primary-light" : "grid-rows-[0fr]"}`}
+            className={`grid transition-all ${warningActive ? "grid-rows-[1fr] border-b pb-4 border-b-primary-light mt-2" : "grid-rows-[0fr]"}`}
           >
             <div className="space-y-2 overflow-hidden">
+              {notes.map((note, i) => (
+                <div
+                  key={i}
+                  className="border border-info/80 bg-info/10 p-4 space-y-2"
+                >
+                  <p className="text-info text-sm">{note}</p>
+                </div>
+              ))}
+
               {warnings.map((warning, i) => (
                 <div
                   key={i}

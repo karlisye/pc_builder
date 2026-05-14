@@ -12,6 +12,7 @@ const BuildGenerator = () => {
     setCurrentCompToAdd,
     setBuildType,
     setWarnings,
+    setNotes,
   } = useBuilder();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -23,7 +24,7 @@ const BuildGenerator = () => {
     type: null,
     include_orderable: true,
   });
-  const [note, setNote] = useState("");
+  const [info, setInfo] = useState("");
 
   const recommendedBudget =
     {
@@ -41,6 +42,7 @@ const BuildGenerator = () => {
     setLoading(true);
     setError("");
     setWarnings([]);
+    setNotes([]);
     try {
       const selected = Object.fromEntries(
         Object.entries(selectedComponents)
@@ -63,6 +65,7 @@ const BuildGenerator = () => {
         setOpen(false);
         setCurrentCompToAdd(null);
         setWarnings(res.data.warnings);
+        setNotes(res.data.notes);
       } else {
         setError(res.data.error);
       }
@@ -75,8 +78,8 @@ const BuildGenerator = () => {
 
   const updateBudget = (value) => {
     if (recommendedBudget > value)
-      setNote("We recommend increasing your budget for this type of build.");
-    else setNote("");
+      setInfo("We recommend increasing your budget for this type of build.");
+    else setInfo("");
 
     setBudget(value);
   };
@@ -113,9 +116,9 @@ const BuildGenerator = () => {
             recommended={recommendedBudget}
           />
 
-          {note && (
+          {info && (
             <div className="p-2 border border-muted">
-              <p className="text-secondary-light text-sm">{note}</p>
+              <p className="text-secondary-light text-sm">{info}</p>
             </div>
           )}
 
