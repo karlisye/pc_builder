@@ -172,9 +172,6 @@ class BuilderService
           $remainingSlots[] = 'cooler';
         }
 
-        // Log::debug('Component picked: ' . json_encode($picked));
-        // Log::debug('Total spent: ' . $spentThisRound);
-
         break; // restart loop with updated budget after each pick
       }
 

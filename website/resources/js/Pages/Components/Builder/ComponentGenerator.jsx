@@ -20,6 +20,7 @@ const ComponentGenerator = () => {
   const [preferences, setPreferences] = useState({
     gpu: null,
     cpu: null,
+    include_orderable: true,
   });
 
   const updatePref = (key, value) => {
@@ -140,6 +141,24 @@ const ComponentGenerator = () => {
               </div>
             </>
           )}
+
+          <div className="flex gap-2 items-center">
+            <input
+              className="accent-secondary-light"
+              id="include_orderable"
+              type="checkbox"
+              checked={preferences.include_orderable}
+              onChange={(e) =>
+                updatePref("include_orderable", e.target.checked)
+              }
+            />
+            <label
+              className="text-secondary-light text-sm"
+              htmlFor="include_orderable"
+            >
+              Include Only Orderable Items
+            </label>
+          </div>
 
           {error && <p className="text-danger text-sm mb-2">{error}</p>}
 
