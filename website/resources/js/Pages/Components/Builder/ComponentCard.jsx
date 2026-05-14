@@ -10,6 +10,7 @@ const ComponentCard = ({ component, name }) => {
     setSearch,
     setSort,
     setSelectedComponents,
+    buildIssues,
   } = useBuilder();
   const [isSeeMoreActive, setIsSeeMoreActive] = useState(false);
 
@@ -32,8 +33,10 @@ const ComponentCard = ({ component, name }) => {
     setCurrentCompToAdd(null);
   };
 
+  const hasIssues = buildIssues[name.toLowerCase()]?.length > 0;
+
   return (
-    <div className="w-full xl:w-80 h-100 border flex flex-col border-border shadow hover:bg-background transition">
+    <div className="w-full xl:w-80 h-100 border flex flex-col border-border shadow hover:bg-background transition relative">
       {component ? (
         <>
           <div className="relative group p-2">
@@ -89,6 +92,10 @@ const ComponentCard = ({ component, name }) => {
               Buy
             </a>
           </div>
+
+          {hasIssues && (
+            <div className="bg-danger/10 absolute w-full h-full pointer-events-none border-2 border-danger/20"></div>
+          )}
         </>
       ) : (
         <>

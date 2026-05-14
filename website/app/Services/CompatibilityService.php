@@ -6,6 +6,7 @@ use App\Helpers\CompatibilityHelper;
 use App\Models\{Cpu, Motherboard, Ram, Gpu, Ssd, Hdd, PcCase, Fan, Psu, Cooler};
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
 class CompatibilityService
@@ -97,5 +98,83 @@ class CompatibilityService
     });
 
     return $paginator;
+  }
+
+  public function validateBuild(array $selected): array
+  {
+    $issues = [];
+
+    $cpu = $selected['cpu'] ?? null;
+    $mb = $selected['motherboard'] ?? null;
+    $ram = $selected['ram'] ?? null;
+    $gpu = $selected['gpu'] ?? null;
+    $case = $selected['case'] ?? null;
+    $cooler = $selected['cooler'] ?? null;
+    $psu = $selected['psu'] ?? null;
+
+    // cpu / motherboard socket
+    if ($cpu && $mb && $cpu->socket !== $mb->socket) {
+      $issues['cpu'][] = "Socket mismatch with motherboard ({$cpu->socket} vs {$mb->socket})";
+      $issues['motherboard'][] = "Socket mismatch with CPU ({$mb->socket} vs {$cpu->socket})";
+    }
+
+    // motherboard / ram memory type
+    if ($mb && $ram && $mb->memory_type !== $ram->memory_type) {
+      $issues['motherboard'][] = "Memory type mismatch with RAM ({$mb->memory_type} vs {$ram->memory_type})";
+      $issues['ram'][] = "Memory type mismatch with motherboard ({$ram->memory_type} vs {$mb->memory_type})";
+    }
+
+    // gpu / case length
+    if ($gpu && $case && $gpu->length_mm !== null && $case->max_gpu_length !== null) {
+      if ($gpu->length_mm > $case->max_gpu_length) {
+        $issues['gpu'][] = "Too long for case ({$gpu->length_mm}mm vs {$case->max_gpu_length}mm max)";
+        $issues['case'][] = "Too small for GPU ({$case->max_gpu_length}mm max vs {$gpu->length_mm}mm)";
+      }
+    }
+
+    // cooler / case height
+    if ($cooler && $case && $cooler->height_mm !== null && $case->max_cpu_cooler_height !== null) {
+      if ($cooler->height_mm > $case->max_cpu_cooler_height) {
+        $issues['cooler'][] = "Too tall for case ({$cooler->height_mm}mm vs {$case->max_cpu_cooler_height}mm max)";
+        $issues['case'][] = "Too small for cooler ({$case->max_cpu_cooler_height}mm max vs {$cooler->height_mm}mm)";
+      }
+    }
+
+    // cooler / cpu socket
+    if ($cooler && $cpu && $cooler->compatibility) {
+      if (!in_array($cpu->socket, explode(',', $cooler->compatibility))) {
+        $issues['cooler'][] = "Not compatible with CPU socket ({$cpu->socket})";
+        $issues['cpu'][] = "Not compatible with cooler socket";
+      }
+    }
+
+    // cooler / cpu tdp
+    if ($cooler && $cpu && $cooler->tdp_support !== null && $cpu->tdp !== null) {
+      if ($cooler->tdp_support < $cpu->tdp) {
+        $issues['cooler'][] = "TDP rating too low ({$cooler->tdp_support}W vs {$cpu->tdp}W required)";
+        $issues['cpu'][] = "TDP too high for cooler ({$cpu->tdp}W vs {$cooler->tdp_support}W max)";
+      }
+    }
+
+    // motherboard / case form factor
+    if ($mb && $case) {
+      $compatibleCases = CompatibilityHelper::compatibleCasesFor($mb->form_factor);
+      if (!empty($compatibleCases) && !in_array($case->form_factor, $compatibleCases)) {
+        $issues['motherboard'][] = "Form factor incompatible with case ({$mb->form_factor} vs {$case->form_factor})";
+        $issues['case'][] = "Form factor incompatible with motherboard ({$case->form_factor} vs {$mb->form_factor})";
+      }
+    }
+
+    // psu wattage
+    if ($psu && $cpu && $gpu) {
+      $requiredWattage = ($cpu->tdp + $gpu->tdp) * 1.3;
+      if ($psu->wattage !== null && $psu->wattage < $requiredWattage) {
+        $issues['psu'][] = "Insufficient wattage ({$psu->wattage}W vs " . ceil($requiredWattage) . "W required)";
+        $issues['cpu'][] = "PSU wattage too low for this CPU+GPU combination";
+        $issues['gpu'][] = "PSU wattage too low for this CPU+GPU combination";
+      }
+    }
+
+    return $issues;
   }
 }

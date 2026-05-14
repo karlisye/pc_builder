@@ -89,7 +89,7 @@ const AddComponent = () => {
   };
 
   return (
-    <div className="border border-border w-full hover:bg-background transition p-4">
+    <div className="border border-border w-full hover:bg-background transition p-4 mb-auto">
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-semibold text-text">
           Add {currentCompToAdd}

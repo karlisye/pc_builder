@@ -66,6 +66,10 @@ const ComponentGenerator = () => {
     }
   };
 
+  const hasIncompatible = Object.values(selectedComponents).some(
+    (component) => component !== null && component.compatible === false,
+  );
+
   return (
     <div className="pt-4 border-t mt-4 border-secondary">
       <button
@@ -162,10 +166,19 @@ const ComponentGenerator = () => {
 
           {error && <p className="text-danger text-sm mb-2">{error}</p>}
 
+          {hasIncompatible && (
+            <div className="p-2 border bg-alert/10 border-alert/80">
+              <p className="text-alert text-sm">
+                One or more components in your current build are incompatible.
+                Please change or remove them to generate.
+              </p>
+            </div>
+          )}
+
           <button
             className="p-4 w-full bg-secondary-light text-text cursor-pointer hover:bg-secondary-light/50 transition disabled:opacity-50"
             onClick={handleGenerate}
-            disabled={loading}
+            disabled={loading || hasIncompatible}
           >
             {loading ? <p>Generating...</p> : "Generate"}
           </button>

@@ -33,6 +33,32 @@ const Builder = ({ build }) => {
 
   const [expanded, setExpanded] = useState(false);
 
+  const [buildIssues, setBuildIssues] = useState({});
+
+  useEffect(() => {
+    validateCompatibility();
+  }, [selectedComponents]);
+
+  const validateCompatibility = async () => {
+    const selected = Object.fromEntries(
+      Object.entries(selectedComponents)
+        .filter(([_, c]) => c !== null)
+        .map(([type, c]) => [type, c.id]),
+    );
+
+    if (Object.keys(selected).length === 0) {
+      setBuildIssues({});
+      return;
+    }
+
+    try {
+      const res = await axios.post("/api/builder/validate", { selected });
+      setBuildIssues(res.data.issues);
+    } catch (err) {
+      setBuildIssues({});
+    }
+  };
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(search);
@@ -64,10 +90,12 @@ const Builder = ({ build }) => {
         buildType,
         setBuildType,
         debouncedSearch,
-        setWarnings,
+        setDebouncedSearch,
         warnings,
-        setNotes,
+        setWarnings,
         notes,
+        setNotes,
+        buildIssues,
       }}
     >
       <div className="h-full flex flex-wrap">
@@ -111,11 +139,11 @@ const Builder = ({ build }) => {
           </div>
         </div>
 
-        <div className="flex-1 flex flex-wrap justify-center gap-8 px-4 py-6">
+        <div className="flex-1 flex px-4 py-6">
           {currentCompToAdd ? (
             <AddComponent />
           ) : (
-            <>
+            <div className="flex flex-wrap mb-auto gap-8 justify-center">
               <ComponentCard name="CPU" component={selectedComponents.cpu} />
               <ComponentCard
                 name="Motherboard"
@@ -132,7 +160,7 @@ const Builder = ({ build }) => {
                 name="Cooler"
                 component={selectedComponents.cooler}
               />
-            </>
+            </div>
           )}
         </div>
       </div>

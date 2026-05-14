@@ -119,4 +119,19 @@ class BuilderController extends Controller
 
     return response()->json($result, $statusCode);
   }
+
+  public function validate(Request $request): JsonResponse
+  {
+    $selectedIds = $request->input('selected', []);
+
+    try {
+      $selected = $this->compatibility->resolveSelected($selectedIds);
+    } catch (\InvalidArgumentException $e) {
+      return response()->json(['error' => $e->getMessage()], 400);
+    }
+
+    $issues = $this->compatibility->validateBuild($selected);
+
+    return response()->json(['issues' => $issues]);
+  }
 }
