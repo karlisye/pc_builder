@@ -10,18 +10,17 @@ class BuilderService
   // updated tiers, still needs improvements
   private const TIERS = [
     'budget' => [
-      'gaming'    => ['cpu' => 0.25, 'motherboard' => 0.20, 'ram' => 0.25, 'case' => 0.10, 'psu' => 0.10, 'ssd' => 0.10],
-      'office'    => ['cpu' => 0.28, 'motherboard' => 0.22, 'ram' => 0.25, 'case' => 0.09, 'psu' => 0.09, 'ssd' => 0.07],
-      'rendering' => ['cpu' => 0.25, 'motherboard' => 0.20, 'ram' => 0.25, 'case' => 0.10, 'psu' => 0.10, 'ssd' => 0.10],
-      'streaming' => ['cpu' => 0.27, 'motherboard' => 0.20, 'ram' => 0.23, 'case' => 0.10, 'psu' => 0.10, 'ssd' => 0.10],
+      'general' => ['cpu' => 0.26, 'motherboard' => 0.20, 'ram' => 0.24, 'case' => 0.10, 'psu' => 0.10, 'ssd' => 0.10],
+      'office' => ['cpu' => 0.28, 'motherboard' => 0.22, 'ram' => 0.25, 'case' => 0.09, 'psu' => 0.09, 'ssd' => 0.07],
     ],
     'mid' => [
+      'general'   => ['gpu' => 0.24, 'cpu' => 0.16, 'motherboard' => 0.10, 'ram' => 0.20, 'cooler' => 0.03, 'case' => 0.07, 'psu' => 0.07, 'ssd' => 0.13],
       'gaming'    => ['gpu' => 0.27, 'cpu' => 0.14, 'motherboard' => 0.10, 'ram' => 0.20, 'cooler' => 0.03, 'case' => 0.07, 'psu' => 0.07, 'ssd' => 0.12],
       'office'    => ['cpu' => 0.25, 'motherboard' => 0.18, 'ram' => 0.30, 'cooler' => 0.03, 'case' => 0.08, 'psu' => 0.08, 'ssd' => 0.08],
-      'rendering' => ['gpu' => 0.22, 'cpu' => 0.18, 'motherboard' => 0.10, 'ram' => 0.25, 'cooler' => 0.03, 'case' => 0.07, 'psu' => 0.07, 'ssd' => 0.08],
       'streaming' => ['gpu' => 0.20, 'cpu' => 0.20, 'motherboard' => 0.10, 'ram' => 0.20, 'cooler' => 0.03, 'case' => 0.07, 'psu' => 0.07, 'ssd' => 0.13],
     ],
     'high' => [
+      'general'   => ['gpu' => 0.25, 'cpu' => 0.14, 'motherboard' => 0.10, 'ram' => 0.22, 'cooler' => 0.02, 'case' => 0.06, 'psu' => 0.06, 'ssd' => 0.15],
       'gaming'    => ['gpu' => 0.27, 'cpu' => 0.12, 'motherboard' => 0.10, 'ram' => 0.23, 'cooler' => 0.02, 'case' => 0.06, 'psu' => 0.06, 'ssd' => 0.14],
       'office'    => ['cpu' => 0.22, 'motherboard' => 0.16, 'ram' => 0.35, 'cooler' => 0.02, 'case' => 0.06, 'psu' => 0.06, 'ssd' => 0.13],
       'rendering' => ['gpu' => 0.25, 'cpu' => 0.15, 'motherboard' => 0.10, 'ram' => 0.28, 'cooler' => 0.02, 'case' => 0.05, 'psu' => 0.05, 'ssd' => 0.10],
@@ -49,8 +48,8 @@ class BuilderService
     $tier = $this->resolveTier($budget);
     $preferences['tier'] = $tier;
 
-    $type = $preferences['type'] ?? 'gaming';
-    $allocations = self::TIERS[$tier][$type] ?? self::TIERS[$tier]['gaming'];
+    $type = $preferences['type'] ?? 'general';
+    $allocations = self::TIERS[$tier][$type] ?? self::TIERS[$tier]['general'];;
 
     // if allocations dont have gpu, then intergated graphics is a must
     if (!isset($allocations['gpu'])) {
@@ -426,8 +425,7 @@ class BuilderService
     $ssd = $build['ssd'] ?? null;
     if ($ssd && $ssd->capacity < 256) {
       $warnings[] = "SSD has less than 256GB of storage, which may not provide enough space for your operating system, applications, and files.";
-    }
-    if ($ssd && in_array($type, ['gaming', 'streaming']) && $tier !== 'budget' && $ssd->capacity < 512) {
+    } else if ($ssd && in_array($type, ['gaming', 'streaming']) && $tier !== 'budget' && $ssd->capacity < 512) {
       $warnings[] = "A larger SSD is recommended for storing modern games and applications.";
     }
 
@@ -442,11 +440,13 @@ class BuilderService
     $cooler = $build['cooler'] ?? null;
     $gpu = $build['gpu'] ?? null;
 
+    $type = $preferences['type'] ?? 'gaming';
+
     if ($cpu->cooler_included && ! $cooler) {
       $notes[] = "CPU comes with an included cooler to save costs at this budget tier.";
     }
 
-    if ($cpu->integrated_graphics && ! $gpu) {
+    if ($cpu->integrated_graphics && ! $gpu && $type !== 'office') {
       $notes[] = "CPU comes with integrated graphics to save costs at this budget tier.";
     }
 

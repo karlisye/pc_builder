@@ -128,7 +128,7 @@ const SavedBuilds = ({ builds, selected }) => {
           {loadingBuild && <p className="text-muted">Loading...</p>}
 
           {!loadingBuild && !selectedBuild && (
-            <p className="text-2xl font-semibold text-text text-center">
+            <p className="font-medium text-text text-center">
               Select a build to view details.
             </p>
           )}

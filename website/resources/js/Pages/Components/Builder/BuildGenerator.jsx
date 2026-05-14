@@ -35,7 +35,22 @@ const BuildGenerator = () => {
     }[preferences.type] ?? 600;
 
   const updatePref = (key, value) => {
-    setPreferences((prev) => ({ ...prev, [key]: value }));
+    const newPrefs = { ...preferences, [key]: value };
+    setPreferences(newPrefs);
+
+    const newRecommended =
+      {
+        gaming: 1000,
+        office: 600,
+        streaming: 1200,
+        rendering: 1500,
+      }[newPrefs.type] ?? 600;
+
+    if (budget < newRecommended) {
+      setInfo("We recommend increasing your budget for this type of build.");
+    } else {
+      setInfo("");
+    }
   };
 
   const handleGenerate = async () => {
@@ -77,11 +92,12 @@ const BuildGenerator = () => {
   };
 
   const updateBudget = (value) => {
-    if (recommendedBudget > value)
-      setInfo("We recommend increasing your budget for this type of build.");
-    else setInfo("");
-
     setBudget(value);
+    if (recommendedBudget > value) {
+      setInfo("We recommend increasing your budget for this type of build.");
+    } else {
+      setInfo("");
+    }
   };
 
   return (
@@ -117,8 +133,8 @@ const BuildGenerator = () => {
           />
 
           {info && (
-            <div className="p-2 border border-muted">
-              <p className="text-secondary-light text-sm">{info}</p>
+            <div className="p-2 border bg-alert/10 border-alert/80">
+              <p className="text-alert text-sm">{info}</p>
             </div>
           )}
 
@@ -169,10 +185,10 @@ const BuildGenerator = () => {
               value={preferences.type ?? ""}
             >
               <option value="">Any</option>
-              <option value="gaming">Gaming</option>
+              {budget > 500 && <option value="gaming">Gaming</option>}
               <option value="office">Office</option>
-              <option value="rendering">Rendering</option>
-              <option value="streaming">Streaming</option>
+              {budget > 1500 && <option value="rendering">Rendering</option>}
+              {budget > 500 && <option value="streaming">Streaming</option>}
             </select>
           </div>
 
