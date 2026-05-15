@@ -47,7 +47,7 @@ const BuildGenerator = () => {
         rendering: 1500,
       }[newPrefs.type] ?? 600;
 
-    if (budget < newRecommended) {
+    if (budget && budget < newRecommended) {
       setInfo("We recommend increasing your budget for this type of build.");
     } else {
       setInfo("");
@@ -146,9 +146,9 @@ const BuildGenerator = () => {
 
           <p className="text-secondary-light text-sm mb-1">Preferences</p>
 
-          <div className={`flex ${budget >= 500 ? "gap-2" : ""}`}>
+          <div className={`flex ${budget >= 500 || !budget ? "gap-2" : ""}`}>
             <div
-              className={`flex flex-col transition-all overflow-hidden ${budget >= 500 ? "flex-1" : "w-0"}`}
+              className={`flex flex-col transition-all overflow-hidden ${budget >= 500 || !budget ? "flex-1" : "w-0"}`}
             >
               <label className="text-sm text-secondary-light" htmlFor="gpu">
                 GPU
@@ -191,10 +191,16 @@ const BuildGenerator = () => {
               value={preferences.type ?? ""}
             >
               <option value="">Any</option>
-              {budget > 500 && <option value="gaming">Gaming</option>}
+              {(budget > 500 || !budget) && (
+                <option value="gaming">Gaming</option>
+              )}
               <option value="office">Office</option>
-              {budget > 1500 && <option value="rendering">Rendering</option>}
-              {budget > 500 && <option value="streaming">Streaming</option>}
+              {(budget > 1500 || !budget) && (
+                <option value="rendering">Rendering</option>
+              )}
+              {(budget > 500 || !budget) && (
+                <option value="streaming">Streaming</option>
+              )}
             </select>
           </div>
 

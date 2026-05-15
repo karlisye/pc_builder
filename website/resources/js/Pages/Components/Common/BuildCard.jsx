@@ -1,7 +1,7 @@
 import { Link, router, usePage } from "@inertiajs/react";
 import axios from "axios";
-import React, { useState } from "react";
-import { HeartIcon, SavedIcon, StarIcon } from "../Common/Icons";
+import React, { useEffect, useState } from "react";
+import { ArrowIcon, HeartIcon, SavedIcon, StarIcon } from "../Common/Icons";
 import StarRating from "../Common/StarRating";
 import Modal from "../Common/Modal";
 
@@ -22,6 +22,9 @@ const BuildCard = ({ build }) => {
   const [userRating, setUserRating] = useState(
     build.reviews?.[0]?.rating ?? null,
   );
+
+  const [buildIssues, setBuildIssues] = useState({});
+  const [warningActive, setWarningActive] = useState(false);
 
   const handleSave = async () => {
     const components = Object.fromEntries(
@@ -87,11 +90,35 @@ const BuildCard = ({ build }) => {
     }
   };
 
+  const validateCompatibility = async () => {
+    const selected = Object.fromEntries(
+      Object.entries(build.components)
+        .filter(([_, c]) => c !== null)
+        .map(([type, c]) => [type, c.id]),
+    );
+
+    if (Object.keys(selected).length === 0) {
+      setBuildIssues({});
+      return;
+    }
+
+    try {
+      const res = await axios.post("/api/builder/validate", { selected });
+      setBuildIssues(res.data.issues);
+    } catch (err) {
+      setBuildIssues({});
+    }
+  };
+
+  useEffect(() => {
+    validateCompatibility();
+  }, []);
+
   return (
     <>
       <div className="w-full border flex flex-col border-border shadow hover:bg-background transition overflow-hidden">
         <div className="flex gap-2 items-center justify-between m-2">
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <Link
               className="w-12 h-12 rounded-full bg-secondary-light flex items-center justify-center font-bold"
               href={`/profile/${build.user?.id}`}
@@ -100,9 +127,16 @@ const BuildCard = ({ build }) => {
             </Link>
 
             <div>
-              <h1 className="text-2xl uppercase text-text font-semibold">
-                {build.name}
-              </h1>
+              <div className="flex gap-2 items-center">
+                <h1 className="text-2xl uppercase text-text font-semibold">
+                  {build.name}
+                </h1>
+                {build.type && (
+                  <span className="py-0.5 px-3 text-text border border-border bg-secondary-light">
+                    {build.type}
+                  </span>
+                )}
+              </div>
               <Link className="text-muted" href={`/profile/${build.user?.id}`}>
                 @{build.user?.name}
               </Link>
@@ -113,6 +147,42 @@ const BuildCard = ({ build }) => {
             €{build.total_price}
           </p>
         </div>
+
+        {Object.keys(buildIssues).length > 0 && (
+          <div className="m-2">
+            <div
+              className={`flex gap-2 justify-between items-center text-danger/80 hover:text-danger cursor-pointer transition`}
+              onClick={() => setWarningActive((prev) => !prev)}
+            >
+              <h2 className="text-medium">Compatibility Issues</h2>
+
+              <span className="">
+                <ArrowIcon active={warningActive} />
+              </span>
+            </div>
+
+            <div
+              className={`grid transition-all ${warningActive ? "grid-rows-[1fr] pb-4 mt-2" : "grid-rows-[0fr]"}`}
+            >
+              <div className="space-y-2 overflow-hidden">
+                <div className="space-y-2">
+                  {Object.entries(buildIssues).map(([slot, issues]) =>
+                    issues.map((issue, i) => (
+                      <div
+                        key={`${slot}-${i}`}
+                        className="border border-danger/80 bg-danger/10 p-4 space-y-2"
+                      >
+                        <p className="text-danger text-sm capitalize">
+                          {slot}: {issue}
+                        </p>
+                      </div>
+                    )),
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="flex xl:flex-row flex-col max-h-100 overflow-y-auto">
           <div className="flex-1 m-2 flex flex-col gap-4">
