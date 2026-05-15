@@ -167,11 +167,22 @@ class CompatibilityService
 
     // psu wattage
     if ($psu && $cpu && $gpu) {
-      $requiredWattage = ($cpu->tdp + $gpu->tdp) * 1.3;
+      $tdpRequired = ($cpu->tdp + $gpu->tdp) * 1.3;
+      $minPsuRequired = $gpu->min_psu ?? 0;
+      $requiredWattage = max($tdpRequired, $minPsuRequired);
+
       if ($psu->wattage !== null && $psu->wattage < $requiredWattage) {
         $issues['psu'][] = "Insufficient wattage ({$psu->wattage}W vs " . ceil($requiredWattage) . "W required)";
         $issues['cpu'][] = "PSU wattage too low for this CPU+GPU combination";
         $issues['gpu'][] = "PSU wattage too low for this CPU+GPU combination";
+      }
+    }
+
+    // gpu min_psu check without cpu
+    if ($psu && $gpu && !$cpu && $gpu->min_psu !== null) {
+      if ($psu->wattage !== null && $psu->wattage < $gpu->min_psu) {
+        $issues['psu'][] = "Insufficient wattage for GPU ({$psu->wattage}W vs {$gpu->min_psu}W required)";
+        $issues['gpu'][] = "PSU wattage too low ({$psu->wattage}W vs {$gpu->min_psu}W required)";
       }
     }
 

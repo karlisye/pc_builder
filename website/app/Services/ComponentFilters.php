@@ -13,6 +13,14 @@ class ComponentFilters
       $query->where('socket', $mb->socket);
     }
 
+    if (($cooler = $selected['cooler'] ?? null)?->compatibility) {
+      $sockets = explode(',', $cooler->compatibility);
+      $query->where(function (Builder $q) use ($sockets) {
+        $q->whereNull('socket')
+          ->orWhereIn('socket', $sockets);
+      });
+    }
+
     return $query;
   }
 
@@ -48,6 +56,13 @@ class ComponentFilters
       $query->where(function (Builder $q) use ($case) {
         $q->whereNull('length_mm')
           ->orWhere('length_mm', '<=', $case->max_gpu_length);
+      });
+    }
+
+    if (($psu = $selected['psu'] ?? null)?->wattage !== null) {
+      $query->where(function (Builder $q) use ($psu) {
+        $q->whereNull('min_psu')
+          ->orWhere('min_psu', '<=', $psu->wattage);
       });
     }
 
@@ -108,13 +123,23 @@ class ComponentFilters
   {
     $cpuTdp = ($selected['cpu'] ?? null)?->tdp;
     $gpuTdp = ($selected['gpu'] ?? null)?->tdp;
-    $case   = $selected['case'] ?? null;
+    $gpuMinPsu = ($selected['gpu'] ?? null)?->min_psu;
+    $case = $selected['case'] ?? null;
 
-    if ($cpuTdp === null || $gpuTdp === null) {
+    // need at least gpu min_psu or both tdps to filter
+    if ($cpuTdp === null && $gpuMinPsu === null) {
       return $query;
     }
 
-    $requiredWattage = ($cpuTdp + $gpuTdp) * 1.3;
+    $tdpRequired = ($cpuTdp !== null && $gpuTdp !== null)
+      ? ($cpuTdp + $gpuTdp) * 1.3
+      : 0;
+
+    $requiredWattage = max($tdpRequired, $gpuMinPsu ?? 0);
+
+    if ($requiredWattage <= 0) {
+      return $query;
+    }
 
     if ($case?->psu_wattage !== null && $case->psu_wattage >= $requiredWattage) {
       return $query->whereRaw('1 = 0');
