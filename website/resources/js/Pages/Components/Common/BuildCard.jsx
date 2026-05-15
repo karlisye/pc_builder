@@ -149,7 +149,9 @@ const BuildCard = ({ build }) => {
         </div>
 
         {Object.keys(buildIssues).length > 0 && (
-          <div className="m-2">
+          <div
+            className={`m-2 border p-2 border-danger/50 bg-danger/10 ${warningActive ? "" : "hover:bg-danger/20"} transition`}
+          >
             <div
               className={`flex gap-2 justify-between items-center text-danger/80 hover:text-danger cursor-pointer transition`}
               onClick={() => setWarningActive((prev) => !prev)}
