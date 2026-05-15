@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, router } from "@inertiajs/react";
 import DetailPanel from "./Components/Saved/DetailPanel";
 import Modal from "./Components/Common/Modal";
 import BuildVisibility from "./Components/Saved/BuildVisibility";
-import { ArrowIcon } from "./Components/Common/Icons";
+import { ArrowIcon, CloseIcon } from "./Components/Common/Icons";
 
 const SLOT_LABELS = {
   cpu: "CPU",
@@ -28,8 +28,18 @@ const SavedBuilds = ({ builds, selected }) => {
   const [editData, setEditData] = useState({ name: "", notes: "" });
   const [expandedSlot, setExpandedSlot] = useState(null);
   const [deleting, setDeleting] = useState(null);
-
   const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    if (expanded) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [expanded]);
 
   const handleExpandSlot = (slot) => {
     setExpandedSlot((prev) => (prev === slot ? null : slot));
@@ -74,53 +84,62 @@ const SavedBuilds = ({ builds, selected }) => {
 
   return (
     <>
-      <div className="flex flex-col lg:h-full lg:flex-row">
-        <div className="w-full lg:w-120.5 bg-primary py-6 px-4">
-          <div
+      <div className="h-full flex">
+        <div className="lg:hidden fixed left-0 top-1/2 -translate-y-1/2 transition-transform -translate-x-4 hover:translate-x-0">
+          <button
             onClick={() => setExpanded((prev) => !prev)}
-            className="flex gap-2 justify-between items-center"
+            className="bg-primary text-white w-15 px-2 py-8 flex justify-end cursor-pointer hover:bg-primary-light transition"
           >
-            <h1 className="text-4xl font-semibold text-white">SAVED BUILDS</h1>
-
-            <span className="text-surface lg:opacity-0">
-              <ArrowIcon active={expanded} size={24} />
+            <span className="rotate-270">
+              <ArrowIcon size={32} />
             </span>
+          </button>
+        </div>
+
+        <div
+          className={`bg-primary fixed top-14 bottom-0 left-0 right-0 overflow-y-auto overscroll-contain transition-transform lg:static lg:w-120.5 lg:translate-x-0
+            ${expanded ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
+        >
+          <div className="flex justify-between items-center pt-6 px-4">
+            <h1 className="text-4xl font-semibold text-white">SAVED BUILDS</h1>
+            <button
+              className="w-10 h-10 lg:hidden text-secondary-light hover:cursor-pointer bg-primary hover:bg-primary-light transition p-2"
+              onClick={() => setExpanded(false)}
+            >
+              <CloseIcon />
+            </button>
           </div>
 
-          <div
-            className={`grid transition-all lg:mt-4 ${expanded ? "grid-rows-[1fr] mt-4" : "grid-rows-[0fr] lg:grid-rows-[1fr]"}`}
-          >
-            <div className="space-y-4 overflow-hidden">
-              {builds.length === 0 ? (
-                <p className="text-muted">You have no saved builds yet.</p>
-              ) : (
-                builds.map((build) => (
-                  <div
-                    key={build.id}
-                    onClick={() => handleSelect(build)}
-                    className={`hover:bg-secondary border transition-all cursor-pointer p-2 flex justify-between items-center border-secondary ${
-                      selectedBuild?.id === build.id ? "border-l-10" : ""
-                    }`}
-                  >
-                    <div>
-                      <h2 className="text-white font-semibold text-xl">
-                        {build.name}
-                      </h2>
-                      <p className="text-muted text-sm">€{build.total_price}</p>
-                    </div>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setDeleting(build.id);
-                      }}
-                      className="text-muted hover:text-danger transition p-2 cursor-pointer"
-                    >
-                      Delete
-                    </button>
+          <div className="space-y-4 mt-4 px-4">
+            {builds.length === 0 ? (
+              <p className="text-muted">You have no saved builds yet.</p>
+            ) : (
+              builds.map((build) => (
+                <div
+                  key={build.id}
+                  onClick={() => handleSelect(build)}
+                  className={`hover:bg-secondary border transition-all cursor-pointer p-2 flex justify-between items-center border-secondary ${
+                    selectedBuild?.id === build.id ? "border-l-10" : ""
+                  }`}
+                >
+                  <div>
+                    <h2 className="text-white font-semibold text-xl">
+                      {build.name}
+                    </h2>
+                    <p className="text-muted text-sm">€{build.total_price}</p>
                   </div>
-                ))
-              )}
-            </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDeleting(build.id);
+                    }}
+                    className="text-muted hover:text-danger transition p-2 cursor-pointer"
+                  >
+                    Delete
+                  </button>
+                </div>
+              ))
+            )}
           </div>
         </div>
 
@@ -178,7 +197,6 @@ const SavedBuilds = ({ builds, selected }) => {
                       <h2 className="text-text font-semibold text-3xl uppercase">
                         {selectedBuild.name}
                       </h2>
-
                       {selectedBuild.type && (
                         <span className="py-0.5 px-3 text-text border border-border bg-secondary-light">
                           {selectedBuild.type}
@@ -205,7 +223,6 @@ const SavedBuilds = ({ builds, selected }) => {
                 <p className="text-text font-semibold text-2xl">
                   €{selectedBuild.total_price}
                 </p>
-
                 <div className="flex items-center gap-4">
                   <Link
                     className="py-4 px-8 bg-primary text-white cursor-pointer hover:bg-primary-light transition"
@@ -249,7 +266,6 @@ const SavedBuilds = ({ builds, selected }) => {
                             {component.name}
                           </span>
                         </div>
-
                         <a
                           className={`flex items-center transition text-text border-l border-border ${isExpanded ? "px-8 bg-success/30 hover:bg-success/50" : "w-0 overflow-hidden"}`}
                           target="_blank"
@@ -259,7 +275,6 @@ const SavedBuilds = ({ builds, selected }) => {
                         </a>
                       </div>
 
-                      {/* show details right under */}
                       <div
                         className="lg:hidden overflow-hidden transition-all"
                         style={{ maxHeight: isExpanded ? "500px" : "0px" }}
@@ -275,7 +290,6 @@ const SavedBuilds = ({ builds, selected }) => {
                 })}
               </div>
 
-              {/* show details under all */}
               <div
                 className="hidden lg:block overflow-hidden transition-all"
                 style={{ maxHeight: expandedComponent ? "500px" : "0px" }}

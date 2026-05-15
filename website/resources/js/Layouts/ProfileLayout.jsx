@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { ArrowIcon } from "../Pages/Components/Common/Icons";
 import { Link, usePage } from "@inertiajs/react";
 import Layout from "../Layouts/Layout";
+import { ArrowIcon, CloseIcon } from "../Pages/Components/Common/Icons";
 
 export default function ProfileLayout({ children }) {
   const [expanded, setExpanded] = useState(false);
@@ -9,53 +9,51 @@ export default function ProfileLayout({ children }) {
 
   return (
     <Layout>
-      <div className="h-full flex flex-col lg:flex-row">
-        <div className="w-full lg:w-120.5 bg-primary py-6 px-4">
-          <div
+      <div className="h-full flex">
+        <div className="lg:hidden fixed left-0 top-1/2 -translate-y-1/2 transition-transform -translate-x-4 hover:translate-x-0">
+          <button
             onClick={() => setExpanded((prev) => !prev)}
-            className="flex gap-2 justify-between items-center"
+            className="bg-primary text-white w-15 px-2 py-8 flex justify-end cursor-pointer hover:bg-primary-light transition"
           >
-            <h1 className="text-4xl font-semibold text-white">PROFILE</h1>
-            <span className="text-surface lg:opacity-0">
-              <ArrowIcon active={expanded} size={24} />
+            <span className="rotate-270 ">
+              <ArrowIcon size={32} />
             </span>
+          </button>
+        </div>
+
+        <div
+          className={`bg-primary fixed h-full left-0 right-0 transition-transform lg:static lg:w-120.5 lg:translate-x-0
+            ${expanded ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
+        >
+          <div className="flex justify-between gap-4 items-center pt-6 px-4">
+            <h1 className="text-4xl font-semibold text-white">PROFILE</h1>
+            <button
+              className="w-10 h-10 lg:hidden text-secondary-light hover:cursor-pointer bg-primary hover:bg-primary-light transition p-2"
+              onClick={() => setExpanded(false)}
+            >
+              <CloseIcon />
+            </button>
           </div>
 
-          <div
-            className={`grid transition-all lg:mt-4 ${
-              expanded
-                ? "grid-rows-[1fr] mt-4"
-                : "grid-rows-[0fr] lg:grid-rows-[1fr]"
-            }`}
-          >
-            <div className="gap-4 overflow-hidden px-px flex flex-col">
-              <Link
-                href="/profile"
-                className={`p-4 border border-secondary text-white hover:bg-secondary ${
-                  url === "/profile" || url.startsWith("/profile?")
-                    ? "border-l-8"
-                    : ""
-                }`}
-              >
-                Overview
-              </Link>
-              <Link
-                href="/profile/account"
-                className={`p-4 border border-secondary text-white hover:bg-secondary ${
-                  url.startsWith("/profile/account") ? "border-l-8" : ""
-                }`}
-              >
-                Account
-              </Link>
-              <Link
-                href="/profile/bookmarked"
-                className={`p-4 border border-secondary text-white hover:bg-secondary ${
-                  url.startsWith("/profile/bookmarked") ? "border-l-8" : ""
-                }`}
-              >
-                Bookmarked
-              </Link>
-            </div>
+          <div className="flex flex-col gap-4 p-4">
+            <Link
+              href="/profile"
+              className={`p-4 border border-secondary text-white hover:bg-secondary ${url === "/profile" || url.startsWith("/profile?") ? "border-l-8" : ""}`}
+            >
+              Overview
+            </Link>
+            <Link
+              href="/profile/account"
+              className={`p-4 border border-secondary text-white hover:bg-secondary ${url.startsWith("/profile/account") ? "border-l-8" : ""}`}
+            >
+              Account
+            </Link>
+            <Link
+              href="/profile/bookmarked"
+              className={`p-4 border border-secondary text-white hover:bg-secondary ${url.startsWith("/profile/bookmarked") ? "border-l-8" : ""}`}
+            >
+              Bookmarked
+            </Link>
           </div>
         </div>
 

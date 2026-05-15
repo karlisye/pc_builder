@@ -205,7 +205,7 @@ const Layout = ({ children }) => {
         </nav>
       </header>
 
-      <div className="flex flex-col h-full overflow-y-auto">
+      <div className="flex flex-col flex-1 overflow-y-auto">
         <main className="flex-1">{children}</main>
 
         <footer className="bg-primary border-t border-primary-light">

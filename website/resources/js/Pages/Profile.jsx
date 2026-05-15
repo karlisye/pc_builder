@@ -72,8 +72,9 @@ const Profile = ({ user, publicBuildData, privateBuildData }) => {
 
           <div className="flex gap-2 items-center">
             <button
-              className="px-8 py-2 bg-primary text-white mt-2 hover:bg-primary-light cursor-pointer"
+              className="px-8 py-2 bg-primary text-white mt-2 hover:bg-primary-light cursor-pointer disabled:text-white/50 disabled:bg-muted"
               onClick={handleSave}
+              disabled={!description || description === user?.description}
             >
               Save
             </button>
