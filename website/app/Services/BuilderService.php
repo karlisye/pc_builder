@@ -250,7 +250,7 @@ class BuilderService
   // add indivudual
   private function resolveSlotsToFill(array $selected, array $allocations): array
   {
-    $orderedSlots = ['cpu', 'motherboard', 'ram', 'gpu', 'case', 'cooler', 'psu', 'ssd', 'fan'];
+    $orderedSlots = ['ssd', 'cpu', 'motherboard', 'ram', 'gpu', 'case', 'cooler', 'psu', 'fan'];
 
     $slotsToFill = [];
 

@@ -56,6 +56,19 @@ class ComponentScorer
     'write'    => ['min' => 60,  'max' => 14000], // MB/s
   ];
 
+  private const PSU_RANGES = [
+    'wattage' => ['min' => 300, 'max' => 1600],
+  ];
+
+  private const PSU_EFFICIENCY = [
+    '80 PLUS (White)'   => 0.2,
+    '80 PLUS Bronze'    => 0.4,
+    '80 PLUS Silver'    => 0.6,
+    '80 PLUS Gold'      => 0.8,
+    '80 PLUS Platinum'  => 0.9,
+    '80 PLUS Titanium'  => 1.0,
+  ];
+
   public function score(string $slot, Model $item, array $preferences = []): float
   {
     $type = $preferences['type'] ?? 'gaming';
@@ -65,6 +78,7 @@ class ComponentScorer
       'gpu' => $this->scoreGpu($item, $type),
       'ram' => $this->scoreRam($item, $type, $preferences),
       'ssd' => $this->scoreSsd($item),
+      'psu' => $this->scorePsu($item),
       default => (float) ($item->price ?? 0),
     };
   }
@@ -245,6 +259,33 @@ class ComponentScorer
     $writeNorm    = $this->normalize($writeSpeed, $r['write']['min'], $r['write']['max']);
 
     $raw = ($capacityNorm * 5.0) + ($readNorm * 3.0) + ($writeNorm * 2.0);
+
+    return round(min($raw, 10.0), 2);
+  }
+
+  private function scorePsu(Model $item): float
+  {
+    $wattage  = (float)  ($item->wattage ?? 0);
+    $modular  = (bool)   ($item->modular ?? false);
+    $rating   = (string) ($item->efficiency_rating ?? '');
+
+    if ($wattage <= 0) {
+      return 0.0;
+    }
+
+    $r = self::PSU_RANGES;
+
+    // wattage — more headroom is better, weighted most heavily
+    $wattageNorm = $this->normalize($wattage, $r['wattage']['min'], $r['wattage']['max']);
+
+    // efficiency rating
+    $efficiencyNorm = self::PSU_EFFICIENCY[$rating] ?? 0.0;
+
+    // modular bonus — flat 1.0 if modular, 0 if not
+    $modularBonus = $modular ? 1.0 : 0.0;
+
+    // wattage=5.0, efficiency=3.0, modular=2.0
+    $raw = ($wattageNorm * 5.0) + ($efficiencyNorm * 3.0) + $modularBonus;
 
     return round(min($raw, 10.0), 2);
   }

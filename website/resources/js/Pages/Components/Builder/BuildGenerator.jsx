@@ -94,7 +94,7 @@ const BuildGenerator = () => {
 
   const updateBudget = (value) => {
     setBudget(value);
-    if (recommendedBudget > value) {
+    if (value && recommendedBudget > value) {
       setInfo("We recommend increasing your budget for this type of build.");
     } else {
       setInfo("");

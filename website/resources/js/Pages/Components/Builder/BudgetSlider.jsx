@@ -96,10 +96,12 @@ const BudgetSlider = ({
       )}
 
       <div className="relative">
-        <div
-          className="absolute left-0 top-1/2 -translate-y-1/2 h-2 rounded-full bg-danger/50 pointer-events-none z-15"
-          style={{ width: `${reccomendedPercentage}%` }}
-        />
+        {!isUnlimited && (
+          <div
+            className="absolute left-0 top-1/2 -translate-y-1/2 h-2 rounded-full bg-danger/50 pointer-events-none z-15"
+            style={{ width: `${reccomendedPercentage}%` }}
+          />
+        )}
 
         <div className="absolute w-full left-0 top-1/2 -translate-y-1/2 h-2 rounded-full bg-secondary pointer-events-none z-5" />
 
