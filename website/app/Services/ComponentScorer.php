@@ -31,27 +31,27 @@ class ComponentScorer
   // normalization ranges
   private const CPU_RANGES = [
     'passmark'   => ['min' => 7000,  'max' => 175500],
-    'perCore'    => ['min' => 1484,  'max' => 5542],   // passmark / cores
+    'perCore'    => ['min' => 1484,  'max' => 5542], // passmark / cores
     'cores'      => ['min' => 4,     'max' => 96],
-    'clock'      => ['min' => 4.0,   'max' => 6.2],    // GHz turbo
-    'efficiency' => ['min' => 107,   'max' => 1214],   // passmark / tdp
+    'clock'      => ['min' => 4.0,   'max' => 6.2], // GHz
+    'efficiency' => ['min' => 107,   'max' => 1214], // passmark / tdp
   ];
 
   private const GPU_RANGES = [
-    'vram'       => ['min' => 1,    'max' => 96],      // GB
-    'bandwidth'  => ['min' => 8,    'max' => 3584],    // GB/s
+    'vram'       => ['min' => 1,    'max' => 96], // GB
+    'bandwidth'  => ['min' => 8,    'max' => 3584], // GB/s
     'cuda'       => ['min' => 16,   'max' => 24064],
-    'efficiency' => ['min' => 0.52, 'max' => 12.36],  // GB/s per watt
+    'efficiency' => ['min' => 0.52, 'max' => 12.36], // GB/s per watt
   ];
 
   private const RAM_RANGES = [
-    'capacity'  => ['min' => 4,    'max' => 192],    // GB
-    'bandwidth' => ['min' => 21,   'max' => 141],    // GB/s
-    'latency'   => ['min' => 8.3,  'max' => 20.0],  // ns (lower is better)
+    'capacity'  => ['min' => 4,    'max' => 192], // GB
+    'bandwidth' => ['min' => 21,   'max' => 141], // GB/s
+    'latency'   => ['min' => 8.3,  'max' => 20.0], // ns (lower is better)
   ];
 
   private const SSD_RANGES = [
-    'capacity' => ['min' => 64,  'max' => 8000],  // GB
+    'capacity' => ['min' => 64,  'max' => 8000], // GB
     'read'     => ['min' => 95,  'max' => 14900], // MB/s
     'write'    => ['min' => 60,  'max' => 14000], // MB/s
   ];
@@ -158,10 +158,17 @@ class ComponentScorer
       return 0.0;
     }
 
+    // bandwidth = (vram MT/s) * Bus width (bits) / 8 / 1000
+    // bus width: 128-bit, 256-bit, 384-bit
+    // /8 - bytes per transfer
+    // /1000 - convert bytes/s to GB/s
     $bandwidth = ($vramFreq > 0 && $bus > 0)
-      ? ($vramFreq * 2 * $bus) / 8 / 1000
+      // vram frequency is actually MT/s
+      ? ($vramFreq * $bus) / 8 / 1000
       : 0.0;
 
+    // how much bandwidth per watt
+    // efficiency = badnwidth (GB/s) / Power Consumption TDP (Watts)
     $efficiency = ($tdp > 0 && $bandwidth > 0)
       ? $bandwidth / $tdp
       : 0.0;
@@ -205,8 +212,37 @@ class ComponentScorer
       return 0.0;
     }
 
-    $bandwidth     = $frequency > 0 ? ($frequency * 2 * 64) / 8 / 1000 : 0.0;
-    $trueLatencyNs = ($frequency > 0 && $latency > 0) ? ($latency / $frequency) * 2000 : 20.0;
+    // Bandwidth (GB/s) = MT/s × 64-bit bus ÷ 8 ÷ 1000
+    // $frequency - MegaTransfers per second (MT/s) = Marketed RAM Speed
+    // *64 - 64 bits per transfer
+    // /8 - bytes per transfer
+    // /1000 - convert bytes/s to GB/s
+    $bandwidth = $frequency > 0 ? $frequency * 64 / 8 / 1000 : 0.0;
+
+    // $frequency - MegaTransfers per second (MT/s) = Marketed RAM Speed
+    // DDR means each clock cycle produces 2 transfers, so real memory clock Frequency (MHz) = MT/s / 2
+    $realFreq = $frequency / 2;
+    // 1 MHz = 1,000,000 cycles per second
+    // 1 cycle at 1 MHz takes 1 microsecond or 1000 nanoseconds
+    // 1 cycle = 1000 / MHz ns
+    $cycleTimeNs = 1000 / $realFreq;
+    // true CAS latency = CL (cycles) * cycle time (ns)
+    $trueLatencyNs = ($frequency > 0 && $latency > 0) ? $latency * $cycleTimeNs : 20.0;
+
+    $trueLatencyNs = 20.0;
+    if ($frequency > 0 && $latency > 0) {
+      // $frequency - MegaTransfers per second (MT/s) = Marketed RAM Speed
+      // DDR means each clock cycle produces 2 transfers, so real memory clock Frequency (MHz) = MT/s / 2
+      $realFreq = $frequency / 2;
+
+      // 1 MHz = 1,000,000 cycles per second
+      // 1 cycle at 1 MHz takes 1 microsecond or 1000 nanoseconds
+      // 1 cycle = 1000 / MHz ns
+      $cycleTimeNs = 1000 / $realFreq;
+
+      // true CAS latency = CL (cycles) * cycle time (ns)
+      $trueLatencyNs = $latency * $cycleTimeNs;
+    }
 
     $r = self::RAM_RANGES;
 
@@ -253,11 +289,11 @@ class ComponentScorer
 
     $r = self::SSD_RANGES;
 
-    // capacity weighted most heavily since storage space is the primary concern
     $capacityNorm = $this->normalize($capacity, $r['capacity']['min'], $r['capacity']['max']);
     $readNorm     = $this->normalize($readSpeed, $r['read']['min'], $r['read']['max']);
     $writeNorm    = $this->normalize($writeSpeed, $r['write']['min'], $r['write']['max']);
 
+    // capacity most important
     $raw = ($capacityNorm * 5.0) + ($readNorm * 3.0) + ($writeNorm * 2.0);
 
     return round(min($raw, 10.0), 2);
@@ -275,13 +311,13 @@ class ComponentScorer
 
     $r = self::PSU_RANGES;
 
-    // wattage — more headroom is better, weighted most heavily
+    // wattage: more is better
     $wattageNorm = $this->normalize($wattage, $r['wattage']['min'], $r['wattage']['max']);
 
     // efficiency rating
     $efficiencyNorm = self::PSU_EFFICIENCY[$rating] ?? 0.0;
 
-    // modular bonus — flat 1.0 if modular, 0 if not
+    // modular bonus: 1.0 if modular, 0 if not
     $modularBonus = $modular ? 1.0 : 0.0;
 
     // wattage=5.0, efficiency=3.0, modular=2.0
