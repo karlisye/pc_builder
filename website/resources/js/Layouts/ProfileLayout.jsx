@@ -22,7 +22,7 @@ export default function ProfileLayout({ children }) {
         </div>
 
         <div
-          className={`bg-primary fixed h-full left-0 right-0 transition-transform lg:static lg:w-120.5 lg:translate-x-0
+          className={`bg-primary flex flex-col fixed h-full left-0 right-0 transition-transform lg:static lg:w-120.5 lg:translate-x-0 overflow-y-auto z-10 pb-6
             ${expanded ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
         >
           <div className="flex justify-between gap-4 items-center pt-6 px-4">
@@ -54,6 +54,14 @@ export default function ProfileLayout({ children }) {
             >
               Bookmarked
             </Link>
+          </div>
+
+          <div className="mt-auto pt-6 lg:hidden">
+            <div className="p-4 border-t border-primary-light flex">
+              <h2 className="text-6xl p-2 font-bold text-surface border border-secondary-light">
+                PC BUILDER
+              </h2>
+            </div>
           </div>
         </div>
 

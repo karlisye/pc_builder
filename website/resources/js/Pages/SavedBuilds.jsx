@@ -97,7 +97,7 @@ const SavedBuilds = ({ builds, selected }) => {
         </div>
 
         <div
-          className={`bg-primary fixed top-14 bottom-0 left-0 right-0 overflow-y-auto overscroll-contain transition-transform lg:static lg:w-120.5 lg:translate-x-0
+          className={`bg-primary flex flex-col fixed top-14 bottom-0 left-0 right-0 overflow-y-auto overscroll-contain transition-transform lg:static lg:w-120.5 lg:translate-x-0
             ${expanded ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
         >
           <div className="flex justify-between items-center pt-6 px-4">
@@ -140,6 +140,14 @@ const SavedBuilds = ({ builds, selected }) => {
                 </div>
               ))
             )}
+          </div>
+
+          <div className="mt-auto pt-6 lg:hidden">
+            <div className="p-4 border-t border-primary-light flex">
+              <h2 className="text-6xl p-2 font-bold text-surface border border-secondary-light">
+                PC BUILDER
+              </h2>
+            </div>
           </div>
         </div>
 
