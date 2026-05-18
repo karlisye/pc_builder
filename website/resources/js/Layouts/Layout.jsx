@@ -105,7 +105,7 @@ const Layout = ({ children }) => {
 
               <div
                 ref={menuRef}
-                className={`md:hidden absolute left-0 top-14 w-screen bg-background overflow-hidden transition-all shadow z-10 ${
+                className={`md:hidden absolute left-0 top-14 w-screen bg-background overflow-hidden transition-all shadow z-50 ${
                   menuActive ? "h-48" : "h-0"
                 }`}
               >
@@ -162,7 +162,7 @@ const Layout = ({ children }) => {
                 {/* dropdown */}
                 <div
                   ref={dropdownRef}
-                  className={`absolute right-0 sm:w-80 w-screen bg-background overflow-hidden transition-all shadow z-10 ${
+                  className={`absolute right-0 sm:w-80 w-screen bg-background overflow-hidden transition-all shadow z-50 ${
                     profileActive ? "h-32" : "h-0"
                   }`}
                 >

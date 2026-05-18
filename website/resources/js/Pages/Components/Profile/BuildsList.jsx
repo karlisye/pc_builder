@@ -18,9 +18,13 @@ const BuildsList = ({
     current.searchParams.forEach((value, key) => {
       if (!url.searchParams.has(key)) url.searchParams.set(key, value);
     });
-    router.get(url, {
-      preserveState: true,
-    });
+    router.get(
+      url,
+      {},
+      {
+        preserveState: true,
+      },
+    );
   };
 
   const previous = () => {
@@ -29,9 +33,13 @@ const BuildsList = ({
     current.searchParams.forEach((value, key) => {
       if (!url.searchParams.has(key)) url.searchParams.set(key, value);
     });
-    router.get(url, {
-      preserveState: true,
-    });
+    router.get(
+      url,
+      {},
+      {
+        preserveState: true,
+      },
+    );
   };
 
   return (
