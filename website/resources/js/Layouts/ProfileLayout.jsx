@@ -22,7 +22,7 @@ export default function ProfileLayout({ children }) {
         </div>
 
         <div
-          className={`bg-primary flex flex-col fixed h-full left-0 right-0 transition-transform lg:static lg:w-120.5 lg:translate-x-0 overflow-y-auto z-10 pb-6
+          className={`bg-primary flex flex-col fixed left-0 right-0 bottom-0 top-14 transition-transform lg:static lg:w-120.5 lg:translate-x-0 overflow-y-auto z-10 pb-6
             ${expanded ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
         >
           <div className="flex justify-between gap-4 items-center pt-6 px-4">
