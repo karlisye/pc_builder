@@ -56,6 +56,19 @@ services:
       - sail
     environment:
       - PMA_ARBITRARY=1
+  scraper:
+    build:
+      context: ../scraper
+      dockerfile: Dockerfile
+    volumes:
+      - ../scraper:/app
+      - ./.env:/app/.env
+    depends_on:
+      - mysql
+    networks:
+      - sail
+    stdin_open: true # keeps container running for interactive input
+    tty: true # allows to type category when prompted
 networks:
   sail:
     driver: bridge
