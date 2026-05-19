@@ -4,10 +4,17 @@ namespace App\Http\Controllers;
 
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Inertia\Response as InertiaResponse;
 
 class AdminController extends Controller
 {
+  public function index(Request $request): InertiaResponse
+  {
+    return Inertia::render('Admin/Dashboard');
+  }
+
   public function scrape(Request $request): StreamedResponse
   {
     $category = $request->input('category');

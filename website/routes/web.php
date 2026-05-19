@@ -33,6 +33,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('role:admin')->group(function () {
+  Route::get('/admin', [AdminController::class, 'index']);
   Route::get('/admin/scrape', fn() => Inertia::render('Admin/Scraper'));
   Route::post('/admin/scrape', [AdminController::class, 'scrape']);
 });

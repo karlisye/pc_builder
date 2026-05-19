@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     @viteReactRefresh
     @vite('resources/js/app.jsx')
-    @inertiaHead
+    <x-inertia::head />
 </head>
 
 <body>
-    @inertia
+    <x-inertia::app />
 </body>
 
 </html>
