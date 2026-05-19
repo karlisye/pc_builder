@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { usePage } from "@inertiajs/react";
 import { ArrowIcon, CloseIcon } from "../Components/Common/Icons";
+import ScraperLogs from "./Components/ScraperLogs";
 
 const Scraper = () => {
   const { csrf_token } = usePage().props.auth;
@@ -9,6 +10,8 @@ const Scraper = () => {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [meta, setMeta] = useState({});
 
   const [expanded, setExpanded] = useState(false);
 
@@ -16,6 +19,7 @@ const Scraper = () => {
     setError("");
     setLoading(true);
     setOutput([]);
+    setMeta({});
 
     try {
       const res = await fetch("/admin/scrape", {
@@ -34,6 +38,7 @@ const Scraper = () => {
         const { done, value } = await reader.read();
         if (done) {
           setLoading(false);
+          setSuccess("Scrape complete.");
           break;
         }
         const lines = decoder
@@ -41,7 +46,15 @@ const Scraper = () => {
           .split("\n")
           .filter((line) => line.trim() !== "");
 
-        setOutput((prev) => [...prev, ...lines]);
+        lines.forEach((line) => {
+          if (line.startsWith("[META]")) {
+            const pairs = line.replace("[META] ", "").split(" ");
+            const data = Object.fromEntries(pairs.map((p) => p.split("=")));
+            setMeta((prev) => ({ ...prev, ...data }));
+          } else {
+            setOutput((prev) => [...prev, line]);
+          }
+        });
       }
     } catch (err) {
       console.error(err);
@@ -292,20 +305,13 @@ const Scraper = () => {
       </div>
 
       <div className="flex-1 px-4 pt-6 min-w-0">
-        <div>
-          <h2 className="text-2xl font-semibold text-text">Logs</h2>
-          <div className="w-full border h-60 border-border p-2 overflow-x-auto overflow-y-auto relative">
-            <div className="w-max min-w-full">
-              {output.length > 0 &&
-                output.map((line, i) => (
-                  <p key={i} className="text-secondary-light whitespace-nowrap">
-                    {line}
-                  </p>
-                ))}
-            </div>
-          </div>
-          {error && <p className="text-danger">{error}</p>}
-        </div>
+        <ScraperLogs
+          output={output}
+          loading={loading}
+          error={error}
+          success={success}
+          meta={meta}
+        />
       </div>
     </div>
   );

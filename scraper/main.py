@@ -41,14 +41,17 @@ def prompt_user():
 
 
 def main():
+    # needed to flush lines
+    sys.stdout.reconfigure(line_buffering=True)
     if len(sys.argv) > 1:
         selected = get_selected_from_args()
     else:
         selected = prompt_user()
     conn = get_connection()
-    scraped_at = time.strftime("%Y-%m-%d %H:%M:%S")
+    scraped_at = time.strftime("%Y-%m-%d_%H:%M:%S")
 
-    print(f"\nStarting scrape at {scraped_at}")
+    print(f"\n[META] start_time={scraped_at}")
+    print(f"[META] categories={','.join(selected)}")
     print(f"Categories: {', '.join(selected)}\n")
 
     for category_key in selected:
@@ -66,7 +69,7 @@ def main():
             all_urls.extend(urls)
             print(f"  Found {len(urls)} products")
 
-        print(f"  Total: {len(all_urls)} products to scrape")
+        print(f"[META] total_{category_key}={len(all_urls)}")
 
         error_count = 0
         skipped = []
@@ -103,6 +106,7 @@ def main():
         print(
             f"\n  [{category_key.upper()}] Done: {inserted} inserted, {error_count} skipped"
         )
+        print(f"[META] inserted_{category_key}={inserted} skipped_{category_key}={error_count}")
         if skipped:
             print(f"  Skipped URLs:")
             for url, err in skipped:
@@ -111,6 +115,7 @@ def main():
 
     conn.close()
     print("Scrape complete.")
+    print(f"[META] done=true")
 
 
 if __name__ == "__main__":
