@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use Symfony\Component\Process\Process;
 
 class AdminController extends Controller
 {
@@ -12,27 +12,18 @@ class AdminController extends Controller
   {
     $category = $request->input('category');
 
-    // -T for no TTY to run the command non-interactively
     return response()->stream(function () use ($category) {
-      $process = new Process([
-        'docker',
-        'compose',
-        'exec',
-        '-T',
-        'scraper',
-        'python3',
-        '-u',
-        'main.py',
-        $category
+      $client = new Client();
+      $response = $client->post('http://scraper:5000/scrape', [
+        'json' => ['category' => $category],
+        'stream' => true,
+        // timeout for a full scrape ~30min
+        'timeout' => 1800,
       ]);
 
-      // timeout for a full scrape ~30min
-      $process->setTimeout(1800);
-      $process->start();
-
-      // streaming the result
-      foreach ($process as $type => $data) {
-        echo $data;
+      $body = $response->getBody();
+      while (!$body->eof()) {
+        echo $body->read(1024);
         // sends data from php to web server
         ob_flush();
         // sends data from web server to the browser

@@ -62,13 +62,12 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ../scraper:/app
-      - ./.env:/app/.env
-    depends_on:
-      - mysql
+      - ./.env:/app/.env # share Laravel .env with scraper
+    command: python3 server.py
+    ports:
+      - "5000:5000"
     networks:
       - sail
-    stdin_open: true # keeps container running for interactive input
-    tty: true # allows to type category when prompted
 networks:
   sail:
     driver: bridge

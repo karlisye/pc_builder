@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BuildController;
 use App\Http\Controllers\BuilderController;
@@ -32,7 +33,8 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('role:admin')->group(function () {
-  //
+  Route::get('/admin/scrape', fn() => Inertia::render('Admin/Scraper'));
+  Route::post('/admin/scrape', [AdminController::class, 'scrape']);
 });
 
 Route::fallback(fn() => Inertia::render('NotFound'));

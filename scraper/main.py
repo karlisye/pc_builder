@@ -1,5 +1,6 @@
 import importlib
 import time
+import sys
 from config import CATEGORIES, PAGE_DELAY
 from database import get_connection, wipe_table
 from scrapers.list_scraper import get_product_urls
@@ -7,6 +8,18 @@ from scrapers.detail_scraper import scrape_detail_page
 
 MAX_ERRORS_PER_CATEGORY = 10
 
+# support for command line arguments
+def get_selected_from_args():
+    keys = list(CATEGORIES.keys())
+    arg = sys.argv[1].strip().lower()
+    if arg == "all":
+        return keys
+    selected = [c.strip() for c in arg.split(',')]
+    invalid = [c for c in selected if c not in CATEGORIES]
+    if invalid:
+        print(f"Unknown categories: {invalid}")
+        sys.exit(1)
+    return selected
 
 def prompt_user():
     print("\nAvailable categories:")
@@ -28,7 +41,10 @@ def prompt_user():
 
 
 def main():
-    selected = prompt_user()
+    if len(sys.argv) > 1:
+        selected = get_selected_from_args()
+    else:
+        selected = prompt_user()
     conn = get_connection()
     scraped_at = time.strftime("%Y-%m-%d %H:%M:%S")
 
