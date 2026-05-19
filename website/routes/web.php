@@ -31,4 +31,8 @@ Route::middleware('auth')->group(function () {
   Route::get('/profile/{user}', [UserController::class, 'show']);
 });
 
+Route::middleware('role:admin')->group(function () {
+  //
+});
+
 Route::fallback(fn() => Inertia::render('NotFound'));

@@ -16,7 +16,8 @@ class User extends Authenticatable
     'name',
     'email',
     'password',
-    'description'
+    'description',
+    'role'
   ];
 
   protected $hidden = [
@@ -50,5 +51,10 @@ class User extends Authenticatable
   {
     return BuildReview::whereHas('build', fn($q) => $q->where('user_id', $this->id)->where('is_public', true))
       ->avg('rating') ?? 0;
+  }
+
+  public function hasRole(string $role): bool
+  {
+    return $this->role === $role;
   }
 }
