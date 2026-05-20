@@ -3,19 +3,7 @@ import { usePage } from "@inertiajs/react";
 import { ArrowIcon, CloseIcon } from "../Components/Common/Icons";
 import ScraperLogs from "./Components/ScraperLogs";
 import ComponentCheckbox from "./Components/ComponentCheckbox";
-
-const COMPONENT_CATEGORIES = [
-  "cpu",
-  "motherboard",
-  "ram",
-  "gpu",
-  "ssd",
-  "hdd",
-  "case",
-  "fan",
-  "psu",
-  "cooler",
-];
+import ScraperFilters from "./Components/ScraperFilters";
 
 const Scraper = () => {
   const { csrf_token } = usePage().props.auth;
@@ -26,16 +14,29 @@ const Scraper = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [meta, setMeta] = useState({});
+  const [settings, setSettings] = useState({
+    delay: 1,
+    maxErrors: 10,
+  });
+  const [filterError, setFilterError] = useState("");
 
   const [expanded, setExpanded] = useState(false);
 
   const handleScrape = async (categories) => {
     setError("");
+    setFilterError("");
     setLoading(true);
     setOutput([]);
     setMeta({});
 
+    if (categories.length < 1) {
+      setFilterError("Please select at least 1 category to scrape.");
+      setLoading(false);
+      return;
+    }
+
     try {
+      // axios doesnt support streamed responses
       const res = await fetch("/admin/scrape", {
         method: "POST",
         headers: {
@@ -44,7 +45,8 @@ const Scraper = () => {
         },
         body: JSON.stringify({
           category: categories.join(","),
-          // max_errors: config
+          max_errors: settings.maxErrors,
+          page_delay: settings.delay,
         }),
       });
 
@@ -120,27 +122,13 @@ const Scraper = () => {
           </button>
         </div>
         <div className="space-y-4 mt-4 px-4">
-          <div>
-            <p className="text-secondary-light mb-2">Categories to scrape</p>
-
-            <ComponentCheckbox
-              component={"all"}
-              checked={categories.includes("all")}
-              onChange={updateCategories}
-            />
-
-            <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-muted">
-              {COMPONENT_CATEGORIES.map((category) => (
-                <ComponentCheckbox
-                  key={category}
-                  component={category}
-                  checked={categories.includes(category)}
-                  onChange={updateCategories}
-                  disabled={categories.includes("all")}
-                />
-              ))}
-            </div>
-          </div>
+          <ScraperFilters
+            categories={categories}
+            updateCategories={updateCategories}
+            settings={settings}
+            setSettings={setSettings}
+            error={filterError}
+          />
 
           <button
             className="p-4 w-full bg-secondary-light text-text cursor-pointer hover:bg-secondary-light/50 transition disabled:opacity-50"

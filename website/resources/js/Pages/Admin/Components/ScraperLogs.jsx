@@ -37,12 +37,12 @@ const ScraperLogs = ({ output, loading, success, error, meta }) => {
       {meta.done === "true" && (
         <div>
           <div
-            className="flex gap-4 justify-between hover:text-text transition text-muted cursor-pointer"
+            className="flex gap-4 justify-between items-center hover:text-text transition text-muted cursor-pointer"
             onClick={() => setOpen((prev) => !prev)}
           >
             <span className="">Summary</span>
             <span>
-              <ArrowIcon />
+              <ArrowIcon active={open} />
             </span>
           </div>
 

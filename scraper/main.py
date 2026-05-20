@@ -42,11 +42,13 @@ def main():
     if len(sys.argv) > 1:
         selected = get_selected_from_args()
         max_errors = int(sys.argv[2] if len(sys.argv) > 2 else MAX_ERRORS_PER_CATEGORY)
-        page_delay = int(sys.argv[3] if len(sys.argv) > 3 else PAGE_DELAY)
+        page_delay = float(sys.argv[3] if len(sys.argv) > 3 else PAGE_DELAY)
+
     else:
         selected = prompt_user()
         max_errors = MAX_ERRORS_PER_CATEGORY
         page_delay = PAGE_DELAY
+
     conn = get_connection()
     scraped_at = time.strftime("%Y-%m-%d_%H:%M:%S")
 

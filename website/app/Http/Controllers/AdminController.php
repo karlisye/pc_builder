@@ -17,12 +17,14 @@ class AdminController extends Controller
 
   public function scrape(Request $request): StreamedResponse
   {
-    $category = $request->input('category');
-
-    return response()->stream(function () use ($category) {
+    return response()->stream(function () use ($request) {
       $client = new Client();
       $response = $client->post('http://scraper:5000/scrape', [
-        'json' => ['category' => $category],
+        'json' => [
+          'category' => $request->input('category'),
+          'max_errors' => $request->input('max_errors'),
+          'page_delay' => $request->input('page_delay'),
+        ],
         'stream' => true,
         // timeout for a full scrape ~30min
         'timeout' => 1800,
