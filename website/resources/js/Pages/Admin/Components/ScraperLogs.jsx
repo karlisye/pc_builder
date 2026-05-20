@@ -1,7 +1,16 @@
 import React, { useState } from "react";
 import { ArrowIcon } from "../../Components/Common/Icons";
+import Timer from "./Timer";
 
-const ScraperLogs = ({ output, loading, success, error, meta }) => {
+const ScraperLogs = ({
+  output,
+  loading,
+  success,
+  error,
+  meta,
+  scrapeDuration,
+  setScrapeDuration,
+}) => {
   const [open, setOpen] = useState(false);
   const categories = meta?.categories?.split(",") ?? [];
 
@@ -30,6 +39,13 @@ const ScraperLogs = ({ output, loading, success, error, meta }) => {
         >
           <span>Scrape status: </span>
           <span>{loading ? "Scrape in progress..." : success}</span>
+          <span className="ml-auto">
+            <Timer
+              seconds={scrapeDuration}
+              setSeconds={setScrapeDuration}
+              running={loading}
+            />
+          </span>
         </div>
       )}
       {error && <p className="text-danger">{error}</p>}

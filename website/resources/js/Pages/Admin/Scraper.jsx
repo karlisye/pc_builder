@@ -19,6 +19,7 @@ const Scraper = () => {
     maxErrors: 10,
   });
   const [filterError, setFilterError] = useState("");
+  const [scrapeDuration, setScrapeDuration] = useState(0);
 
   const [expanded, setExpanded] = useState(false);
 
@@ -147,6 +148,8 @@ const Scraper = () => {
           error={error}
           success={success}
           meta={meta}
+          scrapeDuration={scrapeDuration}
+          setScrapeDuration={setScrapeDuration}
         />
       </div>
     </div>
