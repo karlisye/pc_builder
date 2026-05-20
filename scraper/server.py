@@ -6,10 +6,12 @@ app = Flask(__name__)
 @app.route('/scrape', methods=['POST'])
 def scrape():
     category = request.json.get('category')
+    max_errors = request.json.get('max_errors', 10)
+    page_delay = request.json.get('page_delay', 1)
 
     def generate():
         process = subprocess.Popen(
-            ['python3', '-u', 'main.py', category],
+            ['python3', '-u', 'main.py', category, str(max_errors), str(page_delay)],
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True

@@ -1,12 +1,10 @@
 import importlib
 import time
 import sys
-from config import CATEGORIES, PAGE_DELAY
+from config import CATEGORIES, PAGE_DELAY, MAX_ERRORS_PER_CATEGORY
 from database import get_connection, wipe_table
 from scrapers.list_scraper import get_product_urls
 from scrapers.detail_scraper import scrape_detail_page
-
-MAX_ERRORS_PER_CATEGORY = 10
 
 # support for command line arguments
 def get_selected_from_args():
@@ -41,12 +39,14 @@ def prompt_user():
 
 
 def main():
-    # needed to flush lines
-    sys.stdout.reconfigure(line_buffering=True)
     if len(sys.argv) > 1:
         selected = get_selected_from_args()
+        max_errors = int(sys.argv[2] if len(sys.argv) > 2 else MAX_ERRORS_PER_CATEGORY)
+        page_delay = int(sys.argv[3] if len(sys.argv) > 3 else PAGE_DELAY)
     else:
         selected = prompt_user()
+        max_errors = MAX_ERRORS_PER_CATEGORY
+        page_delay = PAGE_DELAY
     conn = get_connection()
     scraped_at = time.strftime("%Y-%m-%d_%H:%M:%S")
 
@@ -92,15 +92,15 @@ def main():
 
                 error_count += 1
                 skipped.append((url, str(e)))
-                print(f"  [SKIP {error_count}/{MAX_ERRORS_PER_CATEGORY}] {url}")
+                print(f"  [SKIP {error_count}/{max_errors}] {url}")
                 print(f"  [SKIP] {e}")
-                if error_count >= MAX_ERRORS_PER_CATEGORY:
+                if error_count >= max_errors:
                     print(
-                        f"\n[ABORT] {category_key.upper()} reached {MAX_ERRORS_PER_CATEGORY} errors. Stopping category."
+                        f"\n[ABORT] {category_key.upper()} reached {max_errors} errors. Stopping category."
                     )
                     break
 
-            time.sleep(PAGE_DELAY)
+            time.sleep(page_delay)
 
         inserted = i - error_count
         print(

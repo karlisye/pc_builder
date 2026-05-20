@@ -2,6 +2,20 @@ import React, { useState } from "react";
 import { usePage } from "@inertiajs/react";
 import { ArrowIcon, CloseIcon } from "../Components/Common/Icons";
 import ScraperLogs from "./Components/ScraperLogs";
+import ComponentCheckbox from "./Components/ComponentCheckbox";
+
+const COMPONENT_CATEGORIES = [
+  "cpu",
+  "motherboard",
+  "ram",
+  "gpu",
+  "ssd",
+  "hdd",
+  "case",
+  "fan",
+  "psu",
+  "cooler",
+];
 
 const Scraper = () => {
   const { csrf_token } = usePage().props.auth;
@@ -15,7 +29,7 @@ const Scraper = () => {
 
   const [expanded, setExpanded] = useState(false);
 
-  const handleScrape = async (category) => {
+  const handleScrape = async (categories) => {
     setError("");
     setLoading(true);
     setOutput([]);
@@ -28,7 +42,10 @@ const Scraper = () => {
           "Content-Type": "application/json",
           "X-CSRF-TOKEN": csrf_token,
         },
-        body: JSON.stringify({ category }),
+        body: JSON.stringify({
+          category: categories.join(","),
+          // max_errors: config
+        }),
       });
 
       const reader = res.body.getReader();
@@ -104,199 +121,30 @@ const Scraper = () => {
         </div>
         <div className="space-y-4 mt-4 px-4">
           <div>
-            <span className="text-secondary-light">Categories to scrape</span>
+            <p className="text-secondary-light mb-2">Categories to scrape</p>
 
-            <div className="grid grid-cols-2 gap-2 mt-2">
-              <div className="flex items-center gap-2 col-span-2 pb-2 border-b border-muted">
-                <input
-                  className="accent-secondary-light"
-                  id="all"
-                  type="checkbox"
-                  checked={categories.includes("all")}
-                  onChange={(e) => updateCategories("all", e.target.checked)}
-                />
-                <label className="text-sm text-secondary-light" htmlFor="all">
-                  All
-                </label>
-              </div>
+            <ComponentCheckbox
+              component={"all"}
+              checked={categories.includes("all")}
+              onChange={updateCategories}
+            />
 
-              <div className="flex items-center gap-2">
-                <input
-                  className="accent-secondary-light disabled:accent-red-500"
-                  id="cpu"
-                  type="checkbox"
-                  checked={categories.includes("cpu")}
-                  onChange={(e) => updateCategories("cpu", e.target.checked)}
+            <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-muted">
+              {COMPONENT_CATEGORIES.map((category) => (
+                <ComponentCheckbox
+                  key={category}
+                  component={category}
+                  checked={categories.includes(category)}
+                  onChange={updateCategories}
                   disabled={categories.includes("all")}
                 />
-                <label
-                  className={`text-sm ${categories.includes("all") ? "text-muted" : "text-secondary-light"}`}
-                  htmlFor="cpu"
-                >
-                  CPU
-                </label>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <input
-                  className="accent-secondary-light"
-                  id="motherboard"
-                  type="checkbox"
-                  checked={categories.includes("motherboard")}
-                  onChange={(e) =>
-                    updateCategories("motherboard", e.target.checked)
-                  }
-                  disabled={categories.includes("all")}
-                />
-                <label
-                  className={`text-sm ${categories.includes("all") ? "text-muted" : "text-secondary-light"}`}
-                  htmlFor="motherboard"
-                >
-                  Motherboard
-                </label>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <input
-                  className="accent-secondary-light"
-                  id="ram"
-                  type="checkbox"
-                  checked={categories.includes("ram")}
-                  onChange={(e) => updateCategories("ram", e.target.checked)}
-                  disabled={categories.includes("all")}
-                />
-                <label
-                  className={`text-sm ${categories.includes("all") ? "text-muted" : "text-secondary-light"}`}
-                  htmlFor="ram"
-                >
-                  RAM
-                </label>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <input
-                  className="accent-secondary-light"
-                  id="gpu"
-                  type="checkbox"
-                  checked={categories.includes("gpu")}
-                  onChange={(e) => updateCategories("gpu", e.target.checked)}
-                  disabled={categories.includes("all")}
-                />
-                <label
-                  className={`text-sm ${categories.includes("all") ? "text-muted" : "text-secondary-light"}`}
-                  htmlFor="gpu"
-                >
-                  GPU
-                </label>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <input
-                  className="accent-secondary-light"
-                  id="ssd"
-                  type="checkbox"
-                  checked={categories.includes("ssd")}
-                  onChange={(e) => updateCategories("ssd", e.target.checked)}
-                  disabled={categories.includes("all")}
-                />
-                <label
-                  className={`text-sm ${categories.includes("all") ? "text-muted" : "text-secondary-light"}`}
-                  htmlFor="ssd"
-                >
-                  SSD
-                </label>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <input
-                  className="accent-secondary-light"
-                  id="hdd"
-                  type="checkbox"
-                  checked={categories.includes("hdd")}
-                  onChange={(e) => updateCategories("hdd", e.target.checked)}
-                  disabled={categories.includes("all")}
-                />
-                <label
-                  className={`text-sm ${categories.includes("all") ? "text-muted" : "text-secondary-light"}`}
-                  htmlFor="hdd"
-                >
-                  HDD
-                </label>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <input
-                  className="accent-secondary-light"
-                  id="case"
-                  type="checkbox"
-                  checked={categories.includes("case")}
-                  onChange={(e) => updateCategories("case", e.target.checked)}
-                  disabled={categories.includes("all")}
-                />
-                <label
-                  className={`text-sm ${categories.includes("all") ? "text-muted" : "text-secondary-light"}`}
-                  htmlFor="case"
-                >
-                  Case
-                </label>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <input
-                  className="accent-secondary-light"
-                  id="fan"
-                  type="checkbox"
-                  checked={categories.includes("fan")}
-                  onChange={(e) => updateCategories("fan", e.target.checked)}
-                  disabled={categories.includes("all")}
-                />
-                <label
-                  className={`text-sm ${categories.includes("all") ? "text-muted" : "text-secondary-light"}`}
-                  htmlFor="fan"
-                >
-                  Fan
-                </label>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <input
-                  className="accent-secondary-light"
-                  id="psu"
-                  type="checkbox"
-                  checked={categories.includes("psu")}
-                  onChange={(e) => updateCategories("psu", e.target.checked)}
-                  disabled={categories.includes("all")}
-                />
-                <label
-                  className={`text-sm ${categories.includes("all") ? "text-muted" : "text-secondary-light"}`}
-                  htmlFor="psu"
-                >
-                  PSU
-                </label>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <input
-                  className="accent-secondary-light"
-                  id="cooler"
-                  type="checkbox"
-                  checked={categories.includes("cooler")}
-                  onChange={(e) => updateCategories("cooler", e.target.checked)}
-                  disabled={categories.includes("all")}
-                />
-                <label
-                  className={`text-sm ${categories.includes("all") ? "text-muted" : "text-secondary-light"}`}
-                  htmlFor="cooler"
-                >
-                  Cooler
-                </label>
-              </div>
+              ))}
             </div>
           </div>
 
           <button
             className="p-4 w-full bg-secondary-light text-text cursor-pointer hover:bg-secondary-light/50 transition disabled:opacity-50"
-            onClick={() => handleScrape(categories.join(","))}
+            onClick={() => handleScrape(categories)}
             disabled={loading}
           >
             {loading ? "Scraping..." : "Scrape"}
