@@ -4,6 +4,7 @@ import { ArrowIcon, CloseIcon } from "../Components/Common/Icons";
 import ScraperLogs from "./Components/ScraperLogs";
 import ComponentCheckbox from "./Components/ComponentCheckbox";
 import ScraperFilters from "./Components/ScraperFilters";
+import axios from "axios";
 
 const Scraper = () => {
   const { csrf_token } = usePage().props.auth;
@@ -36,6 +37,8 @@ const Scraper = () => {
       return;
     }
 
+    let latestMeta = {};
+
     try {
       // axios doesnt support streamed responses
       const res = await fetch("/admin/scrape", {
@@ -59,6 +62,8 @@ const Scraper = () => {
         if (done) {
           setLoading(false);
           setSuccess("Scrape complete.");
+
+          await handleStore(latestMeta);
           break;
         }
         const lines = decoder
@@ -70,7 +75,13 @@ const Scraper = () => {
           if (line.startsWith("[META]")) {
             const pairs = line.replace("[META] ", "").split(" ");
             const data = Object.fromEntries(pairs.map((p) => p.split("=")));
-            setMeta((prev) => ({ ...prev, ...data }));
+
+            latestMeta = {
+              ...latestMeta,
+              ...data,
+            };
+
+            setMeta(latestMeta);
           } else {
             setOutput((prev) => [...prev, line]);
           }
@@ -79,6 +90,29 @@ const Scraper = () => {
     } catch (err) {
       console.error(err);
       setError("Failed to scrape.");
+    }
+  };
+
+  const handleStore = async (metaData) => {
+    try {
+      const categories = metaData.categories?.split(",") ?? [];
+
+      const results = categories.map((category) => ({
+        category,
+        total: Number(metaData[`total_${category}`] ?? 0),
+        inserted: Number(metaData[`inserted_${category}`] ?? 0),
+        skipped: Number(metaData[`skipped_${category}`] ?? 0),
+      }));
+
+      await axios.post("/api/scrape", {
+        started_at: metaData.start_time.replace("_", "T"),
+        finished_at: metaData.finished_at.replace("_", "T"),
+        status: metaData.done === "true" ? "success" : "failed",
+        duration: scrapeDuration,
+        results,
+      });
+    } catch (err) {
+      console.error("Failed to store scrape:", err?.response?.data);
     }
   };
 

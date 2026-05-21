@@ -116,8 +116,10 @@ def main():
         print()
 
     conn.close()
+    finished_at = time.strftime("%Y-%m-%d_%H:%M:%S")
     print("Scrape complete.")
     print(f"[META] done=true")
+    print(f"[META] finished_at={finished_at}")
 
 
 if __name__ == "__main__":
