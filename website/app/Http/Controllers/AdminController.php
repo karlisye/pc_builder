@@ -90,4 +90,10 @@ class AdminController extends Controller
       ]);
     });
   }
+
+  public function indexHistory(Request $request): InertiaResponse
+  {
+    $history = ScrapeSession::with('results')->paginate(10);
+    return Inertia::render('Admin/History', ['historyData' => $history]);
+  }
 }

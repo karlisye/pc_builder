@@ -131,7 +131,7 @@ const Scraper = () => {
 
   return (
     <div className="h-full flex">
-      <div className="lg:hidden fixed left-0 top-1/2 -translate-y-1/2 transition-transform -translate-x-4 hover:translate-x-0">
+      <div className="lg:hidden fixed left-0 top-1/2 -translate-y-1/2 transition-transform -translate-x-4 hover:translate-x-0 z-10">
         <button
           onClick={() => setExpanded((prev) => !prev)}
           className="bg-primary text-white w-15 px-2 py-8 flex justify-end cursor-pointer hover:bg-primary-light transition"
@@ -143,7 +143,7 @@ const Scraper = () => {
       </div>
 
       <div
-        className={`bg-primary flex flex-col fixed top-14 bottom-0 left-0 right-0 overflow-y-auto overscroll-contain transition-transform lg:static lg:w-120.5 lg:translate-x-0
+        className={`bg-primary flex flex-col fixed top-14 bottom-0 left-0 right-0 overflow-y-auto overscroll-contain transition-transform lg:static lg:w-120.5 lg:translate-x-0 z-10
           ${expanded ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
       >
         {" "}

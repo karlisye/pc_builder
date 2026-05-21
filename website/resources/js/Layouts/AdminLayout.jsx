@@ -65,6 +65,13 @@ const AdminLayout = ({ children }) => {
             >
               Scraper
             </Link>
+
+            <Link
+              className={navLinkClass("/admin/history")}
+              href="/admin/history"
+            >
+              History
+            </Link>
           </div>
 
           <button
@@ -82,7 +89,7 @@ const AdminLayout = ({ children }) => {
           <div
             ref={menuRef}
             className={`md:hidden absolute left-0 top-14 w-screen bg-background overflow-hidden transition-all shadow z-50 ${
-              menuActive ? "h-12" : "h-0"
+              menuActive ? "h-24" : "h-0"
             }`}
           >
             <Link
@@ -91,6 +98,14 @@ const AdminLayout = ({ children }) => {
               onClick={() => setMenuActive(false)}
             >
               Scraper
+            </Link>
+
+            <Link
+              className={menuLinkClass("/admin/history")}
+              href="/admin/history"
+              onClick={() => setMenuActive(false)}
+            >
+              History
             </Link>
           </div>
 

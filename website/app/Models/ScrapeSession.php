@@ -18,6 +18,6 @@ class ScrapeSession extends Model
 
   public function results(): HasMany
   {
-    return $this->hasMany(ScrapeResult::class);
+    return $this->hasMany(ScrapeResult::class, 'session_id');
   }
 }
