@@ -91,9 +91,9 @@ class AdminController extends Controller
     });
   }
 
-  public function indexHistory(Request $request): InertiaResponse
+  public function fetchHistory(Request $request): JsonResponse
   {
-    $history = ScrapeSession::with('results')->paginate(10);
-    return Inertia::render('Admin/History', ['historyData' => $history]);
+    $history = ScrapeSession::query()->with('results')->paginate(10);
+    return response()->json(['historyData' => $history]);
   }
 }

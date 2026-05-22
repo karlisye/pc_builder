@@ -32,6 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::delete('/users/{user}', [UserController::class, 'destroy']);
 });
 
-Route::middleware('role:admin')->group(function () {
+Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
   Route::post('/scrape', [AdminController::class, 'store']);
+  Route::get('/scrape/history', [AdminController::class, 'fetchHistory']);
 });
