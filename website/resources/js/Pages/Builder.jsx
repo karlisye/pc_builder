@@ -8,7 +8,7 @@ import BuildInfo from "./Components/Builder/BuildInfo";
 import { Link } from "@inertiajs/react";
 import BuildGenerator from "./Components/Builder/BuildGenerator";
 import ComponentGenerator from "./Components/Builder/ComponentGenerator";
-import { ArrowIcon, CloseIcon } from "./Components/Common/Icons";
+import SidePanel from "./Components/Common/SidePanel";
 import axios from "axios";
 
 const Builder = ({ build }) => {
@@ -30,8 +30,10 @@ const Builder = ({ build }) => {
   const [notes, setNotes] = useState([]);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [expanded, setExpanded] = useState(false);
   const [buildIssues, setBuildIssues] = useState({});
+  const [filters, setFilters] = useState({});
+  const [sort, setSort] = useState("price_asc");
+  const [buildType, setBuildType] = useState(build?.type ?? "");
 
   useEffect(() => {
     validateCompatibility();
@@ -65,10 +67,6 @@ const Builder = ({ build }) => {
     return () => clearTimeout(timer);
   }, [search]);
 
-  const [filters, setFilters] = useState({});
-  const [sort, setSort] = useState("price_asc");
-  const [buildType, setBuildType] = useState(build?.type ?? "");
-
   return (
     <BuilderContext
       value={{
@@ -97,63 +95,31 @@ const Builder = ({ build }) => {
       }}
     >
       <div className="h-full flex">
-        <div className="lg:hidden fixed left-0 top-1/2 -translate-y-1/2 transition-transform -translate-x-4 hover:translate-x-0 z-10">
-          <button
-            onClick={() => setExpanded((prev) => !prev)}
-            className="bg-primary text-white w-15 px-2 py-8 flex justify-end cursor-pointer hover:bg-primary-light transition"
-          >
-            <span className="rotate-270">
-              <ArrowIcon size={32} />
-            </span>
-          </button>
-        </div>
-
-        <div
-          className={`bg-primary flex flex-col fixed left-0 right-0 bottom-0 top-14 transition-transform lg:static lg:w-120.5 lg:translate-x-0 overflow-y-auto z-10 pb-6
-            ${expanded ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
-        >
-          <div className="flex justify-between items-center pt-6 px-4">
-            <h1 className="text-4xl font-semibold text-white">BUILDER</h1>
-
-            {(build || buildId) && (
+        <SidePanel
+          title="BUILDER"
+          headerRight={
+            (build || buildId) && (
               <Link
-                className="px-6 py-2 border text-secondary-light cursor-pointer hover:text-muted transition text-sm ml-auto"
+                className="px-6 py-2 border text-secondary-light cursor-pointer hover:text-muted transition text-sm"
                 href="builder"
               >
                 New Build
               </Link>
-            )}
+            )
+          }
+        >
+          {currentCompToAdd ? <ComponentFilters /> : <BuildDesc />}
 
-            <button
-              className="w-10 h-10 lg:hidden text-secondary-light hover:cursor-pointer bg-primary hover:bg-primary-light transition p-2 ml-4"
-              onClick={() => setExpanded(false)}
-            >
-              <CloseIcon />
-            </button>
-          </div>
+          <BuildInfo
+            currBuildInfo={{
+              id: build?.id,
+              name: build?.name,
+              notes: build?.notes,
+            }}
+          />
 
-          <div className="mt-4 px-4 flex flex-col">
-            {currentCompToAdd ? <ComponentFilters /> : <BuildDesc />}
-
-            <BuildInfo
-              currBuildInfo={{
-                id: build?.id,
-                name: build?.name,
-                notes: build?.notes,
-              }}
-            />
-
-            {currentCompToAdd ? <ComponentGenerator /> : <BuildGenerator />}
-          </div>
-
-          <div className="mt-auto pt-6 lg:hidden">
-            <div className="pt-4 px-4 border-t border-primary-light flex">
-              <h2 className="text-6xl p-2 font-bold text-surface border border-secondary-light">
-                PC BUILDER
-              </h2>
-            </div>
-          </div>
-        </div>
+          {currentCompToAdd ? <ComponentGenerator /> : <BuildGenerator />}
+        </SidePanel>
 
         <div className="flex-1 flex px-4 py-6">
           {currentCompToAdd ? (
