@@ -93,7 +93,32 @@ class AdminController extends Controller
 
   public function fetchHistory(Request $request): JsonResponse
   {
-    $history = ScrapeSession::query()->with('results')->paginate(10);
+    $query = ScrapeSession::query()->with('results');
+
+    if ($request->input('sort')) {
+      match ($request->input('sort')) {
+        'date_desc' => $query->orderByDesc('started_at'),
+        'date_asc' => $query->orderBy('started_at'),
+        default => $query->orderBy('started_at')
+      };
+    }
+
+    if ($request->input('date_from')) {
+      $query->where('started_at', '>=', $request->date_from);
+    }
+    if ($request->input('date_to')) {
+      $query->where('finished_at', '<=', $request->date_to);
+    }
+
+    if ($request->input('status')) {
+      $query->where('status', $request->status);
+    }
+
+    if ($request->input('categories')) {
+      $query->whereHas('results', fn($q) => $q->whereIn('category', $request->input('categories')));
+    }
+
+    $history = $query->paginate(10);
     return response()->json(['historyData' => $history]);
   }
 }

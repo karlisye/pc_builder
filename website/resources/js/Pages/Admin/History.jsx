@@ -3,6 +3,7 @@ import SidePanel from "../Components/Common/SidePanel";
 import axios from "axios";
 import PaginationControls from "../Components/Common/PaginationControls";
 import HistoryCard from "./Components/HistoryCard";
+import HistoryFilters from "./Components/HistoryFilters";
 
 const History = () => {
   const [history, setHistory] = useState([]);
@@ -10,6 +11,13 @@ const History = () => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [error, setError] = useState("");
+  const [filters, setFilters] = useState({});
+  const [sort, setSort] = useState("");
+
+  useEffect(() => {
+    setPage(1);
+    fetchHistory(1);
+  }, [filters, sort]);
 
   useEffect(() => {
     fetchHistory(page);
@@ -23,6 +31,8 @@ const History = () => {
       const res = await axios.get("/api/scrape/history", {
         params: {
           page: pageNum,
+          sort,
+          ...filters,
         },
       });
       setHistory(res.data.historyData.data);
@@ -40,7 +50,14 @@ const History = () => {
   };
   return (
     <div className="h-full flex">
-      <SidePanel title={"SCRAPE HISTORY"}></SidePanel>
+      <SidePanel title={"SCRAPE HISTORY"}>
+        <HistoryFilters
+          sort={sort}
+          setSort={setSort}
+          filters={filters}
+          setFilters={setFilters}
+        />
+      </SidePanel>
 
       <div className="flex-1 px-4 py-6">
         <h2 className="text-2xl font-semibold text-text">History</h2>
