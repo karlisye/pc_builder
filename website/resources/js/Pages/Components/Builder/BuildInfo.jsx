@@ -13,6 +13,8 @@ const BuildInfo = ({ currBuildInfo }) => {
     buildType,
     setBuildType,
     setWarnings,
+    setBuildIssues,
+    setNotes,
   } = useBuilder();
   const [buildName, setBuildName] = useState(currBuildInfo?.name ?? "");
   const [buildNotes, setBuildNotes] = useState(currBuildInfo?.notes ?? "");
@@ -75,6 +77,8 @@ const BuildInfo = ({ currBuildInfo }) => {
     setBuildNotes("");
     setBuildType("");
     setWarnings([]);
+    setBuildIssues({});
+    setNotes([]);
   };
 
   const hasComponents = Object.values(selectedComponents).some(

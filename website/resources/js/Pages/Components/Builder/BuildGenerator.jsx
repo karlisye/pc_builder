@@ -4,6 +4,7 @@ import { useBuilder } from "../../../Contexts/BuilderContext";
 import BudgetSlider from "./BudgetSlider";
 import { Link } from "@inertiajs/react";
 import { ArrowIcon } from "../Common/Icons";
+import ClosedSection from "../Common/ClosedSection";
 
 const BuildGenerator = () => {
   const {
@@ -78,7 +79,6 @@ const BuildGenerator = () => {
           ...res.data.build,
         }));
         setBuildType(res.data.type);
-        setOpen(false);
         setCurrentCompToAdd(null);
         setWarnings(res.data.warnings);
         setNotes(res.data.notes);
@@ -108,140 +108,126 @@ const BuildGenerator = () => {
 
   return (
     <div className="pt-4 border-t mt-4 border-secondary">
-      <button
-        onClick={() => setOpen((prev) => !prev)}
-        className="w-full flex justify-between items-center text-secondary-light hover:text-surface transition cursor-pointer"
-      >
-        <span className="text-sm">Auto Generate Build</span>
-        <ArrowIcon active={open} />
-      </button>
+      <ClosedSection title={"Auto Generate Build"}>
+        <p className="text-muted text-sm">
+          Not sure where to start? Let us pick the best compatible components
+          for your budget. For more information visit{" "}
+          <Link
+            className="text-info/80 cursor-pointer hover:underline"
+            href="/guide"
+          >
+            Automatic Builder
+          </Link>{" "}
+          guide .
+        </p>
 
-      <div
-        className={`grid transition-all overflow-hidden ${open ? "grid-rows-[1fr] mt-3" : "grid-rows-[0fr]"}`}
-      >
-        <div className="overflow-hidden space-y-4 p-px">
-          <p className="text-muted text-sm">
-            Not sure where to start? Let us pick the best compatible components
-            for your budget. For more information visit{" "}
-            <Link
-              className="text-info/80 cursor-pointer hover:underline"
-              href="/guide"
+        <BudgetSlider
+          value={budget}
+          onChange={updateBudget}
+          recommended={recommendedBudget}
+        />
+
+        {info && (
+          <div className="p-2 border bg-alert/10 border-alert/80">
+            <p className="text-alert text-sm">{info}</p>
+          </div>
+        )}
+
+        <p className="text-secondary-light text-sm mb-1">Preferences</p>
+
+        <div className={`flex ${budget >= 500 || !budget ? "gap-2" : ""}`}>
+          <div
+            className={`flex flex-col transition-all overflow-hidden ${budget >= 500 || !budget ? "flex-1" : "w-0"}`}
+          >
+            <label className="text-sm text-secondary-light" htmlFor="gpu">
+              GPU
+            </label>
+            <select
+              onChange={(e) => updatePref("gpu", e.target.value)}
+              className="p-1 text-secondary-light text-sm border border-muted hover:outline focus:outline outline-secondary-light"
+              value={preferences.gpu ?? ""}
             >
-              Automatic Builder
-            </Link>{" "}
-            guide .
-          </p>
-
-          <BudgetSlider
-            value={budget}
-            onChange={updateBudget}
-            recommended={recommendedBudget}
-          />
-
-          {info && (
-            <div className="p-2 border bg-alert/10 border-alert/80">
-              <p className="text-alert text-sm">{info}</p>
-            </div>
-          )}
-
-          <p className="text-secondary-light text-sm mb-1">Preferences</p>
-
-          <div className={`flex ${budget >= 500 || !budget ? "gap-2" : ""}`}>
-            <div
-              className={`flex flex-col transition-all overflow-hidden ${budget >= 500 || !budget ? "flex-1" : "w-0"}`}
-            >
-              <label className="text-sm text-secondary-light" htmlFor="gpu">
-                GPU
-              </label>
-              <select
-                onChange={(e) => updatePref("gpu", e.target.value)}
-                className="p-1 text-secondary-light text-sm border border-muted hover:outline focus:outline outline-secondary-light"
-                value={preferences.gpu ?? ""}
-              >
-                <option value="">Any</option>
-                <option value="nvidia">NVIDIA</option>
-                <option value="amd">AMD</option>
-                <option value="intel">INTEL</option>
-              </select>
-            </div>
-
-            <div className="flex flex-col flex-1">
-              <label className="text-sm text-secondary-light" htmlFor="gpu">
-                CPU
-              </label>
-              <select
-                onChange={(e) => updatePref("cpu", e.target.value)}
-                className="p-1 text-secondary-light text-sm border border-muted hover:outline focus:outline outline-secondary-light"
-                value={preferences.cpu ?? ""}
-              >
-                <option value="">Any</option>
-                <option value="amd">AMD</option>
-                <option value="intel">INTEL</option>
-              </select>
-            </div>
+              <option value="">Any</option>
+              <option value="nvidia">NVIDIA</option>
+              <option value="amd">AMD</option>
+              <option value="intel">INTEL</option>
+            </select>
           </div>
 
           <div className="flex flex-col flex-1">
             <label className="text-sm text-secondary-light" htmlFor="gpu">
-              Usage
+              CPU
             </label>
             <select
-              onChange={(e) => updatePref("type", e.target.value)}
+              onChange={(e) => updatePref("cpu", e.target.value)}
               className="p-1 text-secondary-light text-sm border border-muted hover:outline focus:outline outline-secondary-light"
-              value={preferences.type ?? ""}
+              value={preferences.cpu ?? ""}
             >
               <option value="">Any</option>
-              {(budget > 500 || !budget) && (
-                <option value="gaming">Gaming</option>
-              )}
-              <option value="office">Office</option>
-              {(budget > 1500 || !budget) && (
-                <option value="rendering">Rendering</option>
-              )}
-              {(budget > 500 || !budget) && (
-                <option value="streaming">Streaming</option>
-              )}
+              <option value="amd">AMD</option>
+              <option value="intel">INTEL</option>
             </select>
           </div>
-
-          <div className="flex gap-2 items-center">
-            <input
-              className="accent-secondary-light"
-              id="include_orderable"
-              type="checkbox"
-              checked={preferences.include_orderable}
-              onChange={(e) =>
-                updatePref("include_orderable", e.target.checked)
-              }
-            />
-            <label
-              className="text-secondary-light text-sm"
-              htmlFor="include_orderable"
-            >
-              Include Only Orderable Items
-            </label>
-          </div>
-
-          {error && <p className="text-danger text-sm mb-2">{error}</p>}
-
-          {hasIncompatible && (
-            <div className="p-2 border bg-alert/10 border-alert/80">
-              <p className="text-alert text-sm">
-                One or more components in your current build are incompatible.
-                Please change or remove them to generate.
-              </p>
-            </div>
-          )}
-
-          <button
-            className="p-4 w-full bg-secondary-light text-text cursor-pointer hover:bg-secondary-light/50 transition disabled:opacity-50"
-            onClick={handleGenerate}
-            disabled={loading || hasIncompatible}
-          >
-            {loading ? <p>Generating...</p> : "Generate"}
-          </button>
         </div>
-      </div>
+
+        <div className="flex flex-col flex-1">
+          <label className="text-sm text-secondary-light" htmlFor="gpu">
+            Usage
+          </label>
+          <select
+            onChange={(e) => updatePref("type", e.target.value)}
+            className="p-1 text-secondary-light text-sm border border-muted hover:outline focus:outline outline-secondary-light"
+            value={preferences.type ?? ""}
+          >
+            <option value="">Any</option>
+            {(budget > 500 || !budget) && (
+              <option value="gaming">Gaming</option>
+            )}
+            <option value="office">Office</option>
+            {(budget > 1500 || !budget) && (
+              <option value="rendering">Rendering</option>
+            )}
+            {(budget > 500 || !budget) && (
+              <option value="streaming">Streaming</option>
+            )}
+          </select>
+        </div>
+
+        <div className="flex gap-2 items-center">
+          <input
+            className="accent-secondary-light"
+            id="include_orderable"
+            type="checkbox"
+            checked={preferences.include_orderable}
+            onChange={(e) => updatePref("include_orderable", e.target.checked)}
+          />
+          <label
+            className="text-secondary-light text-sm"
+            htmlFor="include_orderable"
+          >
+            Include Only Orderable Items
+          </label>
+        </div>
+
+        {error && <p className="text-danger text-sm mb-2">{error}</p>}
+
+        {hasIncompatible && (
+          <div className="p-2 border bg-alert/10 border-alert/80">
+            <p className="text-alert text-sm">
+              One or more components in your current build are incompatible.
+              Please change or remove them to generate.
+            </p>
+          </div>
+        )}
+
+        <button
+          className="p-4 w-full bg-secondary-light text-text cursor-pointer hover:bg-secondary-light/50 transition disabled:opacity-50"
+          onClick={handleGenerate}
+          disabled={loading || hasIncompatible}
+        >
+          {loading ? <p>Generating...</p> : "Generate"}
+        </button>
+      </ClosedSection>
     </div>
   );
 };

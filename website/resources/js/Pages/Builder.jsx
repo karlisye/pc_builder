@@ -91,6 +91,7 @@ const Builder = ({ build }) => {
         notes,
         setNotes,
         buildIssues,
+        setBuildIssues,
       }}
     >
       <div className="h-full flex">
