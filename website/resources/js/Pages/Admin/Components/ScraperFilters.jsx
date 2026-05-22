@@ -81,7 +81,7 @@ const ScraperFilters = ({
         </div>
       </div>
 
-      <div>
+      <div className="mt-4">
         <ClosedSection title={"Settings"}>
           <div className="flex gap-4 justify-between items-center">
             <label className="text-sm text-secondary-light" htmlFor="delay">

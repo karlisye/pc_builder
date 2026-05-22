@@ -42,7 +42,6 @@ const SidePanel = ({
             <button
               className="w-10 h-10 lg:hidden text-secondary-light hover:cursor-pointer bg-primary hover:bg-primary-light transition p-2 ml-4"
               onClick={() => setExpanded(false)}
-              aria-label="Close side panel"
             >
               <CloseIcon />
             </button>

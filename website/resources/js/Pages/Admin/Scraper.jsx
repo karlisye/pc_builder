@@ -5,6 +5,7 @@ import ScraperLogs from "./Components/ScraperLogs";
 import ComponentCheckbox from "./Components/ComponentCheckbox";
 import ScraperFilters from "./Components/ScraperFilters";
 import axios from "axios";
+import SidePanel from "../Components/Common/SidePanel";
 
 const Scraper = () => {
   const { csrf_token } = usePage().props.auth;
@@ -131,49 +132,23 @@ const Scraper = () => {
 
   return (
     <div className="h-full flex">
-      <div className="lg:hidden fixed left-0 top-1/2 -translate-y-1/2 transition-transform -translate-x-4 hover:translate-x-0 z-10">
+      <SidePanel title={"SCRAPER"}>
+        <ScraperFilters
+          categories={categories}
+          updateCategories={updateCategories}
+          settings={settings}
+          setSettings={setSettings}
+          error={filterError}
+        />
+
         <button
-          onClick={() => setExpanded((prev) => !prev)}
-          className="bg-primary text-white w-15 px-2 py-8 flex justify-end cursor-pointer hover:bg-primary-light transition"
+          className="p-4 mt-4 w-full bg-secondary-light text-text cursor-pointer hover:bg-secondary-light/50 transition disabled:opacity-50"
+          onClick={() => handleScrape(categories)}
+          disabled={loading}
         >
-          <span className="rotate-270">
-            <ArrowIcon size={32} />
-          </span>
+          {loading ? "Scraping..." : "Scrape"}
         </button>
-      </div>
-
-      <div
-        className={`bg-primary flex flex-col fixed top-14 bottom-0 left-0 right-0 overflow-y-auto overscroll-contain transition-transform lg:static lg:w-120.5 lg:translate-x-0 z-10
-          ${expanded ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
-      >
-        {" "}
-        <div className="flex justify-between items-center pt-6 px-4">
-          <h1 className="text-4xl font-semibold text-white">SCRAPER</h1>
-          <button
-            className="w-10 h-10 lg:hidden text-secondary-light hover:cursor-pointer bg-primary hover:bg-primary-light transition p-2"
-            onClick={() => setExpanded(false)}
-          >
-            <CloseIcon />
-          </button>
-        </div>
-        <div className="space-y-4 mt-4 px-4">
-          <ScraperFilters
-            categories={categories}
-            updateCategories={updateCategories}
-            settings={settings}
-            setSettings={setSettings}
-            error={filterError}
-          />
-
-          <button
-            className="p-4 w-full bg-secondary-light text-text cursor-pointer hover:bg-secondary-light/50 transition disabled:opacity-50"
-            onClick={() => handleScrape(categories)}
-            disabled={loading}
-          >
-            {loading ? "Scraping..." : "Scrape"}
-          </button>
-        </div>
-      </div>
+      </SidePanel>
 
       <div className="flex-1 px-4 pt-6 min-w-0">
         <ScraperLogs
