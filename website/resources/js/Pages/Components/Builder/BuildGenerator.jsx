@@ -133,7 +133,7 @@ const BuildGenerator = () => {
           </div>
         )}
 
-        <p className="text-secondary-light text-sm mb-1">Preferences</p>
+        <p className="text-secondary-light text-sm mb-1 mt-4">Preferences</p>
 
         <div className={`flex ${budget >= 500 || !budget ? "gap-2" : ""}`}>
           <div
@@ -221,7 +221,7 @@ const BuildGenerator = () => {
         )}
 
         <button
-          className="p-4 w-full bg-secondary-light text-text cursor-pointer hover:bg-secondary-light/50 transition disabled:opacity-50"
+          className="p-4 mt-4 w-full bg-secondary-light text-text cursor-pointer hover:bg-secondary-light/50 transition disabled:opacity-50"
           onClick={handleGenerate}
           disabled={loading || hasIncompatible}
         >

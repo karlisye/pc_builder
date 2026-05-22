@@ -33,54 +33,7 @@ const BuildDesc = () => {
 
       {Object.keys(buildIssues).length > 0 && (
         <div>
-          <div
-            className={`flex gap-2 justify-between items-center text-secondary-light hover:text-surface cursor-pointer transition`}
-            onClick={() => setCompatibilityActive((prev) => !prev)}
-          >
-            <h2 className="text-medium">Compatibility</h2>
-
-            <span className="">
-              <ArrowIcon active={compatibilityActive} />
-            </span>
-          </div>
-
-          <div
-            className={`grid transition-all ${compatibilityActive ? "grid-rows-[1fr] border-b pb-4 border-b-primary-light mt-2" : "grid-rows-[0fr]"}`}
-          >
-            <div className="space-y-2 overflow-hidden">
-              {Object.keys(buildIssues).length > 0 && (
-                <div className="space-y-2">
-                  {Object.entries(buildIssues).map(([slot, issues]) =>
-                    issues.map((issue, i) => (
-                      <div
-                        key={`${slot}-${i}`}
-                        className="border border-danger/80 bg-danger/10 p-4 space-y-2"
-                      >
-                        <p className="text-danger text-sm capitalize">
-                          {slot}: {issue}
-                        </p>
-                      </div>
-                    )),
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {(warnings?.length > 0 || notes?.length > 0) && (
-        <div>
-          <ClosedSection title={"About This Build"}>
-            {notes.map((note, i) => (
-              <div
-                key={i}
-                className="border border-info/80 bg-info/10 p-4 space-y-2 mt-1"
-              >
-                <p className="text-info text-sm">{note}</p>
-              </div>
-            ))}
-
+          <ClosedSection title={"Compatibility"}>
             {Object.keys(buildIssues).length > 0 && (
               <div className="space-y-2">
                 {Object.entries(buildIssues).map(([slot, issues]) =>
@@ -97,12 +50,40 @@ const BuildDesc = () => {
                 )}
               </div>
             )}
+          </ClosedSection>
+        </div>
+      )}
+
+      {(warnings?.length > 0 || notes?.length > 0) && (
+        <div>
+          <ClosedSection title={"About This Build"}>
+            <div className="space-y-2">
+              {notes.map((note, i) => (
+                <div key={i} className="border border-info/80 bg-info/10 p-4">
+                  <p className="text-info text-sm">{note}</p>
+                </div>
+              ))}
+            </div>
+
+            {Object.keys(buildIssues).length > 0 && (
+              <div className="space-y-2">
+                {Object.entries(buildIssues).map(([slot, issues]) =>
+                  issues.map((issue, i) => (
+                    <div
+                      key={`${slot}-${i}`}
+                      className="border border-danger/80 bg-danger/10 p-4"
+                    >
+                      <p className="text-danger text-sm capitalize">
+                        {slot}: {issue}
+                      </p>
+                    </div>
+                  )),
+                )}
+              </div>
+            )}
 
             {warnings.map((warning, i) => (
-              <div
-                key={i}
-                className="border border-danger/80 bg-danger/10 p-4 space-y-2"
-              >
+              <div key={i} className="border border-danger/80 bg-danger/10 p-4">
                 <p className="text-danger text-sm">{warning}</p>
               </div>
             ))}

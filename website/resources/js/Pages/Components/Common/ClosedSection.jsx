@@ -16,7 +16,7 @@ const ClosedSection = ({ children, title }) => {
       <div
         className={`grid transition-all overflow-hidden ${open ? "grid-rows-[1fr] mt-3" : "grid-rows-[0fr]"}`}
       >
-        <div className="overflow-hidden space-y-4 p-px">{children}</div>
+        <div className="overflow-hidden space-y-2 px-px">{children}</div>
       </div>
     </>
   );

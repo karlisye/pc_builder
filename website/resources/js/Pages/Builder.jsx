@@ -9,6 +9,7 @@ import { Link } from "@inertiajs/react";
 import BuildGenerator from "./Components/Builder/BuildGenerator";
 import ComponentGenerator from "./Components/Builder/ComponentGenerator";
 import { ArrowIcon, CloseIcon } from "./Components/Common/Icons";
+import axios from "axios";
 
 const Builder = ({ build }) => {
   const [currentCompToAdd, setCurrentCompToAdd] = useState(null);
@@ -53,6 +54,7 @@ const Builder = ({ build }) => {
       setBuildIssues(res.data.issues);
     } catch (err) {
       setBuildIssues({});
+      console.error(err);
     }
   };
 
