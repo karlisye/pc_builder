@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BuildController;
 use App\Http\Controllers\BuilderController;
@@ -29,6 +30,13 @@ Route::middleware('auth')->group(function () {
   Route::get('/profile/account', [UserController::class, 'indexAccount']);
   Route::get('/profile/bookmarked', [UserController::class, 'indexBookmarked']);
   Route::get('/profile/{user}', [UserController::class, 'show']);
+});
+
+Route::middleware('role:admin')->group(function () {
+  Route::get('/admin', [AdminController::class, 'index']);
+  Route::get('/admin/scrape', fn() => Inertia::render('Admin/Scraper'));
+  Route::post('/admin/scrape', [AdminController::class, 'scrape']);
+  Route::get('/admin/history', fn() => Inertia::render('Admin/History'));
 });
 
 Route::fallback(fn() => Inertia::render('NotFound'));

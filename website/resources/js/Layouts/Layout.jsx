@@ -144,20 +144,31 @@ const Layout = ({ children }) => {
 
               {/* profile element */}
               <div className="ml-auto relative">
-                <button
-                  ref={buttonRef}
-                  className={`py-4 px-6 transition flex items-center gap-2 font-medium ${
-                    profileActive
-                      ? "bg-primary text-white"
-                      : "hover:bg-surface text-text"
-                  }`}
-                  onClick={() => setProfileActive((prev) => !prev)}
-                >
-                  <span className="w-6 h-6 rounded-full bg-secondary-light flex items-center justify-center text-xs font-bold">
-                    {user.name?.charAt(0).toUpperCase()}
-                  </span>
-                  <ArrowIcon active={profileActive} />
-                </button>
+                <div className="flex">
+                  {user?.role === "admin" && (
+                    <Link
+                      className="hover:bg-surface text-text py-3 px-4 transition flex items-center"
+                      href="/admin"
+                    >
+                      Dashboard
+                    </Link>
+                  )}
+
+                  <button
+                    ref={buttonRef}
+                    className={`py-4 px-6 transition flex items-center gap-2 font-medium ${
+                      profileActive
+                        ? "bg-primary text-white"
+                        : "hover:bg-surface text-text"
+                    }`}
+                    onClick={() => setProfileActive((prev) => !prev)}
+                  >
+                    <span className="w-6 h-6 rounded-full bg-secondary-light flex items-center justify-center text-xs font-bold">
+                      {user.name?.charAt(0).toUpperCase()}
+                    </span>
+                    <ArrowIcon active={profileActive} />
+                  </button>
+                </div>
 
                 {/* dropdown */}
                 <div

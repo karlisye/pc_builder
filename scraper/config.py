@@ -1,5 +1,7 @@
 PAGE_DELAY = 0.2
 
+MAX_ERRORS_PER_CATEGORY = 10
+
 CATEGORIES = {
     "cpu": {
         "urls": [

@@ -51,7 +51,7 @@ const BudgetSlider = ({
   };
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 my-2 mt-4">
       <div className="flex gap-2">
         <input
           className="accent-secondary-light"

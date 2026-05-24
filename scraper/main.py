@@ -1,12 +1,23 @@
 import importlib
 import time
-from config import CATEGORIES, PAGE_DELAY
+import sys
+from config import CATEGORIES, PAGE_DELAY, MAX_ERRORS_PER_CATEGORY
 from database import get_connection, wipe_table
 from scrapers.list_scraper import get_product_urls
 from scrapers.detail_scraper import scrape_detail_page
 
-MAX_ERRORS_PER_CATEGORY = 10
-
+# support for command line arguments
+def get_selected_from_args():
+    keys = list(CATEGORIES.keys())
+    arg = sys.argv[1].strip().lower()
+    if arg == "all":
+        return keys
+    selected = [c.strip() for c in arg.split(',')]
+    invalid = [c for c in selected if c not in CATEGORIES]
+    if invalid:
+        print(f"Unknown categories: {invalid}")
+        sys.exit(1)
+    return selected
 
 def prompt_user():
     print("\nAvailable categories:")
@@ -28,11 +39,21 @@ def prompt_user():
 
 
 def main():
-    selected = prompt_user()
-    conn = get_connection()
-    scraped_at = time.strftime("%Y-%m-%d %H:%M:%S")
+    if len(sys.argv) > 1:
+        selected = get_selected_from_args()
+        max_errors = int(sys.argv[2] if len(sys.argv) > 2 else MAX_ERRORS_PER_CATEGORY)
+        page_delay = float(sys.argv[3] if len(sys.argv) > 3 else PAGE_DELAY)
 
-    print(f"\nStarting scrape at {scraped_at}")
+    else:
+        selected = prompt_user()
+        max_errors = MAX_ERRORS_PER_CATEGORY
+        page_delay = PAGE_DELAY
+
+    conn = get_connection()
+    scraped_at = time.strftime("%Y-%m-%d_%H:%M:%S")
+
+    print(f"\n[META] start_time={scraped_at}")
+    print(f"[META] categories={','.join(selected)}")
     print(f"Categories: {', '.join(selected)}\n")
 
     for category_key in selected:
@@ -50,7 +71,7 @@ def main():
             all_urls.extend(urls)
             print(f"  Found {len(urls)} products")
 
-        print(f"  Total: {len(all_urls)} products to scrape")
+        print(f"[META] total_{category_key}={len(all_urls)}")
 
         error_count = 0
         skipped = []
@@ -73,20 +94,21 @@ def main():
 
                 error_count += 1
                 skipped.append((url, str(e)))
-                print(f"  [SKIP {error_count}/{MAX_ERRORS_PER_CATEGORY}] {url}")
+                print(f"  [SKIP {error_count}/{max_errors}] {url}")
                 print(f"  [SKIP] {e}")
-                if error_count >= MAX_ERRORS_PER_CATEGORY:
+                if error_count >= max_errors:
                     print(
-                        f"\n[ABORT] {category_key.upper()} reached {MAX_ERRORS_PER_CATEGORY} errors. Stopping category."
+                        f"\n[ABORT] {category_key.upper()} reached {max_errors} errors. Stopping category."
                     )
                     break
 
-            time.sleep(PAGE_DELAY)
+            time.sleep(page_delay)
 
         inserted = i - error_count
         print(
             f"\n  [{category_key.upper()}] Done: {inserted} inserted, {error_count} skipped"
         )
+        print(f"[META] inserted_{category_key}={inserted} skipped_{category_key}={error_count}")
         if skipped:
             print(f"  Skipped URLs:")
             for url, err in skipped:
@@ -94,7 +116,10 @@ def main():
         print()
 
     conn.close()
+    finished_at = time.strftime("%Y-%m-%d_%H:%M:%S")
     print("Scrape complete.")
+    print(f"[META] done=true")
+    print(f"[META] finished_at={finished_at}")
 
 
 if __name__ == "__main__":
