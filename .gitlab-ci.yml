@@ -3,10 +3,10 @@ stages:
 
 tests:
   stage: test
-  image: php:8.2
+  image: php:8.3
 
   services:
-    - name: mysql:8.0
+    - name: mysql:8.4
       alias: mysql
 
   variables:
