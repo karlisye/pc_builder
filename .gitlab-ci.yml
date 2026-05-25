@@ -29,8 +29,8 @@ tests:
     - php artisan key:generate --env=testing
     - echo "DB_PASSWORD=$MYSQL_PASSWORD" >> .env.testing
 
-    # wait for mysql
-    - until mysqladmin ping -h mysql -u sail -p$MYSQL_PASSWORD --silent; do sleep 1; done
+    # wait for mysql for 1 min
+    - timeout 60 bash -c "until mysqladmin ping -h mysql --silent 2>/dev/null; do sleep 1; done"
 
     # run migrations and import component data
     - php artisan migrate --env=testing --force
