@@ -30,7 +30,9 @@ tests:
     - echo "DB_PASSWORD=$MYSQL_PASSWORD" >> .env.testing
 
     # wait for mysql for 1 min
-    - timeout 60 bash -c "until mysqladmin ping -h mysql --silent 2>/dev/null; do sleep 1; done"
+    - timeout 60 bash -c "until mysqladmin ping -h mysql --silent 2>/dev/null; do sleep 1; done" || true
+    - mysqladmin ping -h mysql --silent 2>&1 || echo "MySQL not reachable"
+    - mysql -h mysql -u root -p$MYSQL_ROOT_PASSWORD -e "SELECT 1" 2>&1 || echo "MySQL login failed"
 
     # run migrations and import component data
     - php artisan migrate --env=testing --force
