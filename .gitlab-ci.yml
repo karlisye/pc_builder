@@ -21,8 +21,8 @@ tests:
     - docker-php-ext-install pdo pdo_mysql zip mbstring
 
     # install composer
-    - curl -sS https://getcomposer.org/installer | php
     - cd website
+    - curl -sS https://getcomposer.org/installer | php
     - php composer.phar install --no-interaction --prefer-dist
 
     # inject secrets into .env.testing
