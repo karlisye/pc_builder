@@ -21,6 +21,17 @@ class ComponentFilters
       });
     }
 
+    if (($ram = $selected['ram'] ?? null)?->memory_type) {
+      $compatibleSockets = match ($ram->memory_type) {
+        'DDR4' => ['AM4', 'LGA1200', 'LGA1700', 'LGA2066'],
+        'DDR5' => ['AM5', 'LGA1700', 'LGA1851', 'sTR5'],
+        default => [],
+      };
+      if (!empty($compatibleSockets)) {
+        $query->whereIn('socket', $compatibleSockets);
+      }
+    }
+
     return $query;
   }
 

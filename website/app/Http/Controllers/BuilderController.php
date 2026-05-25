@@ -109,6 +109,22 @@ class BuilderController extends Controller
     $selected = array_filter($selected);
     $preferences = array_filter($validated['preferences']);
 
+    // validate pre-selected components are compatible with each other
+    $issues = $this->compatibility->validateBuild($selected);
+    if (!empty($issues)) {
+      return response()->json([
+        'success' => false,
+        'error' => 'Pre-selected components are incompatible: '
+          . implode('. ', array_merge(...array_values($issues))),
+        'build' => null,
+        'total_price' => null,
+        'remaining_budget' => null,
+        'attempts_needed' => null,
+        'estimated_minimum_budget' => null,
+        'warnings' => [],
+      ], 400);
+    }
+
     $result = $this->builder->generate($selected, $budget, $preferences);
 
     if (isset($preferences['type'])) {

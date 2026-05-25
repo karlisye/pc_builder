@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Log;
 
 class BuilderService
 {
-  // updated tiers, still needs improvements
   private const TIERS = [
     'budget' => [
       'general' => ['cpu' => 0.26, 'motherboard' => 0.20, 'ram' => 0.24, 'case' => 0.10, 'psu' => 0.10, 'ssd' => 0.10],
@@ -376,8 +375,7 @@ class BuilderService
       $recommendedCapacity = match ($type) {
         'rendering' => match ($tier) {
           'budget' => 16,
-          'mid' => 32,
-          default => 64
+          default => 32
         },
         'gaming', 'streaming' => match ($tier) {
           'budget' => 8,
