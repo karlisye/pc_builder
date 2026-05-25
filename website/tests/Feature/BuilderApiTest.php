@@ -5,9 +5,6 @@ use App\Models\Gpu;
 use App\Models\Motherboard;
 use App\Models\Ram;
 use App\Models\Ssd;
-use App\Models\User;
-
-beforeEach(fn() => $this->actingAs(User::where('email', 'test@test.com')->first()));
 
 // response structure
 it('successful response has correct structure', function () {

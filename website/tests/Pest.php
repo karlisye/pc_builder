@@ -15,6 +15,16 @@ use App\Models\User;
 
 pest()->extend(Tests\TestCase::class)
   // ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
+  ->beforeEach(function () {
+    $user = User::firstOrCreate(
+      ['email' => 'test@test.com'],
+      [
+        'name' => 'Test User',
+        'password' => bcrypt('password'),
+      ]
+    );
+    $this->actingAs($user);
+  })
   ->in('Feature');
 
 /*
