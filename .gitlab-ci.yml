@@ -27,13 +27,13 @@ tests:
 
     # inject secrets into .env.testing
     - php artisan key:generate --env=testing
-    - echo "DB_PASSWORD=$MYSQL_PASSWORD" >> .env.testing
+    - printf '\nDB_PASSWORD=%s\n' "$MYSQL_PASSWORD" >> .env.testing
 
     # wait for mysql for 1 min
     - timeout 60 bash -c "until bash -c 'echo > /dev/tcp/mysql/3306' 2>/dev/null; do sleep 1; done"
 
     - cat .env.testing
-    - mysql -h mysql -u root -p$MYSQL_ROOT_PASSWORD --ssl-mode=DISABLED -e "SELECT user, host, plugin FROM mysql.user;" 2>&1
+    - mysql -h mysql -u root -p$MYSQL_ROOT_PASSWORD -e "SELECT user, host, plugin FROM mysql.user;" 2>&1
 
     # run migrations and import component data
     - php artisan migrate --env=testing --force
