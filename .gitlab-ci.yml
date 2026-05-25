@@ -32,6 +32,8 @@ tests:
     # wait for mysql for 1 min
     - timeout 60 bash -c "until mysqladmin ping -h mysql --ssl-mode=DISABLED --silent 2>/dev/null; do sleep 1; done"
 
+    - mysql -h mysql -u root -p$MYSQL_ROOT_PASSWORD --ssl-mode=DISABLED -e "SELECT user, host FROM mysql.user;" 2>&1
+
     # run migrations and import component data
     - php artisan migrate --env=testing --force
     - mysql -h mysql -u sail -p$MYSQL_PASSWORD pc_builder < ../database/testing/components.sql
