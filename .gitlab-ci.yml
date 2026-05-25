@@ -11,9 +11,7 @@ tests:
 
   variables:
     MYSQL_DATABASE: pc_builder
-    MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
     MYSQL_USER: sail
-    MYSQL_PASSWORD: $MYSQL_PASSWORD
 
   before_script:
     # install system dependencies
@@ -27,6 +25,8 @@ tests:
 
     # inject secrets into .env.testing
     - php artisan key:generate --env=testing
+
+    - echo "MYSQL_PASSWORD length - ${#MYSQL_PASSWORD}"
     - printf '\nDB_PASSWORD=%s\n' "$MYSQL_PASSWORD" >> .env.testing
 
     # wait for mysql for 1 min
