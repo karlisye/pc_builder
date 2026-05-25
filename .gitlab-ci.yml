@@ -1,0 +1,44 @@
+stages:
+  - test
+
+tests:
+  stage: test
+  image: php:8.2
+
+  services:
+    - name: mysql:8.0
+      alias: mysql
+
+  variables:
+    MYSQL_DATABASE: pc_builder
+    MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+    MYSQL_USER: sail
+    MYSQL_PASSWORD: $MYSQL_PASSWORD
+
+  before_script:
+    # install system dependencies
+    - apt-get update && apt-get install -y zip unzip git curl libzip-dev libpng-dev libonig-dev libxml2-dev default-mysql-client
+    - docker-php-ext-install pdo pdo_mysql zip mbstring
+
+    # install composer
+    - curl -sS https://getcomposer.org/installer | php
+    - cd website
+    - php composer.phar install --no-interaction --prefer-dist
+
+    # inject secrets into .env.testing
+    - php artisan key:generate --env=testing
+    - echo "DB_PASSWORD=$MYSQL_PASSWORD" >> .env.testing
+
+    # wait for mysql
+    - until mysqladmin ping -h mysql -u sail -p$MYSQL_PASSWORD --silent; do sleep 1; done
+
+    # run migrations and import component data
+    - php artisan migrate --env=testing --force
+    - mysql -h mysql -u sail -p$MYSQL_PASSWORD pc_builder < ../database/testing/components.sql
+
+  script:
+    - ./vendor/bin/pest tests/Feature/BuilderApiTest.php
+
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: always
