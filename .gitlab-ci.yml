@@ -1,0 +1,14 @@
+stages:
+  - test
+
+tests:
+  stage: test
+  image: karlisy/php84-ci:latest
+
+  script:
+    - php --version
+    - mysql --version
+
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "dev"'
+      when: always
