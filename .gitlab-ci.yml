@@ -15,9 +15,6 @@ tests:
         MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
 
   before_script:
-    - echo "Branch is - $CI_COMMIT_BRANCH"
-    - echo "Is protected - $CI_JOB_PROTECTED"
-
     - apt-get update && apt-get install -y zip unzip git curl libzip-dev libpng-dev libonig-dev libxml2-dev default-mysql-client
     - docker-php-ext-install pdo pdo_mysql zip mbstring
 
@@ -27,14 +24,12 @@ tests:
 
     - php artisan key:generate --env=testing
 
-    - echo "MYSQL_PASSWORD length - ${#MYSQL_PASSWORD}"
     - grep -v "^DB_PASSWORD=" .env.testing > .env.testing.tmp && mv .env.testing.tmp .env.testing
     - echo "DB_PASSWORD=$MYSQL_PASSWORD" >> .env.testing
 
     - timeout 90 bash -c "until echo > /dev/tcp/mysql/3306 2>/dev/null; do sleep 2; echo 'waiting...'; done"
 
     - cat .env.testing
-    - mysql -h mysql -u root -p$MYSQL_ROOT_PASSWORD --skip-ssl -e "SELECT user, host, plugin FROM mysql.user;"
 
     - php artisan migrate --env=testing --force
     - mysql -h mysql -u sail -p$MYSQL_PASSWORD --skip-ssl pc_builder < ../database/testing/components.sql
