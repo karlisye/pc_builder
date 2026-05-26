@@ -19,21 +19,14 @@ tests:
     - curl -sS https://getcomposer.org/installer | php
     - php composer.phar install --no-interaction --prefer-dist
     - timeout 60 bash -c "until echo > /dev/tcp/mysql/3306 2>/dev/null; do sleep 1; echo 'waiting...'; done"
-    - mysql -h mysql -u sail -ptesting --skip-ssl pc_builder -e "SELECT 1;"
     - php artisan key:generate --env=testing
     - grep -v "^DB_PASSWORD=" .env.testing > .env.testing.tmp && mv .env.testing.tmp .env.testing
     - echo "DB_PASSWORD=testing" >> .env.testing
     - cp .env.testing .env
     - php artisan config:clear
-    - php -r "
-      try {
-      \$pdo = new PDO('mysql:host=mysql;port=3306;dbname=pc_builder', 'sail', 'testing');
-      echo 'PDO connected successfully\n';
-      } catch (Exception \$e) {
-      echo 'PDO error- ' . \$e->getMessage() . '\n';
-      }
-      "
     - php artisan migrate --env=testing --force
+    - mysql -h mysql -u sail -ptesting --skip-ssl pc_builder < ../database/testing/components.sql
+    - ./vendor/bin/pest tests/Feature/BuilderApiTest.php
 
   rules:
     - if: '$CI_COMMIT_BRANCH == "dev"'
