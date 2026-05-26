@@ -5,6 +5,12 @@ tests:
   stage: test
   image: karlisy/php84-ci:latest
 
+  # caching for faster pipeline runs
+  cache:
+    key: composer-$CI_COMMIT_REF_SLUG
+    paths:
+      - website/vendor/
+
   services:
     - name: mysql:8.4
       alias: mysql
