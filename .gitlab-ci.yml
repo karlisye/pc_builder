@@ -31,6 +31,8 @@ tests:
 
     - cat .env.testing
 
+    - mysql -h mysql -u sail -ppassword --skip-ssl pc_builder -e "SELECT 1;"
+
     - php artisan migrate --env=testing --force
     - mysql -h mysql -u sail -p$MYSQL_PASSWORD --skip-ssl pc_builder < ../database/testing/components.sql
 
