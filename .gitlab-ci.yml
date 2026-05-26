@@ -16,6 +16,9 @@ tests:
     MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
 
   before_script:
+    - echo "Branch is - $CI_COMMIT_BRANCH"
+    - echo "Is protected - $CI_JOB_PROTECTED"
+
     # install system dependencies
     - apt-get update && apt-get install -y zip unzip git curl libzip-dev libpng-dev libonig-dev libxml2-dev default-mysql-client
     - docker-php-ext-install pdo pdo_mysql zip mbstring
