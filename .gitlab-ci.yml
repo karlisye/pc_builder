@@ -6,8 +6,10 @@ tests:
   image: karlisy/php84-ci:latest
 
   script:
-    - php --version
-    - mysql --version
+    - cd website
+    - curl -sS https://getcomposer.org/installer | php
+    - php composer.phar install --no-interaction --prefer-dist
+    - echo "Composer done"
 
   rules:
     - if: '$CI_COMMIT_BRANCH == "dev"'
