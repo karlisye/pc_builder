@@ -20,7 +20,12 @@ tests:
     - php composer.phar install --no-interaction --prefer-dist
     - timeout 60 bash -c "until echo > /dev/tcp/mysql/3306 2>/dev/null; do sleep 1; echo 'waiting...'; done"
     - mysql -h mysql -u sail -ptesting --skip-ssl pc_builder -e "SELECT 1;"
-    - echo "MySQL done"
+    - php artisan key:generate --env=testing
+    - grep -v "^DB_PASSWORD=" .env.testing > .env.testing.tmp && mv .env.testing.tmp .env.testing
+    - echo "DB_PASSWORD=testing" >> .env.testing
+    - cat .env.testing
+    - php artisan migrate --env=testing --force
+    - echo "Migrations done"
 
   rules:
     - if: '$CI_COMMIT_BRANCH == "dev"'
