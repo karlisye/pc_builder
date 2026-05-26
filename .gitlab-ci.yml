@@ -25,6 +25,7 @@ tests:
     - echo "DB_PASSWORD=testing" >> .env.testing
     - cat .env.testing
     - cp .env.testing .env
+    - php artisan config:clear
     - php -r "
       define('LARAVEL_START', microtime(true));
       require 'vendor/autoload.php';
