@@ -12,6 +12,8 @@ tests:
   variables:
     MYSQL_DATABASE: pc_builder
     MYSQL_USER: sail
+    MYSQL_PASSWORD: $MYSQL_PASSWORD
+    MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
 
   before_script:
     # install system dependencies
@@ -30,7 +32,8 @@ tests:
     - printf '\nDB_PASSWORD=%s\n' "$MYSQL_PASSWORD" >> .env.testing
 
     # wait for mysql for 1 min
-    - timeout 60 bash -c "until bash -c 'echo > /dev/tcp/mysql/3306' 2>/dev/null; do sleep 1; done"
+    - docker logs $(docker ps -q) 2>/dev/null || true
+    - timeout 90 bash -c "until echo > /dev/tcp/mysql/3306 2>/dev/null; do sleep 2; echo 'waiting...'; done"
 
     - cat .env.testing
     - mysql -h mysql -u root -p$MYSQL_ROOT_PASSWORD -e "SELECT user, host, plugin FROM mysql.user;" 2>&1
