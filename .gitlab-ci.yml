@@ -11,8 +11,8 @@ tests:
       variables:
         MYSQL_DATABASE: pc_builder
         MYSQL_USER: sail
-        MYSQL_PASSWORD: $MYSQL_PASSWORD
-        MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+        MYSQL_PASSWORD: testing
+        MYSQL_ROOT_PASSWORD: testing
 
   before_script:
     - apt-get update && apt-get install -y zip unzip git curl libzip-dev libpng-dev libonig-dev libxml2-dev default-mysql-client
@@ -25,16 +25,14 @@ tests:
     - php artisan key:generate --env=testing
 
     - grep -v "^DB_PASSWORD=" .env.testing > .env.testing.tmp && mv .env.testing.tmp .env.testing
-    - echo "DB_PASSWORD=$MYSQL_PASSWORD" >> .env.testing
+    - echo "DB_PASSWORD=testing" >> .env.testing
 
     - timeout 90 bash -c "until echo > /dev/tcp/mysql/3306 2>/dev/null; do sleep 2; echo 'waiting...'; done"
 
     - cat .env.testing
 
-    - mysql -h mysql -u sail -ppassword --skip-ssl pc_builder -e "SELECT 1;"
-
     - php artisan migrate --env=testing --force
-    - mysql -h mysql -u sail -p$MYSQL_PASSWORD --skip-ssl pc_builder < ../database/testing/components.sql
+    - mysql -h mysql -u sail -ptesting --skip-ssl pc_builder < ../database/testing/components.sql
 
   script:
     - ./vendor/bin/pest tests/Feature/BuilderApiTest.php
