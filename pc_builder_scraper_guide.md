@@ -14,7 +14,7 @@ Python scraper that collects PC component data from [https://www.dateks.lv/en](h
 python3 main.py
 ```
 
-Prompts for categories , wipes those tables, scrapes and inserts fresh data.
+Prompts for categories , wipes those table s, scrapes and inserts fresh data.
 
 ---
 
