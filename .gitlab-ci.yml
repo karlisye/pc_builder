@@ -16,7 +16,8 @@ tests:
 
   script:
     - cd website
-    - composer install --no-interaction --prefer-dist
+    - curl -sS https://getcomposer.org/installer | php
+    - php composer.phar install --no-interaction --prefer-dist
     - timeout 60 bash -c "until echo > /dev/tcp/mysql/3306 2>/dev/null; do sleep 1; echo 'waiting...'; done"
     - php artisan key:generate --env=testing
     - php artisan config:clear
