@@ -27,9 +27,6 @@ tests:
     - grep -v "^DB_PASSWORD=" .env.testing > .env.testing.tmp && mv .env.testing.tmp .env.testing
     - echo "DB_PASSWORD=testing" >> .env.testing
 
-    # disable SSL in database config
-    - sed -i "s/'options' => extension_loaded.*/'options' => [],/" config/database.php
-
     - timeout 90 bash -c "until echo > /dev/tcp/mysql/3306 2>/dev/null; do sleep 2; echo 'waiting...'; done"
 
     - cat .env.testing
