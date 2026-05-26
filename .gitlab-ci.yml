@@ -5,11 +5,22 @@ tests:
   stage: test
   image: karlisy/php84-ci:latest
 
+  services:
+    - name: mysql:8.4
+      alias: mysql
+      variables:
+        MYSQL_DATABASE: pc_builder
+        MYSQL_USER: sail
+        MYSQL_PASSWORD: testing
+        MYSQL_ROOT_PASSWORD: testing
+
   script:
     - cd website
     - curl -sS https://getcomposer.org/installer | php
     - php composer.phar install --no-interaction --prefer-dist
-    - echo "Composer done"
+    - timeout 60 bash -c "until echo > /dev/tcp/mysql/3306 2>/dev/null; do sleep 1; echo 'waiting...'; done"
+    - mysql -h mysql -u sail -ptesting --skip-ssl pc_builder -e "SELECT 1;"
+    - echo "MySQL done"
 
   rules:
     - if: '$CI_COMMIT_BRANCH == "dev"'
