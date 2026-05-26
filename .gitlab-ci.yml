@@ -23,20 +23,17 @@ tests:
     - php artisan key:generate --env=testing
     - grep -v "^DB_PASSWORD=" .env.testing > .env.testing.tmp && mv .env.testing.tmp .env.testing
     - echo "DB_PASSWORD=testing" >> .env.testing
-    - cat .env.testing
     - cp .env.testing .env
-    - ls -la .env
-    - cat .env
     - php artisan config:clear
     - php -r "
-      define('LARAVEL_START', microtime(true));
-      require 'vendor/autoload.php';
-      \$app = require 'bootstrap/app.php';
-      echo 'DB_PASSWORD- ' . env('DB_PASSWORD') . '\n';
-      echo 'DB_HOST- ' . env('DB_HOST') . '\n';
+      try {
+      \$pdo = new PDO('mysql:host=mysql;port=3306;dbname=pc_builder', 'sail', 'testing');
+      echo 'PDO connected successfully\n';
+      } catch (Exception \$e) {
+      echo 'PDO error- ' . \$e->getMessage() . '\n';
+      }
       "
     - php artisan migrate --env=testing --force
-    - echo "Migrations done"
 
   rules:
     - if: '$CI_COMMIT_BRANCH == "dev"'
