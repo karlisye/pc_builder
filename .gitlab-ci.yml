@@ -15,17 +15,28 @@ tests:
         MYSQL_ROOT_PASSWORD: testing
 
   script:
+    # install composer
     - cd website
     - curl -sS https://getcomposer.org/installer | php
     - php composer.phar install --no-interaction --prefer-dist
+
+    # wait for mysql
     - timeout 60 bash -c "until echo > /dev/tcp/mysql/3306 2>/dev/null; do sleep 1; echo 'waiting...'; done"
+
+    # generate app key
     - php artisan key:generate --env=testing
+
+    # remove DB_PASSWORD line and add the new one
     - grep -v "^DB_PASSWORD=" .env.testing > .env.testing.tmp && mv .env.testing.tmp .env.testing
     - echo "DB_PASSWORD=testing" >> .env.testing
-    - cp .env.testing .env
-    - php artisan config:clear
+
+    # - cp .env.testing .env
+
+    # run the migrations and populate tables
     - php artisan migrate --env=testing --force
     - mysql -h mysql -u sail -ptesting --skip-ssl pc_builder < ../database/testing/components.sql
+
+    # run tests
     - ./vendor/bin/pest tests/Feature/BuilderApiTest.php
 
   rules:

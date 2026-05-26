@@ -270,5 +270,6 @@ it('incompatible components returns 400', function () {
   $motherboard = Motherboard::where('memory_type', 'DDR4')->whereNotNull('price')->first();
 
   generate(basePayload(1000, ['type' => 'gaming'], ['ram' => $ram->id, 'motherboard' => $motherboard->id]))
-    ->assertStatus(400);
+    ->assertStatus(69);
+  // ->assertStatus(400);
 });
