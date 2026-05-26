@@ -29,8 +29,7 @@ tests:
     # remove DB_PASSWORD line and add the new one
     - grep -v "^DB_PASSWORD=" .env.testing > .env.testing.tmp && mv .env.testing.tmp .env.testing
     - echo "DB_PASSWORD=testing" >> .env.testing
-
-    # - cp .env.testing .env
+    - cp .env.testing .env
 
     # run the migrations and populate tables
     - php artisan migrate --env=testing --force
