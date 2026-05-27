@@ -11,6 +11,7 @@ def get_product_urls(base_url: str) -> list:
     results = []
     page = 0
 
+    # scrape meta data for each item from each page in website while page exists
     while True:
         if page == 0:
             url = base_url
@@ -18,31 +19,41 @@ def get_product_urls(base_url: str) -> list:
             url = f"{base_url}/pg/{page}"
 
         response = fetch(url)
+        # strip trailing /
         final_url = response.url.rstrip("/")
 
+        # if site redirects back to previous page, that means its the last page and loop should stop
         if page > 0:
             expected = f"{base_url}/pg/{page}".rstrip("/")
             if final_url != expected:
                 break
 
         soup = BeautifulSoup(response.text, "html.parser")
-        product_links = soup.select("a.imp[data-id]")
 
+        # select all anchor tags that have a class imp and attribute data-id
+        product_links = soup.select("a.imp[data-id]")
+        # if none are found, page is empty so stop
         if not product_links:
             break
 
         for link in product_links:
+            # scrape dateks_id
             dateks_id = int(link.get("data-id"))
+            # scrape item url
             href = link.get("href")
             full_url = BASE_URL + href
 
+            # get the parent element of link
             prod = link.find_parent(class_="prod")
             price = None
             stock_status = "out_of_stock"
             stock_quantity = None
 
             if prod:
+                # scrape the child html element with class price
                 price_tag = prod.select_one(".price")
+
+                # convert price text to float
                 if price_tag:
                     price_text = (
                         price_tag.get_text(strip=True)
@@ -55,6 +66,7 @@ def get_product_urls(base_url: str) -> list:
                     except ValueError:
                         price = None
 
+                # scrape child element with class avail
                 avail_tag = prod.select_one(".avail")
                 if avail_tag:
                     avail_text = avail_tag.get_text(strip=True).lower()
@@ -67,6 +79,7 @@ def get_product_urls(base_url: str) -> list:
                     else:
                         stock_status = "out_of_stock"
 
+                    # quantity
                     qty_match = re.search(r"(>?\d+)\s+units", avail_text)
                     stock_quantity = qty_match.group(1) if qty_match else None
                 else:

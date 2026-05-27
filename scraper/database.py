@@ -14,7 +14,7 @@ def get_connection():
         password=os.getenv("DB_PASSWORD"),
     )
 
-
+# wipe selected table from db and reset auto increment
 def wipe_table(conn, table):
     cursor = conn.cursor()
     cursor.execute(f"DELETE FROM `{table}`")
