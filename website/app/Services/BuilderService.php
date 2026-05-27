@@ -69,8 +69,6 @@ class BuilderService
 
     $slotsToFill = $this->resolveSlotsToFill($selected, $allocations);
 
-    // Log::debug('preferences: ' . json_encode($preferences));
-
     for ($attempt = 1; $attempt <= self::MAX_ATTEMPTS; $attempt++) {
       $attemptBudget = $remainingBudget * (1 - ($attempt - 1) * self::RETRY_REDUCTION);
 

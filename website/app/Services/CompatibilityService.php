@@ -55,7 +55,7 @@ class CompatibilityService
   {
     $modelClass = self::VALID_TYPES[$type];
 
-    // get ALL components
+    // get all components
     $query = $modelClass::query();
 
     // get only available components

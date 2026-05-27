@@ -81,7 +81,6 @@ const Login = () => {
             </form>
           </div>
 
-          {/* Side panel */}
           <div className="w-0 md:w-1/2 transition-all duration-300 bg-primary flex flex-col overflow-hidden">
             <div className="border-4 border-secondary m-2 h-full flex items-center justify-center p-2">
               <span className="text-7xl font-bold text-surface">
