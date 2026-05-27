@@ -20,6 +20,7 @@ def get_selected_from_args():
     return selected
 
 def prompt_user():
+    # list all available categories
     print("\nAvailable categories:")
     keys = list(CATEGORIES.keys())
     for i, key in enumerate(keys, 1):
@@ -30,6 +31,7 @@ def prompt_user():
     )
     if choice == "all":
         return keys
+    # split user prompt into an array
     selected = [c.strip() for c in choice.split(",")]
     invalid = [c for c in selected if c not in CATEGORIES]
     if invalid:
@@ -49,24 +51,30 @@ def main():
         max_errors = MAX_ERRORS_PER_CATEGORY
         page_delay = PAGE_DELAY
 
+    # connect to the db
     conn = get_connection()
     scraped_at = time.strftime("%Y-%m-%d_%H:%M:%S")
 
+    # print meta data for later use in frontend using [META] tag
     print(f"\n[META] start_time={scraped_at}")
     print(f"[META] categories={','.join(selected)}")
     print(f"Categories: {', '.join(selected)}\n")
 
     for category_key in selected:
+        # fetch component category urls, parser and table
         config = CATEGORIES[category_key]
         table = config["table"]
+        # import the component parser
         parser_module = importlib.import_module(f"parsers.{config['parser']}")
 
+        # wipe component table from db
         print(f"[{category_key.upper()}] Wiping table '{table}'...")
         wipe_table(conn, table)
 
         all_urls = []
         for base_url in config["urls"]:
             print(f"  Collecting URLs from: {base_url}")
+            # fetch global metadata for each component (url, price, stock_status, stock_quantity, dateks_id)
             urls = get_product_urls(base_url)
             all_urls.extend(urls)
             print(f"  Found {len(urls)} products")
@@ -76,32 +84,39 @@ def main():
         error_count = 0
         skipped = []
 
+        # iterate over all_urls with index starting from 1
         for i, (dateks_id, url, price, stock_status, stock_quantity) in enumerate(
             all_urls, 1
         ):
             print(f"  [{i}/{len(all_urls)}] Scraping: {url}")
             try:
+                # load the html from detail page of each product
                 html = scrape_detail_page(url)
+                # use the specific parser to get all necessary data for each product
                 data = parser_module.parse(
                     html, dateks_id, url, price, stock_status, stock_quantity, scraped_at
                 )
                 if data:
+                    # insert data in db
                     parser_module.insert(conn, data)
             except Exception as e:
                 if hasattr(e, "errno") and e.errno == 1062:
                     print(f"  [DUP] {url}")
                     continue
-
+                
+                # save the error if found
                 error_count += 1
                 skipped.append((url, str(e)))
                 print(f"  [SKIP {error_count}/{max_errors}] {url}")
                 print(f"  [SKIP] {e}")
+                # stop scraping for specific category once error limit reached
                 if error_count >= max_errors:
                     print(
                         f"\n[ABORT] {category_key.upper()} reached {max_errors} errors. Stopping category."
                     )
                     break
-
+            
+            # scrape delay after each page
             time.sleep(page_delay)
 
         inserted = i - error_count
@@ -115,6 +130,7 @@ def main():
                 print(f"    [{url}] {err}")
         print()
 
+    # close the connection with db
     conn.close()
     finished_at = time.strftime("%Y-%m-%d_%H:%M:%S")
     print("Scrape complete.")

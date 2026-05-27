@@ -4,7 +4,7 @@ import os
 
 load_dotenv()
 
-
+# connection with db using credentials from .env
 def get_connection():
     return mysql.connector.connect(
         host=os.getenv("DB_HOST"),
