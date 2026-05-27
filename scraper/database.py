@@ -22,10 +22,13 @@ def wipe_table(conn, table):
     conn.commit()
     cursor.close()
 
-
+# insert data in db
 def insert_row(conn, table, data: dict):
+    # build columns (url, price, stock_status...)
     columns = ", ".join(f"`{k}`" for k in data.keys())
+    # build placeholders (%s, %s, %s...)
     placeholders = ", ".join(["%s"] * len(data))
+    # create list of values ['a.com', 10, 'in_stock'...]
     values = list(data.values())
     sql = f"INSERT INTO `{table}` ({columns}) VALUES ({placeholders})"
     cursor = conn.cursor()

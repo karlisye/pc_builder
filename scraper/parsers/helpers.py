@@ -10,7 +10,7 @@ def extract_name(soup) -> str | None:
         return span.get_text(strip=True) if span else tag.get_text(strip=True)
     return None
 
-
+# scrape component parameters
 def extract_specs(soup) -> dict:
     specs = {}
     for fv in soup.select("#params .fv"):

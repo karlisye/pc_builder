@@ -19,6 +19,7 @@ def get_selected_from_args():
         sys.exit(1)
     return selected
 
+
 def prompt_user():
     # list all available categories
     print("\nAvailable categories:")
