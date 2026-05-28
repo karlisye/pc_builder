@@ -46,6 +46,15 @@ const AutoSection = () => {
             The budget applies to the entire build. If you have already selected
             components, their cost will be deducted from your available budget.
           </Note>
+
+          <p className="text-text">
+            4. Set your preferences for GPU, CPU and Usage type under the budget
+            slider.
+          </p>
+          <Note>
+            Make sure to check the "Include Orderable Items" to also use
+            components that are not in store, but can be ordered.
+          </Note>
         </div>
 
         <h2 className="text-2xl font-semibold text-text">
@@ -54,7 +63,7 @@ const AutoSection = () => {
 
         <div>
           <p className="text-text">
-            4. Once your budget is set, click the generate button to
+            5. Once your budget is set, click the generate button to
             automatically complete your build.
           </p>
 
@@ -75,19 +84,18 @@ const AutoSection = () => {
 
         <div>
           <p className="text-text">
-            5. After generating a build we recommend checking the compatability
+            6. After generating a build we recommend checking the compatability
             for the build manually before purchasing any of the items.
           </p>
 
           <Note>
-            The fan and HDD components are not automatically included, as they
-            are optional. If the CPU comes with a built-in cooler and the budget
-            is limited, a separate CPU cooler may also be treated as optional.
+            The HDD component is not automatically included, as it is optional.
+            If the CPU comes with a built-in cooler and the budget is limited, a
+            separate CPU cooler may also be treated as optional.
           </Note>
         </div>
       </div>
 
-      {/* TODO: fix after improving scorer */}
       <div>
         <h2 className="text-2xl font-semibold text-text my-5">
           Budget Allocations
@@ -97,66 +105,144 @@ const AutoSection = () => {
           <table className="w-full text-left text-text">
             <thead className="bg-secondary-light/50">
               <tr>
-                <th className="p-2 border border-border">Component</th>
-                <th className="p-2 border border-border">
-                  Budget build {"(<500€)"}
+                <th className="p-2 border border-secondary-light">Component</th>
+                <th className="p-2 border border-secondary-light" colSpan={2}>
+                  Budget (&lt;500€)
                 </th>
-                <th className="p-2 border border-border">
-                  Medium build {"(<1500€)"}
+                <th className="p-2 border border-secondary-light" colSpan={4}>
+                  Mid (500–1500€)
                 </th>
-                <th className="p-2 border border-border">
-                  High-end build {"(>1500€)"}
+                <th className="p-2 border border-secondary-light" colSpan={5}>
+                  High-end (&gt;1500€)
                 </th>
+              </tr>
+              <tr>
+                <th className="p-2 border border-secondary-light"></th>
+                <th className="p-2 border border-secondary-light">General</th>
+                <th className="p-2 border border-secondary-light">Office</th>
+                <th className="p-2 border border-secondary-light">General</th>
+                <th className="p-2 border border-secondary-light">Gaming</th>
+                <th className="p-2 border border-secondary-light">Office</th>
+                <th className="p-2 border border-secondary-light">Streaming</th>
+                <th className="p-2 border border-secondary-light">General</th>
+                <th className="p-2 border border-secondary-light">Gaming</th>
+                <th className="p-2 border border-secondary-light">Office</th>
+                <th className="p-2 border border-secondary-light">Rendering</th>
+                <th className="p-2 border border-secondary-light">Streaming</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td className="p-2 border border-border">GPU</td>
                 <td className="p-2 border border-border">—</td>
+                <td className="p-2 border border-border">—</td>
+                <td className="p-2 border border-border">24%</td>
                 <td className="p-2 border border-border">27%</td>
+                <td className="p-2 border border-border">—</td>
+                <td className="p-2 border border-border">20%</td>
+                <td className="p-2 border border-border">25%</td>
                 <td className="p-2 border border-border">27%</td>
+                <td className="p-2 border border-border">—</td>
+                <td className="p-2 border border-border">25%</td>
+                <td className="p-2 border border-border">22%</td>
               </tr>
               <tr>
                 <td className="p-2 border border-border">CPU</td>
-                <td className="p-2 border border-border">22%</td>
+                <td className="p-2 border border-border">26%</td>
+                <td className="p-2 border border-border">28%</td>
+                <td className="p-2 border border-border">16%</td>
+                <td className="p-2 border border-border">14%</td>
+                <td className="p-2 border border-border">25%</td>
+                <td className="p-2 border border-border">20%</td>
                 <td className="p-2 border border-border">14%</td>
                 <td className="p-2 border border-border">12%</td>
+                <td className="p-2 border border-border">22%</td>
+                <td className="p-2 border border-border">15%</td>
+                <td className="p-2 border border-border">20%</td>
               </tr>
               <tr>
                 <td className="p-2 border border-border">Motherboard</td>
-                <td className="p-2 border border-border">17%</td>
+                <td className="p-2 border border-border">20%</td>
+                <td className="p-2 border border-border">22%</td>
+                <td className="p-2 border border-border">10%</td>
+                <td className="p-2 border border-border">10%</td>
+                <td className="p-2 border border-border">18%</td>
+                <td className="p-2 border border-border">10%</td>
+                <td className="p-2 border border-border">10%</td>
+                <td className="p-2 border border-border">10%</td>
+                <td className="p-2 border border-border">16%</td>
                 <td className="p-2 border border-border">10%</td>
                 <td className="p-2 border border-border">10%</td>
               </tr>
               <tr>
                 <td className="p-2 border border-border">RAM</td>
                 <td className="p-2 border border-border">24%</td>
+                <td className="p-2 border border-border">25%</td>
                 <td className="p-2 border border-border">20%</td>
+                <td className="p-2 border border-border">20%</td>
+                <td className="p-2 border border-border">30%</td>
+                <td className="p-2 border border-border">20%</td>
+                <td className="p-2 border border-border">22%</td>
                 <td className="p-2 border border-border">23%</td>
+                <td className="p-2 border border-border">35%</td>
+                <td className="p-2 border border-border">28%</td>
+                <td className="p-2 border border-border">22%</td>
               </tr>
               <tr>
                 <td className="p-2 border border-border">Cooler</td>
                 <td className="p-2 border border-border">—</td>
+                <td className="p-2 border border-border">—</td>
                 <td className="p-2 border border-border">3%</td>
+                <td className="p-2 border border-border">3%</td>
+                <td className="p-2 border border-border">3%</td>
+                <td className="p-2 border border-border">3%</td>
+                <td className="p-2 border border-border">2%</td>
+                <td className="p-2 border border-border">2%</td>
+                <td className="p-2 border border-border">2%</td>
+                <td className="p-2 border border-border">2%</td>
                 <td className="p-2 border border-border">2%</td>
               </tr>
               <tr>
                 <td className="p-2 border border-border">Case</td>
-                <td className="p-2 border border-border">12%</td>
+                <td className="p-2 border border-border">10%</td>
+                <td className="p-2 border border-border">9%</td>
                 <td className="p-2 border border-border">7%</td>
+                <td className="p-2 border border-border">7%</td>
+                <td className="p-2 border border-border">8%</td>
+                <td className="p-2 border border-border">7%</td>
+                <td className="p-2 border border-border">6%</td>
+                <td className="p-2 border border-border">6%</td>
+                <td className="p-2 border border-border">6%</td>
+                <td className="p-2 border border-border">5%</td>
                 <td className="p-2 border border-border">6%</td>
               </tr>
               <tr>
                 <td className="p-2 border border-border">PSU</td>
                 <td className="p-2 border border-border">10%</td>
+                <td className="p-2 border border-border">9%</td>
                 <td className="p-2 border border-border">7%</td>
+                <td className="p-2 border border-border">7%</td>
+                <td className="p-2 border border-border">8%</td>
+                <td className="p-2 border border-border">7%</td>
+                <td className="p-2 border border-border">6%</td>
+                <td className="p-2 border border-border">6%</td>
+                <td className="p-2 border border-border">6%</td>
+                <td className="p-2 border border-border">5%</td>
                 <td className="p-2 border border-border">6%</td>
               </tr>
               <tr>
                 <td className="p-2 border border-border">SSD</td>
-                <td className="p-2 border border-border">15%</td>
+                <td className="p-2 border border-border">10%</td>
+                <td className="p-2 border border-border">7%</td>
+                <td className="p-2 border border-border">13%</td>
                 <td className="p-2 border border-border">12%</td>
+                <td className="p-2 border border-border">8%</td>
+                <td className="p-2 border border-border">13%</td>
+                <td className="p-2 border border-border">15%</td>
                 <td className="p-2 border border-border">14%</td>
+                <td className="p-2 border border-border">13%</td>
+                <td className="p-2 border border-border">10%</td>
+                <td className="p-2 border border-border">12%</td>
               </tr>
             </tbody>
           </table>
