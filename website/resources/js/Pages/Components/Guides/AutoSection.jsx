@@ -101,19 +101,19 @@ const AutoSection = () => {
           Budget Allocations
         </h2>
 
-        <div className="" ref={tableRef}>
-          <table className="w-full text-left text-text">
+        <div className="overflow-x-auto" ref={tableRef}>
+          <table className="text-left text-text">
             <thead className="bg-secondary-light/50">
               <tr>
                 <th className="p-2 border border-secondary-light">Component</th>
                 <th className="p-2 border border-secondary-light" colSpan={2}>
-                  Budget (&lt;500€)
+                  Budget ({"<500€"})
                 </th>
                 <th className="p-2 border border-secondary-light" colSpan={4}>
                   Mid (500–1500€)
                 </th>
                 <th className="p-2 border border-secondary-light" colSpan={5}>
-                  High-end (&gt;1500€)
+                  High-end ({">1500€"})
                 </th>
               </tr>
               <tr>

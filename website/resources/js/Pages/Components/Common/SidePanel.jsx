@@ -14,7 +14,6 @@ const SidePanel = ({
       <div className="lg:hidden fixed left-0 top-1/2 -translate-y-1/2 transition-transform -translate-x-4 hover:translate-x-0 z-10">
         <button
           onClick={() => setExpanded((prev) => !prev)}
-          aria-label="Open side panel"
           className="bg-primary text-white w-15 px-2 py-8 flex justify-end cursor-pointer hover:bg-primary-light transition"
         >
           <span className="rotate-270">
