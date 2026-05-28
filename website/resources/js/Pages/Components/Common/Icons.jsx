@@ -83,13 +83,13 @@ export function ArrowIcon({ size = 16, active }) {
   );
 }
 
-export function CloseIcon() {
+export function CloseIcon({ size = 24 }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
-      width="24"
-      height="24"
+      width={size}
+      height={size}
       fill="none"
       stroke="currentColor"
       strokeWidth="2.5"
@@ -102,13 +102,13 @@ export function CloseIcon() {
   );
 }
 
-export function AddIcon() {
+export function AddIcon({ size = 24 }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
-      width="24"
-      height="24"
+      width={size}
+      height={size}
       fill="none"
       stroke="currentColor"
       strokeWidth="2.5"

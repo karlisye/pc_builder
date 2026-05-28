@@ -30,7 +30,7 @@ const BuilderSection = () => {
         <p className="text-text">
           2. Find the component list section and click the{" "}
           <button className="bg-surface border border-secondary-light p-1 text-muted hover:bg-secondary-light transition cursor-pointer">
-            <AddIcon />
+            <AddIcon size={12} />
           </button>{" "}
           button to add a new component.
         </p>
@@ -41,8 +41,7 @@ const BuilderSection = () => {
             match your preferences.
           </p>
           <Note>
-            All displayed components are supposed to be compatible with your
-            current build.
+            Incompatible components will be marked with an "Incompatible" flag.
           </Note>
         </div>
 
@@ -50,8 +49,7 @@ const BuilderSection = () => {
           <p className="text-text">
             4. Select a component from the list and click{" "}
             <span className="font-medium">Select</span> to add it to your build.
-            It will then appear in the build info panel and the component list
-            as a card.
+            It will then appear in the build info panel and the component list.
           </p>
           <Note>
             You can remove a component or view it in the store using the buttons
@@ -80,7 +78,7 @@ const BuilderSection = () => {
             You can clear the entire build or remove individual components by
             clicking the Clear Build button or pressing the{" "}
             <button className="p-1 bg-secondary text-muted hover:bg-danger/20 hover:text-danger cursor-pointer transition border border-secondary-light">
-              <CloseIcon />
+              <CloseIcon size={12} />
             </button>{" "}
             icon next to each component.
           </Note>
