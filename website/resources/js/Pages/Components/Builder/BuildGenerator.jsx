@@ -137,7 +137,7 @@ const BuildGenerator = () => {
 
         <div className={`flex ${budget >= 500 || !budget ? "gap-2" : ""}`}>
           <div
-            className={`flex flex-col transition-all overflow-hidden ${budget >= 500 || !budget ? "flex-1" : "w-0"}`}
+            className={`flex flex-col transition-all p-px overflow-hidden ${budget >= 500 || !budget ? "flex-1" : "w-0"}`}
           >
             <label className="text-sm text-secondary-light" htmlFor="gpu">
               GPU
