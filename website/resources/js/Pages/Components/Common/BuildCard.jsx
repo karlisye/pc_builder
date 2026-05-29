@@ -30,7 +30,7 @@ const BuildCard = ({ build }) => {
     const components = Object.fromEntries(
       Object.entries(build.components)
         .filter(([_, component]) => component !== null)
-        .map(([type, component]) => [type, component.id]),
+        .map(([type, component]) => [type, component.dateks_id]),
     );
 
     try {
@@ -94,7 +94,7 @@ const BuildCard = ({ build }) => {
     const selected = Object.fromEntries(
       Object.entries(build.components)
         .filter(([_, c]) => c !== null)
-        .map(([type, c]) => [type, c.id]),
+        .map(([type, c]) => [type, c.dateks_id]),
     );
 
     if (Object.keys(selected).length === 0) {

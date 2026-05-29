@@ -129,11 +129,11 @@ class ComponentController extends Controller
     }
 
     $modelClass = CompatibilityService::VALID_TYPES[$type];
-    $component  = $modelClass::find($id);
+    $component  = $modelClass::where('dateks_id', $id)->first();
 
     if (! $component) {
       return response()->json([
-        'error' => "no {$type} found with id {$id}",
+        'error' => "no {$type} found with dateks_id {$id}",
       ], 404);
     }
 

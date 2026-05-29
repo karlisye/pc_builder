@@ -14,16 +14,16 @@ class Build extends Model
     'notes',
     'type',
     'total_price',
-    'cpu_id',
-    'motherboard_id',
-    'ram_id',
-    'gpu_id',
-    'ssd_id',
-    'hdd_id',
-    'case_id',
-    'cooler_id',
-    'psu_id',
-    'fan_id',
+    'cpu_dateks_id',
+    'motherboard_dateks_id',
+    'ram_dateks_id',
+    'gpu_dateks_id',
+    'ssd_dateks_id',
+    'hdd_dateks_id',
+    'case_dateks_id',
+    'cooler_dateks_id',
+    'psu_dateks_id',
+    'fan_dateks_id',
     'is_public'
   ];
 
@@ -41,67 +41,67 @@ class Build extends Model
 
   public function cpu(): BelongsTo
   {
-    return $this->belongsTo(Cpu::class);
+    return $this->belongsTo(Cpu::class, 'cpu_dateks_id', 'dateks_id');
   }
 
   public function motherboard(): BelongsTo
   {
-    return $this->belongsTo(Motherboard::class);
+    return $this->belongsTo(Motherboard::class, 'motherboard_dateks_id', 'dateks_id');
   }
 
   public function ram(): BelongsTo
   {
-    return $this->belongsTo(Ram::class);
+    return $this->belongsTo(Ram::class, 'ram_dateks_id', 'dateks_id');
   }
 
   public function gpu(): BelongsTo
   {
-    return $this->belongsTo(Gpu::class);
+    return $this->belongsTo(Gpu::class, 'gpu_dateks_id', 'dateks_id');
   }
 
   public function ssd(): BelongsTo
   {
-    return $this->belongsTo(Ssd::class);
+    return $this->belongsTo(Ssd::class, 'ssd_dateks_id', 'dateks_id');
   }
 
   public function hdd(): BelongsTo
   {
-    return $this->belongsTo(Hdd::class);
+    return $this->belongsTo(Hdd::class, 'hdd_dateks_id', 'dateks_id');
   }
 
   public function pcCase(): BelongsTo
   {
-    return $this->belongsTo(PcCase::class, 'case_id');
+    return $this->belongsTo(PcCase::class, 'case_dateks_id', 'dateks_id');
   }
 
   public function cooler(): BelongsTo
   {
-    return $this->belongsTo(Cooler::class);
+    return $this->belongsTo(Cooler::class, 'cooler_dateks_id', 'dateks_id');
   }
 
   public function psu(): BelongsTo
   {
-    return $this->belongsTo(Psu::class);
+    return $this->belongsTo(Psu::class, 'psu_dateks_id', 'dateks_id');
   }
 
   public function fan(): BelongsTo
   {
-    return $this->belongsTo(Fan::class);
+    return $this->belongsTo(Fan::class, 'fan_dateks_id', 'dateks_id');
   }
 
   public static function componentSlots(): array
   {
     return [
-      'cpu' => 'cpu_id',
-      'motherboard' => 'motherboard_id',
-      'ram' => 'ram_id',
-      'gpu' => 'gpu_id',
-      'ssd' => 'ssd_id',
-      'hdd' => 'hdd_id',
-      'case' => 'case_id',
-      'cooler' => 'cooler_id',
-      'psu' => 'psu_id',
-      'fan' => 'fan_id',
+      'cpu'         => 'cpu_dateks_id',
+      'motherboard' => 'motherboard_dateks_id',
+      'ram'         => 'ram_dateks_id',
+      'gpu'         => 'gpu_dateks_id',
+      'ssd'         => 'ssd_dateks_id',
+      'hdd'         => 'hdd_dateks_id',
+      'case'        => 'case_dateks_id',
+      'cooler'      => 'cooler_dateks_id',
+      'psu'         => 'psu_dateks_id',
+      'fan'         => 'fan_dateks_id',
     ];
   }
 

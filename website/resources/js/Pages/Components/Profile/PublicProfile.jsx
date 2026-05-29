@@ -20,7 +20,7 @@ const PublicProfile = ({
     const components = Object.fromEntries(
       Object.entries(build.components)
         .filter(([_, component]) => component !== null)
-        .map(([type, component]) => [type, component.id]),
+        .map(([type, component]) => [type, component.dateks_id]),
     );
 
     try {

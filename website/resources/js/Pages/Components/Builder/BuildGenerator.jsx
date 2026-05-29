@@ -64,7 +64,7 @@ const BuildGenerator = () => {
       const selected = Object.fromEntries(
         Object.entries(selectedComponents)
           .filter(([_, component]) => component !== null)
-          .map(([type, component]) => [type, component.id]),
+          .map(([type, component]) => [type, component.dateks_id]),
       );
 
       const res = await axios.post("/api/builder", {
