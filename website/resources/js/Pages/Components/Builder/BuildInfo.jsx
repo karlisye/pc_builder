@@ -39,7 +39,7 @@ const BuildInfo = ({ currBuildInfo }) => {
     const components = Object.fromEntries(
       Object.entries(selectedComponents)
         .filter(([_, component]) => component !== null)
-        .map(([type, component]) => [type, component.id]),
+        .map(([type, component]) => [type, component.dateks_id]),
     );
 
     if (Object.keys(components).length === 0) {

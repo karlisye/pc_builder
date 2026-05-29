@@ -71,18 +71,18 @@ class BuildController extends Controller
       }
     }
 
-    foreach ($validated['components'] as $type => $id) {
+    foreach ($validated['components'] as $type => $dateksId) {
       $modelClass = CompatibilityService::VALID_TYPES[$type];
-      if (! $modelClass::find($id)) {
+      if (! $modelClass::where('dateks_id', $dateksId)->exists()) {
         return response()->json([
-          'error' => "No {$type} found with ID {$id}.",
+          'error' => "No {$type} found with dateks_id {$dateksId}.",
         ], 404);
       }
     }
 
     $componentFks = [];
-    foreach ($validated['components'] as $type => $id) {
-      $componentFks[$slots[$type]] = $id;
+    foreach ($validated['components'] as $type => $dateksId) {
+      $componentFks[$slots[$type]] = $dateksId;
     }
 
     $totalPrice = $this->calculateTotalPrice($validated['components']);
@@ -158,9 +158,9 @@ class BuildController extends Controller
   {
     $total = 0.0;
 
-    foreach ($components as $type => $id) {
+    foreach ($components as $type => $dateksId) {
       $modelClass = CompatibilityService::VALID_TYPES[$type];
-      $component  = $modelClass::find($id);
+      $component  = $modelClass::where('dateks_id', $dateksId)->first();
       if ($component?->price) {
         $total += (float) $component->price;
       }
