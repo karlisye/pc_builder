@@ -8,7 +8,7 @@
 
 ## 1. Project Overview
 
-Python scraper that collects PC component data from [https://www.dateks.lv/en](https://www.dateks.lv/en) and stores it in MySQL. Powers a Laravel 12 + Inertia + React PC builder app.
+Python scraper that collects PC com ponent data from [https://www.dateks.lv/en](https://www.dateks.lv/en) and stores it in MySQL. Powers a Laravel 12 + Inertia + React PC builder app.
 
 ```bash
 python3 main.py
