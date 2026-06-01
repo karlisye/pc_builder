@@ -20,6 +20,38 @@ There is also a detailed scraper reference in `pc_builder_scraper_guide.md`.
 - Admin dashboard for running scraper jobs and viewing scrape history.
 - Python scraper for CPUs, motherboards, RAM, GPUs, SSDs, HDDs, cases, fans, PSUs, and coolers.
 
+## Screenshots
+
+![Home](screenshots/home.png)
+_Home Screen_
+
+![Builder](screenshots/builder_page.png)
+_Builder Page_
+
+![Builder](screenshots/component_select.png)
+_Component Selection_
+
+![Builder](screenshots/incompatible.png)
+_Incompatible Component Selection_
+
+![Builder](screenshots/auto_builder_section.png)
+_Automatic Builder Section_
+
+![Saved](screenshots/saved_page.png)
+_Saved Page_
+
+![Shared](screenshots/shared_page.png)
+_Shared Build Page_
+
+![Profile](screenshots/profile_page.png)
+_Profile Page_
+
+![Admin](screenshots/scraper_page.png)
+_Scraper Page_
+
+![Admin](screenshots/history_page.png)
+_Scrape History Page_
+
 ## Tech Stack
 
 ### Web App
