@@ -65,7 +65,7 @@ _Scrape History Page_
 - Tailwind CSS 4
 - MySQL 8.4
 - Pest / PHPUnit
-- Laravel Sail for Docker-based local development
+- Laravel Sail
 
 ### Scraper
 
