@@ -82,19 +82,11 @@ build:
 
 deploy_staging:
   stage: deploy
-  image: alpine:latest
-
-  before_script:
-    - apk add --no-cache openssh
-
+  tags:
+    - pcbuilder
   script:
-    - echo "$STAGING_SSH_KEY" | tr -d '\r' > key.pem
-    - chmod 600 key.pem
-
-    - ssh -o StrictHostKeyChecking=no -i key.pem $STAGING_USER@$STAGING_HOST "cd ~/pc-builder && docker-compose pull && docker-compose up -d"
-
-  needs:
-    - build
-
+    - cd ~/pc-builder
+    - docker-compose pull
+    - docker-compose up -d
   rules:
     - if: '$CI_COMMIT_BRANCH == "dev"'
