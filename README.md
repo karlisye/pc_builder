@@ -242,7 +242,7 @@ python3 main.py
 The scraper currently supports these categories:
 
 ```text
-cpu, motherboard, ram, gpu, ssd, hdd, case, fan, psu, cooler, all
+cpu, motherboard, ram, gpu, ssd, hdd, case, fan, psu, cooler
 ```
 
 Each category maps to one or more Dateks listing URLs, a parser module, and a database table in `scraper/config.py`.
