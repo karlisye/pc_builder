@@ -21,10 +21,11 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 COPY package.json package-lock.json ./
-RUN npm ci
 
-RUN npm run build
+RUN npm ci && npm run build
+
+COPY docker/nginx.conf /etc/nginx/sites-available/default
 
 EXPOSE 9000
 
-CMD ["php-fpm"]
+CMD service nginx start && php-fpm -F
