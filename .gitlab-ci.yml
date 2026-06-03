@@ -85,7 +85,7 @@ deploy_staging:
   tags:
     - pcbuilder
   script:
-    - cd /home/ubuntu/pc-builder
+    - cd /srv/pc-builder
     - docker-compose pull
     - docker-compose up -d
   rules:
