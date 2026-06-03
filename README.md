@@ -56,7 +56,7 @@ _Scrape History Page_
 
 ### Web App
 
-- PHP 8.2+
+- PHP 8.4
 - Laravel 12
 - Laravel Sanctum
 - Inertia Laravel
