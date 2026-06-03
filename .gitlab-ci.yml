@@ -85,12 +85,8 @@ deploy_staging:
   tags:
     - pcbuilder
   script:
-    - whoami
-    - pwd
-    - ls -la
-  # script:
-  #   - cd ~/pc-builder
-  #   - docker-compose pull
-  #   - docker-compose up -d
+    - cd /home/ubuntu/pc-builder
+    - docker-compose pull
+    - docker-compose up -d
   rules:
     - if: '$CI_COMMIT_BRANCH == "dev"'
