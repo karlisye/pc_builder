@@ -88,5 +88,6 @@ deploy_staging:
     - cd /srv/pc-builder
     - docker compose pull
     - docker compose up -d
+    - docker exec pc-builder-app-1 php artisan migrate --force
   rules:
     - if: '$CI_COMMIT_BRANCH == "dev"'
