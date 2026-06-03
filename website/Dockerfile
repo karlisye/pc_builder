@@ -3,7 +3,7 @@ FROM php:8.4-fpm
 WORKDIR /var/www/html
 
 RUN apt-get update && apt-get install -y \
-    zip unzip git curl \
+    zip unzip git curl nginx \
     libzip-dev libpng-dev libonig-dev libxml2-dev \
     default-mysql-client \
     && docker-php-ext-install pdo pdo_mysql zip mbstring \
