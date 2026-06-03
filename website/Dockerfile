@@ -25,7 +25,9 @@ COPY package.json package-lock.json ./
 RUN npm ci && npm run build
 
 COPY docker/nginx.conf /etc/nginx/sites-available/default
+COPY docker/start.sh /start.sh
+RUN chmod +x /start.sh
 
-EXPOSE 9000
+EXPOSE 80
 
-CMD service nginx start && php-fpm -F
+CMD ["/start.sh"]
