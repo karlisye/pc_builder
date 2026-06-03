@@ -86,7 +86,7 @@ deploy_staging:
     - pcbuilder
   script:
     - cd /srv/pc-builder
-    - docker-compose pull
-    - docker-compose up -d
+    - docker compose pull
+    - docker compose up -d
   rules:
     - if: '$CI_COMMIT_BRANCH == "dev"'
