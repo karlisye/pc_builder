@@ -2,7 +2,7 @@
 
 return [
 
-    /*
+  /*
     |--------------------------------------------------------------------------
     | Server Side Rendering
     |--------------------------------------------------------------------------
@@ -19,21 +19,21 @@ return [
     |
     */
 
-    'ssr' => [
+  'ssr' => [
 
-        'enabled' => (bool) env('INERTIA_SSR_ENABLED', true),
+    'enabled' => (bool) env('INERTIA_SSR_ENABLED', true),
 
-        'runtime' => env('INERTIA_SSR_RUNTIME', 'node'),
+    'runtime' => env('INERTIA_SSR_RUNTIME', 'node'),
 
-        'ensure_runtime_exists' => (bool) env('INERTIA_SSR_ENSURE_RUNTIME_EXISTS', false),
+    'ensure_runtime_exists' => (bool) env('INERTIA_SSR_ENSURE_RUNTIME_EXISTS', false),
 
-        'url' => env('INERTIA_SSR_URL', 'http://127.0.0.1:13714'),
+    'url' => env('INERTIA_SSR_URL', 'http://127.0.0.1:13714'),
 
-        'ensure_bundle_exists' => (bool) env('INERTIA_SSR_ENSURE_BUNDLE_EXISTS', true),
+    'ensure_bundle_exists' => (bool) env('INERTIA_SSR_ENSURE_BUNDLE_EXISTS', true),
 
-        // 'bundle' => base_path('bootstrap/ssr/ssr.mjs'),
+    // 'bundle' => base_path('bootstrap/ssr/ssr.mjs'),
 
-        /*
+    /*
         |--------------------------------------------------------------------------
         | SSR Error Handling
         |--------------------------------------------------------------------------
@@ -47,11 +47,11 @@ return [
         |
         */
 
-        'throw_on_error' => (bool) env('INERTIA_SSR_THROW_ON_ERROR', false),
+    'throw_on_error' => (bool) env('INERTIA_SSR_THROW_ON_ERROR', false),
 
-    ],
+  ],
 
-    /*
+  /*
     |--------------------------------------------------------------------------
     | Pages
     |--------------------------------------------------------------------------
@@ -65,30 +65,30 @@ return [
     |
     */
 
-    'pages' => [
+  'pages' => [
 
-        'ensure_pages_exist' => false,
+    'ensure_pages_exist' => false,
 
-        'paths' => [
+    'paths' => [
 
-            resource_path('js/pages'),
-
-        ],
-
-        'extensions' => [
-
-            'js',
-            'jsx',
-            'svelte',
-            'ts',
-            'tsx',
-            'vue',
-
-        ],
+      resource_path('js/pages'),
 
     ],
 
-    /*
+    'extensions' => [
+
+      'js',
+      'jsx',
+      'svelte',
+      'ts',
+      'tsx',
+      'vue',
+
+    ],
+
+  ],
+
+  /*
     |--------------------------------------------------------------------------
     | Testing
     |--------------------------------------------------------------------------
@@ -102,13 +102,13 @@ return [
     |
     */
 
-    'testing' => [
+  'testing' => [
 
-        'ensure_pages_exist' => true,
+    'ensure_pages_exist' => true,
 
-    ],
+  ],
 
-    /*
+  /*
     |--------------------------------------------------------------------------
     | Expose Shared Prop Keys
     |--------------------------------------------------------------------------
@@ -119,9 +119,9 @@ return [
     |
     */
 
-    'expose_shared_prop_keys' => true,
+  'expose_shared_prop_keys' => true,
 
-    /*
+  /*
     |--------------------------------------------------------------------------
     | History
     |--------------------------------------------------------------------------
@@ -133,10 +133,10 @@ return [
     |
     */
 
-    'history' => [
+  'history' => [
 
-        'encrypt' => (bool) env('INERTIA_ENCRYPT_HISTORY', false),
+    'encrypt' => (bool) env('INERTIA_ENCRYPT_HISTORY', false),
 
-    ],
+  ],
 
 ];
