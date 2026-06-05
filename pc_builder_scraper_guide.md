@@ -609,7 +609,6 @@ When updating an existing parser:
 - Keep `dateks_id` unique and stable.
 - Keep parser output aligned with the migration column names.
 - Prefer `#params` fields over less structured page areas.
-- Be careful with duplicated Dateks spec keys.
 - Use parser-specific normalization when exact string matching is required.
 
 ## 16. Known Caveats
