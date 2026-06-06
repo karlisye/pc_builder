@@ -36,6 +36,7 @@ Route::middleware('role:admin')->group(function () {
   Route::get('/admin/scrape', fn() => Inertia::render('Admin/Scraper'));
   Route::post('/admin/scrape', [AdminController::class, 'scrape']);
   Route::get('/admin/history', fn() => Inertia::render('Admin/History'));
+  Route::get('/admin/test', fn() => Inertia::render('Admin/Test'));
 });
 
 Route::fallback(fn() => Inertia::render('NotFound'));
