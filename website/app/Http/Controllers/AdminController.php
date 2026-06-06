@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Build;
 use App\Models\ScrapeResult;
 use App\Models\ScrapeSession;
+use App\Services\BuilderService;
 use GuzzleHttp\Client;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Inertia\Response as InertiaResponse;
@@ -120,5 +123,96 @@ class AdminController extends Controller
 
     $history = $query->paginate(10);
     return response()->json(['historyData' => $history]);
+  }
+
+  public function populate(Request $request): JsonResponse
+  {
+    $builds = [
+      // budget office
+      ['budget' => 350,  'preferences' => ['type' => 'office']],
+      ['budget' => 500,  'preferences' => ['type' => 'office']],
+      ['budget' => 700,  'preferences' => ['type' => 'office']],
+
+      // mid gaming
+      ['budget' => 1000, 'preferences' => ['type' => 'gaming']],
+      ['budget' => 1200, 'preferences' => ['type' => 'gaming']],
+      ['budget' => 1500, 'preferences' => ['type' => 'gaming']],
+
+      // mid gaming with preferences
+      ['budget' => 1000, 'preferences' => ['type' => 'gaming', 'gpu' => 'nvidia']],
+      ['budget' => 1000, 'preferences' => ['type' => 'gaming', 'gpu' => 'amd']],
+      ['budget' => 1000, 'preferences' => ['type' => 'gaming', 'cpu' => 'amd']],
+      ['budget' => 1000, 'preferences' => ['type' => 'gaming', 'cpu' => 'intel']],
+
+      // mid streaming
+      ['budget' => 1200, 'preferences' => ['type' => 'streaming']],
+
+      // high gaming
+      ['budget' => 2000, 'preferences' => ['type' => 'gaming']],
+      ['budget' => 3000, 'preferences' => ['type' => 'gaming']],
+
+      // high rendering
+      ['budget' => 2000, 'preferences' => ['type' => 'rendering']],
+      ['budget' => 3000, 'preferences' => ['type' => 'rendering']],
+
+      // unlimited
+      ['budget' => null, 'preferences' => ['type' => 'gaming']],
+      ['budget' => null, 'preferences' => ['type' => 'rendering']],
+    ];
+
+    $builder = app(BuilderService::class);
+    $slots = Build::componentSlots();
+    $results = [];
+
+    foreach ($builds as $config) {
+      $result = $builder->generate([], $config['budget'], $config['preferences']);
+
+      if (!$result['success']) {
+        $results[] = [
+          'config' => $config,
+          'success' => false,
+          'error' => $result['error'],
+        ];
+        continue;
+      }
+
+      // map component dateks_ids to build foreign keys
+      $componentFks = [];
+      foreach ($result['build'] as $type => $component) {
+        $fkColumn = $slots[$type] ?? null;
+        if ($fkColumn) {
+          $componentFks[$fkColumn] = $component['dateks_id'];
+        }
+      }
+
+      $type = $config['preferences']['type'] ?? null;
+      $budget = $config['budget'] ? "€{$config['budget']}" : 'Unlimited';
+
+      $build = Build::create([
+        'user_id'     => $request->user()->id,
+        'name'        => ucfirst($type ?? 'General') . " Build - {$budget}",
+        'notes'       => null,
+        'type'        => $type,
+        'total_price' => $result['total_price'],
+        'is_public'   => true,
+        ...$componentFks,
+      ]);
+
+      $results[] = [
+        'config'      => $config,
+        'success'     => true,
+        'build_id'    => $build->id,
+        'total_price' => $result['total_price'],
+      ];
+    }
+
+    $succeeded = collect($results)->where('success', true)->count();
+    $failed = collect($results)->where('success', false)->count();
+
+    return response()->json([
+      'succeeded' => $succeeded,
+      'failed'    => $failed,
+      'results'   => $results,
+    ]);
   }
 }
