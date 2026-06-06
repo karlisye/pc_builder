@@ -127,6 +127,8 @@ class AdminController extends Controller
 
   public function populate(Request $request): JsonResponse
   {
+    Build::where('user_id', $request->user()->id)->delete();
+
     $builds = [
       // budget office
       ['budget' => 350,  'preferences' => ['type' => 'office']],
