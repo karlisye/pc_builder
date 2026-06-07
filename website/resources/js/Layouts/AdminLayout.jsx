@@ -150,6 +150,17 @@ const AdminLayout = ({ children }) => {
               >
                 Scraper
               </Link>
+
+              <Link
+                href="/admin/history"
+                className="hover:text-white transition"
+              >
+                History
+              </Link>
+
+              <Link href="/admin/test" className="hover:text-white transition">
+                Test
+              </Link>
             </div>
           </div>
         </footer>
