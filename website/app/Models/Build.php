@@ -177,4 +177,18 @@ class Build extends Model
   {
     return $this->hasMany(BuildReview::class);
   }
+
+  public static function totalComponentCount(): int
+  {
+    return Cpu::count()
+      + Motherboard::count()
+      + Ram::count()
+      + Gpu::count()
+      + Ssd::count()
+      + Hdd::count()
+      + PcCase::count()
+      + Cooler::count()
+      + Psu::count()
+      + Fan::count();
+  }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Build;
 use App\Models\ScrapeResult;
 use App\Models\ScrapeSession;
+use App\Models\User;
 use App\Services\BuilderService;
 use GuzzleHttp\Client;
 use Illuminate\Http\JsonResponse;
@@ -19,7 +20,14 @@ class AdminController extends Controller
 {
   public function index(Request $request): InertiaResponse
   {
-    return Inertia::render('Admin/Dashboard');
+    return Inertia::render('Admin/Dashboard', [
+      'data' => [
+        'userCount' => User::count(),
+        'buildCount' => Build::count(),
+        'componentCount' => Build::totalComponentCount(),
+        'scrapeCount' => ScrapeSession::count(),
+      ]
+    ]);
   }
 
   public function scrape(Request $request): StreamedResponse
