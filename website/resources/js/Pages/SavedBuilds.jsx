@@ -87,35 +87,37 @@ const SavedBuilds = ({ builds, selected }) => {
     <>
       <div className="h-full flex">
         <SidePanel title={"SAVED BUILDS"}>
-          {builds.length === 0 ? (
-            <p className="text-muted">You have no saved builds yet.</p>
-          ) : (
-            builds.map((build) => (
-              <div
-                key={build.id}
-                onClick={() => handleSelect(build)}
-                className={`hover:bg-secondary border transition-all cursor-pointer p-2 flex justify-between items-center border-secondary mb-2 ${
-                  selectedBuild?.id === build.id ? "border-l-10" : ""
-                }`}
-              >
-                <div>
-                  <h2 className="text-white font-semibold text-xl">
-                    {build.name}
-                  </h2>
-                  <p className="text-muted text-sm">€{build.total_price}</p>
-                </div>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setDeleting(build.id);
-                  }}
-                  className="text-muted hover:text-danger transition p-2 cursor-pointer"
+          <div className="max-h-100">
+            {builds.length === 0 ? (
+              <p className="text-muted">You have no saved builds yet.</p>
+            ) : (
+              builds.map((build) => (
+                <div
+                  key={build.id}
+                  onClick={() => handleSelect(build)}
+                  className={`hover:bg-secondary border transition-all cursor-pointer p-2 flex justify-between items-center border-secondary mb-2 ${
+                    selectedBuild?.id === build.id ? "border-l-10" : ""
+                  }`}
                 >
-                  Delete
-                </button>
-              </div>
-            ))
-          )}
+                  <div>
+                    <h2 className="text-white font-semibold text-xl">
+                      {build.name}
+                    </h2>
+                    <p className="text-muted text-sm">€{build.total_price}</p>
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDeleting(build.id);
+                    }}
+                    className="text-muted hover:text-danger transition p-2 cursor-pointer"
+                  >
+                    Delete
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
         </SidePanel>
 
         <div className="flex-1 pt-6 px-4 mb-6">
