@@ -9,7 +9,7 @@ const Dashboard = ({ data }) => {
           <h1 className="sm:text-4xl text-7xl font-bold text-surface mb-4 flex flex-wrap">
             OVERVIEW
           </h1>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-2 grid-cols-1 gap-4">
             <p className="text-lg text-surface">
               Total registered users: {data.userCount}
             </p>
