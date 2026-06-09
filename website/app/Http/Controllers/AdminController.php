@@ -26,6 +26,7 @@ class AdminController extends Controller
         'buildCount' => Build::count(),
         'componentCount' => Build::totalComponentCount(),
         'scrapeCount' => ScrapeSession::count(),
+        'lastScrape' => ScrapeSession::query()->first()->finished_at,
       ]
     ]);
   }

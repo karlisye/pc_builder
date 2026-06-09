@@ -20,7 +20,8 @@ const Dashboard = ({ data }) => {
               Available component count: {data.componentCount}
             </p>
             <p className="text-lg text-surface">
-              {/* Last scrape: {data.componentCount} */}
+              Last scrape: {new Date(data.lastScrape).toLocaleDateString()}{" "}
+              {new Date(data.lastScrape).toLocaleTimeString()}
             </p>
             <p className="text-lg text-surface">
               Times scraped: {data.scrapeCount}
