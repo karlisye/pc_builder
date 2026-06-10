@@ -55,6 +55,7 @@ class CompatibilityHelper
     'ITX',
   ];
 
+  // return the array of compatible cases
   public static function compatibleCasesFor(string $mbFormFactor): array
   {
     $compatible = [];
@@ -66,21 +67,25 @@ class CompatibilityHelper
     return $compatible;
   }
 
+  // return the array of compatible mobos
   public static function compatibleMotherboardsFor(string $caseFormFactor): array
   {
     return self::CASE_FITS_MOTHERBOARD[$caseFormFactor] ?? [];
   }
 
+  // validate known motherboards
   public static function isKnownMotherboardFormFactor(?string $ff): bool
   {
     return $ff && in_array($ff, self::KNOWN_MOTHERBOARD_FORM_FACTORS, true);
   }
 
+  // validate known cases
   public static function isKnownCaseFormFactor(?string $ff): bool
   {
     return $ff && in_array($ff, self::KNOWN_CASE_FORM_FACTORS, true);
   }
 
+  // if case or mobo has an exotic size, return a warning
   public static function exoticFormFactorWarning(array $selected): ?string
   {
     $mb = $selected['motherboard'] ?? null;
