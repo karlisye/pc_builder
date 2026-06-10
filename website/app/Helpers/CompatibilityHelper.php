@@ -21,6 +21,7 @@ class CompatibilityHelper
     'ITX' => ['mITX', 'Mini-ITX', 'ITX'],
   ];
 
+  // known motherboard sizes
   public const KNOWN_MOTHERBOARD_FORM_FACTORS = [
     'ATX',
     'Extended ATX',
@@ -37,6 +38,7 @@ class CompatibilityHelper
     'ITX',
   ];
 
+  // known case sizes
   public const KNOWN_CASE_FORM_FACTORS = [
     'XL ATX',
     'Extended ATX',
