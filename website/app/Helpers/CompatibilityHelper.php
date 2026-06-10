@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 class CompatibilityHelper
 {
+  // List what case fits motherboard size
   public const CASE_FITS_MOTHERBOARD = [
     'XL ATX' => ['ATX', 'Extended ATX', 'E-ATX', 'EEB', 'SSI-EEB', 'SSI-CEB', 'CEB', 'mATX', 'Micro ATX', 'mDTX', 'mITX', 'Mini-ITX', 'ITX'],
     'Extended ATX' => ['ATX', 'Extended ATX', 'E-ATX', 'EEB', 'SSI-EEB', 'SSI-CEB', 'CEB', 'mATX', 'Micro ATX', 'mDTX', 'mITX', 'Mini-ITX', 'ITX'],
