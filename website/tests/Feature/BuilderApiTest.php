@@ -98,7 +98,7 @@ it('selected components exceeding budget returns error', function () {
     test()->markTestSkipped('No CPU over €400 found in DB');
   }
 
-  generate(basePayload(300, ['type' => 'office'], ['cpu' => $cpu->id]))
+  generate(basePayload(300, ['type' => 'office'], ['cpu' => $cpu->dateks_id]))
     ->assertStatus(400)
     ->assertJsonPath('success', false);
 });
@@ -193,7 +193,7 @@ it('low ram triggers warning', function () {
     test()->markTestSkipped('No low capacity RAM found in DB');
   }
 
-  $res = generate(basePayload(2000, ['type' => 'gaming'], ['ram' => $ram->id]))
+  $res = generate(basePayload(2000, ['type' => 'gaming'], ['ram' => $ram->dateks_id]))
     ->assertStatus(200);
 
   $hasRamWarning = collect($res->json('warnings'))
@@ -209,7 +209,7 @@ it('low ram on specific type triggers warning', function () {
     test()->markTestSkipped('No 32GB RAM found in DB');
   }
 
-  $res = generate(basePayload(2000, ['type' => 'rendering'], ['ram' => $ram->id]))
+  $res = generate(basePayload(2000, ['type' => 'rendering'], ['ram' => $ram->dateks_id]))
     ->assertStatus(200);
 
   $hasRamWarning = collect($res->json('warnings'))
@@ -225,7 +225,7 @@ it('low vram triggers warning', function () {
     test()->markTestSkipped('No low vram GPU found in DB');
   }
 
-  $res = generate(basePayload(1200, ['type' => 'gaming'], ['gpu' => $gpu->id]))
+  $res = generate(basePayload(1200, ['type' => 'gaming'], ['gpu' => $gpu->dateks_id]))
     ->assertStatus(200);
 
   $hasRamWarning = collect($res->json('warnings'))
@@ -241,7 +241,7 @@ it('low storage triggers warning', function () {
     test()->markTestSkipped('No low capacity SSD found in DB');
   }
 
-  $res = generate(basePayload(1200, ['type' => 'gaming'], ['ssd' => $ssd->id]))
+  $res = generate(basePayload(1200, ['type' => 'gaming'], ['ssd' => $ssd->dateks_id]))
     ->assertStatus(200);
 
   $hasRamWarning = collect($res->json('warnings'))
