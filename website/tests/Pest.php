@@ -67,7 +67,7 @@ function basePayload(float $budget, array $preferences = [], array $selected = [
 {
   return [
     'budget'      => $budget,
-    'preferences' => array_merge(['type' => 'gaming'], $preferences),
+    'preferences' => $preferences,
     'selected'    => $selected,
   ];
 }
