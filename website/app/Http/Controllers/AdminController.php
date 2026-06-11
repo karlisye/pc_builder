@@ -199,10 +199,17 @@ class AdminController extends Controller
       $type = $config['preferences']['type'] ?? null;
       $budget = $config['budget'] ? "€{$config['budget']}" : 'Unlimited';
 
+      $gpu = $result['build']['gpu']['name'] ?? null;
+      $cpu = $result['build']['cpu']['name'] ?? null;
+
+      $note = "Powered by {$cpu}" .
+        ($gpu ? " and {$gpu}" : '') .
+        ", this {$type} build delivers excellent performance for its price range.";
+
       $build = Build::create([
         'user_id'     => $request->user()->id,
         'name'        => ucfirst($type ?? 'General') . " Build - {$budget}",
-        'notes'       => null,
+        'notes'       => $note,
         'type'        => $type,
         'total_price' => $result['total_price'],
         'is_public'   => true,
