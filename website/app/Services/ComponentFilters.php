@@ -161,6 +161,8 @@ class ComponentFilters
       $q->whereNull('wattage')
         ->orWhere('wattage', '>=', $requiredWattage);
     });
+
+    // TODO: add connectors compatibility check
   }
 
   private static function applyFormFactorFilter(Builder $query, ?string $formFactor, string $side): void
