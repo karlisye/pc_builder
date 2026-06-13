@@ -137,9 +137,17 @@ const BuildCard = ({ build }) => {
                   </span>
                 )}
               </div>
-              <Link className="text-muted" href={`/profile/${build.user?.id}`}>
-                @{build.user?.name}
-              </Link>
+              <div className="flex gap-4 items-center">
+                <Link
+                  className="text-muted"
+                  href={`/profile/${build.user?.id}`}
+                >
+                  @{build.user?.name}
+                </Link>
+                <p className="text-sm text-muted px-2">
+                  {new Date(build.created_at).toDateString()}
+                </p>
+              </div>
             </div>
           </div>
 
