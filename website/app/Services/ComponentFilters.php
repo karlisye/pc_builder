@@ -13,7 +13,7 @@ class ComponentFilters
       $query->where('socket', $mb->socket);
     }
 
-    // check cooler comaptibility
+    // check cooler comaptibilit
     if (($cooler = $selected['cooler'] ?? null)?->compatibility) {
       $sockets = explode(',', $cooler->compatibility);
       $query->where(function (Builder $q) use ($sockets) {
