@@ -146,3 +146,43 @@ export function StarIcon({
     </svg>
   );
 }
+
+export function InfoIcon({ size = 24, color = "currentColor", className }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      <circle
+        cx="12"
+        cy="12"
+        r="9"
+        stroke={color}
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <line
+        x1="12"
+        y1="11"
+        x2="12"
+        y2="17"
+        stroke={color}
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+      <circle
+        cx="12"
+        cy="7.5"
+        r="0.5"
+        fill={color}
+        stroke={color}
+        strokeWidth="1.2"
+      />
+    </svg>
+  );
+}
