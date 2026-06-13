@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ComponentInfo from "../Common/ComponentInfo";
 import { useBuilder } from "../../../Contexts/BuilderContext";
 import { AddIcon } from "../Common/Icons";
+import ComponentPopup from "./ComponentPopup";
 
 const ComponentCard = ({ component, name }) => {
   const {
@@ -13,6 +14,7 @@ const ComponentCard = ({ component, name }) => {
     buildIssues,
   } = useBuilder();
   const [isSeeMoreActive, setIsSeeMoreActive] = useState(false);
+  const [popupActive, setPopupActive] = useState(false);
 
   const handleAddComponent = () => {
     setCurrentCompToAdd(name);
@@ -31,6 +33,10 @@ const ComponentCard = ({ component, name }) => {
       [name.toLowerCase()]: null,
     }));
     setCurrentCompToAdd(null);
+  };
+
+  const handlePopup = () => {
+    setPopupActive(true);
   };
 
   const hasIssues = buildIssues[name.toLowerCase()]?.length > 0;
@@ -99,7 +105,11 @@ const ComponentCard = ({ component, name }) => {
         </>
       ) : (
         <>
-          <div className="h-full flex flex-col items-center justify-center gap-4">
+          <div
+            className="h-full flex flex-col items-center justify-center gap-4"
+            onMouseOver={handlePopup}
+            onMouseLeave={() => setPopupActive(false)}
+          >
             <span className="text-3xl font-semibold text-muted">{name}</span>
             <button
               className="bg-surface p-2 text-muted hover:bg-secondary-light transition cursor-pointer"
@@ -107,6 +117,8 @@ const ComponentCard = ({ component, name }) => {
             >
               <AddIcon />
             </button>
+
+            {popupActive && <ComponentPopup />}
           </div>
         </>
       )}
