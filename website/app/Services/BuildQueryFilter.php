@@ -71,15 +71,15 @@ class BuildQueryFilter
   private static function applySort(Builder $query, ?string $sort): Builder
   {
     return match ($sort) {
-      'date_asc' => $query->orderBy('updated_at'),
-      'date_desc' => $query->orderByDesc('updated_at'),
+      'date_asc' => $query->orderByDesc('updated_at'),
+      'date_desc' => $query->orderBy('updated_at'),
       'price_asc' => $query->orderBy('total_price'),
       'price_desc' => $query->orderByDesc('total_price'),
       'likes_asc' => $query->orderBy('likes_count'),
       'likes_desc' => $query->orderByDesc('likes_count'),
       'rating_asc' => $query->orderBy('reviews_avg_rating'),
       'rating_desc' => $query->orderByDesc('reviews_avg_rating'),
-      default => $query->orderBy('updated_at')
+      default => $query->orderByDesc('updated_at')
     };
   }
 }
