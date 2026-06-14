@@ -244,7 +244,11 @@ const SavedBuilds = ({ builds, selected }) => {
                           </span>
                         </div>
                         <a
-                          className={`flex items-center transition text-text border-l border-border ${isExpanded ? "px-8 bg-success/30 hover:bg-success/50" : "w-0 overflow-hidden"}`}
+                          className={`flex items-center transition-all text-text border-l border-border overflow-hidden ${
+                            isExpanded
+                              ? "w-24 px-8 bg-success/30 hover:bg-success/50"
+                              : "w-0 px-0"
+                          }`}
                           target="_blank"
                           href={component.url}
                         >
