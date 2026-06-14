@@ -197,7 +197,11 @@ const BuildCard = ({ build }) => {
         <div className="flex xl:flex-row flex-col max-h-100 overflow-y-auto">
           <div className="flex-1 m-2 flex flex-col gap-4">
             <span className="text-muted font-medium">Notes</span>
-            <p className="text-text">{build.notes}</p>
+            {build.notes ? (
+              <p className="text-text">{build.notes}</p>
+            ) : (
+              <p className="italic text-sm text-muted">None</p>
+            )}
 
             <div className="p-2 border border-border mt-auto">
               <div className="flex justify-around">
