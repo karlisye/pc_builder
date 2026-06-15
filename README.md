@@ -348,6 +348,8 @@ Run tests with Sail:
 ./vendor/bin/sail bin pest
 ```
 
+Alternatively, use the Populate feature in the Admin Dashboard to generate 17 sample builds across different budgets and preferences. The generated builds are automatically published and accessible on the shared builds page.
+
 ## Development Notes
 
 - The scraper intentionally extracts only fields needed for display or compatibility matching.
