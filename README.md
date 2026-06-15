@@ -340,7 +340,7 @@ Some component categories, such as SSDs, HDDs, and fans, currently have fewer co
 
 The main automated coverage is in `website/tests/Feature/BuilderApiTest.php`. It checks build generation response structure, budget tiers, build-type rules, CPU/GPU preferences, compatibility expectations, and warnings.
 
-Because these tests depend on component records, they need a database containing suitable scraped or seeded component data.
+Because these tests depend on component records, they need a database containing suitable scraped component data.
 
 Run tests with Sail:
 
