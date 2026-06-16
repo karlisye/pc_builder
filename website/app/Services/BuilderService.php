@@ -50,7 +50,7 @@ class BuilderService
     $type = $preferences['type'] ?? 'general';
     $allocations = self::TIERS[$tier][$type] ?? self::TIERS[$tier]['general'];;
 
-    // if allocations dont have gpu, then intergated graphics is a must
+    // if allocations dont have gpu, then intergated graphics is needed
     if (!isset($allocations['gpu'])) {
       $preferences['integrated_graphics'] = true;
     }
