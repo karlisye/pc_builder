@@ -1,13 +1,6 @@
 # PC Builder
 
-PC Builder is a full-stack web app for creating, saving, sharing, and reviewing compatible custom PC builds. It combines a Laravel backend, an Inertia + React frontend, and a Python scraper that imports live component data from Dateks into MySQL.
-
-The project is split into two main parts:
-
-- `website/` - the Laravel application, React pages, API routes, compatibility logic, admin tools, database migrations, and tests.
-- `scraper/` - the Python scraper service that collects component listings and specifications, parses them by category, and writes them into the same database used by the app.
-
-There is also a detailed scraper reference in `pc_builder_scraper_guide.md`.
+PC Builder is a full-stack web app for creating, saving, sharing, and reviewing compatible custom PC builds. It combines a Laravel JSON API backend, a standalone React frontend, and a Python scraper that imports live component data from Dateks into MySQL.
 
 ## Features
 
@@ -54,18 +47,21 @@ _Scrape History Page_
 
 ## Tech Stack
 
-### Web App
+### Backend
 
 - PHP 8.4
 - Laravel 12
-- Laravel Sanctum
-- Inertia Laravel
-- React 19
-- Vite 7
-- Tailwind CSS 4
+- Laravel Sanctum (session-based cookie auth)
 - MySQL 8.4
 - Pest / PHPUnit
-- Laravel Sail
+
+### Frontend
+
+- React 19
+- React Router v7
+- Vite 7
+- Tailwind CSS 4
+- Axios
 
 ### Scraper
 
@@ -81,32 +77,148 @@ _Scrape History Page_
 ```text
 .
 ├── README.md
-├── pc_builder_scraper_guide.md
-├── scraper/
-│   ├── main.py
-│   ├── server.py
-│   ├── config.py
-│   ├── database.py
-│   ├── parsers/
-│   └── scrapers/
-└── website/
-    ├── app/
-    │   ├── Http/Controllers/
-    │   ├── Models/
-    │   └── Services/
-    ├── database/
-    │   ├── migrations/
-    │   └── seeders/
-    ├── resources/
-    │   ├── css/
-    │   ├── js/
-    │   └── views/
-    ├── routes/
-    ├── tests/
-    ├── compose.yaml
-    ├── composer.json
-    └── package.json
+├── docker-compose.yml
+├── backend/                      # Laravel JSON API
+│   ├── app/
+│   │   ├── Http/Controllers/
+│   │   ├── Models/
+│   │   └── Services/
+│   ├── database/
+│   │   ├── migrations/
+│   │   └── seeders/
+│   ├── routes/
+│   │   └── api.php
+│   ├── tests/
+│   ├── Dockerfile
+│   └── composer.json
+├── frontend/                     # React SPA
+│   ├── src/
+│   │   ├── app.jsx
+│   │   ├── Contexts/
+│   │   ├── Layouts/
+│   │   └── Pages/
+│   ├── Dockerfile
+│   ├── index.html
+│   └── package.json
+└── scraper/                      # Python scraper service
+    ├── main.py
+    ├── server.py
+    ├── config.py
+    ├── database.py
+    ├── parsers/
+    └── scrapers/
 ```
+
+## Running With Docker
+
+The easiest way to run the full stack is with Docker Compose.
+
+Copy the backend environment file and fill in your values:
+
+```bash
+cp backend/.env.example backend/.env
+```
+
+The key values for Docker are already set correctly by default:
+
+```env
+DB_HOST=mysql
+DB_DATABASE=pc_builder
+DB_USERNAME=sail
+DB_PASSWORD=password
+SESSION_DOMAIN=localhost
+SANCTUM_STATEFUL_DOMAINS=localhost,localhost:80
+CACHE_STORE=file
+```
+
+Generate an app key if `.env` doesn't already have one:
+
+```bash
+docker compose run --rm backend php artisan key:generate
+```
+
+Start all services:
+
+```bash
+docker compose up -d
+```
+
+Run migrations:
+
+```bash
+docker compose exec backend php artisan migrate
+```
+
+| Service    | URL                         |
+|------------|-----------------------------|
+| App        | http://localhost            |
+| phpMyAdmin | http://localhost:8080       |
+
+To create an admin account, register normally then update your user's role to `admin` via phpMyAdmin or the MySQL CLI.
+
+## Running Without Docker
+
+### Backend
+
+```bash
+cd backend
+cp .env.example .env
+composer install
+php artisan key:generate
+php artisan migrate
+php artisan serve
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The Vite dev server proxies `/api` and `/sanctum` to `http://localhost:8000`, so the backend and frontend work together without any extra config.
+
+The app is available at `http://localhost:5173`.
+
+## Scraper Usage
+
+The scraper can be run from the Admin Dashboard in the app (when Docker is running), or directly from the command line.
+
+### Through the Admin Dashboard
+
+Once you have an account with role `admin`, head to the Scraper page and select which categories to scrape.
+
+### From the Command Line
+
+MySQL must be reachable on `127.0.0.1:3306`. If using Docker Compose, the port is exposed by default.
+
+```bash
+cd scraper
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+Run all categories:
+
+```bash
+DB_HOST=127.0.0.1 python3 main.py all
+```
+
+Run specific categories:
+
+```bash
+DB_HOST=127.0.0.1 python3 main.py cpu,gpu,ram
+```
+
+Supported categories:
+
+```text
+cpu, motherboard, ram, gpu, ssd, hdd, case, fan, psu, cooler
+```
+
+Each category maps to one or more Dateks listing URLs, a parser module, and a database table in `scraper/config.py`.
 
 ## Main Application Areas
 
@@ -120,210 +232,74 @@ The builder lets users generate a complete build or fill individual component sl
 - `ComponentFilters` and `ComponentQueryFilter` - apply compatibility and UI filters to component queries.
 - `ComponentScorer` - ranks component options during generation.
 
-Supported component types are:
-
-```text
-cpu, motherboard, ram, gpu, ssd, hdd, case, cooler, psu, fan
-```
-
 ### Saved Builds
 
 Users can save generated or manually assembled builds. A build can store a name, notes, type, total price, public/private status, and references to selected component records.
 
 ### Shared Builds
 
-Public builds can be browsed through the shared page. Users can filter by price, type, CPU/GPU preference, rating, liked builds, bookmarked builds, and personal builds. Shared builds support likes, bookmarks, and one rating per user.
+Public builds can be browsed on the shared page. Users can filter by price, type, CPU/GPU preference, rating, liked builds, bookmarked builds, and personal builds. Shared builds support likes, bookmarks, and one rating per user.
 
 ### Admin Scraper
 
-Admin users can start scraper runs from the app. The Laravel app streams logs from the Python scraper service, then stores scrape session metadata and category-level results.
+Admin users can start scraper runs from the app. The Laravel backend streams logs from the Python scraper service, then stores scrape session metadata and category-level results.
 
-## Local Setup With Laravel Sail
+## API Routes
 
-From the project root:
+### Auth
 
-```bash
-cd website
-cp .env.example .env
-composer install
-npm install
-```
+- `GET /sanctum/csrf-cookie` - fetch CSRF cookie
+- `POST /api/register` - register
+- `POST /api/login` - login
+- `POST /api/logout` - logout
+- `GET /api/user` - current authenticated user
 
-Make sure the database values in `website/.env` match the Sail MySQL service. A typical Sail setup is:
-
-```env
-DB_CONNECTION=mysql
-DB_HOST=mysql
-DB_PORT=3306
-DB_DATABASE=website
-DB_USERNAME=sail
-DB_PASSWORD=password
-```
-
-Then start the containers:
-
-```bash
-./vendor/bin/sail up -d
-```
-
-Prepare the Laravel app:
-
-```bash
-./vendor/bin/sail artisan key:generate
-./vendor/bin/sail artisan migrate
-```
-
-Run the frontend dev server:
-
-```bash
-./vendor/bin/sail npm run dev
-```
-
-The app is available at:
-
-```text
-http://localhost
-```
-
-phpMyAdmin is available at:
-
-```text
-http://localhost:8080
-```
-
-The scraper service is exposed at:
-
-```text
-http://localhost:5000
-```
-
-## Local Setup Without Sail
-
-From `website/`:
-
-```bash
-cp .env.example .env
-composer install
-npm install
-php artisan key:generate
-php artisan migrate
-```
-
-Run the backend and frontend in separate terminals:
-
-```bash
-php artisan serve
-npm run dev
-```
-
-For this mode, use your local MySQL connection values in `website/.env`, usually with `DB_HOST=127.0.0.1`.
-
-## Scraper Usage
-
-The scraper can run in two ways.
-
-### Through Docker Compose
-
-The `website/compose.yaml` file defines a `scraper` service. It shares `website/.env` with the scraper container, so the scraper writes into the same database as Laravel.
-
-Once you have an account made with role `admin`, you can head over to Dashboard and scrape by using the user interface.
-
-### Directly From `scraper/`
-
-```bash
-cd scraper
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env
-python3 main.py
-```
-
-The scraper currently supports these categories:
-
-```text
-cpu, motherboard, ram, gpu, ssd, hdd, case, fan, psu, cooler
-```
-
-Each category maps to one or more Dateks listing URLs, a parser module, and a database table in `scraper/config.py`.
-
-## Important Routes
-
-### Web Routes
-
-- `/` - home page
-- `/guide` - guide page
-- `/register` and `/login` - authentication pages
-- `/builder` - PC builder
-- `/builds` - saved builds
-- `/shared` - shared public builds
-- `/profile` - current user profile
-- `/profile/account` - account settings
-- `/profile/bookmarked` - bookmarked builds
-- `/profile/{user}` - public user profile
-- `/admin` - admin dashboard
-- `/admin/scrape` - scraper runner
-- `/admin/history` - scraper history
-
-### API Routes
-
-Authenticated API routes include:
+### Components
 
 - `GET /api/components/{type}` - list compatible components
 - `GET /api/components/{type}/filters` - get filter options
-- `GET /api/components/{type}/{id}` - get a component
+- `GET /api/components/{type}/{id}` - get a single component
+
+### Builder
+
+- `GET /api/builder` - load an existing build into the builder
 - `POST /api/builder` - generate a build
 - `POST /api/builder/validate` - validate selected components
 - `POST /api/builder/{type}` - generate one component slot
+
+### Builds
+
+- `GET /api/builds` - list saved builds
 - `POST /api/builds` - save a build
 - `GET /api/builds/{build}` - fetch a build
 - `PATCH /api/builds/{build}` - update a build
 - `DELETE /api/builds/{build}` - delete a build
 - `PATCH /api/builds/{build}/publish` - toggle public visibility
+
+### Shared
+
 - `GET /api/shared` - fetch public builds
 - `POST /api/shared/{build}/like` - toggle like
 - `POST /api/shared/{build}/bookmark` - toggle bookmark
 - `POST /api/shared/{build}/review` - create or update rating
+
+### Profile
+
+- `GET /api/profile` - current user's profile builds
+- `GET /api/profile/bookmarked` - bookmarked builds
+- `GET /api/profile/{user}` - public profile of a user
 - `PATCH /api/users/{user}` - update user
 - `DELETE /api/users/{user}` - delete user
 
-Admin-only API routes include:
+### Admin
 
-- `POST /api/scrape` - store scrape session results
-- `GET /api/scrape/history` - fetch scrape history
-
-## Data Model Overview
-
-The application has separate tables and Eloquent models for each component type:
-
-- `Cpu`
-- `Motherboard`
-- `Ram`
-- `Gpu`
-- `Ssd`
-- `Hdd`
-- `PcCase`
-- `Cooler`
-- `Psu`
-- `Fan`
-
-Build-related models:
-
-- `Build`
-- `BuildLike`
-- `BuildBookmark`
-- `BuildReview`
-
-Scraper history models:
-
-- `ScrapeSession`
-- `ScrapeResult`
-
-The scraper uses `dateks_id` as the stable external identifier for imported components, and saved builds reference components through those IDs.
+- `GET /api/admin` - dashboard stats
+- `POST /api/admin/scrape` - run scraper and stream logs
+- `POST /api/admin/populate` - generate sample builds
 
 ## Compatibility Rules
 
-Compatibility checks are handled in Laravel rather than in SQL. Current checks include:
+Compatibility checks are handled in Laravel. Current checks include:
 
 - CPU socket must match motherboard socket.
 - Motherboard memory type must match RAM memory type.
@@ -334,26 +310,23 @@ Compatibility checks are handled in Laravel rather than in SQL. Current checks i
 - Motherboard form factor must fit the selected case.
 - PSU wattage must satisfy CPU/GPU demand and GPU minimum PSU recommendations.
 
-Some component categories, such as SSDs, HDDs, and fans, currently have fewer compatibility rules.
+## Testing
 
-## Testing Notes
+Tests live in `backend/tests/Feature/BuilderApiTest.php` and cover build generation response structure, budget tiers, build-type rules, CPU/GPU preferences, compatibility expectations, and warnings.
 
-The main automated coverage is in `website/tests/Feature/BuilderApiTest.php`. It checks build generation response structure, budget tiers, build-type rules, CPU/GPU preferences, compatibility expectations, and warnings.
-
-Because these tests depend on component records, they need a database containing suitable scraped component data.
-
-Run tests with Sail:
+Tests require a database with scraped component data. Run with:
 
 ```bash
-./vendor/bin/sail bin pest
+cd backend
+./vendor/bin/pest
 ```
 
-Alternatively, use the Populate feature in the Admin Dashboard to generate 17 sample builds across different budgets and preferences. The generated builds are automatically published and accessible on the shared builds page.
+Alternatively, use the Populate feature in the Admin Dashboard to generate 17 sample builds across different budgets and preferences. Generated builds are automatically published and accessible on the shared builds page.
 
 ## Development Notes
 
-- The scraper intentionally extracts only fields needed for display or compatibility matching.
+- The scraper extracts only fields needed for display or compatibility matching.
 - Component prices, stock status, and stock quantity come from Dateks listing pages.
 - Detailed specs come from Dateks product pages.
 - Admin scraper logs are streamed from the Python Flask service through Laravel to the browser.
-- The project uses admin role middleware for scraper and history pages.
+- The project uses admin role middleware for scraper and dashboard pages.
