@@ -1,5 +1,5 @@
 import "./bootstrap";
-import "../css/app.css";
+import "./app.css";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./Contexts/AuthContext";
