@@ -9,12 +9,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
-use Inertia\Inertia;
-use Inertia\Response as InertiaResponse;
 
 class UserController extends Controller
 {
-  public function show(Request $request, User $user): InertiaResponse
+  public function show(Request $request, User $user): JsonResponse
   {
     $builds = Build::query()
       ->where('user_id', $user->id)
@@ -24,20 +22,16 @@ class UserController extends Controller
       ->where('is_public', true)
       ->paginate(4);
 
-    $totalLikes = $user->totalLikes();
-    $totalBookmarks = $user->totalBookmarks();
-    $avgRating = $user->averageRating();
-
-    return Inertia::render('Components/Profile/PublicProfile', [
+    return response()->json([
       'user' => $user,
       'buildData' => $builds,
-      'totalLikes' => $totalLikes,
-      'totalBookmarks' => $totalBookmarks,
-      'avgRating' => $avgRating
+      'totalLikes' => $user->totalLikes(),
+      'totalBookmarks' => $user->totalBookmarks(),
+      'avgRating' => $user->averageRating(),
     ]);
   }
 
-  public function index(Request $request): InertiaResponse
+  public function index(Request $request): JsonResponse
   {
     $user = $request->user();
 
@@ -47,17 +41,14 @@ class UserController extends Controller
       ->withCount('bookmarks')
       ->withAvg('reviews', 'rating');
 
-    $privateBuilds = $buildQuery()->where('is_public', false)->paginate(2, ['*'], 'privatePage');
-    $publicBuilds  = $buildQuery()->where('user_id', $user->id)->where('is_public', true)->paginate(2, ['*'], 'publicPage');
-
-    return Inertia::render('Profile', [
+    return response()->json([
       'user' => $user,
-      'privateBuildData' => $privateBuilds,
-      'publicBuildData' => $publicBuilds,
+      'privateBuildData' => $buildQuery()->where('is_public', false)->paginate(2, ['*'], 'privatePage'),
+      'publicBuildData' => $buildQuery()->where('is_public', true)->paginate(2, ['*'], 'publicPage'),
     ]);
   }
 
-  public function indexBookmarked(Request $request): InertiaResponse
+  public function indexBookmarked(Request $request): JsonResponse
   {
     $user = $request->user();
 
@@ -72,12 +63,7 @@ class UserController extends Controller
       ->with(['reviews' => fn($q) => $q->where('user_id', $user->id)])
       ->paginate(4);
 
-    return Inertia::render('Components/Profile/BookmarkedBuilds', ['buildData' => $bookmarkedBuilds]);
-  }
-
-  public function indexAccount(Request $request): InertiaResponse
-  {
-    return Inertia::render('Components/Profile/AccountSettings', ['user' => $request->user()]);
+    return response()->json($bookmarkedBuilds);
   }
 
   public function update(Request $request, User $user): JsonResponse

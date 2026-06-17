@@ -1,12 +1,13 @@
 import axios from "axios";
 import React, { useState } from "react";
 import Modal from "../Common/Modal";
-import ProfileLayout from "../../../Layouts/ProfileLayout";
+import { useAuth } from "../../../Contexts/AuthContext";
 
-const AccountSettings = ({ user }) => {
+const AccountSettings = () => {
+  const { user, setUser } = useAuth();
   const [editActive, setEditActive] = useState(false);
-  const [name, setName] = useState(user.name);
-  const [email, setEmail] = useState(user.email);
+  const [name, setName] = useState(user?.name ?? "");
+  const [email, setEmail] = useState(user?.email ?? "");
 
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
@@ -41,6 +42,7 @@ const AccountSettings = ({ user }) => {
         email,
       });
       if (res.status === 200) {
+        setUser(res.data);
         setSuccess("Information updated");
         setError("");
         setTimeout(() => setSuccess(""), 3000);
@@ -101,7 +103,8 @@ const AccountSettings = ({ user }) => {
     } catch (err) {
       console.error(err);
     } finally {
-      window.location.reload();
+      setUser(null);
+      window.location.href = "/";
     }
   };
 
@@ -284,7 +287,5 @@ const AccountSettings = ({ user }) => {
     </>
   );
 };
-
-AccountSettings.layout = (page) => <ProfileLayout>{page}</ProfileLayout>;
 
 export default AccountSettings;

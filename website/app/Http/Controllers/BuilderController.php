@@ -8,8 +8,6 @@ use App\Services\BuilderService;
 use App\Services\CompatibilityService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Inertia\Response as InertiaResponse;
 
 class BuilderController extends Controller
 {
@@ -18,7 +16,7 @@ class BuilderController extends Controller
     private readonly CompatibilityService $compatibility,
   ) {}
 
-  public function index(Request $request): InertiaResponse
+  public function index(Request $request): JsonResponse
   {
     $build = null;
 
@@ -26,7 +24,6 @@ class BuilderController extends Controller
       $query = Build::where('id', $request->query('build'))
         ->with(['cpu', 'motherboard', 'ram', 'gpu', 'ssd', 'hdd', 'pcCase', 'cooler', 'psu', 'fan']);
 
-      // if request is sent with a shared tag, check if build is public, else check if build belongs to user
       if ($request->boolean('shared')) {
         $query->where('is_public', true);
       } else {
@@ -36,9 +33,7 @@ class BuilderController extends Controller
       $build = $query->first();
     }
 
-    return Inertia::render('Builder', [
-      'build' => $build,
-    ]);
+    return response()->json(['build' => $build]);
   }
 
   public function generateComp(Request $request, string $type): JsonResponse

@@ -1,25 +1,41 @@
-import ProfileLayout from "../Layouts/ProfileLayout";
-import React, { useState } from "react";
-import { HeartIcon, SavedIcon, StarIcon } from "./Components/Common/Icons";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Modal from "./Components/Common/Modal";
 import axios from "axios";
 import BuildsList from "./Components/Profile/BuildsList";
 
-const Profile = ({ user, publicBuildData, privateBuildData }) => {
-  const [description, setDescription] = useState(
-    user?.description ?? "Add an About Me",
-  );
+const Profile = () => {
+  const [user, setUser] = useState(null);
+  const [publicBuildData, setPublicBuildData] = useState(null);
+  const [privateBuildData, setPrivateBuildData] = useState(null);
+  const [description, setDescription] = useState("");
   const [publishing, setPublishing] = useState(false);
   const [build, setBuild] = useState(null);
+
+  useEffect(() => {
+    axios.get("/api/profile").then((res) => {
+      setUser(res.data.user);
+      setPublicBuildData(res.data.publicBuildData);
+      setPrivateBuildData(res.data.privateBuildData);
+      setDescription(res.data.user.description ?? "Add an About Me");
+    });
+  }, []);
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  const fetchProfile = (publicPage = 1, privatePage = 1) =>
+    axios
+      .get("/api/profile", { params: { publicPage, privatePage } })
+      .then((res) => {
+        setPublicBuildData(res.data.publicBuildData);
+        setPrivateBuildData(res.data.privateBuildData);
+      });
+
   const publish = async () => {
     try {
       await axios.patch(`/api/builds/${build.id}/publish`);
-      window.location.reload();
+      fetchProfile();
     } catch (err) {
       console.error(err);
     } finally {
@@ -90,6 +106,7 @@ const Profile = ({ user, publicBuildData, privateBuildData }) => {
             buildData={publicBuildData}
             setBuild={setBuild}
             setPublishing={setPublishing}
+            onPageChange={(page) => fetchProfile(page, privateBuildData?.current_page ?? 1)}
             isPublic
           />
 
@@ -98,6 +115,7 @@ const Profile = ({ user, publicBuildData, privateBuildData }) => {
             buildData={privateBuildData}
             setBuild={setBuild}
             setPublishing={setPublishing}
+            onPageChange={(page) => fetchProfile(publicBuildData?.current_page ?? 1, page)}
           />
         </div>
       </div>
@@ -128,7 +146,5 @@ const Profile = ({ user, publicBuildData, privateBuildData }) => {
     </>
   );
 };
-
-Profile.layout = (page) => <ProfileLayout>{page}</ProfileLayout>;
 
 export default Profile;

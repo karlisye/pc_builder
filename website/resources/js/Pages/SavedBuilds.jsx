@@ -20,11 +20,14 @@ const SLOT_LABELS = {
   fan: "Fan",
 };
 
-const SavedBuilds = ({ builds, selected }) => {
-  const [selectedBuild, setSelectedBuild] = useState(
-    selected ? selected : null,
-  );
+const SavedBuilds = () => {
+  const [builds, setBuilds] = useState([]);
+  const [selectedBuild, setSelectedBuild] = useState(null);
   const [loadingBuild, setLoadingBuild] = useState(false);
+
+  useEffect(() => {
+    axios.get("/api/builds").then((res) => setBuilds(res.data));
+  }, []);
   const [editing, setEditing] = useState(false);
   const [editData, setEditData] = useState({ name: "", notes: "" });
   const [expandedSlot, setExpandedSlot] = useState(null);
@@ -61,10 +64,13 @@ const SavedBuilds = ({ builds, selected }) => {
     }
   };
 
+  const refreshBuilds = () =>
+    axios.get("/api/builds").then((res) => setBuilds(res.data));
+
   const handleDelete = async (id) => {
     await axios.delete(`/api/builds/${id}`);
     if (selectedBuild?.id === id) setSelectedBuild(null);
-    window.location.reload();
+    refreshBuilds();
   };
 
   const handleSaveEdit = async () => {
@@ -75,7 +81,7 @@ const SavedBuilds = ({ builds, selected }) => {
       );
       setSelectedBuild(res.data);
       setEditing(false);
-      window.location.reload();
+      refreshBuilds();
     } catch (err) {
       console.error(err);
     }

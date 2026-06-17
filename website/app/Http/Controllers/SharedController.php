@@ -9,17 +9,10 @@ use App\Models\BuildReview;
 use App\Services\BuildQueryFilter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Inertia\Response as InertiaResponse;
 
 class SharedController extends Controller
 {
   private const VALID_SORTS = ['price_asc', 'price_desc', 'date_asc', 'date_desc', 'likes_asc', 'likes_desc', 'rating_asc', 'rating_desc'];
-
-  public function index(): InertiaResponse
-  {
-    return Inertia::render('Shared');
-  }
 
   public function fetchBuilds(Request $request): JsonResponse
   {

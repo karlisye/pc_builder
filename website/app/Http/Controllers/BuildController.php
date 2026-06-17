@@ -7,8 +7,6 @@ use App\Models\Build;
 use App\Services\CompatibilityService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Inertia\Response as InertiaResponse;
 
 class BuildController extends Controller
 {
@@ -29,13 +27,8 @@ class BuildController extends Controller
     ]);
   }
 
-  public function index(Request $request): InertiaResponse
+  public function index(Request $request): JsonResponse
   {
-    if ($request->buildId) {
-      $selected = Build::find($request->buildId)->withCount('likes')
-        ->withCount('bookmarks')->first();
-    }
-
     $builds = Build::query()
       ->where('user_id', $request->user()->id)
       ->orderByDesc('created_at')
@@ -43,10 +36,7 @@ class BuildController extends Controller
       ->withCount('bookmarks')
       ->get();
 
-    return Inertia::render('SavedBuilds', [
-      'builds' => $builds,
-      'selected' => $selected ?? null
-    ]);
+    return response()->json($builds);
   }
 
   public function store(Request $request): JsonResponse

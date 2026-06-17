@@ -15,6 +15,14 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 Route::get('/user', [AuthController::class, 'user'])->middleware('auth:sanctum');
 
 Route::middleware('auth:sanctum')->group(function () {
+  Route::get('/builder', [BuilderController::class, 'index']);
+
+  Route::get('/builds', [BuildController::class, 'index']);
+
+  Route::get('/profile', [UserController::class, 'index']);
+  Route::get('/profile/bookmarked', [UserController::class, 'indexBookmarked']);
+  Route::get('/profile/{user}', [UserController::class, 'show']);
+
   Route::get('/components/{type}', [ComponentController::class, 'index']);
   Route::get('/components/{type}/filters', [ComponentController::class, 'filters']);
   Route::get('/components/{type}/{id}', [ComponentController::class, 'show']);
@@ -24,7 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::post('/builder/{type}', [BuilderController::class, 'generateComp']);
 
   Route::post('/builds', [BuildController::class, 'store']);
-  Route::get('/builds/{build}', [BuildController::class, 'show']);
+  Route::get('/builds/{build}', [BuildController::class, 'show']);  // must stay after /builds in group
   Route::patch('/builds/{build}', [BuildController::class, 'update']);
   Route::delete('/builds/{build}', [BuildController::class, 'destroy']);
   Route::patch('/builds/{build}/publish', [BuildController::class, 'publish']);

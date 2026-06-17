@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from "react";
-import BuildsList from "./BuildsList";
 import PaginationControls from "../Common/PaginationControls";
 import BuildCard from "../Common/BuildCard";
-import ProfileLayout from "../../../Layouts/ProfileLayout";
+import axios from "axios";
 
-const BookmarkedBuilds = ({ buildData }) => {
+const BookmarkedBuilds = () => {
+  const [buildData, setBuildData] = useState(null);
   const [page, setPage] = useState(1);
 
-  const builds = buildData.data;
   useEffect(() => {
-    // TODO: converted to API fetch in next step
+    axios
+      .get("/api/profile/bookmarked", { params: { page } })
+      .then((res) => setBuildData(res.data));
   }, [page]);
 
+  if (!buildData) return null;
+
+  const builds = buildData.data;
   const pagination = {
     currentPage: buildData.current_page,
     lastPage: buildData.last_page,
@@ -30,14 +34,13 @@ const BookmarkedBuilds = ({ buildData }) => {
         ) : (
           <>
             <div className="flex flex-col items-center gap-8 px-4 pt-6">
-              {builds &&
-                builds.map((build) => (
-                  <BuildCard key={build.id} build={build} />
-                ))}
+              {builds.map((build) => (
+                <BuildCard key={build.id} build={build} />
+              ))}
             </div>
 
             <div className="w-full px-4 pb-6">
-              {pagination && pagination.lastPage > 1 && (
+              {pagination.lastPage > 1 && (
                 <PaginationControls pagination={pagination} setPage={setPage} />
               )}
             </div>
@@ -47,7 +50,5 @@ const BookmarkedBuilds = ({ buildData }) => {
     </>
   );
 };
-
-BookmarkedBuilds.layout = (page) => <ProfileLayout>{page}</ProfileLayout>;
 
 export default BookmarkedBuilds;

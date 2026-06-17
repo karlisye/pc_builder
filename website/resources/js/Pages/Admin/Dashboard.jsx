@@ -1,7 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-const Dashboard = ({ data }) => {
-  console.log(data);
+const Dashboard = () => {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    axios.get("/api/admin").then((res) => setData(res.data));
+  }, []);
+
+  if (!data) return null;
+
   return (
     <div className="overflow-y-auto h-full">
       <div className="flex xl:flex-row flex-col h-full">

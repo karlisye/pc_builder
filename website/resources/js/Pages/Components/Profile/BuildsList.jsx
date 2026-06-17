@@ -6,29 +6,14 @@ const BuildsList = ({
   buildData,
   setBuild,
   setPublishing,
+  onPageChange,
   isPublic = false,
 }) => {
   const builds = buildData?.data;
   const links = buildData?.links;
 
-  const next = () => {
-    const url = new URL(links[links.length - 1].url);
-    const current = new URL(window.location.href);
-    // merge current params with new ones
-    current.searchParams.forEach((value, key) => {
-      if (!url.searchParams.has(key)) url.searchParams.set(key, value);
-    });
-    window.location.href = url.toString();
-  };
-
-  const previous = () => {
-    const url = new URL(links[0].url);
-    const current = new URL(window.location.href);
-    current.searchParams.forEach((value, key) => {
-      if (!url.searchParams.has(key)) url.searchParams.set(key, value);
-    });
-    window.location.href = url.toString();
-  };
+  const next = () => onPageChange?.(buildData.current_page + 1);
+  const previous = () => onPageChange?.(buildData.current_page - 1);
 
   return (
     <div className="">
