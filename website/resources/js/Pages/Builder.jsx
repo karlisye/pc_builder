@@ -41,33 +41,39 @@ const Builder = () => {
   useEffect(() => {
     const buildParam = searchParams.get("build");
     const sharedParam = searchParams.get("shared");
-    if (buildParam) {
-      axios
-        .get("/api/builder", {
-          params: { build: buildParam, shared: sharedParam },
-        })
-        .then((res) => {
-          const build = res.data.build;
-          if (!build) return;
-          setSelectedComponents({
-            cpu: build.cpu ?? null,
-            motherboard: build.motherboard ?? null,
-            ram: build.ram ?? null,
-            gpu: build.gpu ?? null,
-            psu: build.psu ?? null,
-            ssd: build.ssd ?? null,
-            hdd: build.hdd ?? null,
-            case: build.pc_case ?? null,
-            fan: build.fan ?? null,
-            cooler: build.cooler ?? null,
-          });
-          setBuildId(build.id);
-          setBuildName(build.name ?? "");
-          setBuildNotes(build.notes ?? "");
-          setBuildType(build.type ?? "");
-        });
+
+    if (!buildParam) {
+      setSelectedComponents({ cpu: null, motherboard: null, ram: null, gpu: null, psu: null, ssd: null, hdd: null, case: null, fan: null, cooler: null });
+      setBuildId(undefined);
+      setBuildName("");
+      setBuildNotes("");
+      setBuildType("");
+      return;
     }
-  }, []);
+
+    axios
+      .get("/api/builder", { params: { build: buildParam, shared: sharedParam } })
+      .then((res) => {
+        const build = res.data.build;
+        if (!build) return;
+        setSelectedComponents({
+          cpu: build.cpu ?? null,
+          motherboard: build.motherboard ?? null,
+          ram: build.ram ?? null,
+          gpu: build.gpu ?? null,
+          psu: build.psu ?? null,
+          ssd: build.ssd ?? null,
+          hdd: build.hdd ?? null,
+          case: build.pc_case ?? null,
+          fan: build.fan ?? null,
+          cooler: build.cooler ?? null,
+        });
+        setBuildId(build.id);
+        setBuildName(build.name ?? "");
+        setBuildNotes(build.notes ?? "");
+        setBuildType(build.type ?? "");
+      });
+  }, [searchParams]);
 
   useEffect(() => {
     validateCompatibility();
