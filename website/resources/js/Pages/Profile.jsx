@@ -1,7 +1,7 @@
 import ProfileLayout from "../Layouts/ProfileLayout";
 import React, { useState } from "react";
 import { HeartIcon, SavedIcon, StarIcon } from "./Components/Common/Icons";
-import { Link, router } from "@inertiajs/react";
+import { Link } from "react-router-dom";
 import Modal from "./Components/Common/Modal";
 import axios from "axios";
 import BuildsList from "./Components/Profile/BuildsList";
@@ -19,7 +19,7 @@ const Profile = ({ user, publicBuildData, privateBuildData }) => {
   const publish = async () => {
     try {
       await axios.patch(`/api/builds/${build.id}/publish`);
-      router.reload();
+      window.location.reload();
     } catch (err) {
       console.error(err);
     } finally {

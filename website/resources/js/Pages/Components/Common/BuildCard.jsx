@@ -1,4 +1,5 @@
-import { Link, router, usePage } from "@inertiajs/react";
+import { Link } from "react-router-dom";
+import { useAuth } from "../../../Contexts/AuthContext";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { ArrowIcon, HeartIcon, SavedIcon, StarIcon } from "../Common/Icons";
@@ -6,7 +7,7 @@ import StarRating from "../Common/StarRating";
 import Modal from "../Common/Modal";
 
 const BuildCard = ({ build }) => {
-  const { user } = usePage().props.auth;
+  const { user } = useAuth();
 
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
@@ -84,7 +85,7 @@ const BuildCard = ({ build }) => {
       const res = await axios.patch(`/api/builds/${build.id}/publish`);
       setSuccess(res.data.success);
       setPrivating(false);
-      setTimeout(() => router.reload(), 1000);
+      setTimeout(() => window.location.reload(), 1000);
     } catch (err) {
       console.error(err);
     }
@@ -121,7 +122,7 @@ const BuildCard = ({ build }) => {
           <div className="flex gap-2 items-center">
             <Link
               className="w-12 h-12 rounded-full bg-secondary-light flex items-center justify-center font-bold"
-              href={`/profile/${build.user?.id}`}
+              to={`/profile/${build.user?.id}`}
             >
               {build.user.name?.charAt(0).toUpperCase()}
             </Link>
@@ -140,7 +141,7 @@ const BuildCard = ({ build }) => {
               <div className="flex gap-4 items-center">
                 <Link
                   className="text-muted"
-                  href={`/profile/${build.user?.id}`}
+                  to={`/profile/${build.user?.id}`}
                 >
                   @{build.user?.name}
                 </Link>
@@ -303,7 +304,7 @@ const BuildCard = ({ build }) => {
         <div className="bg-primary mt-auto flex">
           <Link
             className="text-white px-8 py-4 flex-1 text-center hover:bg-primary-light cursor-pointer transition"
-            href={`/builder?build=${build.id}&shared=true`}
+            to={`/builder?build=${build.id}&shared=true`}
           >
             Continue
           </Link>

@@ -1,34 +1,41 @@
-import { Link, useForm } from "@inertiajs/react";
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../Contexts/AuthContext";
 
 const Login = () => {
-  const { data, errors, post, setData, processing } = useForm({
-    email: "",
-    password: "",
-  });
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
-  const [clientErrors, setClientErrors] = useState({});
+  const [data, setData] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({});
+  const [processing, setProcessing] = useState(false);
+
+  const set = (field) => (e) => setData((prev) => ({ ...prev, [field]: e.target.value }));
 
   const validate = () => {
     const e = {};
-
     if (!data.email.trim()) e.email = "Email is required.";
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email))
       e.email = "Please enter a valid email address.";
-
     if (!data.password) e.password = "Password is required.";
-
-    setClientErrors(e);
+    setErrors(e);
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-    post("/login");
+    setProcessing(true);
+    try {
+      await login(data.email, data.password);
+      navigate("/");
+    } catch (err) {
+      const serverErrors = err.response?.data?.errors ?? {};
+      setErrors(serverErrors);
+    } finally {
+      setProcessing(false);
+    }
   };
-
-  const err = (field) => clientErrors[field] || errors[field];
 
   return (
     <div className="h-full flex flex-col items-center justify-center">
@@ -42,13 +49,13 @@ const Login = () => {
                   Email
                 </label>
                 <input
-                  className={`bg-surface flex-1 p-2 ${clientErrors.email ? "outline-1 outline-danger" : "focus: outline-border"}`}
+                  className={`bg-surface flex-1 p-2 ${errors.email ? "outline-1 outline-danger" : "focus: outline-border"}`}
                   id="email"
                   type="email"
                   value={data.email}
-                  onChange={(e) => setData("email", e.target.value)}
+                  onChange={set("email")}
                 />
-                {err("email") && <p className="text-danger">{err("email")}</p>}
+                {errors.email && <p className="text-danger">{errors.email}</p>}
               </div>
 
               <div className="flex flex-col my-2 mx-4">
@@ -56,19 +63,19 @@ const Login = () => {
                   Password
                 </label>
                 <input
-                  className={`bg-surface flex-1 p-2 ${clientErrors.password ? "outline-1 outline-danger" : "focus: outline-border"}`}
+                  className={`bg-surface flex-1 p-2 ${errors.password ? "outline-1 outline-danger" : "focus: outline-border"}`}
                   id="password"
                   type="password"
                   value={data.password}
-                  onChange={(e) => setData("password", e.target.value)}
+                  onChange={set("password")}
                 />
-                {err("password") && (
-                  <p className="text-danger">{err("password")}</p>
+                {errors.password && (
+                  <p className="text-danger">{errors.password}</p>
                 )}
               </div>
 
               <div className="flex flex-col mx-4 my-4">
-                <Link className="text-info" href="/register">
+                <Link className="text-info" to="/register">
                   Create an account
                 </Link>
                 <button

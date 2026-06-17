@@ -5,7 +5,7 @@ import { BuilderContext } from "../Contexts/BuilderContext";
 import AddComponent from "./Components/Builder/AddComponent";
 import ComponentFilters from "./Components/Builder/ComponentFilters";
 import BuildInfo from "./Components/Builder/BuildInfo";
-import { Link } from "@inertiajs/react";
+import { Link } from "react-router-dom";
 import BuildGenerator from "./Components/Builder/BuildGenerator";
 import ComponentGenerator from "./Components/Builder/ComponentGenerator";
 import SidePanel from "./Components/Common/SidePanel";
@@ -101,7 +101,7 @@ const Builder = ({ build }) => {
             (build || buildId) && (
               <Link
                 className="px-6 py-2 border text-secondary-light cursor-pointer hover:text-muted transition text-sm"
-                href="builder"
+                to="/builder"
               >
                 New Build
               </Link>

@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useBuilder } from "../../../Contexts/BuilderContext";
 import BudgetSlider from "./BudgetSlider";
-import { Link } from "@inertiajs/react";
+import { Link } from "react-router-dom";
 import { ArrowIcon } from "../Common/Icons";
 import ClosedSection from "../Common/ClosedSection";
 
@@ -114,7 +114,7 @@ const BuildGenerator = () => {
           for your budget. For more information visit{" "}
           <Link
             className="text-info/80 cursor-pointer hover:underline"
-            href="/guide"
+            to="/guide"
           >
             Automatic Builder
           </Link>{" "}

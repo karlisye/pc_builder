@@ -1,6 +1,6 @@
 import React from "react";
 import { ArrowIcon, HeartIcon, SavedIcon, StarIcon } from "../Common/Icons";
-import { Link, router } from "@inertiajs/react";
+import { Link } from "react-router-dom";
 
 const BuildsList = ({
   buildData,
@@ -18,13 +18,7 @@ const BuildsList = ({
     current.searchParams.forEach((value, key) => {
       if (!url.searchParams.has(key)) url.searchParams.set(key, value);
     });
-    router.get(
-      url,
-      {},
-      {
-        preserveState: true,
-      },
-    );
+    window.location.href = url.toString();
   };
 
   const previous = () => {
@@ -33,13 +27,7 @@ const BuildsList = ({
     current.searchParams.forEach((value, key) => {
       if (!url.searchParams.has(key)) url.searchParams.set(key, value);
     });
-    router.get(
-      url,
-      {},
-      {
-        preserveState: true,
-      },
-    );
+    window.location.href = url.toString();
   };
 
   return (
@@ -126,7 +114,7 @@ const BuildsList = ({
                   <div className="mt-4 bg-primary flex">
                     <Link
                       className="text-white flex-1 p-4 hover:bg-primary-light transition cursor-pointer text-center"
-                      href={`/builds?buildId=${build.id}`}
+                      to={`/builds?buildId=${build.id}`}
                     >
                       Edit
                     </Link>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link, router } from "@inertiajs/react";
+import { Link } from "react-router-dom";
 import DetailPanel from "./Components/Saved/DetailPanel";
 import Modal from "./Components/Common/Modal";
 import BuildVisibility from "./Components/Saved/BuildVisibility";
@@ -64,7 +64,7 @@ const SavedBuilds = ({ builds, selected }) => {
   const handleDelete = async (id) => {
     await axios.delete(`/api/builds/${id}`);
     if (selectedBuild?.id === id) setSelectedBuild(null);
-    router.reload();
+    window.location.reload();
   };
 
   const handleSaveEdit = async () => {
@@ -75,7 +75,7 @@ const SavedBuilds = ({ builds, selected }) => {
       );
       setSelectedBuild(res.data);
       setEditing(false);
-      router.reload();
+      window.location.reload();
     } catch (err) {
       console.error(err);
     }
@@ -203,7 +203,7 @@ const SavedBuilds = ({ builds, selected }) => {
                 <div className="flex items-center gap-4">
                   <Link
                     className="py-4 px-8 bg-primary text-white cursor-pointer hover:bg-primary-light transition"
-                    href={`/builder?build=${selectedBuild.id}`}
+                    to={`/builder?build=${selectedBuild.id}`}
                   >
                     Continue Build
                   </Link>

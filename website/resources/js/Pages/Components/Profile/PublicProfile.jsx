@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ArrowIcon, HeartIcon, SavedIcon, StarIcon } from "../Common/Icons";
-import { Link, router } from "@inertiajs/react";
+import { Link } from "react-router-dom";
 
 const PublicProfile = ({
   user,
@@ -37,11 +37,11 @@ const PublicProfile = ({
   };
 
   const next = () => {
-    router.get(links[links.length - 1].url);
+    window.location.href = links[links.length - 1].url;
   };
 
   const previous = () => {
-    router.get(links[0].url);
+    window.location.href = links[0].url;
   };
 
   return (
@@ -216,7 +216,7 @@ const PublicProfile = ({
                       <div className="bg-primary mt-auto flex">
                         <Link
                           className="text-white px-8 py-4 flex-1 text-center hover:bg-primary-light cursor-pointer transition"
-                          href={`/builder?build=${build.id}&shared=true`}
+                          to={`/builder?build=${build.id}&shared=true`}
                         >
                           Continue
                         </Link>

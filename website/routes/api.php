@@ -1,12 +1,18 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BuildController;
 use App\Http\Controllers\BuilderController;
 use App\Http\Controllers\ComponentController;
 use App\Http\Controllers\SharedController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+
+Route::post('/register', [AuthController::class, 'register'])->middleware('guest');
+Route::post('/login', [AuthController::class, 'login'])->middleware('guest');
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+Route::get('/user', [AuthController::class, 'user'])->middleware('auth:sanctum');
 
 Route::middleware('auth:sanctum')->group(function () {
   Route::get('/components/{type}', [ComponentController::class, 'index']);
@@ -35,4 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
   Route::post('/scrape', [AdminController::class, 'store']);
   Route::get('/scrape/history', [AdminController::class, 'fetchHistory']);
+  Route::post('/admin/scrape', [AdminController::class, 'scrape']);
+  Route::post('/admin/populate', [AdminController::class, 'populate']);
+  Route::get('/admin', [AdminController::class, 'index']);
 });

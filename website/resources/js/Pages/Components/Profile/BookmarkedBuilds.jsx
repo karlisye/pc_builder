@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import BuildsList from "./BuildsList";
 import PaginationControls from "../Common/PaginationControls";
-import { router } from "@inertiajs/react";
 import BuildCard from "../Common/BuildCard";
 import ProfileLayout from "../../../Layouts/ProfileLayout";
 
@@ -10,7 +9,7 @@ const BookmarkedBuilds = ({ buildData }) => {
 
   const builds = buildData.data;
   useEffect(() => {
-    router.get("/profile/bookmarked", { page: page }, { preserveState: true });
+    // TODO: converted to API fetch in next step
   }, [page]);
 
   const pagination = {

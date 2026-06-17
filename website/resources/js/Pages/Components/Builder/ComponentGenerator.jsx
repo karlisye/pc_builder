@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ArrowIcon } from "../Common/Icons";
-import { Link } from "@inertiajs/react";
+import { Link } from "react-router-dom";
 import BudgetSlider from "./BudgetSlider";
 import { useBuilder } from "../../../Contexts/BuilderContext";
 import axios from "axios";
@@ -89,7 +89,7 @@ const ComponentGenerator = () => {
             component for your budget. For more information visit{" "}
             <Link
               className="text-info/80 cursor-pointer hover:underline"
-              href="/guide"
+              to="/guide"
             >
               Automatic Builder
             </Link>{" "}

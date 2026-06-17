@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "@inertiajs/react";
+import { Link } from "react-router-dom";
 import Note from "./Note";
 import { AddIcon, CloseIcon } from "../Common/Icons";
 
@@ -19,7 +19,7 @@ const BuilderSection = () => {
           1. Go to the{" "}
           <Link
             className="text-info hover:underline font-medium"
-            href="/builder"
+            to="/builder"
           >
             Build
           </Link>{" "}

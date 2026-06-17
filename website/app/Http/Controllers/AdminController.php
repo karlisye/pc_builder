@@ -18,16 +18,14 @@ use Inertia\Response as InertiaResponse;
 
 class AdminController extends Controller
 {
-  public function index(Request $request): InertiaResponse
+  public function index(Request $request): JsonResponse
   {
-    return Inertia::render('Admin/Dashboard', [
-      'data' => [
-        'userCount' => User::count(),
-        'buildCount' => Build::count(),
-        'componentCount' => Build::totalComponentCount(),
-        'scrapeCount' => ScrapeSession::count(),
-        'lastScrape' => ScrapeSession::query()->first()->finished_at,
-      ]
+    return response()->json([
+      'userCount' => User::count(),
+      'buildCount' => Build::count(),
+      'componentCount' => Build::totalComponentCount(),
+      'scrapeCount' => ScrapeSession::count(),
+      'lastScrape' => ScrapeSession::query()->first()?->finished_at,
     ]);
   }
 

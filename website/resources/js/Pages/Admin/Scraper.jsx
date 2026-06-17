@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { usePage } from "@inertiajs/react";
 import { ArrowIcon, CloseIcon } from "../Components/Common/Icons";
 import ScraperLogs from "./Components/ScraperLogs";
 import ComponentCheckbox from "./Components/ComponentCheckbox";
@@ -8,7 +7,9 @@ import axios from "axios";
 import SidePanel from "../Components/Common/SidePanel";
 
 const Scraper = () => {
-  const { csrf_token } = usePage().props.auth;
+  const csrf_token = decodeURIComponent(
+    document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1] ?? ""
+  );
 
   const [output, setOutput] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -42,7 +43,7 @@ const Scraper = () => {
 
     try {
       // axios doesnt support streamed responses
-      const res = await fetch("/admin/scrape", {
+      const res = await fetch("/api/admin/scrape", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Modal from "../Common/Modal";
 import axios from "axios";
-import { router } from "@inertiajs/react";
 import { HeartIcon, SavedIcon, StarIcon } from "../Common/Icons";
 
 const BuildVisibility = ({ build, setBuild }) => {

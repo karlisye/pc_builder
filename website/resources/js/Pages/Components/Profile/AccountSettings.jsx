@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
 import Modal from "../Common/Modal";
-import { router } from "@inertiajs/react";
 import ProfileLayout from "../../../Layouts/ProfileLayout";
 
 const AccountSettings = ({ user }) => {
@@ -102,7 +101,7 @@ const AccountSettings = ({ user }) => {
     } catch (err) {
       console.error(err);
     } finally {
-      router.reload();
+      window.location.reload();
     }
   };
 

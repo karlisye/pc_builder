@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "@inertiajs/react";
+import { Link } from "react-router-dom";
 
 const SavedSection = () => {
   return (
@@ -17,7 +17,7 @@ const SavedSection = () => {
           1. Go to the{" "}
           <Link
             className="text-info hover:underline font-medium"
-            href="/builds"
+            to="/builds"
           >
             Saved
           </Link>{" "}

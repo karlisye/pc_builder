@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Link } from "@inertiajs/react";
 import HoverVideo from "./Components/Common/HoverVideo";
 
 const Home = () => {

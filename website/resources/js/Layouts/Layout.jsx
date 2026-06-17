@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link, useForm, usePage } from "@inertiajs/react";
+import { Link, useLocation, Outlet } from "react-router-dom";
+import { useAuth } from "../Contexts/AuthContext";
 import { ArrowIcon, MenuIcon } from "../Pages/Components/Common/Icons";
 
-const Layout = ({ children }) => {
-  const user = usePage().props.auth.user;
-  const { post } = useForm();
-  const { url } = usePage();
+const Layout = () => {
+  const { user, logout } = useAuth();
+  const { pathname } = useLocation();
 
   const [profileActive, setProfileActive] = useState(false);
   const [menuActive, setMenuActive] = useState(false);
@@ -14,7 +14,6 @@ const Layout = ({ children }) => {
   const menuRef = useRef(null);
   const menuButtonRef = useRef(null);
 
-  // close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -35,15 +34,12 @@ const Layout = ({ children }) => {
 
     if (profileActive || menuActive) {
       document.addEventListener("mousedown", handleClickOutside);
-
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
+      return () => document.removeEventListener("mousedown", handleClickOutside);
     }
   }, [profileActive, menuActive]);
 
   const navLinkClass = (path) => {
-    const isActive = url.startsWith(path);
+    const isActive = pathname.startsWith(path);
     return `py-4 px-6 transition ${
       isActive
         ? "bg-primary text-white hover:bg-primary-light"
@@ -52,12 +48,17 @@ const Layout = ({ children }) => {
   };
 
   const menuLinkClass = (path) => {
-    const isActive = url.startsWith(path);
+    const isActive = pathname.startsWith(path);
     return `block py-3 px-4 transition ${
       isActive
         ? "bg-primary text-white hover:bg-primary-light"
         : "hover:bg-surface text-text"
     }`;
+  };
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    await logout();
   };
 
   return (
@@ -66,7 +67,7 @@ const Layout = ({ children }) => {
         <nav className="flex items-center bg-background shadow">
           <Link
             className="py-4 px-6 bg-primary text-white font-semibold hover:bg-primary-light transition"
-            href="/"
+            to="/"
           >
             BUILDER
           </Link>
@@ -74,29 +75,16 @@ const Layout = ({ children }) => {
           {user ? (
             <>
               <div className="hidden md:flex">
-                <Link className={navLinkClass("/builder")} href="/builder">
-                  Build
-                </Link>
-
-                <Link className={navLinkClass("/builds")} href="/builds">
-                  Saved
-                </Link>
-
-                <Link className={navLinkClass("/guide")} href="/guide">
-                  Guide
-                </Link>
-
-                <Link className={navLinkClass("/shared")} href="/shared">
-                  Shared
-                </Link>
+                <Link className={navLinkClass("/builder")} to="/builder">Build</Link>
+                <Link className={navLinkClass("/builds")} to="/builds">Saved</Link>
+                <Link className={navLinkClass("/guide")} to="/guide">Guide</Link>
+                <Link className={navLinkClass("/shared")} to="/shared">Shared</Link>
               </div>
 
               <button
                 ref={menuButtonRef}
                 className={`md:hidden py-4 px-6 transition flex items-center gap-2 ${
-                  menuActive
-                    ? "bg-primary text-white"
-                    : "hover:bg-surface text-text"
+                  menuActive ? "bg-primary text-white" : "hover:bg-surface text-text"
                 }`}
                 onClick={() => setMenuActive((prev) => !prev)}
               >
@@ -109,46 +97,18 @@ const Layout = ({ children }) => {
                   menuActive ? "h-48" : "h-0"
                 }`}
               >
-                <Link
-                  className={menuLinkClass("/builder")}
-                  href="/builder"
-                  onClick={() => setMenuActive(false)}
-                >
-                  Build
-                </Link>
-
-                <Link
-                  className={menuLinkClass("/builds")}
-                  href="/builds"
-                  onClick={() => setMenuActive(false)}
-                >
-                  Saved
-                </Link>
-
-                <Link
-                  className={menuLinkClass("/guide")}
-                  href="/guide"
-                  onClick={() => setMenuActive(false)}
-                >
-                  Guide
-                </Link>
-
-                <Link
-                  className={menuLinkClass("/shared")}
-                  href="/shared"
-                  onClick={() => setMenuActive(false)}
-                >
-                  Shared
-                </Link>
+                <Link className={menuLinkClass("/builder")} to="/builder" onClick={() => setMenuActive(false)}>Build</Link>
+                <Link className={menuLinkClass("/builds")} to="/builds" onClick={() => setMenuActive(false)}>Saved</Link>
+                <Link className={menuLinkClass("/guide")} to="/guide" onClick={() => setMenuActive(false)}>Guide</Link>
+                <Link className={menuLinkClass("/shared")} to="/shared" onClick={() => setMenuActive(false)}>Shared</Link>
               </div>
 
-              {/* profile element */}
               <div className="ml-auto relative">
                 <div className="flex">
                   {user?.role === "admin" && (
                     <Link
                       className="hover:bg-surface text-text py-3 px-4 transition flex items-center"
-                      href="/admin"
+                      to="/admin"
                     >
                       Dashboard
                     </Link>
@@ -157,9 +117,7 @@ const Layout = ({ children }) => {
                   <button
                     ref={buttonRef}
                     className={`py-4 px-6 transition flex items-center gap-2 font-medium ${
-                      profileActive
-                        ? "bg-primary text-white"
-                        : "hover:bg-surface text-text"
+                      profileActive ? "bg-primary text-white" : "hover:bg-surface text-text"
                     }`}
                     onClick={() => setProfileActive((prev) => !prev)}
                   >
@@ -170,7 +128,6 @@ const Layout = ({ children }) => {
                   </button>
                 </div>
 
-                {/* dropdown */}
                 <div
                   ref={dropdownRef}
                   className={`absolute right-0 sm:w-80 w-screen bg-background overflow-hidden transition-all shadow z-50 ${
@@ -178,25 +135,16 @@ const Layout = ({ children }) => {
                   }`}
                 >
                   <div className="px-4 py-3 bg-surface">
-                    <p className="text-text font-semibold uppercase">
-                      Hello, {user.name}
-                    </p>
+                    <p className="text-text font-semibold uppercase">Hello, {user.name}</p>
                   </div>
-
                   <div>
                     <Link
-                      href="/profile"
+                      to="/profile"
                       className="flex items-center gap-2 px-4 py-2 text-text hover:bg-secondary-light transition"
                     >
                       Profile
                     </Link>
-
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        post("/logout");
-                      }}
-                    >
+                    <form onSubmit={handleLogout}>
                       <button className="w-full px-4 py-2 text-danger hover:bg-danger/50 transition text-left cursor-pointer">
                         Sign Out
                       </button>
@@ -206,10 +154,7 @@ const Layout = ({ children }) => {
               </div>
             </>
           ) : (
-            <Link
-              className="py-4 px-6 hover:bg-surface transition ml-auto"
-              href="/login"
-            >
+            <Link className="py-4 px-6 hover:bg-surface transition ml-auto" to="/login">
               Sign In
             </Link>
           )}
@@ -217,37 +162,23 @@ const Layout = ({ children }) => {
       </header>
 
       <div className="flex flex-col flex-1 overflow-y-auto">
-        <main className="flex-1">{children}</main>
+        <main className="flex-1">
+          <Outlet />
+        </main>
 
         <footer className="bg-primary border-t border-primary-light">
           <div className="max-w-348 mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex flex-col items-center sm:items-start">
               <span className="font-bold text-white">BUILDER</span>
-              <p className="text-surface text-sm mt-1">
-                Build and share your PC.
-              </p>
+              <p className="text-surface text-sm mt-1">Build and share your PC.</p>
             </div>
-
             <div className="flex gap-6 text-sm text-surface">
-              <Link href="/builder" className="hover:text-white transition">
-                Build
-              </Link>
-              <Link href="/builds" className="hover:text-white transition">
-                Saved
-              </Link>
-              <Link href="/guide" className="hover:text-white transition">
-                Guide
-              </Link>
-              <Link href="/shared" className="hover:text-white transition">
-                Shared
-              </Link>
+              <Link to="/builder" className="hover:text-white transition">Build</Link>
+              <Link to="/builds" className="hover:text-white transition">Saved</Link>
+              <Link to="/guide" className="hover:text-white transition">Guide</Link>
+              <Link to="/shared" className="hover:text-white transition">Shared</Link>
             </div>
-
-            <a
-              href="https://github.com/karlisye"
-              target="_blank"
-              className="text-surface hover:text-white transition text-sm"
-            >
+            <a href="https://github.com/karlisye" target="_blank" className="text-surface hover:text-white transition text-sm">
               @karlisye
             </a>
           </div>

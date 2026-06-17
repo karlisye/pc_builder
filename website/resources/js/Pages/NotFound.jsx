@@ -1,4 +1,4 @@
-import { Link } from "@inertiajs/react";
+import { Link } from "react-router-dom";
 import React from "react";
 
 const NotFound = () => {
@@ -15,7 +15,7 @@ const NotFound = () => {
           The page you're looking for doesn't exist.
         </p>
         <Link
-          href="/"
+          to="/"
           className="px-8 py-4 text-sm font-medium bg-secondary-light text-text hover:bg-secondary-light/50 transition"
         >
           Go back home

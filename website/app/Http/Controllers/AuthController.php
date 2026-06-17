@@ -27,7 +27,7 @@ class AuthController extends Controller
     Auth::login($user);
     $request->session()->regenerate();
 
-    return redirect('/');
+    return response()->json($user, 201);
   }
 
   public function login(Request $request)
@@ -39,12 +39,13 @@ class AuthController extends Controller
 
     if (Auth::attempt($credentials)) {
       $request->session()->regenerate();
-      return redirect('/');
+      return response()->json($request->user());
     }
 
-    return back()->withErrors([
-      'email' => 'Incorrect credentials'
-    ]);
+    return response()->json([
+      'message' => 'The given data was invalid.',
+      'errors' => ['email' => ['Incorrect credentials']],
+    ], 422);
   }
 
   public function logout(Request $request)
@@ -52,6 +53,11 @@ class AuthController extends Controller
     Auth::logout();
     $request->session()->invalidate();
     $request->session()->regenerateToken();
-    return redirect('/');
+    return response()->json(['message' => 'Logged out']);
+  }
+
+  public function user(Request $request)
+  {
+    return response()->json($request->user());
   }
 }
