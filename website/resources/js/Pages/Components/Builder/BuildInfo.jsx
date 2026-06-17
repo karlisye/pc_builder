@@ -3,21 +3,23 @@ import { useBuilder } from "../../../Contexts/BuilderContext";
 import axios from "axios";
 import { CloseIcon } from "../Common/Icons";
 
-const BuildInfo = ({ currBuildInfo }) => {
+const BuildInfo = () => {
   const {
     selectedComponents,
     setSelectedComponents,
     setCurrentCompToAdd,
     buildId,
     setBuildId,
+    buildName,
+    setBuildName,
+    buildNotes,
+    setBuildNotes,
     buildType,
     setBuildType,
     setWarnings,
     setBuildIssues,
     setNotes,
   } = useBuilder();
-  const [buildName, setBuildName] = useState(currBuildInfo?.name ?? "");
-  const [buildNotes, setBuildNotes] = useState(currBuildInfo?.notes ?? "");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");

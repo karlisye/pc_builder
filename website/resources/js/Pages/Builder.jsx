@@ -15,10 +15,20 @@ const Builder = () => {
   const [searchParams] = useSearchParams();
   const [currentCompToAdd, setCurrentCompToAdd] = useState(null);
   const [selectedComponents, setSelectedComponents] = useState({
-    cpu: null, motherboard: null, ram: null, gpu: null, psu: null,
-    ssd: null, hdd: null, case: null, fan: null, cooler: null,
+    cpu: null,
+    motherboard: null,
+    ram: null,
+    gpu: null,
+    psu: null,
+    ssd: null,
+    hdd: null,
+    case: null,
+    fan: null,
+    cooler: null,
   });
   const [buildId, setBuildId] = useState(undefined);
+  const [buildName, setBuildName] = useState("");
+  const [buildNotes, setBuildNotes] = useState("");
   const [warnings, setWarnings] = useState([]);
   const [notes, setNotes] = useState([]);
   const [search, setSearch] = useState("");
@@ -33,7 +43,9 @@ const Builder = () => {
     const sharedParam = searchParams.get("shared");
     if (buildParam) {
       axios
-        .get("/api/builder", { params: { build: buildParam, shared: sharedParam } })
+        .get("/api/builder", {
+          params: { build: buildParam, shared: sharedParam },
+        })
         .then((res) => {
           const build = res.data.build;
           if (!build) return;
@@ -50,6 +62,8 @@ const Builder = () => {
             cooler: build.cooler ?? null,
           });
           setBuildId(build.id);
+          setBuildName(build.name ?? "");
+          setBuildNotes(build.notes ?? "");
           setBuildType(build.type ?? "");
         });
     }
@@ -102,6 +116,10 @@ const Builder = () => {
         setSort,
         buildId,
         setBuildId,
+        buildName,
+        setBuildName,
+        buildNotes,
+        setBuildNotes,
         buildType,
         setBuildType,
         debouncedSearch,
@@ -118,7 +136,7 @@ const Builder = () => {
         <SidePanel
           title="BUILDER"
           headerRight={
-            (build || buildId) && (
+            buildId && (
               <Link
                 className="px-6 py-2 border text-secondary-light cursor-pointer hover:text-muted transition text-sm"
                 to="/builder"
@@ -130,13 +148,7 @@ const Builder = () => {
         >
           {currentCompToAdd ? <ComponentFilters /> : <BuildDesc />}
 
-          <BuildInfo
-            currBuildInfo={{
-              id: build?.id,
-              name: build?.name,
-              notes: build?.notes,
-            }}
-          />
+          <BuildInfo />
 
           {currentCompToAdd ? <ComponentGenerator /> : <BuildGenerator />}
         </SidePanel>
