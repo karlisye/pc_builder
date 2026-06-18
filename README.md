@@ -78,7 +78,7 @@ _Scrape History Page_
 .
 ├── README.md
 ├── docker-compose.yml
-├── backend/                      # Laravel JSON API
+├── backend/
 │   ├── app/
 │   │   ├── Http/Controllers/
 │   │   ├── Models/
@@ -91,7 +91,7 @@ _Scrape History Page_
 │   ├── tests/
 │   ├── Dockerfile
 │   └── composer.json
-├── frontend/                     # React SPA
+├── frontend/
 │   ├── src/
 │   │   ├── app.jsx
 │   │   ├── Contexts/
@@ -100,7 +100,7 @@ _Scrape History Page_
 │   ├── Dockerfile
 │   ├── index.html
 │   └── package.json
-└── scraper/                      # Python scraper service
+└── scraper/
     ├── main.py
     ├── server.py
     ├── config.py
@@ -149,10 +149,10 @@ Run migrations:
 docker compose exec backend php artisan migrate
 ```
 
-| Service    | URL                         |
-|------------|-----------------------------|
-| App        | http://localhost            |
-| phpMyAdmin | http://localhost:8080       |
+| Service    | URL                   |
+| ---------- | --------------------- |
+| App        | http://localhost      |
+| phpMyAdmin | http://localhost:8080 |
 
 To create an admin account, register normally then update your user's role to `admin` via phpMyAdmin or the MySQL CLI.
 
