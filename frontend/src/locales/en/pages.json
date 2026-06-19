@@ -1,1 +1,240 @@
-{}
+{
+  "home": {
+    "build": {
+      "title": "BUILD YOUR PC",
+      "description": "Design your PC using our simple builder. Choose from components available in the Latvian market, all with live, accurate pricing."
+    },
+    "auto": {
+      "title": "MAKE THE BUILDING EASY",
+      "description": "Automatically complete your build at any stage using our smart auto-builder."
+    },
+    "share": {
+      "title": "SHARE YOUR BUILDS",
+      "description": "Browse community builds, get inspired, and share your own."
+    }
+  },
+  "guide": {
+    "sidePanelTitle": "GUIDE",
+    "sections": {
+      "builder": "Building a PC",
+      "auto": "Automatic Builder",
+      "saved": "Managing Saved Builds"
+    }
+  },
+  "guides": {
+    "note": {
+      "label": "Note:"
+    },
+    "builderSection": {
+      "title": "Building Your First PC",
+      "selectingComponentsHeading": "Selecting Components",
+      "step1": "1. Go to the <buildLink>Build</buildLink> page by clicking the <buildButton>Build</buildButton> button in the navigation bar.",
+      "step2": "2. Find the component list section and click the <addButton></addButton> button to add a new component.",
+      "step3": "3. Use the search bar and filters to browse and find components that match your preferences.",
+      "step3Note": "Incompatible components will be marked with an \"Incompatible\" flag.",
+      "step4": "4. Select a component from the list and click <selectText>Select</selectText> to add it to your build. It will then appear in the build info panel and the component list.",
+      "step4Note": "You can remove a component or view it in the store using the buttons at the bottom of the component card.",
+      "step5": "5. Repeat these steps until your build is complete.",
+      "savingHeading": "Saving Your Build",
+      "step6": "6. Make sure to name your build and add the optional notes by filling out their fields.",
+      "step7": "7. Once you’ve selected all your components and named your build, click the <saveButtonText>Save Build</saveButtonText> button in the build info panel.",
+      "step7Note": "You can clear the entire build or remove individual components by clicking the Clear Build button or pressing the <closeIcon></closeIcon> icon next to each component."
+    },
+    "autoSection": {
+      "title": "Using the Automatic Builder",
+      "selectingComponentsHeading": "Selecting Components",
+      "step1": "1. Optionally, start by adding any components you want included in your build. You can also use the automatic component generator under the filters to find a compatable component automatically.",
+      "step1Note": "This step is optional. You can skip it to generate a fully automatic build.",
+      "selectingBudgetHeading": "Selecting a Budget",
+      "step2": "2. Scroll to the bottom of the build information panel and select the <autoBuilderText>Auto Builder</autoBuilderText> option.",
+      "step3": "3. Set your budget using the slider, or choose the unlimited budget option to get the best possible components.",
+      "step3Note": "The budget applies to the entire build. If you have already selected components, their cost will be deducted from your available budget.",
+      "step4": "4. Set your preferences for GPU, CPU and Usage type under the budget slider.",
+      "step4Note": "Make sure to check the \"Include Orderable Items\" to also use components that are not in store, but can be ordered.",
+      "generatingHeading": "Generating the Build",
+      "step5": "5. Once your budget is set, click the generate button to automatically complete your build.",
+      "step5Note": "Budget also affects component allocation. For example, lower-budget builds (e.g. under 500€) may exclude a GPU and instead select a CPU with integrated graphics. The same applies to components like CPU coolers. <link>See all budget allocations below</link>.",
+      "step6": "6. After generating a build we recommend checking the compatability for the build manually before purchasing any of the items.",
+      "step6Note": "The HDD component is not automatically included, as it is optional. If the CPU comes with a built-in cooler and the budget is limited, a separate CPU cooler may also be treated as optional.",
+      "budgetAllocationsHeading": "Budget Allocations",
+      "table": {
+        "component": "Component",
+        "budgetLow": "Budget (<500€)",
+        "budgetMid": "Mid (500–1500€)",
+        "budgetHigh": "High-end (>1500€)",
+        "general": "General",
+        "office": "Office",
+        "gaming": "Gaming",
+        "streaming": "Streaming",
+        "rendering": "Rendering",
+        "gpu": "GPU",
+        "cpu": "CPU",
+        "motherboard": "Motherboard",
+        "ram": "RAM",
+        "cooler": "Cooler",
+        "case": "Case",
+        "psu": "PSU",
+        "ssd": "SSD"
+      }
+    },
+    "savedSection": {
+      "title": "Managing Your Saved Builds",
+      "viewingBuildsHeading": "Viewing Your Saved Builds",
+      "step1": "1. Go to the <savedLink>Saved</savedLink> page by clicking the <savedButton>Saved</savedButton> button in the navigation bar.",
+      "step2": "2. Locate the build list and select the build you want to view.",
+      "viewingComponentsHeading": "Viewing Build Components",
+      "step3": "3. Click on any component to view its details and description below.",
+      "step4": "4. To view a component in store, click the <seeInStore>See In Store</seeInStore> button in the description or the <buy>Buy</buy> button next to the component in the list.",
+      "editingHeading": "Editing Build Information",
+      "editStep1": "1. Click the <edit>Edit</edit> button next to your build name.",
+      "editStep2": "2. Update the fields as needed. You can leave the notes field empty if you prefer.",
+      "editStep3": "3. Click <save>Save</save> to apply your changes or <cancel>Cancel</cancel> to discard them.",
+      "continuingHeading": "Continuing the Build",
+      "continueStep1": "1. Click the <continueBuild>Continue Build</continueBuild> button to resume editing your build from where you left off. You will be redirected to the build page with your current configuration.",
+      "deletingHeading": "Deleting a Build",
+      "deleteStep1": "1. Click the <deleteBuild>Delete Build</deleteBuild> button (or the delete option in the build info panel) to remove the selected build.",
+      "deleteStep2": "2. A confirmation popup will appear. Confirm to permanently delete the build.",
+      "publishingHeading": "Publishing your build",
+      "publishStep1": "1. Press on the button under components to publish your build. A popup window will show up to confirm changing builds visibility.",
+      "publishStep2": "2. Once the build is public, you can see it in the Shared section and you can private it by following the first step again on the same build."
+    }
+  },
+  "shared": {
+    "sidePanelTitle": "SHARED BUILDS",
+    "fetchError": "Failed to fetch builds",
+    "noBuildsFound": "No Builds Found",
+    "tryAdjustingFilters": "Try adjusting your filters"
+  },
+  "savedBuilds": {
+    "sidePanelTitle": "SAVED BUILDS",
+    "noSavedBuilds": "You have no saved builds yet.",
+    "delete": "Delete",
+    "loading": "Loading...",
+    "selectBuildPrompt": "Select a build to view details.",
+    "notesPlaceholder": "Notes",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "continueBuild": "Continue Build",
+    "deleteBuild": "Delete Build",
+    "buy": "Buy",
+    "deleteConfirmTitle": "Are you sure you want to delete this build?",
+    "slotLabels": {
+      "cpu": "CPU",
+      "motherboard": "Motherboard",
+      "ram": "RAM",
+      "gpu": "GPU",
+      "ssd": "SSD",
+      "hdd": "HDD",
+      "pc_case": "Case",
+      "cooler": "Cooler",
+      "psu": "PSU",
+      "fan": "Fan"
+    }
+  },
+  "notFound": {
+    "heading": "Page not found.",
+    "description": "The page you're looking for doesn't exist.",
+    "goHome": "Go back home"
+  },
+  "components": {
+    "buildCard": {
+      "saveSuccess": "Build saved successfully",
+      "saveError": "Failed to save build",
+      "likeError": "Failed to like",
+      "bookmarkError": "Failed to bookmark",
+      "reviewError": "Failed to submit review",
+      "compatibilityIssues": "Compatibility Issues",
+      "notes": "Notes",
+      "none": "None",
+      "likeTitle": "Like this post",
+      "bookmarkTitle": "Bookmark this post",
+      "ratingTitle": "Average rating",
+      "makePrivate": "Make Private",
+      "continue": "Continue",
+      "copyToSaved": "Copy to saved",
+      "privateConfirmTitle": "Are you sure you want to private {{name}} build?",
+      "cancel": "Cancel"
+    },
+    "buildFilters": {
+      "searchPlaceholder": "Search by build or author...",
+      "sort": {
+        "dateNewest": "Date: Newest",
+        "dateOldest": "Date: Oldest",
+        "priceLowHigh": "Price: Low to High",
+        "priceHighLow": "Price: High to Low",
+        "likesLowHigh": "Likes: Low to High",
+        "likesHighLow": "Likes: High to Low",
+        "ratingLowHigh": "Rating: Low to High",
+        "ratingHighLow": "Rating: High to Low"
+      },
+      "minPricePlaceholder": "Min price (€)",
+      "maxPricePlaceholder": "Max price (€)",
+      "rating": {
+        "any": "Min rating: Any",
+        "star1": "Min rating: 1 star",
+        "star2": "Min rating: 2 stars",
+        "star3": "Min rating: 3 stars",
+        "star4": "Min rating: 4 stars",
+        "star5": "Min rating: 5 stars"
+      },
+      "type": {
+        "all": "Type: All",
+        "gaming": "Type: Gaming",
+        "office": "Type: Office",
+        "rendering": "Type: Rendering",
+        "streaming": "Type: Streaming"
+      },
+      "gpu": {
+        "any": "GPU: Any",
+        "nvidia": "GPU: NVIDIA",
+        "amd": "GPU: AMD",
+        "intel": "GPU: INTEL"
+      },
+      "cpu": {
+        "any": "CPU: Any",
+        "amd": "CPU: AMD",
+        "intel": "CPU: INTEL"
+      },
+      "show": {
+        "label": "Show",
+        "all": "All",
+        "liked": "Liked",
+        "bookmarked": "Bookmarked",
+        "personal": "Personal"
+      },
+      "clearFilters": "Clear Filters"
+    },
+    "modal": {},
+    "paginationControls": {
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {{current}} of {{total}}"
+    },
+    "sidePanel": {
+      "brand": "PC BUILDER"
+    },
+    "starRating": {},
+    "closedSection": {},
+    "saved": {
+      "buildVisibility": {
+        "publicStatus": "Your build is currently",
+        "publicLabel": "public",
+        "privateStatusPrefix": "Your build is currently",
+        "privateLabel": "not published",
+        "privateStatusSuffix": "and can't be accessed by other people",
+        "makePrivate": "Make my build private",
+        "publish": "Publish my build",
+        "confirmTitle": "Are you sure you want to {{action}} {{name}} build?",
+        "actionPrivate": "private",
+        "actionPublish": "publish",
+        "makePrivateButton": "Make Private",
+        "publishButton": "Publish",
+        "cancel": "Cancel"
+      },
+      "detailPanel": {
+        "seeInStore": "See In Store"
+      }
+    }
+  }
+}

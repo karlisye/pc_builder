@@ -1,1 +1,186 @@
-{}
+{
+  "sidePanel": {
+    "title": "BUILDER",
+    "newBuild": "New Build"
+  },
+  "budgetSlider": {
+    "anyBudget": "Any Budget",
+    "totalBudget": "Total Budget",
+    "remainingBudget": "Remaining Budget"
+  },
+  "componentCard": {
+    "price": "Price: €{{price}}",
+    "availability": "Availability: {{status}}",
+    "inStockWithQty": "In Stock ({{count}})",
+    "orderableWithQty": "Can be ordered ({{count}})",
+    "outOfStock": "Out of Stock",
+    "showMore": "Show more",
+    "showLess": "Show less",
+    "remove": "Remove",
+    "buy": "Buy"
+  },
+  "componentPopup": {
+    "ram": {
+      "fullName": "Random Access Memory",
+      "description": "Short-term working memory. Holds data the CPU is actively using."
+    },
+    "gpu": {
+      "fullName": "Graphics Processing Unit",
+      "description": "Renders graphics and visuals. Handles parallel processing tasks."
+    },
+    "psu": {
+      "fullName": "Power Supply Unit",
+      "description": "Converts wall power into voltages the components need."
+    },
+    "ssd": {
+      "fullName": "Solid State Drive",
+      "description": "Fast permanent storage. Loads your OS and apps quickly."
+    },
+    "hdd": {
+      "fullName": "Hard Disk Drive",
+      "description": "Optional large, slower storage. Good for bulk files and backups."
+    },
+    "case": {
+      "fullName": "Computer Case",
+      "description": "Houses and protects all components, and manages airflow."
+    },
+    "fan": {
+      "fullName": "Case Fan",
+      "description": "Moves air through the case to prevent heat buildup."
+    },
+    "cooler": {
+      "fullName": "CPU Cooler",
+      "description": "Sits on the CPU and pulls heat away from it."
+    },
+    "cpu": {
+      "fullName": "Central Processing Unit",
+      "description": "The brain. Executes all instructions and runs your software."
+    },
+    "motherboard": {
+      "fullName": "Motherboard",
+      "description": "The backbone. Connects and lets all components communicate."
+    }
+  },
+  "addComponent": {
+    "title": "Add {{component}}",
+    "failedToFetch": "Failed to fetch components",
+    "noComponentsFound": "No Components Found",
+    "tryAdjustingFilters": "Try adjusting your filters",
+    "outOfStock": "Out Of Stock",
+    "notCompatible": "Not Compatible",
+    "select": "Select",
+    "seeInShop": "See in Shop"
+  },
+  "componentFilters": {
+    "searchPlaceholder": "Search {{component}}...",
+    "sort": {
+      "priceAsc": "Price: Low to High",
+      "priceDesc": "Price: High to Low",
+      "nameAsc": "Name: A to Z",
+      "nameDesc": "Name: Z to A"
+    },
+    "minPrice": "Min price (€)",
+    "maxPrice": "Max price (€)",
+    "failedToFetchFilters": "Failed to fetch filters",
+    "all": "All",
+    "yes": "Yes",
+    "no": "No",
+    "display": "Display",
+    "inStock": "In Stock",
+    "canBeOrdered": "Can Be Ordered",
+    "compatibleOnly": "Compatible Only",
+    "clearFilters": "Clear Filters",
+    "labels": {
+      "socket": "Socket",
+      "cores": "Cores",
+      "integrated_graphics": "Integrated Graphics",
+      "cooler_included": "Cooler Included",
+      "chipset": "Chipset",
+      "form_factor": "Form Factor",
+      "memory_type": "Memory Type",
+      "wifi": "WiFi",
+      "capacity": "Capacity (GB)",
+      "frequency": "Frequency (MHz)",
+      "vram": "VRAM (GB)",
+      "min_psu": "Max PSU Req (W)",
+      "tdp_support": "Min TDP Support (W)",
+      "wattage": "Min Wattage (W)",
+      "efficiency_rating": "Efficiency Rating",
+      "modular": "Modular",
+      "psu_type": "PSU Type",
+      "type": "Type",
+      "interface": "Interface"
+    }
+  },
+  "buildDesc": {
+    "total": "Total",
+    "components": "Components",
+    "compatibility": "Compatibility",
+    "aboutThisBuild": "About This Build",
+    "fullyFunctionalNote": "Your build is fully functional. These are just recommendations to get the best experience."
+  },
+  "buildGenerator": {
+    "title": "Auto Generate Build",
+    "intro": "Not sure where to start? Let us pick the best compatible components for your budget. For more information visit",
+    "guideLink": "Automatic Builder",
+    "guideSuffix": "guide .",
+    "recommendBudgetIncrease": "We recommend increasing your budget for this type of build.",
+    "preferences": "Preferences",
+    "gpu": "GPU",
+    "cpu": "CPU",
+    "usage": "Usage",
+    "any": "Any",
+    "nvidia": "NVIDIA",
+    "amd": "AMD",
+    "intel": "INTEL",
+    "gaming": "Gaming",
+    "office": "Office",
+    "rendering": "Rendering",
+    "streaming": "Streaming",
+    "includeOnlyOrderable": "Include Only Orderable Items",
+    "somethingWentWrong": "Something went wrong",
+    "incompatibleWarning": "One or more components in your current build are incompatible. Please change or remove them to generate.",
+    "generating": "Generating...",
+    "generate": "Generate"
+  },
+  "componentGenerator": {
+    "title": "Auto Generate Component",
+    "intro": "Not sure what component to choose? Let us pick the best compatible component for your budget. For more information visit",
+    "guideLink": "Automatic Builder",
+    "guideSuffix": "guide .",
+    "preferences": "Preferences",
+    "cpu": "CPU",
+    "gpu": "GPU",
+    "any": "Any",
+    "nvidia": "NVIDIA",
+    "amd": "AMD",
+    "intel": "INTEL",
+    "includeOnlyOrderable": "Include Only Orderable Items",
+    "somethingWentWrong": "Something went wrong",
+    "incompatibleWarning": "One or more components in your current build are incompatible. Please change or remove them to generate.",
+    "generating": "Generating...",
+    "generate": "Generate"
+  },
+  "buildInfo": {
+    "selectComponents": "Select your components",
+    "enterBuildName": "Please enter a build name",
+    "selectAtLeastOne": "Please select at least one component",
+    "savedAsNew": "Saved as new build!",
+    "savedSuccessfully": "Build saved successfully",
+    "failedToSave": "Failed to save build",
+    "nameLabel": "Name",
+    "namePlaceholder": "build name...",
+    "notesLabel": "Notes",
+    "notesPlaceholder": "build notes...",
+    "buildTypeLabel": "Build Type",
+    "none": "None",
+    "gaming": "Gaming",
+    "office": "Office",
+    "rendering": "Rendering",
+    "streaming": "Streaming",
+    "saving": "Saving...",
+    "saveBuild": "Save Build",
+    "clearBuild": "Clear Build",
+    "saveAsNewBuild": "Save as New Build"
+  }
+}

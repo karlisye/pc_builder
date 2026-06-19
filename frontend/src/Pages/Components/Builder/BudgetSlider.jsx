@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useBuilder } from "../../../Contexts/BuilderContext";
 
 const BudgetSlider = ({
@@ -10,6 +11,7 @@ const BudgetSlider = ({
   step = 50,
   showRemaining = true,
 }) => {
+  const { t } = useTranslation("builder");
   const { selectedComponents } = useBuilder();
   const [inputValue, setInputValue] = useState(value);
   const [isUnlimited, setIsUnlimited] = useState(false);
@@ -61,13 +63,15 @@ const BudgetSlider = ({
           onChange={handleUnlimited}
         />
         <label className="text-sm text-secondary-light" htmlFor="unlimited">
-          Any Budget
+          {t("budgetSlider.anyBudget")}
         </label>
       </div>
       <div
         className={`flex justify-between items-center transition-opacity ${isUnlimited ? "opacity-40 pointer-events-none" : ""}`}
       >
-        <span className="text-secondary-light text-sm">Total Budget</span>
+        <span className="text-secondary-light text-sm">
+          {t("budgetSlider.totalBudget")}
+        </span>
         <div className="flex items-center gap-1">
           <span className="text-muted text-sm">€</span>
           <input
@@ -85,7 +89,9 @@ const BudgetSlider = ({
         <div
           className={`flex justify-between items-center transition-opacity ${isUnlimited ? "opacity-40 pointer-events-none" : ""}`}
         >
-          <span className="text-secondary-light text-sm">Remaining Budget</span>
+          <span className="text-secondary-light text-sm">
+            {t("budgetSlider.remainingBudget")}
+          </span>
           <div className="space-x-2">
             <span className="text-muted text-sm">€</span>
             <span className="text-secondary-light font-semibold">

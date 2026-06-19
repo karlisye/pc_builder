@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../../Contexts/AuthContext";
 
 const Register = () => {
+  const { t } = useTranslation("auth");
   const { register } = useAuth();
   const navigate = useNavigate();
 
@@ -19,22 +21,21 @@ const Register = () => {
 
   const validate = () => {
     const e = {};
-    if (!data.name.trim()) e.name = "Name is required.";
+    if (!data.name.trim()) e.name = t("register.nameRequired");
     else if (data.name.trim().length < 3)
-      e.name = "Name must be at least 3 characters.";
-    if (!data.email.trim()) e.email = "Email is required.";
+      e.name = t("register.nameMinLength");
+    if (!data.email.trim()) e.email = t("common.emailRequired");
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email))
-      e.email = "Please enter a valid email address.";
-    if (!data.password) e.password = "Password is required.";
+      e.email = t("common.emailInvalid");
+    if (!data.password) e.password = t("common.passwordRequired");
     else if (data.password.length < 8)
-      e.password = "Password must be at least 8 characters.";
+      e.password = t("common.passwordMinLength");
     else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])/.test(data.password))
-      e.password =
-        "Password must contain uppercase, lowercase, a number, and a symbol.";
+      e.password = t("common.passwordComplexity");
     if (!data.password_confirmation)
-      e.password_confirmation = "Please confirm your password.";
+      e.password_confirmation = t("register.confirmPasswordRequired");
     else if (data.password !== data.password_confirmation)
-      e.password_confirmation = "Passwords do not match.";
+      e.password_confirmation = t("register.passwordsDoNotMatch");
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -57,13 +58,13 @@ const Register = () => {
   return (
     <div className="h-full flex flex-col items-center justify-center">
       <div className="w-full md:w-200 px-8">
-        <h1 className="text-3xl font-semibold mb-1">Sign Up</h1>
+        <h1 className="text-3xl font-semibold mb-1">{t("register.title")}</h1>
         <div className="flex w-full shadow">
           <div className="w-full md:w-1/2 transition-all duration-300 bg-background">
             <form onSubmit={handleSubmit}>
               <div className="flex flex-col my-2 mx-4">
                 <label className="text-text" htmlFor="name">
-                  Name
+                  {t("register.nameLabel")}
                 </label>
                 <input
                   className={`bg-surface flex-1 p-2 ${errors.name ? "outline-1 outline-danger" : "focus: outline-border"}`}
@@ -77,7 +78,7 @@ const Register = () => {
 
               <div className="flex flex-col my-2 mx-4">
                 <label className="text-text" htmlFor="email">
-                  Email
+                  {t("common.emailLabel")}
                 </label>
                 <input
                   className={`bg-surface flex-1 p-2 ${errors.email ? "outline-1 outline-danger" : "focus: outline-border"}`}
@@ -91,7 +92,7 @@ const Register = () => {
 
               <div className="flex flex-col my-2 mx-4">
                 <label className="text-text" htmlFor="password">
-                  Password
+                  {t("common.passwordLabel")}
                 </label>
                 <input
                   className={`bg-surface flex-1 p-2 ${errors.password ? "outline-1 outline-danger" : "focus: outline-border"}`}
@@ -107,7 +108,7 @@ const Register = () => {
 
               <div className="flex flex-col my-2 mx-4">
                 <label className="text-text" htmlFor="password_confirmation">
-                  Confirm password
+                  {t("register.confirmPasswordLabel")}
                 </label>
                 <input
                   className={`bg-surface flex-1 p-2 ${errors.password_confirmation ? "outline-1 outline-danger" : "focus: outline-border"}`}
@@ -123,13 +124,13 @@ const Register = () => {
 
               <div className="flex flex-col mx-4 my-4">
                 <Link className="text-info" to="/login">
-                  Already have an account?
+                  {t("register.alreadyHaveAccount")}
                 </Link>
                 <button
                   className="bg-primary hover:bg-primary-light transition cursor-pointer text-white p-4"
                   disabled={processing}
                 >
-                  Sign Up
+                  {t("register.submit")}
                 </button>
               </div>
             </form>
@@ -138,7 +139,7 @@ const Register = () => {
           <div className="w-0 md:w-1/2 transition-all duration-300 bg-primary flex flex-col overflow-hidden">
             <div className="border-4 border-secondary m-2 h-full flex items-center justify-center p-2">
               <span className="text-7xl font-bold text-surface">
-                START BUILDING
+                {t("register.heroText")}
               </span>
             </div>
           </div>

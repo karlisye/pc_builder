@@ -4,8 +4,10 @@ import axios from "axios";
 import PaginationControls from "../Components/Common/PaginationControls";
 import HistoryCard from "./Components/HistoryCard";
 import HistoryFilters from "./Components/HistoryFilters";
+import { useTranslation } from "react-i18next";
 
 const History = () => {
+  const { t } = useTranslation("admin");
   const [history, setHistory] = useState([]);
   const [pagination, setPagination] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -43,14 +45,14 @@ const History = () => {
       });
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.error ?? "Failed to fetch scrape history.");
+      setError(err.response?.data?.error ?? t("history.fetchFailed"));
     } finally {
       setLoading(false);
     }
   };
   return (
     <div className="h-full flex">
-      <SidePanel title={"SCRAPE HISTORY"}>
+      <SidePanel title={t("history.sidePanelTitle")}>
         <HistoryFilters
           sort={sort}
           setSort={setSort}
@@ -60,15 +62,15 @@ const History = () => {
       </SidePanel>
 
       <div className="flex-1 px-4 py-6">
-        <h2 className="text-2xl font-semibold text-text">History</h2>
+        <h2 className="text-2xl font-semibold text-text">{t("history.title")}</h2>
         {!loading && !error && (
           <div className="mt-4 flex flex-col gap-2">
             {history.length === 0 ? (
               <div className="mx-auto text-center">
                 <p className="text-2xl font-semibold text-text">
-                  No Scrape history
+                  {t("history.emptyTitle")}
                 </p>
-                <span className="text-muted">Try adjusting your filters</span>
+                <span className="text-muted">{t("history.emptySubtitle")}</span>
               </div>
             ) : (
               history.map((el) => <HistoryCard key={el.id} history={el} />)

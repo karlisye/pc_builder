@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ComponentCheckbox from "./ComponentCheckbox";
 import { ArrowIcon } from "../../Components/Common/Icons";
 import ClosedSection from "../../Components/Common/ClosedSection";
+import { useTranslation } from "react-i18next";
 
 const COMPONENT_CATEGORIES = [
   "cpu",
@@ -23,6 +24,7 @@ const ScraperFilters = ({
   setSettings,
   error,
 }) => {
+  const { t } = useTranslation("admin");
   const [open, setOpen] = useState(false);
 
   const validateSettings = (key, value) => {
@@ -60,7 +62,7 @@ const ScraperFilters = ({
   return (
     <>
       <div>
-        <p className="text-secondary-light mb-2">Categories to scrape</p>
+        <p className="text-secondary-light mb-2">{t("scraper.categoriesToScrape")}</p>
 
         <ComponentCheckbox
           component={"all"}
@@ -82,10 +84,10 @@ const ScraperFilters = ({
       </div>
 
       <div className="mt-4">
-        <ClosedSection title={"Settings"}>
+        <ClosedSection title={t("scraper.settings")}>
           <div className="flex gap-4 justify-between items-center">
             <label className="text-sm text-secondary-light" htmlFor="delay">
-              Delay (seconds)
+              {t("scraper.delaySeconds")}
             </label>
             <input
               className="border border-muted p-0.5 outline-0 text-secondary-light w-30"
@@ -100,7 +102,7 @@ const ScraperFilters = ({
 
           <div className="flex gap-4 justify-between items-center">
             <label className="text-sm text-secondary-light" htmlFor="delay">
-              Max errors per category
+              {t("scraper.maxErrorsPerCategory")}
             </label>
             <input
               className="border border-muted p-0.5 outline-0 text-secondary-light w-30"

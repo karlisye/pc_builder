@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import ComponentCard from "./Components/Builder/ComponentCard";
 import BuildDesc from "./Components/Builder/BuildDesc";
 import { BuilderContext } from "../Contexts/BuilderContext";
@@ -12,6 +13,7 @@ import SidePanel from "./Components/Common/SidePanel";
 import axios from "axios";
 
 const Builder = () => {
+  const { t } = useTranslation(["builder", "common"]);
   const [searchParams] = useSearchParams();
   const [currentCompToAdd, setCurrentCompToAdd] = useState(null);
   const [selectedComponents, setSelectedComponents] = useState({
@@ -140,14 +142,14 @@ const Builder = () => {
     >
       <div className="h-full flex">
         <SidePanel
-          title="BUILDER"
+          title={t("sidePanel.title")}
           headerRight={
             buildId && (
               <Link
                 className="px-6 py-2 border text-secondary-light cursor-pointer hover:text-muted transition text-sm"
                 to="/builder"
               >
-                New Build
+                {t("sidePanel.newBuild")}
               </Link>
             )
           }
@@ -174,7 +176,10 @@ const Builder = () => {
               <ComponentCard name="PSU" component={selectedComponents.psu} />
               <ComponentCard name="SSD" component={selectedComponents.ssd} />
               <ComponentCard name="HDD" component={selectedComponents.hdd} />
-              <ComponentCard name="Case" component={selectedComponents.case} />
+              <ComponentCard
+                name="Case"
+                component={selectedComponents.case}
+              />
               <ComponentCard name="Fan" component={selectedComponents.fan} />
               <ComponentCard
                 name="Cooler"

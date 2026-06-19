@@ -2,11 +2,13 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../../Contexts/AuthContext";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ArrowIcon, HeartIcon, SavedIcon, StarIcon } from "../Common/Icons";
 import StarRating from "../Common/StarRating";
 import Modal from "../Common/Modal";
 
 const BuildCard = ({ build }) => {
+  const { t } = useTranslation(["pages", "common"]);
   const { user } = useAuth();
 
   const [success, setSuccess] = useState("");
@@ -40,10 +42,10 @@ const BuildCard = ({ build }) => {
         notes: build.notes,
         components,
       });
-      setSuccess("Build saved successfully");
+      setSuccess(t("components.buildCard.saveSuccess"));
       setTimeout(() => setSuccess(""), 5000);
     } catch (err) {
-      setError(err.response?.data?.error ?? "Failed to save build");
+      setError(err.response?.data?.error ?? t("components.buildCard.saveError"));
     }
   };
 
@@ -55,7 +57,7 @@ const BuildCard = ({ build }) => {
         setLikesCount((prev) => (liked ? prev - 1 : prev + 1));
       }
     } catch (err) {
-      setError(err.response?.data?.error ?? "Failed to like");
+      setError(err.response?.data?.error ?? t("components.buildCard.likeError"));
     }
   };
 
@@ -67,7 +69,7 @@ const BuildCard = ({ build }) => {
         setBookmarksCount((prev) => (bookmarked ? prev - 1 : prev + 1));
       }
     } catch (err) {
-      setError(err.response?.data?.error ?? "Failed to bookmark");
+      setError(err.response?.data?.error ?? t("components.buildCard.bookmarkError"));
     }
   };
 
@@ -76,7 +78,7 @@ const BuildCard = ({ build }) => {
     try {
       await axios.post(`/api/shared/${build.id}/review`, { rating });
     } catch (err) {
-      setError(err.response?.data?.error ?? "Failed to submit review");
+      setError(err.response?.data?.error ?? t("components.buildCard.reviewError"));
     }
   };
 

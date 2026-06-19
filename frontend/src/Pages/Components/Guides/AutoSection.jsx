@@ -1,7 +1,9 @@
 import React, { useRef } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import Note from "./Note";
 
 const AutoSection = () => {
+  const { t } = useTranslation("pages");
   const tableRef = useRef(null);
 
   const scrollToTable = () => {
@@ -11,129 +13,106 @@ const AutoSection = () => {
   return (
     <div className="max-w-4xl mx-auto px-6 pb-10">
       <h1 className="text-4xl font-semibold mb-8 text-text">
-        Using the Automatic Builder
+        {t("guides.autoSection.title")}
       </h1>
       <div className="space-y-5">
         <h2 className="text-2xl font-semibold text-text">
-          Selecting Components
+          {t("guides.autoSection.selectingComponentsHeading")}
         </h2>
 
         <div>
-          <p className="text-text">
-            1. Optionally, start by adding any components you want included in
-            your build. You can also use the automatic component generator under
-            the filters to find a compatable component automatically.
-          </p>
-          <Note>
-            This step is optional. You can skip it to generate a fully automatic
-            build.
-          </Note>
-        </div>
-
-        <h2 className="text-2xl font-semibold text-text">Selecting a Budget</h2>
-
-        <p className="text-text">
-          2. Scroll to the bottom of the build information panel and select the{" "}
-          <span>Auto Builder</span> option.
-        </p>
-
-        <div>
-          <p className="text-text">
-            3. Set your budget using the slider, or choose the unlimited budget
-            option to get the best possible components.
-          </p>
-          <Note>
-            The budget applies to the entire build. If you have already selected
-            components, their cost will be deducted from your available budget.
-          </Note>
-
-          <p className="text-text">
-            4. Set your preferences for GPU, CPU and Usage type under the budget
-            slider.
-          </p>
-          <Note>
-            Make sure to check the "Include Orderable Items" to also use
-            components that are not in store, but can be ordered.
-          </Note>
+          <p className="text-text">{t("guides.autoSection.step1")}</p>
+          <Note>{t("guides.autoSection.step1Note")}</Note>
         </div>
 
         <h2 className="text-2xl font-semibold text-text">
-          Generating the Build
+          {t("guides.autoSection.selectingBudgetHeading")}
+        </h2>
+
+        <p className="text-text">
+          <Trans
+            t={t}
+            i18nKey="guides.autoSection.step2"
+            components={{ autoBuilderText: <span /> }}
+          />
+        </p>
+
+        <div>
+          <p className="text-text">{t("guides.autoSection.step3")}</p>
+          <Note>{t("guides.autoSection.step3Note")}</Note>
+
+          <p className="text-text">{t("guides.autoSection.step4")}</p>
+          <Note>{t("guides.autoSection.step4Note")}</Note>
+        </div>
+
+        <h2 className="text-2xl font-semibold text-text">
+          {t("guides.autoSection.generatingHeading")}
         </h2>
 
         <div>
-          <p className="text-text">
-            5. Once your budget is set, click the generate button to
-            automatically complete your build.
-          </p>
+          <p className="text-text">{t("guides.autoSection.step5")}</p>
 
           <Note>
-            Budget also affects component allocation. For example, lower-budget
-            builds (e.g. under 500€) may exclude a GPU and instead select a CPU
-            with integrated graphics. The same applies to components like CPU
-            coolers.{" "}
-            <button
-              onClick={scrollToTable}
-              className="text-info hover:underline font-medium cursor-pointer"
-            >
-              See all budget allocations below
-            </button>
-            .
+            <Trans
+              t={t}
+              i18nKey="guides.autoSection.step5Note"
+              components={{
+                link: (
+                  <button
+                    onClick={scrollToTable}
+                    className="text-info hover:underline font-medium cursor-pointer"
+                  />
+                ),
+              }}
+            />
           </Note>
         </div>
 
         <div>
-          <p className="text-text">
-            6. After generating a build we recommend checking the compatability
-            for the build manually before purchasing any of the items.
-          </p>
+          <p className="text-text">{t("guides.autoSection.step6")}</p>
 
-          <Note>
-            The HDD component is not automatically included, as it is optional.
-            If the CPU comes with a built-in cooler and the budget is limited, a
-            separate CPU cooler may also be treated as optional.
-          </Note>
+          <Note>{t("guides.autoSection.step6Note")}</Note>
         </div>
       </div>
 
       <div>
         <h2 className="text-2xl font-semibold text-text my-5">
-          Budget Allocations
+          {t("guides.autoSection.budgetAllocationsHeading")}
         </h2>
 
         <div className="overflow-x-auto" ref={tableRef}>
           <table className="text-left text-text">
             <thead className="bg-secondary-light/50">
               <tr>
-                <th className="p-2 border border-secondary-light">Component</th>
+                <th className="p-2 border border-secondary-light">{t("guides.autoSection.table.component")}</th>
                 <th className="p-2 border border-secondary-light" colSpan={2}>
-                  Budget ({"<500€"})
+                  {t("guides.autoSection.table.budgetLow")}
                 </th>
                 <th className="p-2 border border-secondary-light" colSpan={4}>
-                  Mid (500–1500€)
+                  {t("guides.autoSection.table.budgetMid")}
                 </th>
                 <th className="p-2 border border-secondary-light" colSpan={5}>
-                  High-end ({">1500€"})
+                  {t("guides.autoSection.table.budgetHigh")}
                 </th>
               </tr>
               <tr>
                 <th className="p-2 border border-secondary-light"></th>
-                <th className="p-2 border border-secondary-light">General</th>
-                <th className="p-2 border border-secondary-light">Office</th>
-                <th className="p-2 border border-secondary-light">General</th>
-                <th className="p-2 border border-secondary-light">Gaming</th>
-                <th className="p-2 border border-secondary-light">Office</th>
-                <th className="p-2 border border-secondary-light">Streaming</th>
-                <th className="p-2 border border-secondary-light">General</th>
-                <th className="p-2 border border-secondary-light">Gaming</th>
-                <th className="p-2 border border-secondary-light">Office</th>
-                <th className="p-2 border border-secondary-light">Rendering</th>
-                <th className="p-2 border border-secondary-light">Streaming</th>
+                <th className="p-2 border border-secondary-light">{t("guides.autoSection.table.general")}</th>
+                <th className="p-2 border border-secondary-light">{t("guides.autoSection.table.office")}</th>
+                <th className="p-2 border border-secondary-light">{t("guides.autoSection.table.general")}</th>
+                <th className="p-2 border border-secondary-light">{t("guides.autoSection.table.gaming")}</th>
+                <th className="p-2 border border-secondary-light">{t("guides.autoSection.table.office")}</th>
+                <th className="p-2 border border-secondary-light">{t("guides.autoSection.table.streaming")}</th>
+                <th className="p-2 border border-secondary-light">{t("guides.autoSection.table.general")}</th>
+                <th className="p-2 border border-secondary-light">{t("guides.autoSection.table.gaming")}</th>
+                <th className="p-2 border border-secondary-light">{t("guides.autoSection.table.office")}</th>
+                <th className="p-2 border border-secondary-light">{t("guides.autoSection.table.rendering")}</th>
+                <th className="p-2 border border-secondary-light">{t("guides.autoSection.table.streaming")}</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td className="p-2 border border-border">GPU</td>
+                <td className="p-2 border border-border">{t("guides.autoSection.table.gpu")}</td>
                 <td className="p-2 border border-border">—</td>
                 <td className="p-2 border border-border">—</td>
                 <td className="p-2 border border-border">24%</td>
@@ -147,7 +126,7 @@ const AutoSection = () => {
                 <td className="p-2 border border-border">22%</td>
               </tr>
               <tr>
-                <td className="p-2 border border-border">CPU</td>
+                <td className="p-2 border border-border">{t("guides.autoSection.table.cpu")}</td>
                 <td className="p-2 border border-border">26%</td>
                 <td className="p-2 border border-border">28%</td>
                 <td className="p-2 border border-border">16%</td>
@@ -161,7 +140,7 @@ const AutoSection = () => {
                 <td className="p-2 border border-border">20%</td>
               </tr>
               <tr>
-                <td className="p-2 border border-border">Motherboard</td>
+                <td className="p-2 border border-border">{t("guides.autoSection.table.motherboard")}</td>
                 <td className="p-2 border border-border">20%</td>
                 <td className="p-2 border border-border">22%</td>
                 <td className="p-2 border border-border">10%</td>
@@ -175,7 +154,7 @@ const AutoSection = () => {
                 <td className="p-2 border border-border">10%</td>
               </tr>
               <tr>
-                <td className="p-2 border border-border">RAM</td>
+                <td className="p-2 border border-border">{t("guides.autoSection.table.ram")}</td>
                 <td className="p-2 border border-border">24%</td>
                 <td className="p-2 border border-border">25%</td>
                 <td className="p-2 border border-border">20%</td>
@@ -189,7 +168,7 @@ const AutoSection = () => {
                 <td className="p-2 border border-border">22%</td>
               </tr>
               <tr>
-                <td className="p-2 border border-border">Cooler</td>
+                <td className="p-2 border border-border">{t("guides.autoSection.table.cooler")}</td>
                 <td className="p-2 border border-border">—</td>
                 <td className="p-2 border border-border">—</td>
                 <td className="p-2 border border-border">3%</td>
@@ -203,7 +182,7 @@ const AutoSection = () => {
                 <td className="p-2 border border-border">2%</td>
               </tr>
               <tr>
-                <td className="p-2 border border-border">Case</td>
+                <td className="p-2 border border-border">{t("guides.autoSection.table.case")}</td>
                 <td className="p-2 border border-border">10%</td>
                 <td className="p-2 border border-border">9%</td>
                 <td className="p-2 border border-border">7%</td>
@@ -217,7 +196,7 @@ const AutoSection = () => {
                 <td className="p-2 border border-border">6%</td>
               </tr>
               <tr>
-                <td className="p-2 border border-border">PSU</td>
+                <td className="p-2 border border-border">{t("guides.autoSection.table.psu")}</td>
                 <td className="p-2 border border-border">10%</td>
                 <td className="p-2 border border-border">9%</td>
                 <td className="p-2 border border-border">7%</td>
@@ -231,7 +210,7 @@ const AutoSection = () => {
                 <td className="p-2 border border-border">6%</td>
               </tr>
               <tr>
-                <td className="p-2 border border-border">SSD</td>
+                <td className="p-2 border border-border">{t("guides.autoSection.table.ssd")}</td>
                 <td className="p-2 border border-border">10%</td>
                 <td className="p-2 border border-border">7%</td>
                 <td className="p-2 border border-border">13%</td>

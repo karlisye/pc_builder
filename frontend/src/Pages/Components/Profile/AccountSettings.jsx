@@ -1,9 +1,11 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Modal from "../Common/Modal";
 import { useAuth } from "../../../Contexts/AuthContext";
 
 const AccountSettings = () => {
+  const { t } = useTranslation("profile");
   const { user, setUser } = useAuth();
   const [editActive, setEditActive] = useState(false);
   const [name, setName] = useState(user?.name ?? "");
@@ -32,7 +34,7 @@ const AccountSettings = () => {
     }
 
     if (name.length < 3) {
-      setError("Name field must contain at least 3 letters");
+      setError(t("accountSettings.nameTooShort"));
       return;
     }
 
@@ -43,7 +45,7 @@ const AccountSettings = () => {
       });
       if (res.status === 200) {
         setUser(res.data);
-        setSuccess("Information updated");
+        setSuccess(t("accountSettings.infoUpdated"));
         setError("");
         setTimeout(() => setSuccess(""), 3000);
       }
@@ -52,7 +54,7 @@ const AccountSettings = () => {
       setError(
         errors
           ? Object.values(errors).flat().join(", ")
-          : "Failed to save personal information",
+          : t("accountSettings.infoUpdateError"),
       );
     } finally {
       setEditActive(false);
@@ -68,7 +70,7 @@ const AccountSettings = () => {
         new_password_confirmation: newPassConfirm,
       });
       if (res.status === 200) {
-        setPassSuccess("Password updated");
+        setPassSuccess(t("accountSettings.passwordUpdated"));
         setPassError("");
         setTimeout(() => setPassSuccess(""), 3000);
       }
@@ -83,7 +85,7 @@ const AccountSettings = () => {
                   {err}
                 </span>
               ))
-          : "Failed to save Password",
+          : t("accountSettings.passwordUpdateError"),
       );
     } finally {
       setOldPass("");
@@ -93,8 +95,8 @@ const AccountSettings = () => {
   };
 
   const handleDeleteAccount = async () => {
-    if (deleteConfirm !== "delete-my-account") {
-      setDeleteError("Delete confirmation is incorrect");
+    if (deleteConfirm !== t("accountSettings.deleteConfirmKeyword")) {
+      setDeleteError(t("accountSettings.deleteConfirmIncorrect"));
       return;
     }
 
@@ -111,17 +113,17 @@ const AccountSettings = () => {
   return (
     <>
       <h1 className="text-4xl text-text font-semibold mb-4">
-        Account Settings
+        {t("accountSettings.heading")}
       </h1>
 
       <h2 className="text-2xl text-text font-semibold mb-4">
-        Personal Information
+        {t("accountSettings.personalInfoHeading")}
       </h2>
       <form>
         <div className="grid xl:grid-cols-2 gap-4">
           <div className="">
             <label className="block text-muted" htmlFor="name">
-              Name
+              {t("accountSettings.nameLabel")}
             </label>
             <input
               className="p-2 bg-surface w-full disabled:text-muted focus:outline outline-border transition"
@@ -135,7 +137,7 @@ const AccountSettings = () => {
 
           <div className="">
             <label className="block text-muted" htmlFor="email">
-              Email
+              {t("accountSettings.emailLabel")}
             </label>
             <input
               className="p-2 bg-surface w-full disabled:text-muted focus:outline outline-border transition"
@@ -156,7 +158,7 @@ const AccountSettings = () => {
             className="py-2 px-6 bg-primary text-white hover:bg-primary-light cursor-pointer mt-2 transition"
             onClick={handleEdit}
           >
-            {editActive ? "Save" : "Edit"}
+            {editActive ? t("accountSettings.save") : t("accountSettings.edit")}
           </button>
 
           {editActive && (
@@ -169,18 +171,18 @@ const AccountSettings = () => {
                 setError("");
               }}
             >
-              Cancel
+              {t("accountSettings.cancel")}
             </button>
           )}
         </div>
       </form>
 
-      <h2 className="text-2xl text-text font-semibold my-4">Change Password</h2>
+      <h2 className="text-2xl text-text font-semibold my-4">{t("accountSettings.changePasswordHeading")}</h2>
       <form onSubmit={updatePassword}>
         <div className="grid xl:grid-cols-2 gap-4">
           <div className="">
             <label className="block text-muted" htmlFor="oldPass">
-              Old Password
+              {t("accountSettings.oldPasswordLabel")}
             </label>
             <input
               className="p-2 bg-surface w-full disabled:text-muted focus:outline outline-border transition"
@@ -194,7 +196,7 @@ const AccountSettings = () => {
 
           <div className="">
             <label className="block text-muted" htmlFor="newPass">
-              New Password
+              {t("accountSettings.newPasswordLabel")}
             </label>
             <input
               className="p-2 bg-surface w-full disabled:text-muted focus:outline outline-border transition"
@@ -207,7 +209,7 @@ const AccountSettings = () => {
 
           <div className="">
             <label className="block text-muted" htmlFor="newPassConfirm">
-              Confirm New Password
+              {t("accountSettings.confirmNewPasswordLabel")}
             </label>
             <input
               className="p-2 bg-surface w-full disabled:text-muted focus:outline outline-border transition"
@@ -226,34 +228,34 @@ const AccountSettings = () => {
           className="py-2 px-6 bg-primary text-white hover:bg-primary-light cursor-pointer mt-2 transition disabled:text-muted"
           disabled={!oldPass || !newPass || !newPassConfirm}
         >
-          Save
+          {t("accountSettings.save")}
         </button>
       </form>
 
       <h2 className="text-2xl text-text font-semibold my-4">
-        Delete my account
+        {t("accountSettings.deleteAccountHeading")}
       </h2>
       <button
         className="py-4 px-8 bg-primary text-white hover:bg-danger/80 cursor-pointer mt-2 transition disabled:text-muted mb-6"
         onClick={() => setDeleting(true)}
       >
-        Delete my account
+        {t("accountSettings.deleteAccountButton")}
       </button>
 
       {deleting && (
         <Modal close={() => setDeleting(false)}>
           <h1 className="text-text font-semibold text-3xl">
-            Are you sure you want to delete your account?
+            {t("accountSettings.deleteConfirmTitle")}
           </h1>
           <p className="text-muted text-sm mb-4">
-            This action is permanent and cannot be undone
+            {t("accountSettings.deleteConfirmSubtitle")}
           </p>
 
           <div className="w-full flex flex-col mb-4">
             <span className="text-muted">
-              Please type
-              <span className="text-danger"> delete-my-account </span> to
-              confirm
+              {t("accountSettings.deleteConfirmInstruction")}
+              <span className="text-danger"> {t("accountSettings.deleteConfirmKeyword")} </span>
+              {t("accountSettings.deleteConfirmInstructionSuffix")}
             </span>
             <input
               type="text"
@@ -270,7 +272,7 @@ const AccountSettings = () => {
               className="flex-1 p-4 bg-primary text-background cursor-pointer hover:bg-primary-light transition"
               onClick={handleDeleteAccount}
             >
-              Delete
+              {t("accountSettings.delete")}
             </button>
             <button
               className="flex-1 p-4 bg-surface text-text cursor-pointer hover:bg-secondary-light transition"
@@ -279,7 +281,7 @@ const AccountSettings = () => {
                 setDeleteError("");
               }}
             >
-              Cancel
+              {t("accountSettings.cancelDelete")}
             </button>
           </div>
         </Modal>

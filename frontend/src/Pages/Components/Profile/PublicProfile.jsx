@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ArrowIcon, HeartIcon, SavedIcon, StarIcon } from "../Common/Icons";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
+import { formatDate } from "../../../lib/formatDate";
 
 const PublicProfile = () => {
+  const { t } = useTranslation("profile");
   const { user: userId } = useParams();
   const [data, setData] = useState(null);
   const [page, setPage] = useState(1);
@@ -35,10 +38,10 @@ const PublicProfile = () => {
         notes: build.notes,
         components,
       });
-      setSuccess("Build saved successfully");
+      setSuccess(t("publicProfile.saveSuccess"));
       setTimeout(() => setSuccess(""), 5000);
     } catch (err) {
-      setError(err.response?.data?.error ?? "Failed to save build");
+      setError(err.response?.data?.error ?? t("publicProfile.saveError"));
     }
   };
 
@@ -50,7 +53,7 @@ const PublicProfile = () => {
           className="flex gap-2 justify-between items-center"
         >
           <h1 className="text-4xl font-semibold text-white uppercase">
-            {user.name}'s profile
+            {t("publicProfile.profileHeading", { name: user.name })}
           </h1>
           <span className="text-surface lg:opacity-0">
             <ArrowIcon active={expanded} size={24} />
@@ -63,21 +66,21 @@ const PublicProfile = () => {
           <div className="space-y-4 overflow-hidden">
             <div className="border border-secondary p-4 space-y-2">
               <div className="flex justify-between items-center">
-                <span className="text-secondary-light text-sm">Total Likes</span>
+                <span className="text-secondary-light text-sm">{t("publicProfile.totalLikes")}</span>
                 <div className="flex gap-1 items-center">
                   <span className="text-secondary-light font-semibold text-xl">{totalLikes}</span>
                   <HeartIcon className={"text-secondary-light"} size={20} />
                 </div>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-secondary-light text-sm">Total Bookmarks</span>
+                <span className="text-secondary-light text-sm">{t("publicProfile.totalBookmarks")}</span>
                 <div className="flex gap-1 items-center">
                   <span className="text-secondary-light font-semibold text-xl">{totalBookmarks}</span>
                   <SavedIcon className={"text-secondary-light"} size={20} />
                 </div>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-secondary-light text-sm">Average Rating</span>
+                <span className="text-secondary-light text-sm">{t("publicProfile.averageRating")}</span>
                 <div className="flex gap-1 items-center">
                   <span className="text-secondary-light font-semibold text-xl">{avgRating?.toFixed(1) ?? "—"}</span>
                   <StarIcon className={"text-secondary-light"} size={20} />
@@ -96,23 +99,23 @@ const PublicProfile = () => {
           <div>
             <h1 className="text-4xl font-semibold text-text uppercase">{user.name}</h1>
             <p className="text-muted text-sm">
-              Active since {new Date(user.created_at).toDateString()}
+              {t("publicProfile.activeSince", { date: formatDate(user.created_at) })}
             </p>
           </div>
         </div>
 
         <div className="mb-4">
-          <h2 className="text-2xl font-semibold mb-2">About {user.name}</h2>
+          <h2 className="text-2xl font-semibold mb-2">{t("publicProfile.aboutHeading", { name: user.name })}</h2>
           <p className="border border-border text-muted w-full min-h-40 p-2">
-            {user.description ?? `${user.name}'s About Me is not set up yet...`}
+            {user.description ?? t("publicProfile.aboutEmpty", { name: user.name })}
           </p>
         </div>
 
         {builds.length === 0 ? (
-          <p className="text-muted">{user.name} has no shared builds yet.</p>
+          <p className="text-muted">{t("publicProfile.noSharedBuilds", { name: user.name })}</p>
         ) : (
           <div>
-            <h2 className="text-2xl font-semibold mb-2">{user.name}'s shared builds</h2>
+            <h2 className="text-2xl font-semibold mb-2">{t("publicProfile.sharedBuildsHeading", { name: user.name })}</h2>
             {success && <p className="text-success ml-auto px-2">{success}</p>}
             {error && <p className="text-danger ml-auto px-2">{error}</p>}
             <div className="flex gap-1">
@@ -161,11 +164,11 @@ const PublicProfile = () => {
 
                     <div className="flex gap-4 m-2 h-30 overflow-y-auto">
                       <div className="flex-1">
-                        <span className="text-sm block text-muted">Notes</span>
+                        <span className="text-sm block text-muted">{t("publicProfile.notes")}</span>
                         <p className="text-text text-sm">{build.notes ?? "-"}</p>
                       </div>
                       <div className="flex-1">
-                        <span className="text-sm block text-muted">Components</span>
+                        <span className="text-sm block text-muted">{t("publicProfile.components")}</span>
                         <span className="text-text">{`[${build.selected_components_count}/10]`}</span>
                       </div>
                     </div>
@@ -175,13 +178,13 @@ const PublicProfile = () => {
                         className="text-white px-8 py-4 flex-1 text-center hover:bg-primary-light cursor-pointer transition"
                         to={`/builder?build=${build.id}&shared=true`}
                       >
-                        Continue
+                        {t("publicProfile.continue")}
                       </Link>
                       <button
                         className="text-white px-8 py-4 flex-1 hover:bg-primary-light cursor-pointer transition"
                         onClick={() => handleSave(build)}
                       >
-                        Copy to saved
+                        {t("publicProfile.copyToSaved")}
                       </button>
                     </div>
                   </div>

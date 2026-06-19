@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useBuilder } from "../../../Contexts/BuilderContext";
 import axios from "axios";
 import { CloseIcon } from "../Common/Icons";
 
 const BuildInfo = () => {
+  const { t } = useTranslation(["builder", "common"]);
   const {
     selectedComponents,
     setSelectedComponents,
@@ -34,7 +36,7 @@ const BuildInfo = () => {
 
   const handleSave = async (asNew = false) => {
     if (!buildName.trim()) {
-      setError("Please enter a build name");
+      setError(t("buildInfo.enterBuildName"));
       return;
     }
 
@@ -45,7 +47,7 @@ const BuildInfo = () => {
     );
 
     if (Object.keys(components).length === 0) {
-      setError("Please select at least one component");
+      setError(t("buildInfo.selectAtLeastOne"));
       return;
     }
 
@@ -62,10 +64,14 @@ const BuildInfo = () => {
         components,
       });
       setBuildId(res.data.id);
-      setSuccess(asNew ? "Saved as new build!" : "Build saved successfully");
+      setSuccess(
+        asNew
+          ? t("buildInfo.savedAsNew")
+          : t("buildInfo.savedSuccessfully"),
+      );
       setTimeout(() => setSuccess(""), 5000);
     } catch (err) {
-      setError(err.response?.data?.error ?? "Failed to save build");
+      setError(err.response?.data?.error ?? t("buildInfo.failedToSave"));
     } finally {
       setSaving(false);
     }
@@ -99,7 +105,7 @@ const BuildInfo = () => {
             >
               <div className="overflow-hidden flex">
                 <span className="capitalize text-secondary-light p-2">
-                  {key}:{" "}
+                  {t(`common:components.${key}`)}:{" "}
                 </span>
                 <span className="text-surface p-2 truncate">{value.name}</span>
               </div>
@@ -112,21 +118,23 @@ const BuildInfo = () => {
             </div>
           ))
       ) : (
-        <p className="text-secondary-light mb-4">Select your components</p>
+        <p className="text-secondary-light mb-4">
+          {t("buildInfo.selectComponents")}
+        </p>
       )}
 
       {(buildId || hasComponents) && (
         <div className="space-y-4 pt-4 border-t border-primary-light">
           <div>
             <label className="text-secondary-light" htmlFor="name">
-              Name
+              {t("buildInfo.nameLabel")}
             </label>
             <input
               type="text"
               value={buildName}
               onChange={(e) => setBuildName(e.target.value)}
               id="name"
-              placeholder="build name..."
+              placeholder={t("buildInfo.namePlaceholder")}
               className="bg-secondary-light focus:outline-1 outline-border text-text p-2 w-full"
             />
 
@@ -135,19 +143,19 @@ const BuildInfo = () => {
           </div>
 
           <label className="text-secondary-light" htmlFor="notes">
-            Notes
+            {t("buildInfo.notesLabel")}
           </label>
           <textarea
             className="bg-secondary-light focus:outline-1 outline-border text-text p-2 w-full"
             value={buildNotes}
-            placeholder="build notes..."
+            placeholder={t("buildInfo.notesPlaceholder")}
             onChange={(e) => setBuildNotes(e.target.value)}
             id="notes"
           ></textarea>
 
           <div className="flex flex-col flex-1">
             <label htmlFor="buildType" className="text-secondary-light">
-              Build Type
+              {t("buildInfo.buildTypeLabel")}
             </label>
             <select
               onChange={(e) => setBuildType(e.target.value)}
@@ -155,11 +163,11 @@ const BuildInfo = () => {
               value={buildType}
               id="buildType"
             >
-              <option value="">None</option>
-              <option value="gaming">Gaming</option>
-              <option value="office">Office</option>
-              <option value="rendering">Rendering</option>
-              <option value="streaming">Streaming</option>
+              <option value="">{t("buildInfo.none")}</option>
+              <option value="gaming">{t("buildInfo.gaming")}</option>
+              <option value="office">{t("buildInfo.office")}</option>
+              <option value="rendering">{t("buildInfo.rendering")}</option>
+              <option value="streaming">{t("buildInfo.streaming")}</option>
             </select>
           </div>
 
@@ -169,14 +177,14 @@ const BuildInfo = () => {
               disabled={saving}
               className="py-4 px-8 bg-secondary text-left text-white hover:bg-success/50 cursor-pointer disabled:opacity-50 transition flex-1"
             >
-              {saving ? "Saving..." : "Save Build"}
+              {saving ? t("buildInfo.saving") : t("buildInfo.saveBuild")}
             </button>
 
             <button
               className="py-4 px-8 bg-secondary text-white hover:bg-danger/50 cursor-pointer disabled:opacity-50 transition"
               onClick={handleClear}
             >
-              Clear Build
+              {t("buildInfo.clearBuild")}
             </button>
           </div>
 
@@ -185,7 +193,7 @@ const BuildInfo = () => {
               className="text-secondary-light hover:text-muted transition cursor-pointer border px-4 py-2 text-sm"
               onClick={() => handleSave(true)}
             >
-              Save as New Build
+              {t("buildInfo.saveAsNewBuild")}
             </button>
           )}
         </div>

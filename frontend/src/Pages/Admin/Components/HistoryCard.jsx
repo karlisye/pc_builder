@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { formatDate } from "../../../lib/formatDate";
 
 const HistoryCard = ({ history }) => {
+  const { t } = useTranslation("admin");
   const [expanded, setExpanded] = useState(false);
   return (
     <div
@@ -9,7 +12,7 @@ const HistoryCard = ({ history }) => {
     >
       <div className="flex gap-4 items-center">
         <div className="border py-0.5 px-2 border-border bg-surface w-30">
-          <span className="text-muted font-medium block">Data</span>
+          <span className="text-muted font-medium block">{t("history.card.data")}</span>
           <div className="flex gap-1">
             {history.results.map((result) => (
               <span key={result.id}>{result.category}</span>
@@ -19,17 +22,17 @@ const HistoryCard = ({ history }) => {
 
         <div className="flex gap-4 justify-between flex-1">
           <div>
-            <span className="text-muted font-medium block">Started</span>
+            <span className="text-muted font-medium block">{t("history.card.started")}</span>
             <span>
-              {new Date(history.started_at).toDateString()}{" "}
+              {formatDate(history.started_at)}{" "}
               {new Date(history.started_at).toLocaleTimeString()}
             </span>
           </div>
 
           <div>
-            <span className="text-muted font-medium block">Finished</span>
+            <span className="text-muted font-medium block">{t("history.card.finished")}</span>
             <span>
-              {new Date(history.finished_at).toDateString()}{" "}
+              {formatDate(history.finished_at)}{" "}
               {new Date(history.finished_at).toLocaleTimeString()}
             </span>
           </div>
@@ -38,7 +41,9 @@ const HistoryCard = ({ history }) => {
         <span
           className={`capitalize text-center border p-2 ${history.status === "success" ? "bg-success/10 text-success" : "bg-danger/10 text-danger"}`}
         >
-          {history.status}
+          {history.status === "success"
+            ? t("history.filters.statusSuccess")
+            : t("history.filters.statusFailed")}
         </span>
       </div>
 
@@ -53,22 +58,22 @@ const HistoryCard = ({ history }) => {
                 key={result.id}
               >
                 <div>
-                  <span className="text-muted font-medium block">Category</span>
+                  <span className="text-muted font-medium block">{t("history.card.category")}</span>
                   <span>{result.category}</span>
                 </div>
 
                 <div>
-                  <span className="text-muted font-medium block">Total</span>
+                  <span className="text-muted font-medium block">{t("history.card.total")}</span>
                   <span>{result.total}</span>
                 </div>
 
                 <div>
-                  <span className="text-muted font-medium block">Inserted</span>
+                  <span className="text-muted font-medium block">{t("history.card.inserted")}</span>
                   <span>{result.inserted}</span>
                 </div>
 
                 <div>
-                  <span className="text-muted font-medium block">Skipped</span>
+                  <span className="text-muted font-medium block">{t("history.card.skipped")}</span>
                   <span>{result.skipped}</span>
                 </div>
               </div>

@@ -1,6 +1,7 @@
 import React from "react";
 import ClosedSection from "../../Components/Common/ClosedSection";
 import ComponentCheckbox from "./ComponentCheckbox";
+import { useTranslation } from "react-i18next";
 
 const COMPONENT_CATEGORIES = [
   "cpu",
@@ -16,6 +17,7 @@ const COMPONENT_CATEGORIES = [
 ];
 
 const HistoryFilters = ({ filters, setFilters, sort, setSort }) => {
+  const { t } = useTranslation("admin");
   const clearFilters = () => {
     setSort("");
     setFilters({});
@@ -42,14 +44,14 @@ const HistoryFilters = ({ filters, setFilters, sort, setSort }) => {
         onChange={(e) => setSort(e.target.value)}
         className="bg-secondary-light p-2 text-text outline-border focus:outline-1 w-full"
       >
-        <option value="date_asc">Date: Ascending</option>
-        <option value="date_desc">Date: Descending</option>
+        <option value="date_asc">{t("history.filters.sortDateAsc")}</option>
+        <option value="date_desc">{t("history.filters.sortDateDesc")}</option>
       </select>
 
       <div className="grid grid-cols-2 gap-2">
         <div className="flex flex-col">
           <label className="text-sm text-secondary-light" htmlFor="date_from">
-            Date From
+            {t("history.filters.dateFrom")}
           </label>
           <input
             type="date"
@@ -64,7 +66,7 @@ const HistoryFilters = ({ filters, setFilters, sort, setSort }) => {
 
         <div className="flex flex-col">
           <label className="text-sm text-secondary-light" htmlFor="date_to">
-            Date To
+            {t("history.filters.dateTo")}
           </label>
           <input
             type="date"
@@ -80,20 +82,20 @@ const HistoryFilters = ({ filters, setFilters, sort, setSort }) => {
 
       <div className="flex flex-col">
         <label className="text-sm text-secondary-light" htmlFor="status">
-          Status
+          {t("history.filters.status")}
         </label>
         <select
           value={filters["status"] ?? ""}
           onChange={(e) => updateFilter("status", e.target.value || undefined)}
           className="p-1 text-secondary-light text-sm border border-muted hover:outline focus:outline outline-secondary-light"
         >
-          <option value="">Any</option>
-          <option value="success">Success</option>
-          <option value="failed">Failed</option>
+          <option value="">{t("history.filters.statusAny")}</option>
+          <option value="success">{t("history.filters.statusSuccess")}</option>
+          <option value="failed">{t("history.filters.statusFailed")}</option>
         </select>
       </div>
 
-      <ClosedSection title={"Scraped Components"}>
+      <ClosedSection title={t("history.filters.scrapedComponents")}>
         <div className="grid grid-cols-2 gap-2">
           {COMPONENT_CATEGORIES.map((category) => (
             <ComponentCheckbox
@@ -110,7 +112,7 @@ const HistoryFilters = ({ filters, setFilters, sort, setSort }) => {
         className="w-full p-4 bg-secondary hover:bg-secondary-dark transition cursor-pointer text-white"
         onClick={clearFilters}
       >
-        Clear Filters
+        {t("history.filters.clearFilters")}
       </button>
     </div>
   );

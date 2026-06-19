@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import HoverVideo from "./Components/Common/HoverVideo";
 
 const Home = () => {
+  const { t } = useTranslation("pages");
   return (
     <div className="overflow-y-auto">
       <div className="flex xl:flex-row flex-col">
@@ -9,12 +11,10 @@ const Home = () => {
           <div className="xl:max-w-2xl xl:h-220 ml-auto border-4 border-secondary p-2 overflow-hidden flex xl:flex-col flex-col lg:flex-row gap-8">
             <div>
               <h1 className="sm:text-9xl text-7xl font-bold text-surface mb-4 flex flex-wrap">
-                BUILD YOUR PC
+                {t("home.build.title")}
               </h1>
               <p className="text-xl text-surface">
-                Design your PC using our simple builder. Choose from components
-                available in the Latvian market, all with live, accurate
-                pricing.
+                {t("home.build.description")}
               </p>
             </div>
 
@@ -40,11 +40,10 @@ const Home = () => {
 
             <div className="self-end">
               <h1 className="sm:text-9xl text-7xl font-bold text-text mb-4 flex flex-wrap">
-                MAKE THE BUILDING EASY
+                {t("home.auto.title")}
               </h1>
               <p className="text-xl text-text">
-                Automatically complete your build at any stage using our smart
-                auto-builder.
+                {t("home.auto.description")}
               </p>
             </div>
           </div>
@@ -58,10 +57,10 @@ const Home = () => {
         <div className="max-w-348 mx-auto xl:h-150 border-4 border-secondary p-2 flex gap-8 lg:flex-row flex-col z-0">
           <div>
             <h1 className="sm:text-9xl text-7xl font-bold text-surface mb-4 flex flex-wrap">
-              SHARE YOUR BUILDS
+              {t("home.share.title")}
             </h1>
             <p className="text-xl text-surface">
-              Browse community builds, get inspired, and share your own.
+              {t("home.share.description")}
             </p>
           </div>
 

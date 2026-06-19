@@ -1,1 +1,76 @@
-{}
+{
+  "overview": {
+    "activeSince": "Aktīvs kopš {{date}}",
+    "aboutMeHeading": "Par mani",
+    "aboutMePlaceholder": "Pievienojiet aprakstu par sevi",
+    "save": "Saglabāt",
+    "saveSuccess": "Apraksts saglabāts",
+    "saveError": "Neizdevās atjaunināt aprakstu",
+    "publicBuildsHeading": "Publiskās konfigurācijas",
+    "privateBuildsHeading": "Privātās konfigurācijas",
+    "publishConfirm": "Vai tiešām vēlaties {{action}} konfigurāciju {{name}}?",
+    "publishActionPrivate": "padarīt privātu",
+    "publishActionPublish": "publicēt",
+    "makePrivate": "Padarīt privātu",
+    "publish": "Publicēt",
+    "cancel": "Atcelt"
+  },
+  "buildsList": {
+    "noPublicBuilds": "Vēl nav publisku konfigurāciju.",
+    "noPrivateBuilds": "Vēl nav privātu konfigurāciju.",
+    "notes": "Piezīmes",
+    "components": "Komponentes",
+    "edit": "Labot",
+    "makePrivate": "Padarīt privātu",
+    "makePublic": "Padarīt publisku"
+  },
+  "accountSettings": {
+    "heading": "Konta iestatījumi",
+    "personalInfoHeading": "Personas informācija",
+    "nameLabel": "Vārds",
+    "emailLabel": "E-pasts",
+    "nameTooShort": "Vārdam jābūt vismaz 3 burtu garam",
+    "infoUpdated": "Informācija atjaunināta",
+    "infoUpdateError": "Neizdevās saglabāt personas informāciju",
+    "save": "Saglabāt",
+    "edit": "Labot",
+    "cancel": "Atcelt",
+    "changePasswordHeading": "Mainīt paroli",
+    "oldPasswordLabel": "Vecā parole",
+    "newPasswordLabel": "Jaunā parole",
+    "confirmNewPasswordLabel": "Apstiprināt jauno paroli",
+    "passwordUpdated": "Parole atjaunināta",
+    "passwordUpdateError": "Neizdevās saglabāt paroli",
+    "deleteAccountHeading": "Dzēst manu kontu",
+    "deleteAccountButton": "Dzēst manu kontu",
+    "deleteConfirmTitle": "Vai tiešām vēlaties dzēst savu kontu?",
+    "deleteConfirmSubtitle": "Šo darbību nevar atsaukt, un tā ir neatgriezeniska",
+    "deleteConfirmInstruction": "Lai apstiprinātu, lūdzu, ierakstiet",
+    "deleteConfirmInstructionSuffix": "",
+    "deleteConfirmKeyword": "delete-my-account",
+    "deleteConfirmIncorrect": "Apstiprinājuma teksts nav pareizs",
+    "delete": "Dzēst",
+    "cancelDelete": "Atcelt"
+  },
+  "bookmarked": {
+    "heading": "Atzīmētās konfigurācijas",
+    "empty": "Vēl nav atzīmētu konfigurāciju."
+  },
+  "publicProfile": {
+    "profileHeading": "{{name}} profils",
+    "totalLikes": "Patīk atzīmes",
+    "totalBookmarks": "Atzīmētie",
+    "averageRating": "Vidējais vērtējums",
+    "activeSince": "Aktīvs kopš {{date}}",
+    "aboutHeading": "Par {{name}}",
+    "aboutEmpty": "{{name}} aprakstu vēl nav pievienojis...",
+    "noSharedBuilds": "{{name}} vēl nav koplietotu konfigurāciju.",
+    "sharedBuildsHeading": "{{name}} koplietotās konfigurācijas",
+    "saveSuccess": "Konfigurācija veiksmīgi saglabāta",
+    "saveError": "Neizdevās saglabāt konfigurāciju",
+    "notes": "Piezīmes",
+    "components": "Komponentes",
+    "continue": "Turpināt",
+    "copyToSaved": "Kopēt uz saglabātajām"
+  }
+}

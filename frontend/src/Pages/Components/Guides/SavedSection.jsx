@@ -1,106 +1,113 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { Trans, useTranslation } from "react-i18next";
 
 const SavedSection = () => {
+  const { t } = useTranslation("pages");
   return (
     <div className="max-w-4xl mx-auto px-6 pb-10">
       <h1 className="text-4xl font-semibold mb-8 text-text">
-        Managing Your Saved Builds
+        {t("guides.savedSection.title")}
       </h1>
 
       <div className="space-y-5">
         <h2 className="text-2xl font-semibold text-text">
-          Viewing Your Saved Builds
+          {t("guides.savedSection.viewingBuildsHeading")}
         </h2>
 
         <p className="text-text">
-          1. Go to the{" "}
-          <Link
-            className="text-info hover:underline font-medium"
-            to="/builds"
-          >
-            Saved
-          </Link>{" "}
-          page by clicking the <span className="font-medium">Saved</span> button
-          in the navigation bar.
+          <Trans
+            t={t}
+            i18nKey="guides.savedSection.step1"
+            components={{
+              savedLink: (
+                <Link
+                  className="text-info hover:underline font-medium"
+                  to="/builds"
+                />
+              ),
+              savedButton: <span className="font-medium" />,
+            }}
+          />
         </p>
 
+        <p className="text-text">{t("guides.savedSection.step2")}</p>
+
+        <h2 className="text-2xl font-semibold text-text">
+          {t("guides.savedSection.viewingComponentsHeading")}
+        </h2>
+
+        <p className="text-text">{t("guides.savedSection.step3")}</p>
+
         <p className="text-text">
-          2. Locate the build list and select the build you want to view.
+          <Trans
+            t={t}
+            i18nKey="guides.savedSection.step4"
+            components={{
+              seeInStore: <span className="font-medium" />,
+              buy: <span className="font-medium" />,
+            }}
+          />
         </p>
 
         <h2 className="text-2xl font-semibold text-text">
-          Viewing Build Components
+          {t("guides.savedSection.editingHeading")}
         </h2>
 
         <p className="text-text">
-          3. Click on any component to view its details and description below.
+          <Trans
+            t={t}
+            i18nKey="guides.savedSection.editStep1"
+            components={{ edit: <span className="font-medium" /> }}
+          />
         </p>
 
+        <p className="text-text">{t("guides.savedSection.editStep2")}</p>
+
         <p className="text-text">
-          4. To view a component in store, click the{" "}
-          <span className="font-medium">See In Store</span> button in the
-          description or the <span className="font-medium">Buy</span> button
-          next to the component in the list.
+          <Trans
+            t={t}
+            i18nKey="guides.savedSection.editStep3"
+            components={{
+              save: <span className="font-semibold" />,
+              cancel: <span className="font-semibold" />,
+            }}
+          />
         </p>
 
         <h2 className="text-2xl font-semibold text-text">
-          Editing Build Information
+          {t("guides.savedSection.continuingHeading")}
         </h2>
 
         <p className="text-text">
-          1. Click the <span className="font-medium">Edit</span> button next to
-          your build name.
-        </p>
-
-        <p className="text-text">
-          2. Update the fields as needed. You can leave the notes field empty if
-          you prefer.
-        </p>
-
-        <p className="text-text">
-          3. Click <span className="font-semibold">Save</span> to apply your
-          changes or <span className="font-semibold">Cancel</span> to discard
-          them.
+          <Trans
+            t={t}
+            i18nKey="guides.savedSection.continueStep1"
+            components={{ continueBuild: <span className="font-semibold" /> }}
+          />
         </p>
 
         <h2 className="text-2xl font-semibold text-text">
-          Continuing the Build
+          {t("guides.savedSection.deletingHeading")}
         </h2>
 
         <p className="text-text">
-          1. Click the <span className="font-semibold">Continue Build</span>{" "}
-          button to resume editing your build from where you left off. You will
-          be redirected to the build page with your current configuration.
+          <Trans
+            t={t}
+            i18nKey="guides.savedSection.deleteStep1"
+            components={{ deleteBuild: <span className="font-semibold" /> }}
+          />
         </p>
 
-        <h2 className="text-2xl font-semibold text-text">Deleting a Build</h2>
-
-        <p className="text-text">
-          1. Click the <span className="font-semibold">Delete Build</span>{" "}
-          button (or the delete option in the build info panel) to remove the
-          selected build.
-        </p>
-
-        <p className="text-text">
-          2. A confirmation popup will appear. Confirm to permanently delete the
-          build.
-        </p>
+        <p className="text-text">{t("guides.savedSection.deleteStep2")}</p>
 
         <h2 className="text-2xl font-semibold text-text">
-          Publishing your build
+          {t("guides.savedSection.publishingHeading")}
         </h2>
 
-        <p className="text-text">
-          1. Press on the button under components to publish your build. A popup
-          window will show up to confirm changing builds visibility.
-        </p>
+        <p className="text-text">{t("guides.savedSection.publishStep1")}</p>
 
-        <p className="text-text">
-          2. Once the build is public, you can see it in the Shared section and
-          you can private it by following the first step again on the same
-          build.
-        </p>
+        <p className="text-text">{t("guides.savedSection.publishStep2")}</p>
       </div>
     </div>
   );

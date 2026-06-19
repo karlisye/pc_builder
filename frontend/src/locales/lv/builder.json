@@ -1,1 +1,186 @@
-{}
+{
+  "sidePanel": {
+    "title": "VEIDOTĀJS",
+    "newBuild": "Jauna konfigurācija"
+  },
+  "budgetSlider": {
+    "anyBudget": "Bez budžeta ierobežojuma",
+    "totalBudget": "Kopējais budžets",
+    "remainingBudget": "Atlikušais budžets"
+  },
+  "componentCard": {
+    "price": "Cena: €{{price}}",
+    "availability": "Pieejamība: {{status}}",
+    "inStockWithQty": "Pieejams ({{count}})",
+    "orderableWithQty": "Pieejams pēc pasūtījuma ({{count}})",
+    "outOfStock": "Nav pieejams",
+    "showMore": "Rādīt vairāk",
+    "showLess": "Rādīt mazāk",
+    "remove": "Noņemt",
+    "buy": "Pirkt"
+  },
+  "componentPopup": {
+    "ram": {
+      "fullName": "Operatīvā atmiņa",
+      "description": "Īslaicīga darba atmiņa. Glabā datus, ko procesors aktīvi izmanto."
+    },
+    "gpu": {
+      "fullName": "Grafikas karte",
+      "description": "Renderē grafiku un attēlus. Veic paralēlās apstrādes uzdevumus."
+    },
+    "psu": {
+      "fullName": "Barošanas bloks",
+      "description": "Pārveido elektrotīkla strāvu spriegumos, kas nepieciešami komponentēm."
+    },
+    "ssd": {
+      "fullName": "SSD disks",
+      "description": "Ātra pastāvīgā atmiņa. Ātri ielādē operētājsistēmu un programmas."
+    },
+    "hdd": {
+      "fullName": "Cietais disks",
+      "description": "Papildu liela, lēnāka atmiņa. Labi piemērota liela apjoma failiem un rezerves kopijām."
+    },
+    "case": {
+      "fullName": "Datora korpuss",
+      "description": "Aizsargā visas komponentes un nodrošina gaisa plūsmu."
+    },
+    "fan": {
+      "fullName": "Korpusa ventilators",
+      "description": "Virza gaisu caur korpusu, lai novērstu pārkaršanu."
+    },
+    "cooler": {
+      "fullName": "Procesora dzesētājs",
+      "description": "Uzstādīts uz procesora un novada no tā siltumu."
+    },
+    "cpu": {
+      "fullName": "Centrālais procesors",
+      "description": "Datora smadzenes. Izpilda visas instrukcijas un palaiž programmatūru."
+    },
+    "motherboard": {
+      "fullName": "Mātesplate",
+      "description": "Pamatkomponente, kas savieno visas daļas un nodrošina to saziņu."
+    }
+  },
+  "addComponent": {
+    "title": "Pievienot {{component}}",
+    "failedToFetch": "Neizdevās iegūt komponentes",
+    "noComponentsFound": "Komponentes nav atrastas",
+    "tryAdjustingFilters": "Pamēģiniet pielāgot filtrus",
+    "outOfStock": "Nav pieejams",
+    "notCompatible": "Nav saderīgs",
+    "select": "Izvēlēties",
+    "seeInShop": "Apskatīt veikalā"
+  },
+  "componentFilters": {
+    "searchPlaceholder": "Meklēt {{component}}...",
+    "sort": {
+      "priceAsc": "Cena: no zemākās",
+      "priceDesc": "Cena: no augstākās",
+      "nameAsc": "Nosaukums: A līdz Z",
+      "nameDesc": "Nosaukums: Z līdz A"
+    },
+    "minPrice": "Min. cena (€)",
+    "maxPrice": "Maks. cena (€)",
+    "failedToFetchFilters": "Neizdevās iegūt filtrus",
+    "all": "Visi",
+    "yes": "Jā",
+    "no": "Nē",
+    "display": "Attēlošana",
+    "inStock": "Pieejams",
+    "canBeOrdered": "Pieejams pēc pasūtījuma",
+    "compatibleOnly": "Tikai saderīgi",
+    "clearFilters": "Notīrīt filtrus",
+    "labels": {
+      "socket": "Ligzda",
+      "cores": "Kodoli",
+      "integrated_graphics": "Iebūvēta grafika",
+      "cooler_included": "Iekļauts dzesētājs",
+      "chipset": "Mikroshēmu komplekts",
+      "form_factor": "Formfaktors",
+      "memory_type": "Atmiņas tips",
+      "wifi": "WiFi",
+      "capacity": "Kapacitāte (GB)",
+      "frequency": "Frekvence (MHz)",
+      "vram": "VRAM (GB)",
+      "min_psu": "Maks. barošanas bloka jauda (W)",
+      "tdp_support": "Min. TDP atbalsts (W)",
+      "wattage": "Min. jauda (W)",
+      "efficiency_rating": "Efektivitātes klase",
+      "modular": "Modulārs",
+      "psu_type": "Barošanas bloka tips",
+      "type": "Tips",
+      "interface": "Interfeiss"
+    }
+  },
+  "buildDesc": {
+    "total": "Kopā",
+    "components": "Komponentes",
+    "compatibility": "Saderība",
+    "aboutThisBuild": "Par šo konfigurāciju",
+    "fullyFunctionalNote": "Jūsu konfigurācija ir pilnībā funkcionāla. Šie ir tikai ieteikumi labākai pieredzei."
+  },
+  "buildGenerator": {
+    "title": "Automātiski generēt konfigurāciju",
+    "intro": "Nezini, ar ko sākt? Mēs izvēlēsimies labākās savietojamās komponentes jūsu budžetam. Lai uzzinātu vairāk, apskatiet",
+    "guideLink": "automātiskā veidotāja",
+    "guideSuffix": "ceļvedi.",
+    "recommendBudgetIncrease": "Iesakām palielināt budžetu šim konfigurācijas tipam.",
+    "preferences": "Iestatījumi",
+    "gpu": "Videokarte",
+    "cpu": "Procesors",
+    "usage": "Pielietojums",
+    "any": "Jebkurš",
+    "nvidia": "NVIDIA",
+    "amd": "AMD",
+    "intel": "INTEL",
+    "gaming": "Spēles",
+    "office": "Birojs",
+    "rendering": "Renderēšana",
+    "streaming": "Straumēšana",
+    "includeOnlyOrderable": "Iekļaut tikai pasūtāmās preces",
+    "somethingWentWrong": "Kaut kas nogāja greizi",
+    "incompatibleWarning": "Viena vai vairākas komponentes jūsu konfigurācijā nav saderīgas. Lai generētu, nomainiet vai noņemiet tās.",
+    "generating": "Generē...",
+    "generate": "Generēt"
+  },
+  "componentGenerator": {
+    "title": "Automātiski generēt komponenti",
+    "intro": "Nezini, kuru komponenti izvēlēties? Mēs izvēlēsimies labāko savietojamo komponenti jūsu budžetam. Lai uzzinātu vairāk, apskatiet",
+    "guideLink": "automātiskā veidotāja",
+    "guideSuffix": "ceļvedi.",
+    "preferences": "Iestatījumi",
+    "cpu": "Procesors",
+    "gpu": "Videokarte",
+    "any": "Jebkurš",
+    "nvidia": "NVIDIA",
+    "amd": "AMD",
+    "intel": "INTEL",
+    "includeOnlyOrderable": "Iekļaut tikai pasūtāmās preces",
+    "somethingWentWrong": "Kaut kas nogāja greizi",
+    "incompatibleWarning": "Viena vai vairākas komponentes jūsu konfigurācijā nav saderīgas. Lai generētu, nomainiet vai noņemiet tās.",
+    "generating": "Generē...",
+    "generate": "Generēt"
+  },
+  "buildInfo": {
+    "selectComponents": "Izvēlieties savas komponentes",
+    "enterBuildName": "Lūdzu, ievadiet konfigurācijas nosaukumu",
+    "selectAtLeastOne": "Lūdzu, izvēlieties vismaz vienu komponenti",
+    "savedAsNew": "Saglabāts kā jauna konfigurācija!",
+    "savedSuccessfully": "Konfigurācija saglabāta",
+    "failedToSave": "Neizdevās saglabāt konfigurāciju",
+    "nameLabel": "Nosaukums",
+    "namePlaceholder": "konfigurācijas nosaukums...",
+    "notesLabel": "Piezīmes",
+    "notesPlaceholder": "konfigurācijas piezīmes...",
+    "buildTypeLabel": "Konfigurācijas tips",
+    "none": "Nav",
+    "gaming": "Spēles",
+    "office": "Birojs",
+    "rendering": "Renderēšana",
+    "streaming": "Straumēšana",
+    "saving": "Saglabā...",
+    "saveBuild": "Saglabāt konfigurāciju",
+    "clearBuild": "Notīrīt konfigurāciju",
+    "saveAsNewBuild": "Saglabāt kā jaunu konfigurāciju"
+  }
+}

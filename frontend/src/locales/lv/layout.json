@@ -15,9 +15,9 @@
   },
   "admin": {
     "dashboardTitle": "PANELIS",
-    "scraper": "Datu ievāktājs",
+    "scraper": "Skrāpis",
     "history": "Vēsture",
-    "test": "Tests",
+    "test": "Testi",
     "exit": "Iziet",
     "footerTitle": "BUILDER ADMIN PANELIS"
   },

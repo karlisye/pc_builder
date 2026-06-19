@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
+import { formatDate } from "../../lib/formatDate";
 
 const Dashboard = () => {
+  const { t } = useTranslation("admin");
   const [data, setData] = useState(null);
 
   useEffect(() => {
@@ -15,24 +18,25 @@ const Dashboard = () => {
       <div className="flex xl:flex-row flex-col h-full">
         <div className="xl:w-1/2 bg-primary px-6 py-10 text-text">
           <h1 className="sm:text-4xl text-7xl font-bold text-surface mb-4 flex flex-wrap">
-            OVERVIEW
+            {t("dashboard.title")}
           </h1>
           <div className="grid md:grid-cols-2 grid-cols-1 gap-4">
             <p className="text-lg text-surface">
-              Total registered users: {data.userCount}
+              {t("dashboard.totalUsers", { count: data.userCount })}
             </p>
             <p className="text-lg text-surface">
-              Total builds created: {data.buildCount}
+              {t("dashboard.totalBuilds", { count: data.buildCount })}
             </p>
             <p className="text-lg text-surface">
-              Available component count: {data.componentCount}
+              {t("dashboard.componentCount", { count: data.componentCount })}
             </p>
             <p className="text-lg text-surface">
-              Last scrape: {new Date(data.lastScrape).toLocaleDateString()}{" "}
-              {new Date(data.lastScrape).toLocaleTimeString()}
+              {t("dashboard.lastScrape", {
+                date: `${formatDate(data.lastScrape)} ${new Date(data.lastScrape).toLocaleTimeString()}`,
+              })}
             </p>
             <p className="text-lg text-surface">
-              Times scraped: {data.scrapeCount}
+              {t("dashboard.timesScraped", { count: data.scrapeCount })}
             </p>
           </div>
         </div>

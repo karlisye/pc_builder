@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import axios from "axios";
 import PaginationControls from "./Components/Common/PaginationControls";
 import SharedBuildsSkeleton from "./Components/Skeletons/SharedBuildsSkeleton";
@@ -8,6 +9,7 @@ import BuildFilters from "./Components/Common/BuildFilters";
 import SidePanel from "./Components/Common/SidePanel";
 
 const Shared = () => {
+  const { t } = useTranslation("pages");
   const [pagination, setPagination] = useState(null);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -65,7 +67,7 @@ const Shared = () => {
         total: res.data.total,
       });
     } catch (err) {
-      setError(err.response?.data?.error ?? "Failed to fetch builds");
+      setError(err.response?.data?.error ?? t("shared.fetchError"));
     } finally {
       setLoading(false);
     }
@@ -73,7 +75,7 @@ const Shared = () => {
 
   return (
     <div className="h-full flex">
-      <SidePanel title={"SHARED BUILDS"}>
+      <SidePanel title={t("shared.sidePanelTitle")}>
         <BuildFilters
           search={search}
           setSearch={setSearch}
@@ -94,9 +96,9 @@ const Shared = () => {
             {builds.length === 0 ? (
               <div className="mx-auto text-center mt-6">
                 <p className="text-2xl font-semibold text-text">
-                  No Builds Found
+                  {t("shared.noBuildsFound")}
                 </p>
-                <span className="text-muted">Try adjusting your filters</span>
+                <span className="text-muted">{t("shared.tryAdjustingFilters")}</span>
               </div>
             ) : (
               <>

@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import Modal from "./Components/Common/Modal";
 import axios from "axios";
 import BuildsList from "./Components/Profile/BuildsList";
+import { formatDate } from "../lib/formatDate";
 
 const Profile = () => {
+  const { t } = useTranslation("profile");
   const [user, setUser] = useState(null);
   const [publicBuildData, setPublicBuildData] = useState(null);
   const [privateBuildData, setPrivateBuildData] = useState(null);
@@ -17,7 +20,7 @@ const Profile = () => {
       setUser(res.data.user);
       setPublicBuildData(res.data.publicBuildData);
       setPrivateBuildData(res.data.privateBuildData);
-      setDescription(res.data.user.description ?? "Add an About Me");
+      setDescription(res.data.user.description ?? t("overview.aboutMePlaceholder"));
     });
   }, []);
 
@@ -48,9 +51,9 @@ const Profile = () => {
       await axios.patch(`/api/users/${user.id}`, {
         description,
       });
-      setSuccess("About Me saved");
+      setSuccess(t("overview.saveSuccess"));
     } catch (err) {
-      setError(err.response.data.errors ?? "Failed to update About Me");
+      setError(err.response.data.errors ?? t("overview.saveError"));
     } finally {
       setTimeout(() => {
         setError("");
@@ -72,13 +75,13 @@ const Profile = () => {
               {user?.name}
             </h1>
             <p className="text-muted text-sm">
-              Active since {new Date(user?.created_at).toDateString()}
+              {t("overview.activeSince", { date: formatDate(user?.created_at) })}
             </p>
           </div>
         </div>
 
         <div className="mb-4">
-          <h2 className="text-2xl font-semibold mb-2">About Me</h2>
+          <h2 className="text-2xl font-semibold mb-2">{t("overview.aboutMeHeading")}</h2>
           <textarea
             className="border border-border text-muted w-full min-h-40 p-2 focus:outline outline-border"
             value={description}
@@ -92,7 +95,7 @@ const Profile = () => {
               onClick={handleSave}
               disabled={!description || description === user?.description}
             >
-              Save
+              {t("overview.save")}
             </button>
 
             {error && <p className="text-danger">{error}</p>}
@@ -101,7 +104,7 @@ const Profile = () => {
         </div>
 
         <div className="my-6">
-          <h2 className="text-2xl font-semibold mb-2">Public Builds</h2>
+          <h2 className="text-2xl font-semibold mb-2">{t("overview.publicBuildsHeading")}</h2>
           <BuildsList
             buildData={publicBuildData}
             setBuild={setBuild}
@@ -110,7 +113,7 @@ const Profile = () => {
             isPublic
           />
 
-          <h2 className="text-2xl font-semibold mb-2 mt-4">Private Builds</h2>
+          <h2 className="text-2xl font-semibold mb-2 mt-4">{t("overview.privateBuildsHeading")}</h2>
           <BuildsList
             buildData={privateBuildData}
             setBuild={setBuild}
@@ -123,8 +126,12 @@ const Profile = () => {
       {publishing && (
         <Modal close={() => setPublishing(false)}>
           <h1 className="text-text text-3xl mb-10">
-            Are you sure you want to {build.is_public ? "private" : "publish"}{" "}
-            {build.name} build?
+            {t("overview.publishConfirm", {
+              action: build.is_public
+                ? t("overview.publishActionPrivate")
+                : t("overview.publishActionPublish"),
+              name: build.name,
+            })}
           </h1>
 
           <div className="flex gap-4">
@@ -132,13 +139,13 @@ const Profile = () => {
               className="flex-1 p-4 bg-primary text-background cursor-pointer hover:bg-primary-light transition"
               onClick={publish}
             >
-              {build.is_public ? "Make Private" : "Publish"}
+              {build.is_public ? t("overview.makePrivate") : t("overview.publish")}
             </button>
             <button
               className="flex-1 p-4 bg-surface text-text cursor-pointer hover:bg-secondary-light transition"
               onClick={() => setPublishing(false)}
             >
-              Cancel
+              {t("overview.cancel")}
             </button>
           </div>
         </Modal>

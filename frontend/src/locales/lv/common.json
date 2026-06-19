@@ -14,7 +14,7 @@
   "page": "{{current}}. lapa no {{total}}",
   "components": {
     "cpu": "Procesors",
-    "motherboard": "Mātesplate",
+    "motherboard": "Sistēmplate",
     "ram": "Operatīvā atmiņa",
     "gpu": "Videokarte",
     "ssd": "SSD",

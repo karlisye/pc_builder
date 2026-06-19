@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import DetailPanel from "./Components/Saved/DetailPanel";
@@ -7,20 +8,21 @@ import BuildVisibility from "./Components/Saved/BuildVisibility";
 import { ArrowIcon, CloseIcon } from "./Components/Common/Icons";
 import SidePanel from "./Components/Common/SidePanel";
 
-const SLOT_LABELS = {
-  cpu: "CPU",
-  motherboard: "Motherboard",
-  ram: "RAM",
-  gpu: "GPU",
-  ssd: "SSD",
-  hdd: "HDD",
-  pc_case: "Case",
-  cooler: "Cooler",
-  psu: "PSU",
-  fan: "Fan",
-};
+const SLOT_KEYS = [
+  "cpu",
+  "motherboard",
+  "ram",
+  "gpu",
+  "ssd",
+  "hdd",
+  "pc_case",
+  "cooler",
+  "psu",
+  "fan",
+];
 
 const SavedBuilds = () => {
+  const { t } = useTranslation("pages");
   const [builds, setBuilds] = useState([]);
   const [selectedBuild, setSelectedBuild] = useState(null);
   const [loadingBuild, setLoadingBuild] = useState(false);
@@ -92,10 +94,10 @@ const SavedBuilds = () => {
   return (
     <>
       <div className="h-full flex">
-        <SidePanel title={"SAVED BUILDS"}>
+        <SidePanel title={t("savedBuilds.sidePanelTitle")}>
           <div className="max-h-100">
             {builds.length === 0 ? (
-              <p className="text-muted">You have no saved builds yet.</p>
+              <p className="text-muted">{t("savedBuilds.noSavedBuilds")}</p>
             ) : (
               builds.map((build) => (
                 <div
@@ -118,7 +120,7 @@ const SavedBuilds = () => {
                     }}
                     className="text-muted hover:text-danger transition p-2 cursor-pointer"
                   >
-                    Delete
+                    {t("savedBuilds.delete")}
                   </button>
                 </div>
               ))
@@ -127,11 +129,11 @@ const SavedBuilds = () => {
         </SidePanel>
 
         <div className="flex-1 pt-6 px-4 mb-6">
-          {loadingBuild && <p className="text-muted">Loading...</p>}
+          {loadingBuild && <p className="text-muted">{t("savedBuilds.loading")}</p>}
 
           {!loadingBuild && !selectedBuild && (
             <p className="font-medium text-text text-center">
-              Select a build to view details.
+              {t("savedBuilds.selectBuildPrompt")}
             </p>
           )}
 
@@ -155,7 +157,7 @@ const SavedBuilds = () => {
                         notes: e.target.value,
                       }))
                     }
-                    placeholder="Notes"
+                    placeholder={t("savedBuilds.notesPlaceholder")}
                     className="bg-surface border border-border text-text p-2 w-full focus:outline-1 outline-border"
                   />
                   <div className="flex gap-4">
@@ -163,13 +165,13 @@ const SavedBuilds = () => {
                       onClick={handleSaveEdit}
                       className="bg-primary text-white p-4 flex-1 hover:bg-primary-light transition cursor-pointer"
                     >
-                      Save
+                      {t("savedBuilds.save")}
                     </button>
                     <button
                       onClick={() => setEditing(false)}
                       className="bg-surface text-muted p-4 flex-1 hover:bg-secondary-light transition cursor-pointer"
                     >
-                      Cancel
+                      {t("savedBuilds.cancel")}
                     </button>
                   </div>
                 </div>
@@ -197,7 +199,7 @@ const SavedBuilds = () => {
                     onClick={() => setEditing(true)}
                     className="text-muted hover:text-text transition text-sm cursor-pointer"
                   >
-                    Edit
+                    {t("savedBuilds.edit")}
                   </button>
                 </div>
               )}
@@ -211,13 +213,13 @@ const SavedBuilds = () => {
                     className="py-4 px-8 bg-primary text-white cursor-pointer hover:bg-primary-light transition"
                     to={`/builder?build=${selectedBuild.id}`}
                   >
-                    Continue Build
+                    {t("savedBuilds.continueBuild")}
                   </Link>
                   <button
                     className="py-4 px-8 bg-surface text-text cursor-pointer hover:bg-danger/50 transition"
                     onClick={() => setDeleting(selectedBuild.id)}
                   >
-                    Delete Build
+                    {t("savedBuilds.deleteBuild")}
                   </button>
                 </div>
               </div>
@@ -228,7 +230,7 @@ const SavedBuilds = () => {
               />
 
               <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-4">
-                {Object.entries(SLOT_LABELS).map(([slot, label]) => {
+                {SLOT_KEYS.map((slot) => {
                   const component = selectedBuild[slot];
                   if (!component) return null;
                   const isExpanded = expandedSlot === slot;
@@ -240,7 +242,7 @@ const SavedBuilds = () => {
                       >
                         <div className="flex-1 m-4">
                           <div className="flex justify-between">
-                            <span className="text-muted text-sm">{label}</span>
+                            <span className="text-muted text-sm">{t(`savedBuilds.slotLabels.${slot}`)}</span>
                             <span className="text-muted text-sm">
                               €{component.price}
                             </span>
@@ -258,7 +260,7 @@ const SavedBuilds = () => {
                           target="_blank"
                           href={component.url}
                         >
-                          Buy
+                          {t("savedBuilds.buy")}
                         </a>
                       </div>
 
@@ -297,7 +299,7 @@ const SavedBuilds = () => {
       {deleting && (
         <Modal close={() => setDeleting(null)}>
           <h1 className="text-text text-3xl mb-10">
-            Are you sure you want to delete this build?
+            {t("savedBuilds.deleteConfirmTitle")}
           </h1>
           <div className="flex gap-4">
             <button
@@ -307,13 +309,13 @@ const SavedBuilds = () => {
                 setDeleting(null);
               }}
             >
-              Delete
+              {t("savedBuilds.delete")}
             </button>
             <button
               className="flex-1 p-4 bg-surface text-text cursor-pointer hover:bg-secondary-light transition"
               onClick={() => setDeleting(null)}
             >
-              Cancel
+              {t("savedBuilds.cancel")}
             </button>
           </div>
         </Modal>

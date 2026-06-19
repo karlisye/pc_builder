@@ -1,51 +1,10 @@
-const descriptions = {
-  RAM: {
-    fullName: "Random Access Memory",
-    description:
-      "Short-term working memory. Holds data the CPU is actively using.",
-  },
-  GPU: {
-    fullName: "Graphics Processing Unit",
-    description:
-      "Renders graphics and visuals. Handles parallel processing tasks.",
-  },
-  PSU: {
-    fullName: "Power Supply Unit",
-    description: "Converts wall power into voltages the components need.",
-  },
-  SSD: {
-    fullName: "Solid State Drive",
-    description: "Fast permanent storage. Loads your OS and apps quickly.",
-  },
-  HDD: {
-    fullName: "Hard Disk Drive",
-    description:
-      "Optional large, slower storage. Good for bulk files and backups.",
-  },
-  Case: {
-    fullName: "Computer Case",
-    description: "Houses and protects all components, and manages airflow.",
-  },
-  Fan: {
-    fullName: "Case Fan",
-    description: "Moves air through the case to prevent heat buildup.",
-  },
-  Cooler: {
-    fullName: "CPU Cooler",
-    description: "Sits on the CPU and pulls heat away from it.",
-  },
-  CPU: {
-    fullName: "Central Processing Unit",
-    description: "The brain. Executes all instructions and runs your software.",
-  },
-  Motherboard: {
-    fullName: "Motherboard",
-    description: "The backbone. Connects and lets all components communicate.",
-  },
-};
+import { useTranslation } from "react-i18next";
 
 const ComponentPopup = ({ component, x, y }) => {
-  const { fullName, description } = descriptions[component] ?? {};
+  const { t } = useTranslation("builder");
+  const key = component?.toLowerCase();
+  const fullName = t(`componentPopup.${key}.fullName`, "");
+  const description = t(`componentPopup.${key}.description`, "");
 
   // popup visibility out of bounds
   const popupWidth = 256;

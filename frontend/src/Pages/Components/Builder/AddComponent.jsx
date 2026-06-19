@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useBuilder } from "../../../Contexts/BuilderContext";
 import axios from "axios";
 import AddComponentSkeleton from "../Skeletons/AddComponentSkeleton";
@@ -7,6 +8,7 @@ import { CloseIcon } from "../Common/Icons";
 import PaginationControls from "../Common/PaginationControls";
 
 const AddComponent = () => {
+  const { t } = useTranslation(["builder", "common"]);
   const {
     currentCompToAdd,
     setCurrentCompToAdd,
@@ -66,7 +68,9 @@ const AddComponent = () => {
         total: res.data.total,
       });
     } catch (err) {
-      setError(err.response?.data?.error ?? "Failed to fetch components");
+      setError(
+        err.response?.data?.error ?? t("addComponent.failedToFetch"),
+      );
     } finally {
       setLoading(false);
     }
@@ -92,7 +96,9 @@ const AddComponent = () => {
     <div className="border border-border w-full hover:bg-background transition p-4 mb-auto">
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-semibold text-text">
-          Add {currentCompToAdd}
+          {t("addComponent.title", {
+            component: t(`common:components.${currentCompToAdd?.toLowerCase()}`),
+          })}
         </h2>
         <button
           className="w-10 h-10 text-muted hover:cursor-pointer bg-surface hover:bg-secondary-light transition p-2"
@@ -110,9 +116,11 @@ const AddComponent = () => {
           {components.length === 0 ? (
             <div className="mx-auto text-center">
               <p className="text-2xl font-semibold text-text">
-                No Components Found
+                {t("addComponent.noComponentsFound")}
               </p>
-              <span className="text-muted">Try adjusting your filters</span>
+              <span className="text-muted">
+                {t("addComponent.tryAdjustingFilters")}
+              </span>
             </div>
           ) : (
             components.map((component) => (
@@ -130,9 +138,9 @@ const AddComponent = () => {
 
                   <span className="text-muted">
                     {component.out_of_stock
-                      ? "Out Of Stock"
+                      ? t("addComponent.outOfStock")
                       : !component.compatible
-                        ? "Not Compatible"
+                        ? t("addComponent.notCompatible")
                         : `€${component.price}`}
                   </span>
                 </div>
@@ -152,7 +160,7 @@ const AddComponent = () => {
                           onClick={() => handleSelect(component)}
                           className="p-4 bg-primary text-white hover:bg-primary-light transition cursor-pointer flex-1"
                         >
-                          Select
+                          {t("addComponent.select")}
                         </button>
 
                         <a
@@ -160,7 +168,7 @@ const AddComponent = () => {
                           target="_blank"
                           className="p-4 bg-surface text-text hover:bg-secondary-light transition cursor-pointer"
                         >
-                          See in Shop
+                          {t("addComponent.seeInShop")}
                         </a>
                       </div>
                     </div>

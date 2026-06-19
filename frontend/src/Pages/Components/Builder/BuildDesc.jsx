@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useBuilder } from "../../../Contexts/BuilderContext";
 import { ArrowIcon } from "../Common/Icons";
 import ClosedSection from "../Common/ClosedSection";
 
 const BuildDesc = () => {
+  const { t } = useTranslation("builder");
   const { selectedComponents, warnings, notes, buildIssues } = useBuilder();
 
   const filled = Object.values(selectedComponents).filter((v) => v !== null);
@@ -18,13 +20,15 @@ const BuildDesc = () => {
     <div className="space-y-4">
       <div className="border border-secondary p-4 space-y-2">
         <div className="flex justify-between items-center">
-          <span className="text-secondary-light text-sm">Total</span>
+          <span className="text-secondary-light text-sm">{t("buildDesc.total")}</span>
           <span className="text-secondary-light font-semibold text-xl">
             €{total.toFixed(2)}
           </span>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-secondary-light text-sm">Components</span>
+          <span className="text-secondary-light text-sm">
+            {t("buildDesc.components")}
+          </span>
           <span className="text-secondary-light text-sm">
             {count}/{totalSlots}
           </span>
@@ -33,7 +37,7 @@ const BuildDesc = () => {
 
       {Object.keys(buildIssues).length > 0 && (
         <div>
-          <ClosedSection title={"Compatibility"}>
+          <ClosedSection title={t("buildDesc.compatibility")}>
             {Object.keys(buildIssues).length > 0 && (
               <div className="space-y-2">
                 {Object.entries(buildIssues).map(([slot, issues]) =>
@@ -56,7 +60,7 @@ const BuildDesc = () => {
 
       {(warnings?.length > 0 || notes?.length > 0) && (
         <div>
-          <ClosedSection title={"About This Build"}>
+          <ClosedSection title={t("buildDesc.aboutThisBuild")}>
             <div className="space-y-2">
               {notes.map((note, i) => (
                 <div key={i} className="border border-info/80 bg-info/10 p-4">
@@ -89,8 +93,7 @@ const BuildDesc = () => {
             ))}
 
             <p className="text-sm text-muted border-l pl-4">
-              Your build is fully functional. These are just recommendations to
-              get the best experience.
+              {t("buildDesc.fullyFunctionalNote")}
             </p>
           </ClosedSection>
         </div>

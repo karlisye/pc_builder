@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { ArrowIcon, HeartIcon, SavedIcon, StarIcon } from "../Common/Icons";
 import { Link } from "react-router-dom";
 
@@ -9,6 +10,7 @@ const BuildsList = ({
   onPageChange,
   isPublic = false,
 }) => {
+  const { t } = useTranslation("profile");
   const builds = buildData?.data;
   const links = buildData?.links;
 
@@ -19,7 +21,7 @@ const BuildsList = ({
     <div className="">
       {!builds || builds?.length === 0 ? (
         <p className="text-muted">
-          No {isPublic ? "public" : "private"} builds yet.
+          {isPublic ? t("buildsList.noPublicBuilds") : t("buildsList.noPrivateBuilds")}
         </p>
       ) : (
         <div className="flex gap-1">
@@ -81,7 +83,7 @@ const BuildsList = ({
 
                   <div className="flex gap-4 m-2 h-30 overflow-y-auto">
                     <div className="flex-1">
-                      <span className="text-sm block text-muted">Notes</span>
+                      <span className="text-sm block text-muted">{t("buildsList.notes")}</span>
                       {build.notes ? (
                         <p className="text-text text-sm">{build.notes}</p>
                       ) : (
@@ -90,7 +92,7 @@ const BuildsList = ({
                     </div>
                     <div className="flex-1">
                       <span className="text-sm block text-muted">
-                        Components
+                        {t("buildsList.components")}
                       </span>
                       <span className="text-text">{`[${build.selected_components_count}/10]`}</span>
                     </div>
@@ -101,7 +103,7 @@ const BuildsList = ({
                       className="text-white flex-1 p-4 hover:bg-primary-light transition cursor-pointer text-center"
                       to={`/builds?buildId=${build.id}`}
                     >
-                      Edit
+                      {t("buildsList.edit")}
                     </Link>
                     <button
                       className={`text-white flex-1 p-4 ${isPublic ? "hover:bg-danger/50" : "hover:bg-success/50"} transition cursor-pointer`}
@@ -110,7 +112,7 @@ const BuildsList = ({
                         setBuild(build);
                       }}
                     >
-                      {isPublic ? "Make Private" : "Make Public"}
+                      {isPublic ? t("buildsList.makePrivate") : t("buildsList.makePublic")}
                     </button>
                   </div>
                 </div>

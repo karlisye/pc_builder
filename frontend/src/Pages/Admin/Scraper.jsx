@@ -5,8 +5,10 @@ import ComponentCheckbox from "./Components/ComponentCheckbox";
 import ScraperFilters from "./Components/ScraperFilters";
 import axios from "axios";
 import SidePanel from "../Components/Common/SidePanel";
+import { useTranslation } from "react-i18next";
 
 const Scraper = () => {
+  const { t } = useTranslation("admin");
   const csrf_token = decodeURIComponent(
     document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1] ?? ""
   );
@@ -34,7 +36,7 @@ const Scraper = () => {
     setMeta({});
 
     if (categories.length < 1) {
-      setFilterError("Please select at least 1 category to scrape.");
+      setFilterError(t("scraper.selectAtLeastOneCategory"));
       setLoading(false);
       return;
     }
@@ -63,7 +65,7 @@ const Scraper = () => {
         const { done, value } = await reader.read();
         if (done) {
           setLoading(false);
-          setSuccess("Scrape complete.");
+          setSuccess(t("scraper.scrapeComplete"));
 
           await handleStore(latestMeta);
           break;
@@ -91,7 +93,7 @@ const Scraper = () => {
       }
     } catch (err) {
       console.error(err);
-      setError("Failed to scrape.");
+      setError(t("scraper.scrapeFailed"));
     }
   };
 
@@ -133,7 +135,7 @@ const Scraper = () => {
 
   return (
     <div className="h-full flex">
-      <SidePanel title={"SCRAPER"}>
+      <SidePanel title={t("scraper.sidePanelTitle")}>
         <ScraperFilters
           categories={categories}
           updateCategories={updateCategories}
@@ -147,7 +149,7 @@ const Scraper = () => {
           onClick={() => handleScrape(categories)}
           disabled={loading}
         >
-          {loading ? "Scraping..." : "Scrape"}
+          {loading ? t("scraper.scrapingButton") : t("scraper.scrapeButton")}
         </button>
       </SidePanel>
 

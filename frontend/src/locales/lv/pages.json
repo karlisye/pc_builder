@@ -1,1 +1,240 @@
-{}
+{
+  "home": {
+    "build": {
+      "title": "IZVEIDO SAVU DATORU",
+      "description": "Izveido savu datoru, izmantojot mūsu vienkāršo konstruktoru. Izvēlies no Latvijas tirgū pieejamām komponentēm ar precīzām, aktuālām cenām."
+    },
+    "auto": {
+      "title": "BŪVĒ VIEGLI UN ĀTRI",
+      "description": "Automātiski pabeidz savu konfigurāciju jebkurā posmā, izmantojot mūsu inteliģento automātisko konstruktoru."
+    },
+    "share": {
+      "title": "DALIES AR SAVĀM KONFIGURĀCIJĀM",
+      "description": "Apskati kopienas izveidotās konfigurācijas, smelies iedvesmu un dalies ar savām."
+    }
+  },
+  "guide": {
+    "sidePanelTitle": "PAMĀCĪBA",
+    "sections": {
+      "builder": "Datora salikšana",
+      "auto": "Automātiskais konstruktors",
+      "saved": "Saglabāto konfigurāciju pārvaldība"
+    }
+  },
+  "guides": {
+    "note": {
+      "label": "Piezīme:"
+    },
+    "builderSection": {
+      "title": "Pirmā datora salikšana",
+      "selectingComponentsHeading": "Komponenšu izvēle",
+      "step1": "1. Dodies uz <buildLink>Konstruktors</buildLink> lapu, navigācijas joslā nospiežot pogu <buildButton>Konstruktors</buildButton>.",
+      "step2": "2. Atrodi komponenšu saraksta sadaļu un nospied pogu <addButton></addButton>, lai pievienotu jaunu komponentu.",
+      "step3": "3. Izmanto meklēšanas lauku un filtrus, lai pārlūkotu un atrastu komponentes, kas atbilst tavām vēlmēm.",
+      "step3Note": "Nesaderīgas komponentes būs atzīmētas ar norādi \"Nesaderīgs\".",
+      "step4": "4. Izvēlies komponentu no saraksta un nospied <selectText>Izvēlēties</selectText>, lai pievienotu to savai konfigurācijai. Tā parādīsies konfigurācijas informācijas panelī un komponenšu sarakstā.",
+      "step4Note": "Komponentu var noņemt vai apskatīt veikalā, izmantojot pogas komponenta kartītes apakšā.",
+      "step5": "5. Atkārto šos soļus, kamēr konfigurācija ir pabeigta.",
+      "savingHeading": "Konfigurācijas saglabāšana",
+      "step6": "6. Noteikti nosauc savu konfigurāciju un, ja vēlies, pievieno piezīmes attiecīgajos laukos.",
+      "step7": "7. Kad esi izvēlējies visas komponentes un nosaucis konfigurāciju, nospied pogu <saveButtonText>Saglabāt konfigurāciju</saveButtonText> konfigurācijas informācijas panelī.",
+      "step7Note": "Visu konfigurāciju var notīrīt vai noņemt atsevišķas komponentes, nospiežot pogu \"Notīrīt konfigurāciju\" vai ikonu <closeIcon></closeIcon> pie katras komponentes."
+    },
+    "autoSection": {
+      "title": "Automātiskā konstruktora izmantošana",
+      "selectingComponentsHeading": "Komponenšu izvēle",
+      "step1": "1. Pēc izvēles vari sākt, pievienojot komponentes, kuras vēlies redzēt savā konfigurācijā. Vari arī izmantot automātisko komponenšu generatoru pie filtriem, lai automātiski atrastu saderīgu komponentu.",
+      "step1Note": "Šis solis nav obligāts. Vari to izlaist, lai izveidotu pilnībā automātisku konfigurāciju.",
+      "selectingBudgetHeading": "Budžeta izvēle",
+      "step2": "2. Ritini līdz konfigurācijas informācijas paneļa beigām un izvēlies <autoBuilderText>Automātiskais konstruktors</autoBuilderText> opciju.",
+      "step3": "3. Iestati savu budžetu, izmantojot slīdni, vai izvēlies neierobežotu budžetu, lai iegūtu pēc iespējas labākas komponentes.",
+      "step3Note": "Budžets attiecas uz visu konfigurāciju. Ja jau esi izvēlējies kādas komponentes, to izmaksas tiks atskaitītas no pieejamā budžeta.",
+      "step4": "4. Iestati savas GPU, CPU un izmantošanas veida vēlmes zem budžeta slīdņa.",
+      "step4Note": "Pārliecinies, ka atzīmēta opcija \"Ietvert pasūtāmās preces\", lai izmantotu arī komponentes, kuru nav noliktavā, bet ko var pasūtīt.",
+      "generatingHeading": "Konfigurācijas generēšana",
+      "step5": "5. Kad budžets ir iestatīts, nospied generēšanas pogu, lai automātiski pabeigtu savu konfigurāciju.",
+      "step5Note": "Budžets ietekmē arī komponenšu sadalījumu. Piemēram, mazāka budžeta konfigurācijās (zem 500€) GPU var netikt iekļauts, tā vietā izvēloties CPU ar iebūvētu grafiku. Tas pats attiecas uz tādām komponentēm kā CPU dzesētāji. <link>Apskati visus budžeta sadalījumus zemāk</link>.",
+      "step6": "6. Pēc konfigurācijas izveides iesakām pirms pirkuma manuāli pārbaudīt visu komponenšu saderību.",
+      "step6Note": "HDD komponente netiek automātiski iekļauta, jo tā ir izvēles. Ja CPU ir iebūvēts dzesētājs un budžets ir ierobežots, atsevišķs CPU dzesētājs arī var tikt uzskatīts par izvēles komponentu.",
+      "budgetAllocationsHeading": "Budžeta sadalījumi",
+      "table": {
+        "component": "Komponente",
+        "budgetLow": "Budžets (<500€)",
+        "budgetMid": "Vidējs (500–1500€)",
+        "budgetHigh": "Augsta klase (>1500€)",
+        "general": "Vispārīgs",
+        "office": "Birojam",
+        "gaming": "Spēlēm",
+        "streaming": "Straumēšanai",
+        "rendering": "Renderēšanai",
+        "gpu": "GPU",
+        "cpu": "CPU",
+        "motherboard": "Mātesplate",
+        "ram": "RAM",
+        "cooler": "Dzesētājs",
+        "case": "Korpuss",
+        "psu": "Barošanas bloks",
+        "ssd": "SSD"
+      }
+    },
+    "savedSection": {
+      "title": "Saglabāto konfigurāciju pārvaldība",
+      "viewingBuildsHeading": "Saglabāto konfigurāciju apskate",
+      "step1": "1. Dodies uz <savedLink>Saglabātās</savedLink> lapu, navigācijas joslā nospiežot pogu <savedButton>Saglabātās</savedButton>.",
+      "step2": "2. Atrodi konfigurāciju sarakstu un izvēlies konfigurāciju, kuru vēlies apskatīt.",
+      "viewingComponentsHeading": "Konfigurācijas komponenšu apskate",
+      "step3": "3. Nospied uz jebkuras komponentes, lai zemāk apskatītu tās detaļas un aprakstu.",
+      "step4": "4. Lai apskatītu komponentu veikalā, nospied pogu <seeInStore>Apskatīt veikalā</seeInStore> aprakstā vai pogu <buy>Pirkt</buy> pie komponentes sarakstā.",
+      "editingHeading": "Konfigurācijas informācijas redigēšana",
+      "editStep1": "1. Nospied pogu <edit>Redigēt</edit> pie konfigurācijas nosaukuma.",
+      "editStep2": "2. Atjaunini laukus pēc nepieciešamības. Piezīmju lauku vari atstāt tukšu, ja vēlies.",
+      "editStep3": "3. Nospied <save>Saglabāt</save>, lai pievienotu izmaiņas, vai <cancel>Atcelt</cancel>, lai tās atceltu.",
+      "continuingHeading": "Konfigurācijas turpināšana",
+      "continueStep1": "1. Nospied pogu <continueBuild>Turpināt konfigurāciju</continueBuild>, lai turpinātu konfigurācijas veidošanu no vietas, kur to pārtrauci. Tu tiksi pārvirzīts uz konstruktora lapu ar savu pašreizējo konfigurāciju.",
+      "deletingHeading": "Konfigurācijas dzēšana",
+      "deleteStep1": "1. Nospied pogu <deleteBuild>Dzēst konfigurāciju</deleteBuild> (vai dzēšanas opciju konfigurācijas informācijas panelī), lai noņemtu izvēlēto konfigurāciju.",
+      "deleteStep2": "2. Parādīsies apstiprinājuma logs. Apstiprini, lai neatgriezeniski dzēstu konfigurāciju.",
+      "publishingHeading": "Konfigurācijas publicēšana",
+      "publishStep1": "1. Nospied pogu pie komponentēm, lai publicētu savu konfigurāciju. Parādīsies uznirstošais logs, lai apstiprinātu konfigurācijas redzamības izmaiņas.",
+      "publishStep2": "2. Kad konfigurācija ir publiska, to var apskatīt sadaļā \"Dalītās\", un to var atkal padarīt privātu, atkārtojot pirmo soli tai pašai konfigurācijai."
+    }
+  },
+  "shared": {
+    "sidePanelTitle": "DALĪTĀS KONFIGURĀCIJAS",
+    "fetchError": "Neizdevās ielādēt konfigurācijas",
+    "noBuildsFound": "Konfigurācijas nav atrastas",
+    "tryAdjustingFilters": "Pamēģini pielāgot filtrus"
+  },
+  "savedBuilds": {
+    "sidePanelTitle": "SAGLABĀTĀS KONFIGURĀCIJAS",
+    "noSavedBuilds": "Tev pagaidām nav saglabātu konfigurāciju.",
+    "delete": "Dzēst",
+    "loading": "Ielādē...",
+    "selectBuildPrompt": "Izvēlies konfigurāciju, lai apskatītu detaļas.",
+    "notesPlaceholder": "Piezīmes",
+    "save": "Saglabāt",
+    "cancel": "Atcelt",
+    "edit": "Redigēt",
+    "continueBuild": "Turpināt konfigurāciju",
+    "deleteBuild": "Dzēst konfigurāciju",
+    "buy": "Pirkt",
+    "deleteConfirmTitle": "Vai tiešām vēlies dzēst šo konfigurāciju?",
+    "slotLabels": {
+      "cpu": "Procesors",
+      "motherboard": "Mātesplate",
+      "ram": "Operatīvā atmiņa",
+      "gpu": "Videokarte",
+      "ssd": "SSD",
+      "hdd": "HDD",
+      "pc_case": "Korpuss",
+      "cooler": "Dzesētājs",
+      "psu": "Barošanas bloks",
+      "fan": "Ventilators"
+    }
+  },
+  "notFound": {
+    "heading": "Lapa nav atrasta.",
+    "description": "Lapa, kuru meklē, neeksistē.",
+    "goHome": "Atpakaļ uz sākumlapu"
+  },
+  "components": {
+    "buildCard": {
+      "saveSuccess": "Konfigurācija veiksmīgi saglabāta",
+      "saveError": "Neizdevās saglabāt konfigurāciju",
+      "likeError": "Neizdevās atzīmēt \"patīk\"",
+      "bookmarkError": "Neizdevās pievienot grāmatzīmēm",
+      "reviewError": "Neizdevās iesniegt vērtējumu",
+      "compatibilityIssues": "Saderības problēmas",
+      "notes": "Piezīmes",
+      "none": "Nav",
+      "likeTitle": "Atzīmēt \"patīk\" šai publikācijai",
+      "bookmarkTitle": "Pievienot šo publikāciju grāmatzīmēm",
+      "ratingTitle": "Vidējais vērtējums",
+      "makePrivate": "Padarīt privātu",
+      "continue": "Turpināt",
+      "copyToSaved": "Kopēt uz saglabātajām",
+      "privateConfirmTitle": "Vai tiešām vēlies padarīt konfigurāciju {{name}} privātu?",
+      "cancel": "Atcelt"
+    },
+    "buildFilters": {
+      "searchPlaceholder": "Meklēt pēc konfigurācijas vai autora...",
+      "sort": {
+        "dateNewest": "Datums: Jaunākie",
+        "dateOldest": "Datums: Vecākie",
+        "priceLowHigh": "Cena: No mazākās",
+        "priceHighLow": "Cena: No lielākās",
+        "likesLowHigh": "Patīk: No mazākā",
+        "likesHighLow": "Patīk: No lielākā",
+        "ratingLowHigh": "Vērtējums: No mazākā",
+        "ratingHighLow": "Vērtējums: No lielākā"
+      },
+      "minPricePlaceholder": "Min. cena (€)",
+      "maxPricePlaceholder": "Maks. cena (€)",
+      "rating": {
+        "any": "Min. vērtējums: Jebkurš",
+        "star1": "Min. vērtējums: 1 zvaigzne",
+        "star2": "Min. vērtējums: 2 zvaigznes",
+        "star3": "Min. vērtējums: 3 zvaigznes",
+        "star4": "Min. vērtējums: 4 zvaigznes",
+        "star5": "Min. vērtējums: 5 zvaigznes"
+      },
+      "type": {
+        "all": "Tips: Visi",
+        "gaming": "Tips: Spēlēm",
+        "office": "Tips: Birojam",
+        "rendering": "Tips: Renderēšanai",
+        "streaming": "Tips: Straumēšanai"
+      },
+      "gpu": {
+        "any": "GPU: Jebkurš",
+        "nvidia": "GPU: NVIDIA",
+        "amd": "GPU: AMD",
+        "intel": "GPU: INTEL"
+      },
+      "cpu": {
+        "any": "CPU: Jebkurš",
+        "amd": "CPU: AMD",
+        "intel": "CPU: INTEL"
+      },
+      "show": {
+        "label": "Rādīt",
+        "all": "Visi",
+        "liked": "Patīk",
+        "bookmarked": "Grāmatzīmes",
+        "personal": "Personīgās"
+      },
+      "clearFilters": "Notīrīt filtrus"
+    },
+    "modal": {},
+    "paginationControls": {
+      "previous": "Atpakaļ",
+      "next": "Tālāk",
+      "page": "{{current}}. lapa no {{total}}"
+    },
+    "sidePanel": {
+      "brand": "PC BUILDER"
+    },
+    "starRating": {},
+    "closedSection": {},
+    "saved": {
+      "buildVisibility": {
+        "publicStatus": "Tava konfigurācija šobrīd ir",
+        "publicLabel": "publiska",
+        "privateStatusPrefix": "Tava konfigurācija šobrīd ir",
+        "privateLabel": "nepublicēta",
+        "privateStatusSuffix": "un citi lietotāji tai nevar piekļūt",
+        "makePrivate": "Padarīt manu konfigurāciju privātu",
+        "publish": "Publicēt manu konfigurāciju",
+        "confirmTitle": "Vai tiešām vēlies {{action}} konfigurāciju {{name}}?",
+        "actionPrivate": "padarīt privātu",
+        "actionPublish": "publicēt",
+        "makePrivateButton": "Padarīt privātu",
+        "publishButton": "Publicēt",
+        "cancel": "Atcelt"
+      },
+      "detailPanel": {
+        "seeInStore": "Apskatīt veikalā"
+      }
+    }
+  }
+}

@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../../Contexts/AuthContext";
 
 const Login = () => {
+  const { t } = useTranslation("auth");
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -14,10 +16,10 @@ const Login = () => {
 
   const validate = () => {
     const e = {};
-    if (!data.email.trim()) e.email = "Email is required.";
+    if (!data.email.trim()) e.email = t("common.emailRequired");
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email))
-      e.email = "Please enter a valid email address.";
-    if (!data.password) e.password = "Password is required.";
+      e.email = t("common.emailInvalid");
+    if (!data.password) e.password = t("common.passwordRequired");
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -40,13 +42,13 @@ const Login = () => {
   return (
     <div className="h-full flex flex-col items-center justify-center">
       <div className="w-full md:w-200 px-8">
-        <h1 className="text-3xl font-semibold mb-1">Sign In</h1>
+        <h1 className="text-3xl font-semibold mb-1">{t("login.title")}</h1>
         <div className="flex w-full shadow">
           <div className="w-full md:w-1/2 transition-all duration-300 bg-background">
             <form onSubmit={handleSubmit}>
               <div className="flex flex-col my-2 mx-4">
                 <label className="text-text" htmlFor="email">
-                  Email
+                  {t("common.emailLabel")}
                 </label>
                 <input
                   className={`bg-surface flex-1 p-2 ${errors.email ? "outline-1 outline-danger" : "focus: outline-border"}`}
@@ -60,7 +62,7 @@ const Login = () => {
 
               <div className="flex flex-col my-2 mx-4">
                 <label className="text-text" htmlFor="password">
-                  Password
+                  {t("common.passwordLabel")}
                 </label>
                 <input
                   className={`bg-surface flex-1 p-2 ${errors.password ? "outline-1 outline-danger" : "focus: outline-border"}`}
@@ -76,13 +78,13 @@ const Login = () => {
 
               <div className="flex flex-col mx-4 my-4">
                 <Link className="text-info" to="/register">
-                  Create an account
+                  {t("login.createAccount")}
                 </Link>
                 <button
                   className="bg-primary hover:bg-primary-light transition cursor-pointer text-white p-4"
                   disabled={processing}
                 >
-                  Sign In
+                  {t("login.submit")}
                 </button>
               </div>
             </form>
@@ -91,7 +93,7 @@ const Login = () => {
           <div className="w-0 md:w-1/2 transition-all duration-300 bg-primary flex flex-col overflow-hidden">
             <div className="border-4 border-secondary m-2 h-full flex items-center justify-center p-2">
               <span className="text-7xl font-bold text-surface">
-                PC BUILDER
+                {t("login.heroText")}
               </span>
             </div>
           </div>

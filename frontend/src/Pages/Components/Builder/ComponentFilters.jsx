@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import axios from "axios";
 import { useBuilder } from "../../../Contexts/BuilderContext";
 import { ArrowIcon } from "../Common/Icons";
@@ -14,29 +15,8 @@ const FILTER_CONFIG = {
   ssd: ["capacity", "type", "form_factor", "interface"],
 };
 
-const FILTER_LABELS = {
-  socket: "Socket",
-  cores: "Cores",
-  integrated_graphics: "Integrated Graphics",
-  cooler_included: "Cooler Included",
-  chipset: "Chipset",
-  form_factor: "Form Factor",
-  memory_type: "Memory Type",
-  wifi: "WiFi",
-  capacity: "Capacity (GB)",
-  frequency: "Frequency (MHz)",
-  vram: "VRAM (GB)",
-  min_psu: "Max PSU Req (W)",
-  tdp_support: "Min TDP Support (W)",
-  wattage: "Min Wattage (W)",
-  efficiency_rating: "Efficiency Rating",
-  modular: "Modular",
-  psu_type: "PSU Type",
-  type: "Type",
-  interface: "Interface",
-};
-
 const ComponentFilters = () => {
+  const { t } = useTranslation(["builder", "common"]);
   const {
     search,
     setSearch,
@@ -65,7 +45,7 @@ const ComponentFilters = () => {
       setAvailableFilters(res.data);
     } catch (err) {
       console.error("Failed to fetch filters", err);
-      setError("Failed to fetch filters");
+      setError(t("componentFilters.failedToFetchFilters"));
     }
   };
 
@@ -88,7 +68,9 @@ const ComponentFilters = () => {
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder={`Search ${currentCompToAdd}...`}
+          placeholder={t("componentFilters.searchPlaceholder", {
+            component: t(`common:components.${currentCompToAdd?.toLowerCase()}`),
+          })}
           className="bg-secondary text-white p-2 flex-1 outline-border focus:outline-1"
         />
 
@@ -97,10 +79,10 @@ const ComponentFilters = () => {
           onChange={(e) => setSort(e.target.value)}
           className="bg-secondary-light p-2 text-text outline-border focus:outline-1"
         >
-          <option value="price_asc">Price: Low to High</option>
-          <option value="price_desc">Price: High to Low</option>
-          <option value="name_asc">Name: A to Z</option>
-          <option value="name_desc">Name: Z to A</option>
+          <option value="price_asc">{t("componentFilters.sort.priceAsc")}</option>
+          <option value="price_desc">{t("componentFilters.sort.priceDesc")}</option>
+          <option value="name_asc">{t("componentFilters.sort.nameAsc")}</option>
+          <option value="name_desc">{t("componentFilters.sort.nameDesc")}</option>
         </select>
       </div>
 
@@ -109,7 +91,7 @@ const ComponentFilters = () => {
           type="number"
           id="minPrice"
           className="bg-secondary p-2 text-white outline-border focus:outline-1"
-          placeholder="Min price (€)"
+          placeholder={t("componentFilters.minPrice")}
           value={filters["min_price"] ?? ""}
           onChange={(e) =>
             updateFilter("min_price", e.target.value || undefined)
@@ -120,7 +102,7 @@ const ComponentFilters = () => {
           type="number"
           id="maxPrice"
           className="bg-secondary p-2 text-white outline-border focus:outline-1"
-          placeholder="Max price (€)"
+          placeholder={t("componentFilters.maxPrice")}
           value={filters["max_price"] ?? ""}
           onChange={(e) =>
             updateFilter("max_price", e.target.value || undefined)
@@ -140,13 +122,16 @@ const ComponentFilters = () => {
               className="bg-secondary-light p-2 text-text outline-border focus:outline-1"
               key={column}
             >
-              <option value="">{FILTER_LABELS[column] ?? column}: All</option>
+              <option value="">
+                {t(`componentFilters.labels.${column}`, column)}:{" "}
+                {t("componentFilters.all")}
+              </option>
               {values.map((value) => (
                 <option key={value} value={value}>
                   {value === true || value === 1
-                    ? "Yes"
+                    ? t("componentFilters.yes")
                     : value === false || value === 0
-                      ? "No"
+                      ? t("componentFilters.no")
                       : value}
                 </option>
               ))}
@@ -162,7 +147,7 @@ const ComponentFilters = () => {
           onClick={() => setOpen((prev) => !prev)}
           className="w-full flex justify-between items-center text-secondary-light hover:text-surface transition cursor-pointer"
         >
-          <span className="">Display</span>
+          <span className="">{t("componentFilters.display")}</span>
           <ArrowIcon active={open} />
         </button>
 
@@ -184,7 +169,7 @@ const ComponentFilters = () => {
                 className="text-secondary-light text-sm"
                 htmlFor="show_in_stock"
               >
-                In Stock
+                {t("componentFilters.inStock")}
               </label>
             </div>
 
@@ -202,7 +187,7 @@ const ComponentFilters = () => {
                 className="text-secondary-light text-sm"
                 htmlFor="show_orderable"
               >
-                Can Be Ordered
+                {t("componentFilters.canBeOrdered")}
               </label>
             </div>
 
@@ -220,7 +205,7 @@ const ComponentFilters = () => {
                 className="text-secondary-light text-sm"
                 htmlFor="show_compatible_only"
               >
-                Compatible Only
+                {t("componentFilters.compatibleOnly")}
               </label>
             </div>
           </div>
@@ -231,7 +216,7 @@ const ComponentFilters = () => {
         className="w-full p-4 bg-secondary hover:bg-secondary-dark transition cursor-pointer text-white"
         onClick={clearFilters}
       >
-        Clear Filters
+        {t("componentFilters.clearFilters")}
       </button>
     </div>
   );

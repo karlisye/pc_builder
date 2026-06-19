@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 const ComponentCheckbox = ({
   component,
@@ -6,6 +7,7 @@ const ComponentCheckbox = ({
   onChange,
   disabled = false,
 }) => {
+  const { t } = useTranslation(["admin", "common"]);
   return (
     <div className="flex items-center gap-2">
       <input
@@ -22,7 +24,9 @@ const ComponentCheckbox = ({
         }`}
         htmlFor={component}
       >
-        {component}
+        {component === "all"
+          ? t("scraper.allCategories")
+          : t(`common:components.${component}`)}
       </label>
     </div>
   );

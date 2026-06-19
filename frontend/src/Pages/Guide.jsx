@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import BuilderSection from "./Components/Guides/BuilderSection";
 import AutoSection from "./Components/Guides/AutoSection";
 import SavedSection from "./Components/Guides/SavedSection";
 import { ArrowIcon, CloseIcon } from "./Components/Common/Icons";
 import SidePanel from "./Components/Common/SidePanel";
 
-const sections = [
-  { id: "builder", label: "Building a PC" },
-  { id: "auto", label: "Automatic Builder" },
-  { id: "saved", label: "Managing Saved Builds" },
-];
+const sectionIds = ["builder", "auto", "saved"];
 
 const contentMap = {
   builder: <BuilderSection />,
@@ -18,7 +15,8 @@ const contentMap = {
 };
 
 const Guide = () => {
-  const [active, setActive] = useState(sections[0].id);
+  const { t } = useTranslation("pages");
+  const [active, setActive] = useState(sectionIds[0]);
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
@@ -34,14 +32,14 @@ const Guide = () => {
 
   return (
     <div className="h-full flex">
-      <SidePanel title={"GUIDE"}>
-        {sections.map((section) => (
+      <SidePanel title={t("guide.sidePanelTitle")}>
+        {sectionIds.map((id) => (
           <button
-            key={section.id}
-            onClick={() => setActive(section.id)}
-            className={`p-4 border border-secondary w-full text-white text-left transition-all cursor-pointer mb-2 hover:bg-secondary ${active === section.id ? "border-l-10" : ""}`}
+            key={id}
+            onClick={() => setActive(id)}
+            className={`p-4 border border-secondary w-full text-white text-left transition-all cursor-pointer mb-2 hover:bg-secondary ${active === id ? "border-l-10" : ""}`}
           >
-            {section.label}
+            {t(`guide.sections.${id}`)}
           </button>
         ))}
       </SidePanel>

@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useBuilder } from "../../../Contexts/BuilderContext";
 import BudgetSlider from "./BudgetSlider";
 import { Link } from "react-router-dom";
@@ -7,6 +8,7 @@ import { ArrowIcon } from "../Common/Icons";
 import ClosedSection from "../Common/ClosedSection";
 
 const BuildGenerator = () => {
+  const { t } = useTranslation("builder");
   const {
     selectedComponents,
     setSelectedComponents,
@@ -49,7 +51,7 @@ const BuildGenerator = () => {
       }[newPrefs.type] ?? 600;
 
     if (budget && budget < newRecommended) {
-      setInfo("We recommend increasing your budget for this type of build.");
+      setInfo(t("buildGenerator.recommendBudgetIncrease"));
     } else {
       setInfo("");
     }
@@ -86,7 +88,9 @@ const BuildGenerator = () => {
         setError(res.data.error);
       }
     } catch (err) {
-      setError(err.response?.data?.error ?? "Something went wrong");
+      setError(
+        err.response?.data?.error ?? t("buildGenerator.somethingWentWrong"),
+      );
     } finally {
       setLoading(false);
     }
@@ -95,7 +99,7 @@ const BuildGenerator = () => {
   const updateBudget = (value) => {
     setBudget(value);
     if (value && recommendedBudget > value) {
-      setInfo("We recommend increasing your budget for this type of build.");
+      setInfo(t("buildGenerator.recommendBudgetIncrease"));
     } else {
       setInfo("");
     }
@@ -108,17 +112,16 @@ const BuildGenerator = () => {
 
   return (
     <div className="pt-4 border-t mt-4 border-secondary">
-      <ClosedSection title={"Auto Generate Build"}>
+      <ClosedSection title={t("buildGenerator.title")}>
         <p className="text-muted text-sm">
-          Not sure where to start? Let us pick the best compatible components
-          for your budget. For more information visit{" "}
+          {t("buildGenerator.intro")}{" "}
           <Link
             className="text-info/80 cursor-pointer hover:underline"
             to="/guide"
           >
-            Automatic Builder
+            {t("buildGenerator.guideLink")}
           </Link>{" "}
-          guide .
+          {t("buildGenerator.guideSuffix")}
         </p>
 
         <BudgetSlider
@@ -133,62 +136,68 @@ const BuildGenerator = () => {
           </div>
         )}
 
-        <p className="text-secondary-light text-sm mb-1 mt-4">Preferences</p>
+        <p className="text-secondary-light text-sm mb-1 mt-4">
+          {t("buildGenerator.preferences")}
+        </p>
 
         <div className={`flex ${budget >= 500 || !budget ? "gap-2" : ""}`}>
           <div
             className={`flex flex-col transition-all p-px overflow-hidden ${budget >= 500 || !budget ? "flex-1" : "w-0"}`}
           >
             <label className="text-sm text-secondary-light" htmlFor="gpu">
-              GPU
+              {t("buildGenerator.gpu")}
             </label>
             <select
               onChange={(e) => updatePref("gpu", e.target.value)}
               className="p-1 text-secondary-light text-sm border border-muted hover:outline focus:outline outline-secondary-light"
               value={preferences.gpu ?? ""}
             >
-              <option value="">Any</option>
-              <option value="nvidia">NVIDIA</option>
-              <option value="amd">AMD</option>
-              <option value="intel">INTEL</option>
+              <option value="">{t("buildGenerator.any")}</option>
+              <option value="nvidia">{t("buildGenerator.nvidia")}</option>
+              <option value="amd">{t("buildGenerator.amd")}</option>
+              <option value="intel">{t("buildGenerator.intel")}</option>
             </select>
           </div>
 
           <div className="flex flex-col flex-1">
             <label className="text-sm text-secondary-light" htmlFor="gpu">
-              CPU
+              {t("buildGenerator.cpu")}
             </label>
             <select
               onChange={(e) => updatePref("cpu", e.target.value)}
               className="p-1 text-secondary-light text-sm border border-muted hover:outline focus:outline outline-secondary-light"
               value={preferences.cpu ?? ""}
             >
-              <option value="">Any</option>
-              <option value="amd">AMD</option>
-              <option value="intel">INTEL</option>
+              <option value="">{t("buildGenerator.any")}</option>
+              <option value="amd">{t("buildGenerator.amd")}</option>
+              <option value="intel">{t("buildGenerator.intel")}</option>
             </select>
           </div>
         </div>
 
         <div className="flex flex-col flex-1">
           <label className="text-sm text-secondary-light" htmlFor="gpu">
-            Usage
+            {t("buildGenerator.usage")}
           </label>
           <select
             onChange={(e) => updatePref("type", e.target.value)}
             className="p-1 text-secondary-light text-sm border border-muted hover:outline focus:outline outline-secondary-light"
             value={preferences.type ?? ""}
           >
-            <option value="">Any</option>
+            <option value="">{t("buildGenerator.any")}</option>
             {(budget > 500 || !budget) && (
-              <option value="gaming">Gaming</option>
+              <option value="gaming">{t("buildGenerator.gaming")}</option>
             )}
-            <option value="office">Office</option>
+            <option value="office">{t("buildGenerator.office")}</option>
             {(budget > 1500 || !budget) && (
-              <option value="rendering">Rendering</option>
+              <option value="rendering">
+                {t("buildGenerator.rendering")}
+              </option>
             )}
             {(budget > 500 || !budget) && (
-              <option value="streaming">Streaming</option>
+              <option value="streaming">
+                {t("buildGenerator.streaming")}
+              </option>
             )}
           </select>
         </div>
@@ -205,7 +214,7 @@ const BuildGenerator = () => {
             className="text-secondary-light text-sm"
             htmlFor="include_orderable"
           >
-            Include Only Orderable Items
+            {t("buildGenerator.includeOnlyOrderable")}
           </label>
         </div>
 
@@ -214,8 +223,7 @@ const BuildGenerator = () => {
         {hasIncompatible && (
           <div className="p-2 border bg-alert/10 border-alert/80">
             <p className="text-alert text-sm">
-              One or more components in your current build are incompatible.
-              Please change or remove them to generate.
+              {t("buildGenerator.incompatibleWarning")}
             </p>
           </div>
         )}
@@ -225,7 +233,11 @@ const BuildGenerator = () => {
           onClick={handleGenerate}
           disabled={loading || hasIncompatible}
         >
-          {loading ? <p>Generating...</p> : "Generate"}
+          {loading ? (
+            <p>{t("buildGenerator.generating")}</p>
+          ) : (
+            t("buildGenerator.generate")
+          )}
         </button>
       </ClosedSection>
     </div>

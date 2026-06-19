@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ArrowIcon } from "../Common/Icons";
 import { Link } from "react-router-dom";
 import BudgetSlider from "./BudgetSlider";
@@ -6,6 +7,7 @@ import { useBuilder } from "../../../Contexts/BuilderContext";
 import axios from "axios";
 
 const ComponentGenerator = () => {
+  const { t } = useTranslation("builder");
   const {
     currentCompToAdd,
     selectedComponents,
@@ -60,7 +62,9 @@ const ComponentGenerator = () => {
         setError(res.data.error);
       }
     } catch (err) {
-      setError(err.response?.data?.error ?? "Something went wrong");
+      setError(
+        err.response?.data?.error ?? t("componentGenerator.somethingWentWrong"),
+      );
     } finally {
       setLoading(false);
     }
@@ -76,7 +80,7 @@ const ComponentGenerator = () => {
         onClick={() => setOpen((prev) => !prev)}
         className="w-full flex justify-between items-center text-secondary-light hover:text-surface transition cursor-pointer"
       >
-        <span className="text-sm">Auto Generate Component</span>
+        <span className="text-sm">{t("componentGenerator.title")}</span>
         <ArrowIcon active={open} />
       </button>
 
@@ -85,15 +89,14 @@ const ComponentGenerator = () => {
       >
         <div className="overflow-hidden space-y-4">
           <p className="text-muted text-sm">
-            Not sure what component to choose? Let us pick the best compatible
-            component for your budget. For more information visit{" "}
+            {t("componentGenerator.intro")}{" "}
             <Link
               className="text-info/80 cursor-pointer hover:underline"
               to="/guide"
             >
-              Automatic Builder
+              {t("componentGenerator.guideLink")}
             </Link>{" "}
-            guide .
+            {t("componentGenerator.guideSuffix")}
           </p>
 
           <BudgetSlider
@@ -107,19 +110,21 @@ const ComponentGenerator = () => {
 
           {currentCompToAdd === "CPU" && (
             <>
-              <p className="text-muted text-sm mb-1">Preferences</p>
+              <p className="text-muted text-sm mb-1">
+                {t("componentGenerator.preferences")}
+              </p>
               <div className="flex flex-col flex-1">
                 <label className="text-sm text-muted" htmlFor="cpu">
-                  CPU
+                  {t("componentGenerator.cpu")}
                 </label>
                 <select
                   onChange={(e) => updatePref("cpu", e.target.value)}
                   className="p-1 text-muted text-sm border hover:outline focus:outline outline-secondary-light"
                   value={preferences.cpu ?? ""}
                 >
-                  <option value="">Any</option>
-                  <option value="amd">AMD</option>
-                  <option value="intel">INTEL</option>
+                  <option value="">{t("componentGenerator.any")}</option>
+                  <option value="amd">{t("componentGenerator.amd")}</option>
+                  <option value="intel">{t("componentGenerator.intel")}</option>
                 </select>
               </div>
             </>
@@ -127,20 +132,22 @@ const ComponentGenerator = () => {
 
           {currentCompToAdd === "GPU" && (
             <>
-              <p className="text-muted text-sm mb-1">Preferences</p>
+              <p className="text-muted text-sm mb-1">
+                {t("componentGenerator.preferences")}
+              </p>
               <div className="flex flex-col flex-1">
                 <label className="text-sm text-muted" htmlFor="gpu">
-                  GPU
+                  {t("componentGenerator.gpu")}
                 </label>
                 <select
                   onChange={(e) => updatePref("gpu", e.target.value)}
                   className="p-1 text-muted text-sm border hover:outline focus:outline outline-secondary-light"
                   value={preferences.gpu ?? ""}
                 >
-                  <option value="">Any</option>
-                  <option value="nvidia">NVIDIA</option>
-                  <option value="amd">AMD</option>
-                  <option value="intel">INTEL</option>
+                  <option value="">{t("componentGenerator.any")}</option>
+                  <option value="nvidia">{t("componentGenerator.nvidia")}</option>
+                  <option value="amd">{t("componentGenerator.amd")}</option>
+                  <option value="intel">{t("componentGenerator.intel")}</option>
                 </select>
               </div>
             </>
@@ -160,7 +167,7 @@ const ComponentGenerator = () => {
               className="text-secondary-light text-sm"
               htmlFor="include_orderable"
             >
-              Include Only Orderable Items
+              {t("componentGenerator.includeOnlyOrderable")}
             </label>
           </div>
 
@@ -169,8 +176,7 @@ const ComponentGenerator = () => {
           {hasIncompatible && (
             <div className="p-2 border bg-alert/10 border-alert/80">
               <p className="text-alert text-sm">
-                One or more components in your current build are incompatible.
-                Please change or remove them to generate.
+                {t("componentGenerator.incompatibleWarning")}
               </p>
             </div>
           )}
@@ -180,7 +186,11 @@ const ComponentGenerator = () => {
             onClick={handleGenerate}
             disabled={loading || hasIncompatible}
           >
-            {loading ? <p>Generating...</p> : "Generate"}
+            {loading ? (
+              <p>{t("componentGenerator.generating")}</p>
+            ) : (
+              t("componentGenerator.generate")
+            )}
           </button>
         </div>
       </div>

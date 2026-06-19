@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import ComponentInfo from "../Common/ComponentInfo";
 import { useBuilder } from "../../../Contexts/BuilderContext";
 import { AddIcon, InfoIcon } from "../Common/Icons";
 import ComponentPopup from "./ComponentPopup";
 
 const ComponentCard = ({ component, name }) => {
+  const { t } = useTranslation(["builder", "common"]);
   const {
     setCurrentCompToAdd,
     setFilters,
@@ -41,6 +43,7 @@ const ComponentCard = ({ component, name }) => {
   };
 
   const hasIssues = buildIssues[name.toLowerCase()]?.length > 0;
+  const displayName = t(`common:components.${name.toLowerCase()}`);
 
   return (
     <div className="w-full xl:w-80 h-100 border flex flex-col border-border shadow hover:bg-background transition relative">
@@ -48,7 +51,7 @@ const ComponentCard = ({ component, name }) => {
         {component ? (
           <>
             <div className="relative group p-2">
-              <h3 className="text-xl text-muted">{name}</h3>
+              <h3 className="text-xl text-muted">{displayName}</h3>
               <h2 className="text-text font-semibold text-3xl line-clamp-1">
                 {component.name}
               </h2>
@@ -66,15 +69,23 @@ const ComponentCard = ({ component, name }) => {
             ) : (
               <div className="p-2 flex flex-col">
                 {!component.out_of_stock && (
-                  <span className="text-muted">Price: €{component.price}</span>
+                  <span className="text-muted">
+                    {t("componentCard.price", { price: component.price })}
+                  </span>
                 )}
                 <span className="text-muted">
-                  Availability:{" "}
-                  {component.stock_status === "in_stock"
-                    ? `In Stock (${component.stock_quantity})`
-                    : component.stock_status === "orderable"
-                      ? `Can be ordered (${component.stock_quantity})`
-                      : "Out of Stock"}
+                  {t("componentCard.availability", {
+                    status:
+                      component.stock_status === "in_stock"
+                        ? t("componentCard.inStockWithQty", {
+                            count: component.stock_quantity,
+                          })
+                        : component.stock_status === "orderable"
+                          ? t("componentCard.orderableWithQty", {
+                              count: component.stock_quantity,
+                            })
+                          : t("componentCard.outOfStock"),
+                  })}
                 </span>
               </div>
             )}
@@ -82,7 +93,9 @@ const ComponentCard = ({ component, name }) => {
               className="text-info cursor-pointer flex p-2"
               onClick={handleSeeMore}
             >
-              {isSeeMoreActive ? "Show less" : "Show more"}
+              {isSeeMoreActive
+                ? t("componentCard.showLess")
+                : t("componentCard.showMore")}
             </button>
 
             <div className="bg-primary mt-auto flex">
@@ -90,14 +103,14 @@ const ComponentCard = ({ component, name }) => {
                 className="text-white px-8 py-4 flex-1 text-left hover:bg-danger/50 cursor-pointer transition"
                 onClick={handleRemove}
               >
-                Remove
+                {t("componentCard.remove")}
               </button>
               <a
                 href={component.url}
                 target="_blank"
                 className="text-white py-4 px-8 hover:bg-success/50 transition"
               >
-                Buy
+                {t("componentCard.buy")}
               </a>
             </div>
 
@@ -108,7 +121,9 @@ const ComponentCard = ({ component, name }) => {
         ) : (
           <>
             <div className="h-full flex flex-col items-center justify-center gap-4 relative">
-              <span className="text-3xl font-semibold text-muted">{name}</span>
+              <span className="text-3xl font-semibold text-muted">
+                {displayName}
+              </span>
               <button
                 className="bg-surface p-2 text-muted hover:bg-secondary-light transition cursor-pointer"
                 onClick={handleAddComponent}

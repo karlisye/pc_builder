@@ -1,25 +1,22 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 const ComponentInfo = ({ component }) => {
+  const { t } = useTranslation("common");
+
   const formatValue = (key, value) => {
     if (key === "price") return `€${value}`;
 
     if (key === "stock_status") {
-      return (
-        {
-          orderable: "Can Be Ordered",
-          in_stock: "In Stock",
-          out_of_stock: "Out Of Stock",
-        }[value] ?? value
-      );
+      return t(`stockStatus.${value}`, value);
     }
 
     if (key === "type") return String(value).toUpperCase();
 
-    if (typeof value === "boolean") return value ? "Yes" : "No";
+    if (typeof value === "boolean") return value ? t("yes") : t("no");
 
-    if (value === "Nav") return "No";
-    if (value === "Ir") return "Yes";
+    if (value === "Nav") return t("no");
+    if (value === "Ir") return t("yes");
 
     return value;
   };
