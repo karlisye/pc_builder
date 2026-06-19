@@ -35,12 +35,14 @@ const ComponentInfo = ({ component }) => {
               "scraped_at",
               "selected",
               "compatibility_warning",
+              "compatible",
+              "out_of_stock",
             ].includes(key),
         )
         .map(([key, value]) => (
           <div key={key} className="flex flex-col wrap-anywhere">
             <span className="text-muted text-xs capitalize">
-              {key.replace(/_/g, " ")}
+              {t(`fieldLabels.${key}`, { defaultValue: key.replace(/_/g, " ") })}
             </span>
             <span className="text-text text-sm">{formatValue(key, value)}</span>
           </div>
