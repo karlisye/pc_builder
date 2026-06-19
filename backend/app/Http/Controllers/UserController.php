@@ -79,8 +79,8 @@ class UserController extends Controller
     if (isset($validated['new_password'])) {
       if (!Hash::check($request->password, $user->password)) {
         return response()->json([
-          'message' => 'The current password is incorrect.',
-          'errors' => ['password' => ['The current password is incorrect.']],
+          'message' => __('messages.current_password_incorrect'),
+          'errors' => ['password' => [__('messages.current_password_incorrect')]],
         ], 422);
       }
 
