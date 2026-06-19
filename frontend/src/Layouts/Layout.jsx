@@ -43,7 +43,7 @@ const Layout = () => {
 
   const navLinkClass = (path) => {
     const isActive = pathname.startsWith(path);
-    return `flex-1 text-center py-4 px-2 transition ${
+    return `flex-1 text-center py-4 px-6 transition ${
       isActive ? 'bg-primary text-white hover:bg-primary-light' : 'hover:bg-surface text-text'
     }`;
   };
@@ -86,9 +86,6 @@ const Layout = () => {
                 <Link className={navLinkClass('/builds')} to="/builds">
                   {t('nav.saved')}
                 </Link>
-                <Link className={navLinkClass('/guide')} to="/guide">
-                  {t('nav.guide')}
-                </Link>
                 <Link className={navLinkClass('/shared')} to="/shared">
                   {t('nav.shared')}
                 </Link>
@@ -107,7 +104,7 @@ const Layout = () => {
               <div
                 ref={menuRef}
                 className={`lg:hidden absolute left-0 top-14 w-screen bg-background overflow-hidden transition-all shadow z-50 ${
-                  menuActive ? 'h-48' : 'h-0'
+                  menuActive ? 'h-36' : 'h-0'
                 }`}
               >
                 <Link
@@ -123,13 +120,6 @@ const Layout = () => {
                   onClick={() => setMenuActive(false)}
                 >
                   {t('nav.saved')}
-                </Link>
-                <Link
-                  className={menuLinkClass('/guide')}
-                  to="/guide"
-                  onClick={() => setMenuActive(false)}
-                >
-                  {t('nav.guide')}
                 </Link>
                 <Link
                   className={menuLinkClass('/shared')}
@@ -168,7 +158,7 @@ const Layout = () => {
                 <div
                   ref={dropdownRef}
                   className={`absolute right-0 top-14 sm:w-80 w-screen bg-background overflow-hidden transition-all shadow z-50 ${
-                    profileActive ? 'h-32' : 'h-0'
+                    profileActive ? 'h-42' : 'h-0'
                   }`}
                 >
                   <div className="px-4 py-3 bg-surface flex items-center justify-between">
@@ -183,6 +173,12 @@ const Layout = () => {
                       className="flex items-center gap-2 px-4 py-2 text-text hover:bg-secondary-light transition"
                     >
                       {t('nav.profile')}
+                    </Link>
+                    <Link
+                      to="/guide"
+                      className="flex items-center gap-2 px-4 py-2 text-text hover:bg-secondary-light transition"
+                    >
+                      {t('nav.guide')}
                     </Link>
                     <form onSubmit={handleLogout}>
                       <button className="w-full px-4 py-2 text-danger hover:bg-danger/50 transition text-left cursor-pointer">
