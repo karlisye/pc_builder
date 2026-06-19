@@ -7,6 +7,7 @@ import Modal from "./Components/Common/Modal";
 import BuildVisibility from "./Components/Saved/BuildVisibility";
 import { ArrowIcon, CloseIcon } from "./Components/Common/Icons";
 import SidePanel from "./Components/Common/SidePanel";
+import { formatDate } from "../lib/formatDate";
 
 const SLOT_KEYS = [
   "cpu",
@@ -189,7 +190,7 @@ const SavedBuilds = () => {
                       )}
                     </div>
                     <p className="text-muted text-sm">
-                      {new Date(selectedBuild.created_at).toDateString()}
+                      {formatDate(selectedBuild.created_at)}
                     </p>
                     {selectedBuild.notes && (
                       <p className="text-muted mt-1">{selectedBuild.notes}</p>

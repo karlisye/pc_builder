@@ -154,7 +154,8 @@
       "continue": "Turpināt",
       "copyToSaved": "Kopēt uz saglabātajām",
       "privateConfirmTitle": "Vai tiešām vēlies padarīt konfigurāciju {{name}} privātu?",
-      "cancel": "Atcelt"
+      "cancel": "Atcelt",
+      "componentsLabel": "Komponentes"
     },
     "buildFilters": {
       "searchPlaceholder": "Meklēt pēc konfigurācijas vai autora...",
@@ -205,17 +206,9 @@
       },
       "clearFilters": "Notīrīt filtrus"
     },
-    "modal": {},
-    "paginationControls": {
-      "previous": "Atpakaļ",
-      "next": "Tālāk",
-      "page": "{{current}}. lapa no {{total}}"
-    },
     "sidePanel": {
       "brand": "PC BUILDER"
     },
-    "starRating": {},
-    "closedSection": {},
     "saved": {
       "buildVisibility": {
         "publicStatus": "Tava konfigurācija šobrīd ir",

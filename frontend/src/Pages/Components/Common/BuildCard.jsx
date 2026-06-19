@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { ArrowIcon, HeartIcon, SavedIcon, StarIcon } from "../Common/Icons";
 import StarRating from "../Common/StarRating";
 import Modal from "../Common/Modal";
+import { formatDate } from "../../../lib/formatDate";
 
 const BuildCard = ({ build }) => {
   const { t } = useTranslation(["pages", "common"]);
@@ -148,7 +149,7 @@ const BuildCard = ({ build }) => {
                   @{build.user?.name}
                 </Link>
                 <p className="text-sm text-muted px-2">
-                  {new Date(build.created_at).toDateString()}
+                  {formatDate(build.created_at)}
                 </p>
               </div>
             </div>
@@ -167,7 +168,7 @@ const BuildCard = ({ build }) => {
               className={`flex gap-2 justify-between items-center text-danger/80 hover:text-danger cursor-pointer transition`}
               onClick={() => setWarningActive((prev) => !prev)}
             >
-              <h2 className="text-medium">Compatibility Issues</h2>
+              <h2 className="text-medium">{t("components.buildCard.compatibilityIssues")}</h2>
 
               <span className="">
                 <ArrowIcon active={warningActive} />
@@ -199,18 +200,18 @@ const BuildCard = ({ build }) => {
 
         <div className="flex xl:flex-row flex-col max-h-100 overflow-y-auto">
           <div className="flex-1 m-2 flex flex-col gap-4">
-            <span className="text-muted font-medium">Notes</span>
+            <span className="text-muted font-medium">{t("components.buildCard.notes")}</span>
             {build.notes ? (
               <p className="text-text">{build.notes}</p>
             ) : (
-              <p className="italic text-sm text-muted">None</p>
+              <p className="italic text-sm text-muted">{t("components.buildCard.none")}</p>
             )}
 
             <div className="p-2 border border-border mt-auto">
               <div className="flex justify-around">
                 <span
                   className="flex items-center gap-2"
-                  title={"Like this post"}
+                  title={t("components.buildCard.likeTitle")}
                 >
                   <button onClick={like}>
                     <HeartIcon
@@ -227,7 +228,7 @@ const BuildCard = ({ build }) => {
                 </span>
                 <span
                   className="flex items-center gap-2"
-                  title={"Bookmark this post"}
+                  title={t("components.buildCard.bookmarkTitle")}
                 >
                   <button onClick={bookmark}>
                     <SavedIcon
@@ -245,7 +246,7 @@ const BuildCard = ({ build }) => {
 
                 <span
                   className="flex items-center gap-2"
-                  title={"Average rating"}
+                  title={t("components.buildCard.ratingTitle")}
                 >
                   <StarIcon filled className={"text-alert"} />
 
@@ -267,7 +268,7 @@ const BuildCard = ({ build }) => {
                     onClick={() => setPrivating(true)}
                     className="text-text hover:text-danger transition"
                   >
-                    Make Private
+                    {t("components.buildCard.makePrivate")}
                   </button>
                 </div>
               )}
@@ -275,7 +276,7 @@ const BuildCard = ({ build }) => {
           </div>
 
           <div className="flex-2 m-2">
-            <span className="text-muted font-medium">Components</span>
+            <span className="text-muted font-medium">{t("components.buildCard.componentsLabel")}</span>
             <div className="grid grid-cols-2 gap-2 mt-4">
               {build.components &&
                 Object.entries(build.components).map(([key, component]) => {
@@ -284,7 +285,7 @@ const BuildCard = ({ build }) => {
                   return (
                     <div key={key}>
                       <span className="text-muted uppercase text-sm block">
-                        {key}
+                        {t(`common:components.${key}`, { defaultValue: key })}
                       </span>
                       <a
                         target="_blank"
@@ -308,14 +309,14 @@ const BuildCard = ({ build }) => {
             className="text-white px-8 py-4 flex-1 text-center hover:bg-primary-light cursor-pointer transition"
             to={`/builder?build=${build.id}&shared=true`}
           >
-            Continue
+            {t("components.buildCard.continue")}
           </Link>
 
           <button
             className="text-white px-8 py-4 flex-1 hover:bg-primary-light cursor-pointer transition"
             onClick={handleSave}
           >
-            Copy to saved
+            {t("components.buildCard.copyToSaved")}
           </button>
         </div>
       </div>
@@ -323,7 +324,7 @@ const BuildCard = ({ build }) => {
       {privating && (
         <Modal close={() => setPrivating(false)}>
           <h1 className="text-text text-3xl mb-10">
-            Are you sure you want to private {build.name} build?
+            {t("components.buildCard.privateConfirmTitle", { name: build.name })}
           </h1>
 
           <div className="flex gap-4">
@@ -331,13 +332,13 @@ const BuildCard = ({ build }) => {
               className="flex-1 p-4 bg-primary text-background cursor-pointer hover:bg-primary-light transition"
               onClick={makePrivate}
             >
-              Make Private
+              {t("components.buildCard.makePrivate")}
             </button>
             <button
               className="flex-1 p-4 bg-surface text-text cursor-pointer hover:bg-secondary-light transition"
               onClick={() => setPrivating(false)}
             >
-              Cancel
+              {t("components.buildCard.cancel")}
             </button>
           </div>
         </Modal>

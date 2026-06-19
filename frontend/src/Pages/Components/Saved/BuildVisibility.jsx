@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Modal from "../Common/Modal";
 import axios from "axios";
 import { HeartIcon, SavedIcon, StarIcon } from "../Common/Icons";
 
 const BuildVisibility = ({ build, setBuild }) => {
+  const { t } = useTranslation("pages");
   const [publishing, setPublishing] = useState(false);
   const [success, setSuccess] = useState("");
 
@@ -31,8 +33,8 @@ const BuildVisibility = ({ build, setBuild }) => {
         {build.is_public ? (
           <>
             <p className="mt-auto text-text">
-              Your build is currently
-              <span className="text-success"> public</span>
+              {t("components.saved.buildVisibility.publicStatus")}
+              <span className="text-success"> {t("components.saved.buildVisibility.publicLabel")}</span>
             </p>
 
             <div className="flex gap-4">
@@ -56,22 +58,22 @@ const BuildVisibility = ({ build, setBuild }) => {
               className="text-text cursor-pointer hover:text-danger transition text-nowrap text-left underline"
               onClick={() => setPublishing(true)}
             >
-              Make my build private
+              {t("components.saved.buildVisibility.makePrivate")}
             </button>
           </>
         ) : (
           <>
             <p className="mt-auto text-text">
-              Your build is currently
-              <span className="text-danger"> not published </span>
-              and can't be accessed by other people
+              {t("components.saved.buildVisibility.privateStatusPrefix")}
+              <span className="text-danger"> {t("components.saved.buildVisibility.privateLabel")} </span>
+              {t("components.saved.buildVisibility.privateStatusSuffix")}
             </p>
 
             <button
               className="text-text cursor-pointer hover:text-success transition text-nowrap text-left underline"
               onClick={() => setPublishing(true)}
             >
-              Publish my build
+              {t("components.saved.buildVisibility.publish")}
             </button>
           </>
         )}
@@ -81,8 +83,12 @@ const BuildVisibility = ({ build, setBuild }) => {
       {publishing && (
         <Modal close={() => setPublishing(false)}>
           <h1 className="text-text text-3xl mb-10">
-            Are you sure you want to {build.is_public ? "private" : "publish"}{" "}
-            {build.name} build?
+            {t("components.saved.buildVisibility.confirmTitle", {
+              action: build.is_public
+                ? t("components.saved.buildVisibility.actionPrivate")
+                : t("components.saved.buildVisibility.actionPublish"),
+              name: build.name,
+            })}
           </h1>
 
           <div className="flex gap-4">
@@ -90,13 +96,15 @@ const BuildVisibility = ({ build, setBuild }) => {
               className="flex-1 p-4 bg-primary text-background cursor-pointer hover:bg-primary-light transition"
               onClick={publish}
             >
-              {build.is_public ? "Make Private" : "Publish"}
+              {build.is_public
+                ? t("components.saved.buildVisibility.makePrivateButton")
+                : t("components.saved.buildVisibility.publishButton")}
             </button>
             <button
               className="flex-1 p-4 bg-surface text-text cursor-pointer hover:bg-secondary-light transition"
               onClick={() => setPublishing(false)}
             >
-              Cancel
+              {t("components.saved.buildVisibility.cancel")}
             </button>
           </div>
         </Modal>

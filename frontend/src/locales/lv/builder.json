@@ -158,8 +158,8 @@
     "includeOnlyOrderable": "Iekļaut tikai pasūtāmās preces",
     "somethingWentWrong": "Kaut kas nogāja greizi",
     "incompatibleWarning": "Viena vai vairākas komponentes jūsu konfigurācijā nav saderīgas. Lai generētu, nomainiet vai noņemiet tās.",
-    "generating": "Generē...",
-    "generate": "Generēt"
+    "generating": "Ģenerē...",
+    "generate": "Ģenerēt"
   },
   "buildInfo": {
     "selectComponents": "Izvēlieties savas komponentes",

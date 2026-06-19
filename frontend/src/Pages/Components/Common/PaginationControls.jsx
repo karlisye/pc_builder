@@ -1,6 +1,8 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 const PaginationControls = ({ pagination, setPage }) => {
+  const { t } = useTranslation("common");
   return (
     <div className="flex justify-between items-center mt-4">
       <button
@@ -8,17 +10,17 @@ const PaginationControls = ({ pagination, setPage }) => {
         onClick={() => setPage((p) => p - 1)}
         className="text-muted hover:text-text disabled:opacity-30 transition cursor-pointer"
       >
-        Previous
+        {t("previous")}
       </button>
       <span className="text-muted text-sm">
-        Page {pagination.currentPage} of {pagination.lastPage}
+        {t("page", { current: pagination.currentPage, total: pagination.lastPage })}
       </span>
       <button
         disabled={pagination.currentPage === pagination.lastPage}
         onClick={() => setPage((p) => p + 1)}
         className="text-muted hover:text-text disabled:opacity-30 transition cursor-pointer"
       >
-        Next
+        {t("next")}
       </button>
     </div>
   );

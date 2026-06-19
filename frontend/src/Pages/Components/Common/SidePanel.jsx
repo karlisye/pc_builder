@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ArrowIcon, CloseIcon } from "./Icons";
 
 const SidePanel = ({
@@ -7,6 +8,7 @@ const SidePanel = ({
   width = "lg:w-120.5",
   headerRight = null,
 }) => {
+  const { t } = useTranslation("pages");
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -52,7 +54,7 @@ const SidePanel = ({
         <div className="mt-auto pt-6 lg:hidden">
           <div className="p-4 border-t border-primary-light flex">
             <h2 className="text-6xl p-2 font-bold text-surface border border-secondary-light">
-              PC BUILDER
+              {t("components.sidePanel.brand")}
             </h2>
           </div>
         </div>

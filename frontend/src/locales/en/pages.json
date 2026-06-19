@@ -154,7 +154,8 @@
       "continue": "Continue",
       "copyToSaved": "Copy to saved",
       "privateConfirmTitle": "Are you sure you want to private {{name}} build?",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "componentsLabel": "Components"
     },
     "buildFilters": {
       "searchPlaceholder": "Search by build or author...",
@@ -205,17 +206,9 @@
       },
       "clearFilters": "Clear Filters"
     },
-    "modal": {},
-    "paginationControls": {
-      "previous": "Previous",
-      "next": "Next",
-      "page": "Page {{current}} of {{total}}"
-    },
     "sidePanel": {
       "brand": "PC BUILDER"
     },
-    "starRating": {},
-    "closedSection": {},
     "saved": {
       "buildVisibility": {
         "publicStatus": "Your build is currently",

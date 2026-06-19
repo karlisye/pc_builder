@@ -1,11 +1,11 @@
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 
 const LANGUAGES = [
-  { code: "en", label: "EN" },
-  { code: "lv", label: "LV" },
+  { code: 'en', label: 'EN' },
+  { code: 'lv', label: 'LV' },
 ];
 
-const LanguageSwitcher = ({ className = "" }) => {
+const LanguageSwitcher = ({ className = '' }) => {
   const { i18n } = useTranslation();
 
   return (
@@ -14,10 +14,8 @@ const LanguageSwitcher = ({ className = "" }) => {
         <button
           key={code}
           onClick={() => i18n.changeLanguage(code)}
-          className={`px-2 py-1 text-xs font-semibold rounded transition cursor-pointer ${
-            i18n.resolvedLanguage === code
-              ? "bg-primary text-white"
-              : "text-text hover:bg-surface"
+          className={`px-2 py-1 text-xs font-semibold transition cursor-pointer ${
+            i18n.resolvedLanguage === code ? 'bg-primary text-white' : 'text-text hover:bg-surface'
           }`}
         >
           {label}

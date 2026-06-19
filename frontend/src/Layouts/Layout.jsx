@@ -1,12 +1,12 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Link, useLocation, Outlet } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { useAuth } from "../Contexts/AuthContext";
-import { ArrowIcon, MenuIcon } from "../Pages/Components/Common/Icons";
-import LanguageSwitcher from "../Pages/Components/Common/LanguageSwitcher";
+import React, { useState, useRef, useEffect } from 'react';
+import { Link, useLocation, Outlet } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from '../Contexts/AuthContext';
+import { ArrowIcon, MenuIcon } from '../Pages/Components/Common/Icons';
+import LanguageSwitcher from '../Pages/Components/Common/LanguageSwitcher';
 
 const Layout = () => {
-  const { t } = useTranslation("layout");
+  const { t } = useTranslation('layout');
   const { user, logout } = useAuth();
   const { pathname } = useLocation();
 
@@ -36,26 +36,22 @@ const Layout = () => {
     };
 
     if (profileActive || menuActive) {
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
     }
   }, [profileActive, menuActive]);
 
   const navLinkClass = (path) => {
     const isActive = pathname.startsWith(path);
     return `py-4 px-6 transition ${
-      isActive
-        ? "bg-primary text-white hover:bg-primary-light"
-        : "hover:bg-surface text-text"
+      isActive ? 'bg-primary text-white hover:bg-primary-light' : 'hover:bg-surface text-text'
     }`;
   };
 
   const menuLinkClass = (path) => {
     const isActive = pathname.startsWith(path);
     return `block py-3 px-4 transition ${
-      isActive
-        ? "bg-primary text-white hover:bg-primary-light"
-        : "hover:bg-surface text-text"
+      isActive ? 'bg-primary text-white hover:bg-primary-light' : 'hover:bg-surface text-text'
     }`;
   };
 
@@ -78,16 +74,24 @@ const Layout = () => {
           {user ? (
             <>
               <div className="hidden md:flex">
-                <Link className={navLinkClass("/builder")} to="/builder">{t("nav.build")}</Link>
-                <Link className={navLinkClass("/builds")} to="/builds">{t("nav.saved")}</Link>
-                <Link className={navLinkClass("/guide")} to="/guide">{t("nav.guide")}</Link>
-                <Link className={navLinkClass("/shared")} to="/shared">{t("nav.shared")}</Link>
+                <Link className={navLinkClass('/builder')} to="/builder">
+                  {t('nav.build')}
+                </Link>
+                <Link className={navLinkClass('/builds')} to="/builds">
+                  {t('nav.saved')}
+                </Link>
+                <Link className={navLinkClass('/guide')} to="/guide">
+                  {t('nav.guide')}
+                </Link>
+                <Link className={navLinkClass('/shared')} to="/shared">
+                  {t('nav.shared')}
+                </Link>
               </div>
 
               <button
                 ref={menuButtonRef}
                 className={`md:hidden py-4 px-6 transition flex items-center gap-2 ${
-                  menuActive ? "bg-primary text-white" : "hover:bg-surface text-text"
+                  menuActive ? 'bg-primary text-white' : 'hover:bg-surface text-text'
                 }`}
                 onClick={() => setMenuActive((prev) => !prev)}
               >
@@ -97,31 +101,55 @@ const Layout = () => {
               <div
                 ref={menuRef}
                 className={`md:hidden absolute left-0 top-14 w-screen bg-background overflow-hidden transition-all shadow z-50 ${
-                  menuActive ? "h-48" : "h-0"
+                  menuActive ? 'h-48' : 'h-0'
                 }`}
               >
-                <Link className={menuLinkClass("/builder")} to="/builder" onClick={() => setMenuActive(false)}>{t("nav.build")}</Link>
-                <Link className={menuLinkClass("/builds")} to="/builds" onClick={() => setMenuActive(false)}>{t("nav.saved")}</Link>
-                <Link className={menuLinkClass("/guide")} to="/guide" onClick={() => setMenuActive(false)}>{t("nav.guide")}</Link>
-                <Link className={menuLinkClass("/shared")} to="/shared" onClick={() => setMenuActive(false)}>{t("nav.shared")}</Link>
+                <Link
+                  className={menuLinkClass('/builder')}
+                  to="/builder"
+                  onClick={() => setMenuActive(false)}
+                >
+                  {t('nav.build')}
+                </Link>
+                <Link
+                  className={menuLinkClass('/builds')}
+                  to="/builds"
+                  onClick={() => setMenuActive(false)}
+                >
+                  {t('nav.saved')}
+                </Link>
+                <Link
+                  className={menuLinkClass('/guide')}
+                  to="/guide"
+                  onClick={() => setMenuActive(false)}
+                >
+                  {t('nav.guide')}
+                </Link>
+                <Link
+                  className={menuLinkClass('/shared')}
+                  to="/shared"
+                  onClick={() => setMenuActive(false)}
+                >
+                  {t('nav.shared')}
+                </Link>
               </div>
 
               <div className="ml-auto relative flex items-center">
                 <LanguageSwitcher className="mr-2" />
                 <div className="flex">
-                  {user?.role === "admin" && (
+                  {user?.role === 'admin' && (
                     <Link
                       className="hover:bg-surface text-text py-3 px-4 transition flex items-center"
                       to="/admin"
                     >
-                      {t("nav.dashboard")}
+                      {t('nav.dashboard')}
                     </Link>
                   )}
 
                   <button
                     ref={buttonRef}
                     className={`py-4 px-6 transition flex items-center gap-2 font-medium ${
-                      profileActive ? "bg-primary text-white" : "hover:bg-surface text-text"
+                      profileActive ? 'bg-primary text-white' : 'hover:bg-surface text-text'
                     }`}
                     onClick={() => setProfileActive((prev) => !prev)}
                   >
@@ -135,22 +163,24 @@ const Layout = () => {
                 <div
                   ref={dropdownRef}
                   className={`absolute right-0 sm:w-80 w-screen bg-background overflow-hidden transition-all shadow z-50 ${
-                    profileActive ? "h-32" : "h-0"
+                    profileActive ? 'h-32' : 'h-0'
                   }`}
                 >
                   <div className="px-4 py-3 bg-surface">
-                    <p className="text-text font-semibold uppercase">{t("nav.hello", { name: user.name })}</p>
+                    <p className="text-text font-semibold uppercase">
+                      {t('nav.hello', { name: user.name })}
+                    </p>
                   </div>
                   <div>
                     <Link
                       to="/profile"
                       className="flex items-center gap-2 px-4 py-2 text-text hover:bg-secondary-light transition"
                     >
-                      {t("nav.profile")}
+                      {t('nav.profile')}
                     </Link>
                     <form onSubmit={handleLogout}>
                       <button className="w-full px-4 py-2 text-danger hover:bg-danger/50 transition text-left cursor-pointer">
-                        {t("nav.signOut")}
+                        {t('nav.signOut')}
                       </button>
                     </form>
                   </div>
@@ -161,7 +191,7 @@ const Layout = () => {
             <div className="ml-auto flex items-center">
               <LanguageSwitcher className="mr-2" />
               <Link className="py-4 px-6 hover:bg-surface transition" to="/login">
-                {t("nav.signIn")}
+                {t('nav.signIn')}
               </Link>
             </div>
           )}
@@ -177,15 +207,27 @@ const Layout = () => {
           <div className="max-w-348 mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex flex-col items-center sm:items-start">
               <span className="font-bold text-white">BUILDER</span>
-              <p className="text-surface text-sm mt-1">{t("footer.tagline")}</p>
+              <p className="text-surface text-sm mt-1">{t('footer.tagline')}</p>
             </div>
             <div className="flex gap-6 text-sm text-surface">
-              <Link to="/builder" className="hover:text-white transition">{t("nav.build")}</Link>
-              <Link to="/builds" className="hover:text-white transition">{t("nav.saved")}</Link>
-              <Link to="/guide" className="hover:text-white transition">{t("nav.guide")}</Link>
-              <Link to="/shared" className="hover:text-white transition">{t("nav.shared")}</Link>
+              <Link to="/builder" className="hover:text-white transition">
+                {t('nav.build')}
+              </Link>
+              <Link to="/builds" className="hover:text-white transition">
+                {t('nav.saved')}
+              </Link>
+              <Link to="/guide" className="hover:text-white transition">
+                {t('nav.guide')}
+              </Link>
+              <Link to="/shared" className="hover:text-white transition">
+                {t('nav.shared')}
+              </Link>
             </div>
-            <a href="https://github.com/karlisye" target="_blank" className="text-surface hover:text-white transition text-sm">
+            <a
+              href="https://github.com/karlisye"
+              target="_blank"
+              className="text-surface hover:text-white transition text-sm"
+            >
               @karlisye
             </a>
           </div>
