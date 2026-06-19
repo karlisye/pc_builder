@@ -28,7 +28,7 @@
     "builderSection": {
       "title": "Pirmā datora salikšana",
       "selectingComponentsHeading": "Komponenšu izvēle",
-      "step1": "1. Dodies uz <buildLink>Konstruktors</buildLink> lapu, navigācijas joslā nospiežot pogu <buildButton>Konstruktors</buildButton>.",
+      "step1": "1. Dodies uz <buildLink>Veidot</buildLink> lapu, navigācijas joslā nospiežot pogu <buildButton>Veidot</buildButton>.",
       "step2": "2. Atrodi komponenšu saraksta sadaļu un nospied pogu <addButton></addButton>, lai pievienotu jaunu komponentu.",
       "step3": "3. Izmanto meklēšanas lauku un filtrus, lai pārlūkotu un atrastu komponentes, kas atbilst tavām vēlmēm.",
       "step3Note": "Nesaderīgas komponentes būs atzīmētas ar norādi \"Nesaderīgs\".",

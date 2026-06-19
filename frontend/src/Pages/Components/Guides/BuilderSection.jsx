@@ -4,6 +4,18 @@ import { Trans, useTranslation } from "react-i18next";
 import Note from "./Note";
 import { AddIcon, CloseIcon } from "../Common/Icons";
 
+const AddButton = () => (
+  <button className="bg-surface border border-secondary-light p-1 text-muted hover:bg-secondary-light transition cursor-pointer">
+    <AddIcon size={12} />
+  </button>
+);
+
+const CloseButton = () => (
+  <button className="p-1 bg-secondary text-muted hover:bg-danger/20 hover:text-danger cursor-pointer transition border border-secondary-light">
+    <CloseIcon size={12} />
+  </button>
+);
+
 const BuilderSection = () => {
   const { t } = useTranslation("pages");
   return (
@@ -38,11 +50,7 @@ const BuilderSection = () => {
             t={t}
             i18nKey="guides.builderSection.step2"
             components={{
-              addButton: (
-                <button className="bg-surface border border-secondary-light p-1 text-muted hover:bg-secondary-light transition cursor-pointer">
-                  <AddIcon size={12} />
-                </button>
-              ),
+              addButton: <AddButton />,
             }}
           />
         </p>
@@ -84,11 +92,7 @@ const BuilderSection = () => {
               t={t}
               i18nKey="guides.builderSection.step7Note"
               components={{
-                closeIcon: (
-                  <button className="p-1 bg-secondary text-muted hover:bg-danger/20 hover:text-danger cursor-pointer transition border border-secondary-light">
-                    <CloseIcon size={12} />
-                  </button>
-                ),
+                closeIcon: <CloseButton />,
               }}
             />
           </Note>
