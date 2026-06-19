@@ -96,7 +96,7 @@
       "deleteStep2": "2. Parādīsies apstiprinājuma logs. Apstiprini, lai neatgriezeniski dzēstu konfigurāciju.",
       "publishingHeading": "Konfigurācijas publicēšana",
       "publishStep1": "1. Nospied pogu pie komponentēm, lai publicētu savu konfigurāciju. Parādīsies uznirstošais logs, lai apstiprinātu konfigurācijas redzamības izmaiņas.",
-      "publishStep2": "2. Kad konfigurācija ir publiska, to var apskatīt sadaļā \"Dalītās\", un to var atkal padarīt privātu, atkārtojot pirmo soli tai pašai konfigurācijai."
+      "publishStep2": "2. Kad konfigurācija ir publiska, to var apskatīt sadaļā \"Kopīgotie\", un to var atkal padarīt privātu, atkārtojot pirmo soli tai pašai konfigurācijai."
     }
   },
   "shared": {
@@ -158,7 +158,7 @@
       "componentsLabel": "Komponentes"
     },
     "buildFilters": {
-      "searchPlaceholder": "Meklēt pēc konfigurācijas vai autora...",
+      "searchPlaceholder": "Meklēt...",
       "sort": {
         "dateNewest": "Datums: Jaunākie",
         "dateOldest": "Datums: Vecākie",

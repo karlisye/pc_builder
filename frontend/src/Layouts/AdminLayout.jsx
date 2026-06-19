@@ -57,7 +57,7 @@ const AdminLayout = () => {
             {t("admin.dashboardTitle")}
           </Link>
 
-          <div className="hidden md:flex">
+          <div className="hidden lg:flex">
             <Link className={navLinkClass("/admin/scrape")} to="/admin/scrape">{t("admin.scraper")}</Link>
             <Link className={navLinkClass("/admin/history")} to="/admin/history">{t("admin.history")}</Link>
             <Link className={navLinkClass("/admin/test")} to="/admin/test">{t("admin.test")}</Link>
@@ -65,7 +65,7 @@ const AdminLayout = () => {
 
           <button
             ref={menuButtonRef}
-            className={`md:hidden py-4 px-6 transition flex items-center gap-2 ${
+            className={`lg:hidden py-4 px-6 transition flex items-center gap-2 ${
               menuActive ? "bg-primary text-white" : "hover:bg-surface text-text"
             }`}
             onClick={() => setMenuActive((prev) => !prev)}
@@ -75,7 +75,7 @@ const AdminLayout = () => {
 
           <div
             ref={menuRef}
-            className={`md:hidden absolute left-0 top-14 w-screen bg-background overflow-hidden transition-all shadow z-50 ${
+            className={`lg:hidden absolute left-0 top-14 w-screen bg-background overflow-hidden transition-all shadow z-50 ${
               menuActive ? "h-36" : "h-0"
             }`}
           >

@@ -43,7 +43,7 @@ const Layout = () => {
 
   const navLinkClass = (path) => {
     const isActive = pathname.startsWith(path);
-    return `py-4 px-6 transition ${
+    return `flex-1 text-center py-4 px-2 transition ${
       isActive ? 'bg-primary text-white hover:bg-primary-light' : 'hover:bg-surface text-text'
     }`;
   };
@@ -65,7 +65,7 @@ const Layout = () => {
       <header>
         <nav className="flex items-center bg-background shadow">
           <Link
-            className="py-4 px-6 bg-primary text-white font-semibold hover:bg-primary-light transition"
+            className="lg:hidden py-4 px-6 bg-primary text-white font-semibold hover:bg-primary-light transition"
             to="/"
           >
             BUILDER
@@ -73,7 +73,13 @@ const Layout = () => {
 
           {user ? (
             <>
-              <div className="hidden md:flex">
+              <div className="hidden lg:flex lg:w-120.5 shrink-0">
+                <Link
+                  className="py-4 px-6 bg-primary text-white font-semibold hover:bg-primary-light transition"
+                  to="/"
+                >
+                  BUILDER
+                </Link>
                 <Link className={navLinkClass('/builder')} to="/builder">
                   {t('nav.build')}
                 </Link>
@@ -90,7 +96,7 @@ const Layout = () => {
 
               <button
                 ref={menuButtonRef}
-                className={`md:hidden py-4 px-6 transition flex items-center gap-2 ${
+                className={`lg:hidden py-4 px-6 transition flex items-center gap-2 ${
                   menuActive ? 'bg-primary text-white' : 'hover:bg-surface text-text'
                 }`}
                 onClick={() => setMenuActive((prev) => !prev)}
@@ -100,7 +106,7 @@ const Layout = () => {
 
               <div
                 ref={menuRef}
-                className={`md:hidden absolute left-0 top-14 w-screen bg-background overflow-hidden transition-all shadow z-50 ${
+                className={`lg:hidden absolute left-0 top-14 w-screen bg-background overflow-hidden transition-all shadow z-50 ${
                   menuActive ? 'h-48' : 'h-0'
                 }`}
               >
@@ -135,7 +141,6 @@ const Layout = () => {
               </div>
 
               <div className="ml-auto relative flex items-center">
-                <LanguageSwitcher className="mr-2" />
                 <div className="flex">
                   {user?.role === 'admin' && (
                     <Link
@@ -162,14 +167,15 @@ const Layout = () => {
 
                 <div
                   ref={dropdownRef}
-                  className={`absolute right-0 sm:w-80 w-screen bg-background overflow-hidden transition-all shadow z-50 ${
+                  className={`absolute right-0 top-14 sm:w-80 w-screen bg-background overflow-hidden transition-all shadow z-50 ${
                     profileActive ? 'h-32' : 'h-0'
                   }`}
                 >
-                  <div className="px-4 py-3 bg-surface">
+                  <div className="px-4 py-3 bg-surface flex items-center justify-between">
                     <p className="text-text font-semibold uppercase">
                       {t('nav.hello', { name: user.name })}
                     </p>
+                    <LanguageSwitcher />
                   </div>
                   <div>
                     <Link
@@ -188,12 +194,20 @@ const Layout = () => {
               </div>
             </>
           ) : (
-            <div className="ml-auto flex items-center">
-              <LanguageSwitcher className="mr-2" />
-              <Link className="py-4 px-6 hover:bg-surface transition" to="/login">
-                {t('nav.signIn')}
+            <>
+              <Link
+                className="hidden lg:block py-4 px-6 bg-primary text-white font-semibold hover:bg-primary-light transition"
+                to="/"
+              >
+                BUILDER
               </Link>
-            </div>
+              <div className="ml-auto flex items-center">
+                <LanguageSwitcher className="mr-2" />
+                <Link className="py-4 px-6 hover:bg-surface transition" to="/login">
+                  {t('nav.signIn')}
+                </Link>
+              </div>
+            </>
           )}
         </nav>
       </header>
