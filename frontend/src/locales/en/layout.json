@@ -1,0 +1,30 @@
+{
+  "nav": {
+    "build": "Build",
+    "saved": "Saved",
+    "guide": "Guide",
+    "shared": "Shared",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "hello": "Hello, {{name}}"
+  },
+  "footer": {
+    "tagline": "Build and share your PC."
+  },
+  "admin": {
+    "dashboardTitle": "DASHBOARD",
+    "scraper": "Scraper",
+    "history": "History",
+    "test": "Test",
+    "exit": "Exit",
+    "footerTitle": "BUILDER ADMIN DASHBOARD"
+  },
+  "profile": {
+    "title": "PROFILE",
+    "overview": "Overview",
+    "account": "Account",
+    "bookmarked": "Bookmarked"
+  }
+}

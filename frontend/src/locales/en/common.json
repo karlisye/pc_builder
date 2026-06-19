@@ -1,0 +1,32 @@
+{
+  "appName": "BUILDER",
+  "loading": "Loading...",
+  "error": "Something went wrong",
+  "save": "Save",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "edit": "Edit",
+  "close": "Close",
+  "yes": "Yes",
+  "no": "No",
+  "next": "Next",
+  "previous": "Previous",
+  "page": "Page {{current}} of {{total}}",
+  "components": {
+    "cpu": "CPU",
+    "motherboard": "Motherboard",
+    "ram": "RAM",
+    "gpu": "GPU",
+    "ssd": "SSD",
+    "hdd": "HDD",
+    "case": "Case",
+    "cooler": "Cooler",
+    "psu": "PSU",
+    "fan": "Fan"
+  },
+  "stockStatus": {
+    "in_stock": "In Stock",
+    "orderable": "Can Be Ordered",
+    "out_of_stock": "Out Of Stock"
+  }
+}

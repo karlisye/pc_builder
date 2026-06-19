@@ -1,8 +1,11 @@
 import { Link, useLocation, Outlet } from "react-router-dom";
 import React, { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { MenuIcon } from "../Pages/Components/Common/Icons";
+import LanguageSwitcher from "../Pages/Components/Common/LanguageSwitcher";
 
 const AdminLayout = () => {
+  const { t } = useTranslation("layout");
   const { pathname } = useLocation();
   const [menuActive, setMenuActive] = useState(false);
   const menuRef = useRef(null);
@@ -51,13 +54,13 @@ const AdminLayout = () => {
             className="py-4 px-6 bg-primary text-white font-semibold hover:bg-primary-light transition"
             to="/admin"
           >
-            DASHBOARD
+            {t("admin.dashboardTitle")}
           </Link>
 
           <div className="hidden md:flex">
-            <Link className={navLinkClass("/admin/scrape")} to="/admin/scrape">Scraper</Link>
-            <Link className={navLinkClass("/admin/history")} to="/admin/history">History</Link>
-            <Link className={navLinkClass("/admin/test")} to="/admin/test">Test</Link>
+            <Link className={navLinkClass("/admin/scrape")} to="/admin/scrape">{t("admin.scraper")}</Link>
+            <Link className={navLinkClass("/admin/history")} to="/admin/history">{t("admin.history")}</Link>
+            <Link className={navLinkClass("/admin/test")} to="/admin/test">{t("admin.test")}</Link>
           </div>
 
           <button
@@ -76,17 +79,18 @@ const AdminLayout = () => {
               menuActive ? "h-36" : "h-0"
             }`}
           >
-            <Link className={menuLinkClass("/admin/scrape")} to="/admin/scrape" onClick={() => setMenuActive(false)}>Scraper</Link>
-            <Link className={menuLinkClass("/admin/history")} to="/admin/history" onClick={() => setMenuActive(false)}>History</Link>
-            <Link className={menuLinkClass("/admin/test")} to="/admin/test" onClick={() => setMenuActive(false)}>Test</Link>
+            <Link className={menuLinkClass("/admin/scrape")} to="/admin/scrape" onClick={() => setMenuActive(false)}>{t("admin.scraper")}</Link>
+            <Link className={menuLinkClass("/admin/history")} to="/admin/history" onClick={() => setMenuActive(false)}>{t("admin.history")}</Link>
+            <Link className={menuLinkClass("/admin/test")} to="/admin/test" onClick={() => setMenuActive(false)}>{t("admin.test")}</Link>
           </div>
 
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center">
+            <LanguageSwitcher className="mr-2" />
             <Link
               className="hover:bg-danger/50 text-text py-4 px-8 transition flex items-center"
               to="/"
             >
-              Exit
+              {t("admin.exit")}
             </Link>
           </div>
         </nav>
@@ -100,12 +104,12 @@ const AdminLayout = () => {
         <footer className="bg-primary border-t border-primary-light">
           <div className="max-w-348 mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex flex-col items-center sm:items-start">
-              <span className="font-bold text-white">BUILDER ADMIN DASHBOARD</span>
+              <span className="font-bold text-white">{t("admin.footerTitle")}</span>
             </div>
             <div className="flex gap-6 text-sm text-surface">
-              <Link to="/admin/scrape" className="hover:text-white transition">Scraper</Link>
-              <Link to="/admin/history" className="hover:text-white transition">History</Link>
-              <Link to="/admin/test" className="hover:text-white transition">Test</Link>
+              <Link to="/admin/scrape" className="hover:text-white transition">{t("admin.scraper")}</Link>
+              <Link to="/admin/history" className="hover:text-white transition">{t("admin.history")}</Link>
+              <Link to="/admin/test" className="hover:text-white transition">{t("admin.test")}</Link>
             </div>
           </div>
         </footer>

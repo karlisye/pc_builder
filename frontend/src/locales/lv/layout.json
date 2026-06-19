@@ -1,0 +1,30 @@
+{
+  "nav": {
+    "build": "Veidot",
+    "saved": "Saglabātie",
+    "guide": "Pamācība",
+    "shared": "Kopīgotie",
+    "dashboard": "Panelis",
+    "profile": "Profils",
+    "signIn": "Pieslēgties",
+    "signOut": "Iziet",
+    "hello": "Sveiki, {{name}}"
+  },
+  "footer": {
+    "tagline": "Veido un kopīgo savu datoru."
+  },
+  "admin": {
+    "dashboardTitle": "PANELIS",
+    "scraper": "Datu ievāktājs",
+    "history": "Vēsture",
+    "test": "Tests",
+    "exit": "Iziet",
+    "footerTitle": "BUILDER ADMIN PANELIS"
+  },
+  "profile": {
+    "title": "PROFILS",
+    "overview": "Pārskats",
+    "account": "Konts",
+    "bookmarked": "Atzīmētie"
+  }
+}

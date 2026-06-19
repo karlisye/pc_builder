@@ -1,0 +1,32 @@
+{
+  "appName": "BUILDER",
+  "loading": "Ielādē...",
+  "error": "Kaut kas nogāja greizi",
+  "save": "Saglabāt",
+  "cancel": "Atcelt",
+  "delete": "Dzēst",
+  "edit": "Redzēt",
+  "close": "Aizvērt",
+  "yes": "Jā",
+  "no": "Nē",
+  "next": "Tālāk",
+  "previous": "Atpakaļ",
+  "page": "{{current}}. lapa no {{total}}",
+  "components": {
+    "cpu": "Procesors",
+    "motherboard": "Mātesplate",
+    "ram": "Operatīvā atmiņa",
+    "gpu": "Videokarte",
+    "ssd": "SSD",
+    "hdd": "HDD",
+    "case": "Korpuss",
+    "cooler": "Dzesētājs",
+    "psu": "Barošanas bloks",
+    "fan": "Ventilators"
+  },
+  "stockStatus": {
+    "in_stock": "Pieejams",
+    "orderable": "Pieejams pēc pasūtījuma",
+    "out_of_stock": "Nav pieejams"
+  }
+}
