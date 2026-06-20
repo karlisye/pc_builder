@@ -112,45 +112,67 @@ class CompatibilityService
 
     // cpu / motherboard socket
     if ($cpu && $mb && $cpu->socket !== $mb->socket) {
-      $issues['cpu'][] = "Socket mismatch with motherboard ({$cpu->socket} vs {$mb->socket})";
-      $issues['motherboard'][] = "Socket mismatch with CPU ({$mb->socket} vs {$cpu->socket})";
+      $issues['cpu'][] = __('compatibility.cpu_socket_mismatch', [
+        'cpu_socket' => $cpu->socket, 'mb_socket' => $mb->socket,
+      ]);
+      $issues['motherboard'][] = __('compatibility.motherboard_socket_mismatch', [
+        'mb_socket' => $mb->socket, 'cpu_socket' => $cpu->socket,
+      ]);
     }
 
     // motherboard / ram memory type
     if ($mb && $ram && $mb->memory_type !== $ram->memory_type) {
-      $issues['motherboard'][] = "Memory type mismatch with RAM ({$mb->memory_type} vs {$ram->memory_type})";
-      $issues['ram'][] = "Memory type mismatch with motherboard ({$ram->memory_type} vs {$mb->memory_type})";
+      $issues['motherboard'][] = __('compatibility.motherboard_memory_mismatch', [
+        'mb_type' => $mb->memory_type, 'ram_type' => $ram->memory_type,
+      ]);
+      $issues['ram'][] = __('compatibility.ram_memory_mismatch', [
+        'ram_type' => $ram->memory_type, 'mb_type' => $mb->memory_type,
+      ]);
     }
 
     // gpu / case length
     if ($gpu && $case && $gpu->length_mm !== null && $case->max_gpu_length !== null) {
       if ($gpu->length_mm > $case->max_gpu_length) {
-        $issues['gpu'][] = "Too long for case ({$gpu->length_mm}mm vs {$case->max_gpu_length}mm max)";
-        $issues['case'][] = "Too small for GPU ({$case->max_gpu_length}mm max vs {$gpu->length_mm}mm)";
+        $issues['gpu'][] = __('compatibility.gpu_too_long', [
+          'gpu_length' => $gpu->length_mm, 'case_max_length' => $case->max_gpu_length,
+        ]);
+        $issues['case'][] = __('compatibility.case_too_small_gpu', [
+          'case_max_length' => $case->max_gpu_length, 'gpu_length' => $gpu->length_mm,
+        ]);
       }
     }
 
     // cooler / case height
     if ($cooler && $case && $cooler->height_mm !== null && $case->max_cpu_cooler_height !== null) {
       if ($cooler->height_mm > $case->max_cpu_cooler_height) {
-        $issues['cooler'][] = "Too tall for case ({$cooler->height_mm}mm vs {$case->max_cpu_cooler_height}mm max)";
-        $issues['case'][] = "Too small for cooler ({$case->max_cpu_cooler_height}mm max vs {$cooler->height_mm}mm)";
+        $issues['cooler'][] = __('compatibility.cooler_too_tall', [
+          'cooler_height' => $cooler->height_mm, 'case_max_height' => $case->max_cpu_cooler_height,
+        ]);
+        $issues['case'][] = __('compatibility.case_too_small_cooler', [
+          'case_max_height' => $case->max_cpu_cooler_height, 'cooler_height' => $cooler->height_mm,
+        ]);
       }
     }
 
     // cooler / cpu socket
     if ($cooler && $cpu && $cooler->compatibility) {
       if (!in_array($cpu->socket, explode(',', $cooler->compatibility))) {
-        $issues['cooler'][] = "Not compatible with CPU socket ({$cpu->socket})";
-        $issues['cpu'][] = "Not compatible with cooler socket";
+        $issues['cooler'][] = __('compatibility.cooler_incompatible_socket', [
+          'socket' => $cpu->socket,
+        ]);
+        $issues['cpu'][] = __('compatibility.cpu_incompatible_cooler');
       }
     }
 
     // cooler / cpu tdp
     if ($cooler && $cpu && $cooler->tdp_support !== null && $cpu->tdp !== null) {
       if ($cooler->tdp_support < $cpu->tdp) {
-        $issues['cooler'][] = "TDP rating too low ({$cooler->tdp_support}W vs {$cpu->tdp}W required)";
-        $issues['cpu'][] = "TDP too high for cooler ({$cpu->tdp}W vs {$cooler->tdp_support}W max)";
+        $issues['cooler'][] = __('compatibility.cooler_tdp_too_low', [
+          'cooler_tdp' => $cooler->tdp_support, 'cpu_tdp' => $cpu->tdp,
+        ]);
+        $issues['cpu'][] = __('compatibility.cpu_tdp_too_high', [
+          'cpu_tdp' => $cpu->tdp, 'cooler_tdp' => $cooler->tdp_support,
+        ]);
       }
     }
 
@@ -158,8 +180,12 @@ class CompatibilityService
     if ($mb && $case) {
       $compatibleCases = CompatibilityHelper::compatibleCasesFor($mb->form_factor);
       if (!empty($compatibleCases) && !in_array($case->form_factor, $compatibleCases)) {
-        $issues['motherboard'][] = "Form factor incompatible with case ({$mb->form_factor} vs {$case->form_factor})";
-        $issues['case'][] = "Form factor incompatible with motherboard ({$case->form_factor} vs {$mb->form_factor})";
+        $issues['motherboard'][] = __('compatibility.motherboard_form_factor_incompatible', [
+          'mb_form' => $mb->form_factor, 'case_form' => $case->form_factor,
+        ]);
+        $issues['case'][] = __('compatibility.case_form_factor_incompatible', [
+          'case_form' => $case->form_factor, 'mb_form' => $mb->form_factor,
+        ]);
       }
     }
 
@@ -170,17 +196,23 @@ class CompatibilityService
       $requiredWattage = max($tdpRequired, $minPsuRequired);
 
       if ($psu->wattage !== null && $psu->wattage < $requiredWattage) {
-        $issues['psu'][] = "Insufficient wattage ({$psu->wattage}W vs " . ceil($requiredWattage) . "W required)";
-        $issues['cpu'][] = "PSU wattage too low for this CPU+GPU combination";
-        $issues['gpu'][] = "PSU wattage too low for this CPU+GPU combination";
+        $issues['psu'][] = __('compatibility.psu_insufficient_wattage', [
+          'psu_wattage' => $psu->wattage, 'required' => ceil($requiredWattage),
+        ]);
+        $issues['cpu'][] = __('compatibility.cpu_psu_wattage_too_low');
+        $issues['gpu'][] = __('compatibility.gpu_psu_wattage_too_low');
       }
     }
 
     // gpu min_psu check without cpu
     if ($psu && $gpu && !$cpu && $gpu->min_psu !== null) {
       if ($psu->wattage !== null && $psu->wattage < $gpu->min_psu) {
-        $issues['psu'][] = "Insufficient wattage for GPU ({$psu->wattage}W vs {$gpu->min_psu}W required)";
-        $issues['gpu'][] = "PSU wattage too low ({$psu->wattage}W vs {$gpu->min_psu}W required)";
+        $issues['psu'][] = __('compatibility.psu_insufficient_wattage_gpu_only', [
+          'psu_wattage' => $psu->wattage, 'gpu_min_psu' => $gpu->min_psu,
+        ]);
+        $issues['gpu'][] = __('compatibility.gpu_psu_wattage_too_low_specific', [
+          'psu_wattage' => $psu->wattage, 'gpu_min_psu' => $gpu->min_psu,
+        ]);
       }
     }
 

@@ -1,0 +1,23 @@
+<?php
+
+return [
+    'cpu_socket_mismatch' => 'Ligzda neatbilst mātesplatei (:cpu_socket pret :mb_socket)',
+    'motherboard_socket_mismatch' => 'Ligzda neatbilst procesoram (:mb_socket pret :cpu_socket)',
+    'motherboard_memory_mismatch' => 'Atmiņas tips neatbilst RAM (:mb_type pret :ram_type)',
+    'ram_memory_mismatch' => 'Atmiņas tips neatbilst mātesplatei (:ram_type pret :mb_type)',
+    'gpu_too_long' => 'Pārāk gara korpusam (:gpu_length mm pret :case_max_length mm maks.)',
+    'case_too_small_gpu' => 'Pārāk mazs videokartei (:case_max_length mm maks. pret :gpu_length mm)',
+    'cooler_too_tall' => 'Pārāk augsts korpusam (:cooler_height mm pret :case_max_height mm maks.)',
+    'case_too_small_cooler' => 'Pārāk mazs dzesētājam (:case_max_height mm maks. pret :cooler_height mm)',
+    'cooler_incompatible_socket' => 'Nav saderīgs ar procesora ligzdu (:socket)',
+    'cpu_incompatible_cooler' => 'Nav saderīgs ar dzesētāja ligzdu',
+    'cooler_tdp_too_low' => 'TDP novērtējums pārāk zems (:cooler_tdp W pret :cpu_tdp W nepieciešams)',
+    'cpu_tdp_too_high' => 'TDP pārāk augsts dzesētājam (:cpu_tdp W pret :cooler_tdp W maks.)',
+    'motherboard_form_factor_incompatible' => 'Formfaktors neatbilst korpusam (:mb_form pret :case_form)',
+    'case_form_factor_incompatible' => 'Formfaktors neatbilst mātesplatei (:case_form pret :mb_form)',
+    'psu_insufficient_wattage' => 'Nepietiekama jauda (:psu_wattage W pret :required W nepieciešams)',
+    'cpu_psu_wattage_too_low' => 'Barošanas bloka jauda pārāk zema šai procesora un videokartes kombinācijai',
+    'gpu_psu_wattage_too_low' => 'Barošanas bloka jauda pārāk zema šai procesora un videokartes kombinācijai',
+    'psu_insufficient_wattage_gpu_only' => 'Nepietiekama jauda videokartei (:psu_wattage W pret :gpu_min_psu W nepieciešams)',
+    'gpu_psu_wattage_too_low_specific' => 'Barošanas bloka jauda pārāk zema (:psu_wattage W pret :gpu_min_psu W nepieciešams)',
+];
