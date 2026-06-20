@@ -1,7 +1,9 @@
 {
   "sidePanel": {
     "title": "BUILDER",
-    "newBuild": "New Build"
+    "newBuild": "New Build",
+    "guideHint": "Unsure where to start? Head on over to the",
+    "guideLink": "guide"
   },
   "budgetSlider": {
     "anyBudget": "Any Budget",

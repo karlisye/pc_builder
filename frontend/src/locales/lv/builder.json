@@ -1,7 +1,9 @@
 {
   "sidePanel": {
     "title": "VEIDOTĀJS",
-    "newBuild": "Jauna konfigurācija"
+    "newBuild": "Jauna konfigurācija",
+    "guideHint": "Nezini, ar ko sākt? Apskati",
+    "guideLink": "ceļvedi"
   },
   "budgetSlider": {
     "anyBudget": "Bez budžeta ierobežojuma",
