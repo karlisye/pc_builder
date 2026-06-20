@@ -141,7 +141,9 @@
     "somethingWentWrong": "Something went wrong",
     "incompatibleWarning": "One or more components in your current build are incompatible. Please change or remove them to generate.",
     "generating": "Generating...",
-    "generate": "Generate"
+    "generate": "Generate",
+    "loginRequired": "Sign in to use the automatic build generator.",
+    "loginLink": "Log in"
   },
   "componentGenerator": {
     "title": "Auto Generate Component",
@@ -159,7 +161,9 @@
     "somethingWentWrong": "Something went wrong",
     "incompatibleWarning": "One or more components in your current build are incompatible. Please change or remove them to generate.",
     "generating": "Generating...",
-    "generate": "Generate"
+    "generate": "Generate",
+    "loginRequired": "Sign in to use the automatic component generator.",
+    "loginLink": "Log in"
   },
   "buildInfo": {
     "selectComponents": "Select your components",
@@ -181,6 +185,8 @@
     "saving": "Saving...",
     "saveBuild": "Save Build",
     "clearBuild": "Clear Build",
-    "saveAsNewBuild": "Save as New Build"
+    "saveAsNewBuild": "Save as New Build",
+    "loginToSave": "Sign in to save your build.",
+    "loginLink": "Log in"
   }
 }

@@ -141,7 +141,9 @@
     "somethingWentWrong": "Kaut kas nogāja greizi",
     "incompatibleWarning": "Viena vai vairākas komponentes jūsu konfigurācijā nav saderīgas. Lai generētu, nomainiet vai noņemiet tās.",
     "generating": "Generē...",
-    "generate": "Generēt"
+    "generate": "Generēt",
+    "loginRequired": "Pieslēdzieties, lai izmantotu automātisko konfigurācijas generatoru.",
+    "loginLink": "Pieslēgties"
   },
   "componentGenerator": {
     "title": "Automātiski generēt komponenti",
@@ -159,7 +161,9 @@
     "somethingWentWrong": "Kaut kas nogāja greizi",
     "incompatibleWarning": "Viena vai vairākas komponentes jūsu konfigurācijā nav saderīgas. Lai generētu, nomainiet vai noņemiet tās.",
     "generating": "Ģenerē...",
-    "generate": "Ģenerēt"
+    "generate": "Ģenerēt",
+    "loginRequired": "Pieslēdzieties, lai izmantotu automātisko komponentes generatoru.",
+    "loginLink": "Pieslēgties"
   },
   "buildInfo": {
     "selectComponents": "Izvēlieties savas komponentes",
@@ -181,6 +185,8 @@
     "saving": "Saglabā...",
     "saveBuild": "Saglabāt konfigurāciju",
     "clearBuild": "Notīrīt konfigurāciju",
-    "saveAsNewBuild": "Saglabāt kā jaunu konfigurāciju"
+    "saveAsNewBuild": "Saglabāt kā jaunu konfigurāciju",
+    "loginToSave": "Pieslēdzieties, lai saglabātu konfigurāciju.",
+    "loginLink": "Pieslēgties"
   }
 }
