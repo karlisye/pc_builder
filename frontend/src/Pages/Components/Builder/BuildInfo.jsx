@@ -6,6 +6,7 @@ import axios from "axios";
 import { CloseIcon } from "../Common/Icons";
 import { Link, useSearchParams } from "react-router-dom";
 import { clearDraft } from "../../../lib/builderDraft";
+import { useToast } from "../../../Contexts/ToastContext";
 
 // Tracks whether the restore nudge has already been shown this page load,
 // so it only appears once on a real page refresh and not on every SPA nav.
@@ -14,6 +15,7 @@ let nudgeShownThisLoad = false;
 const BuildInfo = () => {
   const { t } = useTranslation(["builder", "common"]);
   const { user } = useAuth();
+  const { addToast } = useToast();
   const {
     selectedComponents,
     setSelectedComponents,
@@ -33,8 +35,6 @@ const BuildInfo = () => {
   const [, setSearchParams] = useSearchParams();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const [showNudge, setShowNudge] = useState(false);
 
   const hasComponents = Object.values(selectedComponents).some(
     (v) => v !== null,
@@ -44,11 +44,8 @@ const BuildInfo = () => {
     if (nudgeShownThisLoad || buildId || !hasComponents) return;
 
     nudgeShownThisLoad = true;
-    setShowNudge(true);
-
-    const timer = setTimeout(() => setShowNudge(false), 5000);
-    return () => clearTimeout(timer);
-  }, [buildId, hasComponents]);
+    addToast(t("buildInfo.restoredNudge"), { type: "info" });
+  }, [buildId, hasComponents, addToast, t]);
 
   const handleRemove = (name) => {
     setSelectedComponents((prev) => ({
@@ -77,7 +74,6 @@ const BuildInfo = () => {
 
     setSaving(true);
     setError("");
-    setSuccess("");
 
     try {
       const res = await axios.post("/api/builds", {
@@ -90,14 +86,14 @@ const BuildInfo = () => {
       setBuildId(res.data.id);
       setSearchParams({ build: res.data.id });
       clearDraft();
-      setSuccess(
-        asNew
-          ? t("buildInfo.savedAsNew")
-          : t("buildInfo.savedSuccessfully"),
+      addToast(
+        asNew ? t("buildInfo.savedAsNew") : t("buildInfo.savedSuccessfully"),
+        { type: "success" },
       );
-      setTimeout(() => setSuccess(""), 5000);
     } catch (err) {
-      setError(err.response?.data?.error ?? t("buildInfo.failedToSave"));
+      addToast(err.response?.data?.error ?? t("buildInfo.failedToSave"), {
+        type: "danger",
+      });
     } finally {
       setSaving(false);
     }
@@ -163,18 +159,6 @@ const BuildInfo = () => {
 
       {(buildId || hasComponents) && user && (
         <div className="space-y-4 pt-4 border-t border-primary-light">
-          {showNudge && (
-            <div className="p-3 border border-info/80 bg-info/10 flex items-start justify-between gap-3">
-              <p className="text-info text-sm">{t("buildInfo.restoredNudge")}</p>
-              <button
-                className="text-info/80 hover:text-info cursor-pointer shrink-0"
-                onClick={() => setShowNudge(false)}
-              >
-                <CloseIcon />
-              </button>
-            </div>
-          )}
-
           <div>
             <label className="text-secondary-light" htmlFor="name">
               {t("buildInfo.nameLabel")}
@@ -189,7 +173,6 @@ const BuildInfo = () => {
             />
 
             {error && <p className="text-danger text-sm">{error}</p>}
-            {success && <p className="text-green-500 text-sm">{success}</p>}
           </div>
 
           <label className="text-secondary-light" htmlFor="notes">

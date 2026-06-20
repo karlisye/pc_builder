@@ -4,6 +4,8 @@ import "./i18n";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./Contexts/AuthContext";
+import { ToastProvider } from "./Contexts/ToastContext";
+import ToastContainer from "./Pages/Components/Common/ToastContainer";
 
 import Layout from "./Layouts/Layout";
 import AdminLayout from "./Layouts/AdminLayout";
@@ -51,45 +53,48 @@ const AdminRoute = ({ children }) => {
 
 const App = () => (
   <AuthProvider>
-    <BrowserRouter>
-      <Routes>
-        {/* Public */}
-        <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/guide" element={<Guide />} />
+    <ToastProvider>
+      <ToastContainer />
+      <BrowserRouter>
+        <Routes>
+          {/* Public */}
+          <Route element={<Layout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/guide" element={<Guide />} />
 
-          {/* Guest-only */}
-          <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
-          <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
+            {/* Guest-only */}
+            <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
+            <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
 
-          {/* Manual builder available to guests; auto-generate features are auth-gated inline */}
-          <Route path="/builder" element={<Builder />} />
+            {/* Manual builder available to guests; auto-generate features are auth-gated inline */}
+            <Route path="/builder" element={<Builder />} />
 
-          {/* Auth-required */}
-          <Route path="/builds" element={<AuthRoute><SavedBuilds /></AuthRoute>} />
-          <Route path="/shared" element={<AuthRoute><Shared /></AuthRoute>} />
+            {/* Auth-required */}
+            <Route path="/builds" element={<AuthRoute><SavedBuilds /></AuthRoute>} />
+            <Route path="/shared" element={<AuthRoute><Shared /></AuthRoute>} />
 
-          {/* Profile (nested layout) */}
-          <Route element={<AuthRoute><ProfileLayout /></AuthRoute>}>
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/profile/account" element={<AccountSettings />} />
-            <Route path="/profile/bookmarked" element={<BookmarkedBuilds />} />
+            {/* Profile (nested layout) */}
+            <Route element={<AuthRoute><ProfileLayout /></AuthRoute>}>
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/profile/account" element={<AccountSettings />} />
+              <Route path="/profile/bookmarked" element={<BookmarkedBuilds />} />
+            </Route>
+
+            <Route path="/profile/:user" element={<PublicProfile />} />
           </Route>
 
-          <Route path="/profile/:user" element={<PublicProfile />} />
-        </Route>
+          {/* Admin */}
+          <Route element={<AdminRoute><AdminLayout /></AdminRoute>}>
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/scrape" element={<AdminScraper />} />
+            <Route path="/admin/history" element={<AdminHistory />} />
+            <Route path="/admin/test" element={<AdminTest />} />
+          </Route>
 
-        {/* Admin */}
-        <Route element={<AdminRoute><AdminLayout /></AdminRoute>}>
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/scrape" element={<AdminScraper />} />
-          <Route path="/admin/history" element={<AdminHistory />} />
-          <Route path="/admin/test" element={<AdminTest />} />
-        </Route>
-
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </ToastProvider>
   </AuthProvider>
 );
 
