@@ -6,9 +6,11 @@ import BudgetSlider from "./BudgetSlider";
 import { Link } from "react-router-dom";
 import { ArrowIcon } from "../Common/Icons";
 import ClosedSection from "../Common/ClosedSection";
+import { useAuth } from "../../../Contexts/AuthContext";
 
 const BuildGenerator = () => {
   const { t } = useTranslation("builder");
+  const { user } = useAuth();
   const {
     selectedComponents,
     setSelectedComponents,
@@ -109,6 +111,25 @@ const BuildGenerator = () => {
   const hasIncompatible = Object.values(selectedComponents).some(
     (component) => component !== null && component.compatible === false,
   );
+
+  if (!user) {
+    return (
+      <div className="pt-4 border-t mt-4 border-secondary">
+        <ClosedSection title={t("buildGenerator.title")}>
+          <p className="text-muted text-sm">
+            {t("buildGenerator.loginRequired")}{" "}
+            <Link
+              className="text-info/80 cursor-pointer hover:underline"
+              to="/login"
+            >
+              {t("buildGenerator.loginLink")}
+            </Link>
+            .
+          </p>
+        </ClosedSection>
+      </div>
+    );
+  }
 
   return (
     <div className="pt-4 border-t mt-4 border-secondary">

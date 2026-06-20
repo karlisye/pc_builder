@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useBuilder } from "../../../Contexts/BuilderContext";
+import { useAuth } from "../../../Contexts/AuthContext";
 import axios from "axios";
 import { CloseIcon } from "../Common/Icons";
+import { Link } from "react-router-dom";
 
 const BuildInfo = () => {
   const { t } = useTranslation(["builder", "common"]);
+  const { user } = useAuth();
   const {
     selectedComponents,
     setSelectedComponents,
@@ -123,7 +126,22 @@ const BuildInfo = () => {
         </p>
       )}
 
-      {(buildId || hasComponents) && (
+      {(buildId || hasComponents) && !user && (
+        <div className="pt-4 border-t border-primary-light">
+          <p className="text-secondary-light">
+            {t("buildInfo.loginToSave")}{" "}
+            <Link
+              className="text-info/80 cursor-pointer hover:underline"
+              to="/login"
+            >
+              {t("buildInfo.loginLink")}
+            </Link>
+            .
+          </p>
+        </div>
+      )}
+
+      {(buildId || hasComponents) && user && (
         <div className="space-y-4 pt-4 border-t border-primary-light">
           <div>
             <label className="text-secondary-light" htmlFor="name">

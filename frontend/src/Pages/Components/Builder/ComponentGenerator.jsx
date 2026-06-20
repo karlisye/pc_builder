@@ -4,10 +4,12 @@ import { ArrowIcon } from "../Common/Icons";
 import { Link } from "react-router-dom";
 import BudgetSlider from "./BudgetSlider";
 import { useBuilder } from "../../../Contexts/BuilderContext";
+import { useAuth } from "../../../Contexts/AuthContext";
 import axios from "axios";
 
 const ComponentGenerator = () => {
   const { t } = useTranslation("builder");
+  const { user } = useAuth();
   const {
     currentCompToAdd,
     selectedComponents,
@@ -73,6 +75,37 @@ const ComponentGenerator = () => {
   const hasIncompatible = Object.values(selectedComponents).some(
     (component) => component !== null && component.compatible === false,
   );
+
+  if (!user) {
+    return (
+      <div className="pt-4 border-t mt-4 border-secondary">
+        <button
+          onClick={() => setOpen((prev) => !prev)}
+          className="w-full flex justify-between items-center text-secondary-light hover:text-surface transition cursor-pointer"
+        >
+          <span className="text-sm">{t("componentGenerator.title")}</span>
+          <ArrowIcon active={open} />
+        </button>
+
+        <div
+          className={`grid transition-all overflow-hidden ${open ? "grid-rows-[1fr] mt-3" : "grid-rows-[0fr]"}`}
+        >
+          <div className="overflow-hidden">
+            <p className="text-muted text-sm">
+              {t("componentGenerator.loginRequired")}{" "}
+              <Link
+                className="text-info/80 cursor-pointer hover:underline"
+                to="/login"
+              >
+                {t("componentGenerator.loginLink")}
+              </Link>
+              .
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="pt-4 border-t mt-4 border-secondary">

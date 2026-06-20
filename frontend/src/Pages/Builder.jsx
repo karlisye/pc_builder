@@ -159,6 +159,17 @@ const Builder = () => {
           <BuildInfo />
 
           {currentCompToAdd ? <ComponentGenerator /> : <BuildGenerator />}
+
+          <p className="text-muted text-sm pt-4 border-t mt-4 border-secondary">
+            {t("sidePanel.guideHint")}{" "}
+            <Link
+              className="text-info/80 cursor-pointer hover:underline"
+              to="/guide"
+            >
+              {t("sidePanel.guideLink")}
+            </Link>
+            .
+          </p>
         </SidePanel>
 
         <div className="flex-1 flex px-4 py-6">

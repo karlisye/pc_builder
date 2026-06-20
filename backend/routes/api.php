@@ -14,6 +14,12 @@ Route::post('/login', [AuthController::class, 'login'])->middleware('guest');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 Route::get('/user', [AuthController::class, 'user'])->middleware('auth:sanctum');
 
+// Manual builder configuration is available to guests; auto-generate stays auth-only below.
+Route::get('/components/{type}', [ComponentController::class, 'index']);
+Route::get('/components/{type}/filters', [ComponentController::class, 'filters']);
+Route::get('/components/{type}/{id}', [ComponentController::class, 'show']);
+Route::post('/builder/validate', [BuilderController::class, 'validate']);
+
 Route::middleware('auth:sanctum')->group(function () {
   Route::get('/builder', [BuilderController::class, 'index']);
 
@@ -23,12 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::get('/profile/bookmarked', [UserController::class, 'indexBookmarked']);
   Route::get('/profile/{user}', [UserController::class, 'show']);
 
-  Route::get('/components/{type}', [ComponentController::class, 'index']);
-  Route::get('/components/{type}/filters', [ComponentController::class, 'filters']);
-  Route::get('/components/{type}/{id}', [ComponentController::class, 'show']);
-
   Route::post('/builder', [BuilderController::class, 'generate']);
-  Route::post('/builder/validate', [BuilderController::class, 'validate']);
   Route::post('/builder/{type}', [BuilderController::class, 'generateComp']);
 
   Route::post('/builds', [BuildController::class, 'store']);

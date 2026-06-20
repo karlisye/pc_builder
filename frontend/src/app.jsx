@@ -62,8 +62,10 @@ const App = () => (
           <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
           <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
 
+          {/* Manual builder available to guests; auto-generate features are auth-gated inline */}
+          <Route path="/builder" element={<Builder />} />
+
           {/* Auth-required */}
-          <Route path="/builder" element={<AuthRoute><Builder /></AuthRoute>} />
           <Route path="/builds" element={<AuthRoute><SavedBuilds /></AuthRoute>} />
           <Route path="/shared" element={<AuthRoute><Shared /></AuthRoute>} />
 
