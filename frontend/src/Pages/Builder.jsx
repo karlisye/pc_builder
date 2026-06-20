@@ -40,6 +40,7 @@ const Builder = () => {
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState("price_asc");
   const [buildType, setBuildType] = useState("");
+  const [restoredDraft, setRestoredDraft] = useState(false);
 
   useEffect(() => {
     const buildParam = searchParams.get("build");
@@ -47,6 +48,7 @@ const Builder = () => {
 
     if (!buildParam) {
       const draft = loadDraft();
+      setRestoredDraft(Boolean(draft));
       setSelectedComponents(
         draft?.selectedComponents ?? {
           cpu: null,
@@ -78,6 +80,7 @@ const Builder = () => {
         const hasMatchingDraft =
           draft && String(draft.buildId) === String(build.id);
 
+        setRestoredDraft(Boolean(hasMatchingDraft));
         setSelectedComponents(
           hasMatchingDraft
             ? draft.selectedComponents
@@ -150,6 +153,7 @@ const Builder = () => {
 
   const handleNewBuild = () => {
     clearDraft();
+    setRestoredDraft(false);
     setSelectedComponents({
       cpu: null,
       motherboard: null,
@@ -189,6 +193,8 @@ const Builder = () => {
         setBuildNotes,
         buildType,
         setBuildType,
+        restoredDraft,
+        setRestoredDraft,
         debouncedSearch,
         setDebouncedSearch,
         warnings,

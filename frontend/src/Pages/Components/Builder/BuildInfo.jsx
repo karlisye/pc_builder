@@ -28,6 +28,8 @@ const BuildInfo = () => {
     setBuildNotes,
     buildType,
     setBuildType,
+    restoredDraft,
+    setRestoredDraft,
     setWarnings,
     setBuildIssues,
     setNotes,
@@ -41,11 +43,11 @@ const BuildInfo = () => {
   );
 
   useEffect(() => {
-    if (nudgeShownThisLoad || buildId || !hasComponents) return;
+    if (nudgeShownThisLoad || !restoredDraft) return;
 
     nudgeShownThisLoad = true;
     addToast(t("buildInfo.restoredNudge"), { type: "info" });
-  }, [buildId, hasComponents, addToast, t]);
+  }, [restoredDraft, addToast, t]);
 
   const handleRemove = (name) => {
     setSelectedComponents((prev) => ({
@@ -101,6 +103,7 @@ const BuildInfo = () => {
 
   const handleClear = () => {
     clearDraft();
+    setRestoredDraft(false);
     setSelectedComponents((prev) =>
       Object.fromEntries(Object.keys(prev).map((key) => [key, null])),
     );
