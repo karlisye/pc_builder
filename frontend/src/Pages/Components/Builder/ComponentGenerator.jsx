@@ -5,17 +5,18 @@ import { Link } from 'react-router-dom';
 import BudgetSlider from './BudgetSlider';
 import { useBuilder } from '../../../Contexts/BuilderContext';
 import { useAuth } from '../../../Contexts/AuthContext';
+import { useToast } from '../../../Contexts/ToastContext';
 import axios from 'axios';
 
 const ComponentGenerator = () => {
   const { t } = useTranslation('builder');
   const { user } = useAuth();
+  const { addToast } = useToast();
   const { currentCompToAdd, selectedComponents, setSelectedComponents, setCurrentCompToAdd } =
     useBuilder();
 
   const [open, setOpen] = useState(false);
   const [budget, setBudget] = useState(150);
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [preferences, setPreferences] = useState({
     gpu: null,
@@ -29,7 +30,6 @@ const ComponentGenerator = () => {
 
   const handleGenerate = async () => {
     setLoading(true);
-    setError('');
     try {
       const selected = Object.fromEntries(
         Object.entries(selectedComponents)
@@ -51,11 +51,14 @@ const ComponentGenerator = () => {
         setOpen(false);
         setPreferences((prev) => Object.fromEntries(Object.keys(prev).map((k) => [k, null])));
         setCurrentCompToAdd(null);
+        addToast(t('componentGenerator.generateSuccess'), { type: 'success' });
       } else {
-        setError(res.data.error);
+        addToast(res.data.error, { type: 'danger' });
       }
     } catch (err) {
-      setError(err.response?.data?.error ?? t('componentGenerator.somethingWentWrong'));
+      addToast(err.response?.data?.error ?? t('componentGenerator.somethingWentWrong'), {
+        type: 'danger',
+      });
     } finally {
       setLoading(false);
     }
@@ -177,8 +180,6 @@ const ComponentGenerator = () => {
               {t('componentGenerator.includeOnlyOrderable')}
             </label>
           </div>
-
-          {error && <p className="text-danger text-sm mb-2">{error}</p>}
 
           {hasIncompatible && (
             <div className="p-2 border bg-alert/10 border-alert/80">

@@ -145,6 +145,7 @@
     "incompatibleWarning": "One or more components in your current build are incompatible. Please change or remove them to generate.",
     "generating": "Generating...",
     "generate": "Generate",
+    "generateSuccess": "Build generated successfully",
     "loginRequired": "Sign in to use the automatic build generator.",
     "loginLink": "Log in"
   },
@@ -165,6 +166,7 @@
     "incompatibleWarning": "One or more components in your current build are incompatible. Please change or remove them to generate.",
     "generating": "Generating...",
     "generate": "Generate",
+    "generateSuccess": "Component generated successfully",
     "loginRequired": "Sign in to use the automatic component generator.",
     "loginLink": "Log in"
   },

@@ -7,10 +7,12 @@ import { Link } from "react-router-dom";
 import { ArrowIcon } from "../Common/Icons";
 import ClosedSection from "../Common/ClosedSection";
 import { useAuth } from "../../../Contexts/AuthContext";
+import { useToast } from "../../../Contexts/ToastContext";
 
 const BuildGenerator = () => {
   const { t } = useTranslation("builder");
   const { user } = useAuth();
+  const { addToast } = useToast();
   const {
     selectedComponents,
     setSelectedComponents,
@@ -22,7 +24,6 @@ const BuildGenerator = () => {
   } = useBuilder();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [budget, setBudget] = useState(1500);
   const [preferences, setPreferences] = useState({
     gpu: null,
@@ -61,7 +62,6 @@ const BuildGenerator = () => {
 
   const handleGenerate = async () => {
     setLoading(true);
-    setError("");
     setWarnings([]);
     setNotes([]);
     try {
@@ -86,12 +86,14 @@ const BuildGenerator = () => {
         setCurrentCompToAdd(null);
         setWarnings(res.data.warnings);
         setNotes(res.data.notes);
+        addToast(t("buildGenerator.generateSuccess"), { type: "success" });
       } else {
-        setError(res.data.error);
+        addToast(res.data.error, { type: "danger" });
       }
     } catch (err) {
-      setError(
+      addToast(
         err.response?.data?.error ?? t("buildGenerator.somethingWentWrong"),
+        { type: "danger" },
       );
     } finally {
       setLoading(false);
@@ -238,8 +240,6 @@ const BuildGenerator = () => {
             {t("buildGenerator.includeOnlyOrderable")}
           </label>
         </div>
-
-        {error && <p className="text-danger text-sm mb-2">{error}</p>}
 
         {hasIncompatible && (
           <div className="p-2 border bg-alert/10 border-alert/80">
