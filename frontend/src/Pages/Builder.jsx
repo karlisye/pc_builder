@@ -11,6 +11,7 @@ import BuildGenerator from "./Components/Builder/BuildGenerator";
 import ComponentGenerator from "./Components/Builder/ComponentGenerator";
 import SidePanel from "./Components/Common/SidePanel";
 import axios from "axios";
+import { loadDraft, saveDraft, clearDraft } from "../lib/builderDraft";
 
 const Builder = () => {
   const { t } = useTranslation(["builder", "common"]);
@@ -45,11 +46,25 @@ const Builder = () => {
     const sharedParam = searchParams.get("shared");
 
     if (!buildParam) {
-      setSelectedComponents({ cpu: null, motherboard: null, ram: null, gpu: null, psu: null, ssd: null, hdd: null, case: null, fan: null, cooler: null });
+      const draft = loadDraft();
+      setSelectedComponents(
+        draft?.selectedComponents ?? {
+          cpu: null,
+          motherboard: null,
+          ram: null,
+          gpu: null,
+          psu: null,
+          ssd: null,
+          hdd: null,
+          case: null,
+          fan: null,
+          cooler: null,
+        },
+      );
       setBuildId(undefined);
-      setBuildName("");
-      setBuildNotes("");
-      setBuildType("");
+      setBuildName(draft?.buildName ?? "");
+      setBuildNotes(draft?.buildNotes ?? "");
+      setBuildType(draft?.buildType ?? "");
       return;
     }
 
@@ -81,6 +96,19 @@ const Builder = () => {
     validateCompatibility();
   }, [selectedComponents]);
 
+  useEffect(() => {
+    if (buildId) {
+      clearDraft();
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      saveDraft({ selectedComponents, buildName, buildNotes, buildType });
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [selectedComponents, buildName, buildNotes, buildType, buildId]);
+
   const validateCompatibility = async () => {
     const selected = Object.fromEntries(
       Object.entries(selectedComponents)
@@ -108,6 +136,26 @@ const Builder = () => {
     }, 300);
     return () => clearTimeout(timer);
   }, [search]);
+
+  const handleNewBuild = () => {
+    clearDraft();
+    setSelectedComponents({
+      cpu: null,
+      motherboard: null,
+      ram: null,
+      gpu: null,
+      psu: null,
+      ssd: null,
+      hdd: null,
+      case: null,
+      fan: null,
+      cooler: null,
+    });
+    setBuildId(undefined);
+    setBuildName("");
+    setBuildNotes("");
+    setBuildType("");
+  };
 
   return (
     <BuilderContext
@@ -144,10 +192,12 @@ const Builder = () => {
         <SidePanel
           title={t("sidePanel.title")}
           headerRight={
-            buildId && (
+            (buildId ||
+              Object.values(selectedComponents).some((c) => c !== null)) && (
               <Link
                 className="px-6 py-2 border text-secondary-light cursor-pointer hover:text-muted transition text-sm"
                 to="/builder"
+                onClick={handleNewBuild}
               >
                 {t("sidePanel.newBuild")}
               </Link>

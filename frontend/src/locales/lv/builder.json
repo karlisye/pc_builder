@@ -189,6 +189,7 @@
     "clearBuild": "Notīrīt konfigurāciju",
     "saveAsNewBuild": "Saglabāt kā jaunu konfigurāciju",
     "loginToSave": "Pieslēdzieties, lai saglabātu konfigurāciju.",
-    "loginLink": "Pieslēgties"
+    "loginLink": "Pieslēgties",
+    "restoredNudge": "Mēs atjaunojām jūsu iesākto konfigurāciju. Saglabājiet to tagad, lai tā paliktu jūsu kontā."
   }
 }

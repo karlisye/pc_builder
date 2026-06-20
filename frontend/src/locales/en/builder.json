@@ -189,6 +189,7 @@
     "clearBuild": "Clear Build",
     "saveAsNewBuild": "Save as New Build",
     "loginToSave": "Sign in to save your build.",
-    "loginLink": "Log in"
+    "loginLink": "Log in",
+    "restoredNudge": "We restored your in-progress build. Save it now to keep it on your account."
   }
 }

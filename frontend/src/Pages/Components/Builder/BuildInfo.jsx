@@ -4,7 +4,8 @@ import { useBuilder } from "../../../Contexts/BuilderContext";
 import { useAuth } from "../../../Contexts/AuthContext";
 import axios from "axios";
 import { CloseIcon } from "../Common/Icons";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import { clearDraft } from "../../../lib/builderDraft";
 
 const BuildInfo = () => {
   const { t } = useTranslation(["builder", "common"]);
@@ -25,9 +26,11 @@ const BuildInfo = () => {
     setBuildIssues,
     setNotes,
   } = useBuilder();
+  const [, setSearchParams] = useSearchParams();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [nudgeDismissed, setNudgeDismissed] = useState(false);
 
   const handleRemove = (name) => {
     setSelectedComponents((prev) => ({
@@ -67,6 +70,8 @@ const BuildInfo = () => {
         components,
       });
       setBuildId(res.data.id);
+      setSearchParams({ build: res.data.id });
+      clearDraft();
       setSuccess(
         asNew
           ? t("buildInfo.savedAsNew")
@@ -81,6 +86,7 @@ const BuildInfo = () => {
   };
 
   const handleClear = () => {
+    clearDraft();
     setSelectedComponents((prev) =>
       Object.fromEntries(Object.keys(prev).map((key) => [key, null])),
     );
@@ -143,6 +149,18 @@ const BuildInfo = () => {
 
       {(buildId || hasComponents) && user && (
         <div className="space-y-4 pt-4 border-t border-primary-light">
+          {!buildId && hasComponents && !nudgeDismissed && (
+            <div className="p-3 border border-info/80 bg-info/10 flex items-start justify-between gap-3">
+              <p className="text-info text-sm">{t("buildInfo.restoredNudge")}</p>
+              <button
+                className="text-info/80 hover:text-info cursor-pointer shrink-0"
+                onClick={() => setNudgeDismissed(true)}
+              >
+                <CloseIcon />
+              </button>
+            </div>
+          )}
+
           <div>
             <label className="text-secondary-light" htmlFor="name">
               {t("buildInfo.nameLabel")}
