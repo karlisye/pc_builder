@@ -240,15 +240,19 @@ const Layout = () => {
               <Link to="/builder" className="hover:text-white transition">
                 {t('nav.build')}
               </Link>
-              <Link to="/builds" className="hover:text-white transition">
-                {t('nav.saved')}
-              </Link>
+              {user && (
+                <Link to="/builds" className="hover:text-white transition">
+                  {t('nav.saved')}
+                </Link>
+              )}
               <Link to="/guide" className="hover:text-white transition">
                 {t('nav.guide')}
               </Link>
-              <Link to="/shared" className="hover:text-white transition">
-                {t('nav.shared')}
-              </Link>
+              {user && (
+                <Link to="/shared" className="hover:text-white transition">
+                  {t('nav.shared')}
+                </Link>
+              )}
             </div>
             <a
               href="https://github.com/karlisye"

@@ -142,7 +142,7 @@
     "incompatibleWarning": "Viena vai vairākas komponentes jūsu konfigurācijā nav saderīgas. Lai generētu, nomainiet vai noņemiet tās.",
     "generating": "Generē...",
     "generate": "Generēt",
-    "loginRequired": "Pieslēdzieties, lai izmantotu automātisko konfigurācijas generatoru.",
+    "loginRequired": "Pieslēdzieties, lai izmantotu automātisko konfigurācijas ģeneratoru.",
     "loginLink": "Pieslēgties"
   },
   "componentGenerator": {
@@ -162,7 +162,7 @@
     "incompatibleWarning": "Viena vai vairākas komponentes jūsu konfigurācijā nav saderīgas. Lai generētu, nomainiet vai noņemiet tās.",
     "generating": "Ģenerē...",
     "generate": "Ģenerēt",
-    "loginRequired": "Pieslēdzieties, lai izmantotu automātisko komponentes generatoru.",
+    "loginRequired": "Pieslēdzieties, lai izmantotu automātisko komponentes ģeneratoru.",
     "loginLink": "Pieslēgties"
   },
   "buildInfo": {
