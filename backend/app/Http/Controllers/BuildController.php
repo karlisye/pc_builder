@@ -70,7 +70,7 @@ class BuildController extends Controller
       }
     }
 
-    $componentFks = [];
+    $componentFks = array_fill_keys(array_values($slots), null);
     foreach ($validated['components'] as $type => $dateksId) {
       $componentFks[$slots[$type]] = $dateksId;
     }
