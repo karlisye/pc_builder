@@ -115,6 +115,7 @@
     }
   },
   "buildDesc": {
+    "currentlyEditing": "Tiek rediģēta konfigurācija: \"{{name}}\"",
     "total": "Kopā",
     "components": "Komponentes",
     "compatibility": "Saderība",

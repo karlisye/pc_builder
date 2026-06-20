@@ -6,7 +6,8 @@ import ClosedSection from "../Common/ClosedSection";
 
 const BuildDesc = () => {
   const { t } = useTranslation("builder");
-  const { selectedComponents, warnings, notes, buildIssues } = useBuilder();
+  const { selectedComponents, warnings, notes, buildIssues, buildId, buildName } =
+    useBuilder();
 
   const filled = Object.values(selectedComponents).filter((v) => v !== null);
   const total = filled.reduce((sum, c) => sum + parseFloat(c.price ?? 0), 0);
@@ -18,6 +19,12 @@ const BuildDesc = () => {
 
   return (
     <div className="space-y-4">
+      {buildId && (
+        <p className="text-secondary-light text-sm">
+          {t("buildDesc.currentlyEditing", { name: buildName })}
+        </p>
+      )}
+
       <div className="border border-secondary p-4 space-y-2">
         <div className="flex justify-between items-center">
           <span className="text-secondary-light text-sm">{t("buildDesc.total")}</span>

@@ -115,6 +115,7 @@
     }
   },
   "buildDesc": {
+    "currentlyEditing": "Currently editing \"{{name}}\"",
     "total": "Total",
     "components": "Components",
     "compatibility": "Compatibility",
