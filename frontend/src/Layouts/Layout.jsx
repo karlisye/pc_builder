@@ -191,12 +191,29 @@ const Layout = () => {
             </>
           ) : (
             <>
+              <div className="hidden lg:flex shrink-0">
+                <Link
+                  className="py-4 px-6 bg-primary text-white font-semibold hover:bg-primary-light transition"
+                  to="/"
+                >
+                  BUILDER
+                </Link>
+                <Link className={navLinkClass('/builder')} to="/builder">
+                  {t('nav.build')}
+                </Link>
+              </div>
+
               <Link
-                className="hidden lg:block py-4 px-6 bg-primary text-white font-semibold hover:bg-primary-light transition"
-                to="/"
+                className={`lg:hidden py-4 px-6 transition ${
+                  pathname.startsWith('/builder')
+                    ? 'bg-primary text-white hover:bg-primary-light'
+                    : 'hover:bg-surface text-text'
+                }`}
+                to="/builder"
               >
-                BUILDER
+                {t('nav.build')}
               </Link>
+
               <div className="ml-auto flex items-center">
                 <LanguageSwitcher className="mr-2" />
                 <Link className="py-4 px-6 hover:bg-surface transition" to="/login">
