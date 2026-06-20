@@ -1,4 +1,4 @@
-const STORAGE_KEY = "pcbuilder.draft.v1";
+const STORAGE_KEY = 'pcbuilder.draft.v1';
 const MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 
 const EMPTY_SLOTS = {
@@ -15,15 +15,8 @@ const EMPTY_SLOTS = {
 };
 
 const isEmptyDraft = (draft) => {
-  const hasComponent = Object.values(draft.selectedComponents ?? {}).some(
-    (c) => c !== null,
-  );
-  return (
-    !hasComponent &&
-    !draft.buildName &&
-    !draft.buildNotes &&
-    !draft.buildType
-  );
+  const hasComponent = Object.values(draft.selectedComponents ?? {}).some((c) => c !== null);
+  return !hasComponent && !draft.buildName && !draft.buildNotes && !draft.buildType;
 };
 
 export const loadDraft = () => {
@@ -50,15 +43,16 @@ export const loadDraft = () => {
   }
 
   return {
+    buildId: draft.buildId ?? undefined,
     selectedComponents: { ...EMPTY_SLOTS, ...(draft.selectedComponents ?? {}) },
-    buildName: draft.buildName ?? "",
-    buildNotes: draft.buildNotes ?? "",
-    buildType: draft.buildType ?? "",
+    buildName: draft.buildName ?? '',
+    buildNotes: draft.buildNotes ?? '',
+    buildType: draft.buildType ?? '',
   };
 };
 
-export const saveDraft = ({ selectedComponents, buildName, buildNotes, buildType }) => {
-  const draft = { selectedComponents, buildName, buildNotes, buildType };
+export const saveDraft = ({ buildId, selectedComponents, buildName, buildNotes, buildType }) => {
+  const draft = { buildId, selectedComponents, buildName, buildNotes, buildType };
 
   if (isEmptyDraft(draft)) {
     clearDraft();
@@ -66,12 +60,9 @@ export const saveDraft = ({ selectedComponents, buildName, buildNotes, buildType
   }
 
   try {
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({ ...draft, savedAt: Date.now() }),
-    );
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...draft, savedAt: Date.now() }));
   } catch {
-    // localStorage unavailable (e.g. private mode quota) — fail silently
+    // localStorage unavailable (e.g. private mode) — fail silently
   }
 };
 

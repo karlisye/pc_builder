@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ComponentCard from "./Components/Builder/ComponentCard";
 import BuildDesc from "./Components/Builder/BuildDesc";
@@ -61,7 +61,7 @@ const Builder = () => {
           cooler: null,
         },
       );
-      setBuildId(undefined);
+      setBuildId(draft?.buildId ?? undefined);
       setBuildName(draft?.buildName ?? "");
       setBuildNotes(draft?.buildNotes ?? "");
       setBuildType(draft?.buildType ?? "");
@@ -73,22 +73,31 @@ const Builder = () => {
       .then((res) => {
         const build = res.data.build;
         if (!build) return;
-        setSelectedComponents({
-          cpu: build.cpu ?? null,
-          motherboard: build.motherboard ?? null,
-          ram: build.ram ?? null,
-          gpu: build.gpu ?? null,
-          psu: build.psu ?? null,
-          ssd: build.ssd ?? null,
-          hdd: build.hdd ?? null,
-          case: build.pc_case ?? null,
-          fan: build.fan ?? null,
-          cooler: build.cooler ?? null,
-        });
+
+        const draft = loadDraft();
+        const hasMatchingDraft =
+          draft && String(draft.buildId) === String(build.id);
+
+        setSelectedComponents(
+          hasMatchingDraft
+            ? draft.selectedComponents
+            : {
+                cpu: build.cpu ?? null,
+                motherboard: build.motherboard ?? null,
+                ram: build.ram ?? null,
+                gpu: build.gpu ?? null,
+                psu: build.psu ?? null,
+                ssd: build.ssd ?? null,
+                hdd: build.hdd ?? null,
+                case: build.pc_case ?? null,
+                fan: build.fan ?? null,
+                cooler: build.cooler ?? null,
+              },
+        );
         setBuildId(build.id);
-        setBuildName(build.name ?? "");
-        setBuildNotes(build.notes ?? "");
-        setBuildType(build.type ?? "");
+        setBuildName(hasMatchingDraft ? draft.buildName : build.name ?? "");
+        setBuildNotes(hasMatchingDraft ? draft.buildNotes : build.notes ?? "");
+        setBuildType(hasMatchingDraft ? draft.buildType : build.type ?? "");
       });
   }, [searchParams]);
 
@@ -96,18 +105,20 @@ const Builder = () => {
     validateCompatibility();
   }, [selectedComponents]);
 
-  useEffect(() => {
-    if (buildId) {
-      clearDraft();
-      return;
-    }
+  const draftRef = useRef(null);
+  draftRef.current = { buildId, selectedComponents, buildName, buildNotes, buildType };
 
+  useEffect(() => {
     const timer = setTimeout(() => {
-      saveDraft({ selectedComponents, buildName, buildNotes, buildType });
+      saveDraft(draftRef.current);
     }, 500);
 
     return () => clearTimeout(timer);
   }, [selectedComponents, buildName, buildNotes, buildType, buildId]);
+
+  useEffect(() => {
+    return () => saveDraft(draftRef.current);
+  }, []);
 
   const validateCompatibility = async () => {
     const selected = Object.fromEntries(

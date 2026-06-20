@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useBuilder } from "../../../Contexts/BuilderContext";
 import { useAuth } from "../../../Contexts/AuthContext";
@@ -6,6 +6,10 @@ import axios from "axios";
 import { CloseIcon } from "../Common/Icons";
 import { Link, useSearchParams } from "react-router-dom";
 import { clearDraft } from "../../../lib/builderDraft";
+
+// Tracks whether the restore nudge has already been shown this page load,
+// so it only appears once on a real page refresh and not on every SPA nav.
+let nudgeShownThisLoad = false;
 
 const BuildInfo = () => {
   const { t } = useTranslation(["builder", "common"]);
@@ -30,7 +34,21 @@ const BuildInfo = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [nudgeDismissed, setNudgeDismissed] = useState(false);
+  const [showNudge, setShowNudge] = useState(false);
+
+  const hasComponents = Object.values(selectedComponents).some(
+    (v) => v !== null,
+  );
+
+  useEffect(() => {
+    if (nudgeShownThisLoad || buildId || !hasComponents) return;
+
+    nudgeShownThisLoad = true;
+    setShowNudge(true);
+
+    const timer = setTimeout(() => setShowNudge(false), 5000);
+    return () => clearTimeout(timer);
+  }, [buildId, hasComponents]);
 
   const handleRemove = (name) => {
     setSelectedComponents((prev) => ({
@@ -98,10 +116,6 @@ const BuildInfo = () => {
     setNotes([]);
   };
 
-  const hasComponents = Object.values(selectedComponents).some(
-    (v) => v !== null,
-  );
-
   return (
     <div className="space-y-4 mt-4">
       {hasComponents ? (
@@ -149,12 +163,12 @@ const BuildInfo = () => {
 
       {(buildId || hasComponents) && user && (
         <div className="space-y-4 pt-4 border-t border-primary-light">
-          {!buildId && hasComponents && !nudgeDismissed && (
+          {showNudge && (
             <div className="p-3 border border-info/80 bg-info/10 flex items-start justify-between gap-3">
               <p className="text-info text-sm">{t("buildInfo.restoredNudge")}</p>
               <button
                 className="text-info/80 hover:text-info cursor-pointer shrink-0"
-                onClick={() => setNudgeDismissed(true)}
+                onClick={() => setShowNudge(false)}
               >
                 <CloseIcon />
               </button>
