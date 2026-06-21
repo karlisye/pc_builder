@@ -3,22 +3,22 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Modal from "../Common/Modal";
 import { useAuth } from "../../../Contexts/AuthContext";
+import { useToast } from "../../../Contexts/ToastContext";
 
 const AccountSettings = () => {
   const { t } = useTranslation("profile");
   const { user, setUser } = useAuth();
+  const { addToast } = useToast();
   const [editActive, setEditActive] = useState(false);
   const [name, setName] = useState(user?.name ?? "");
   const [email, setEmail] = useState(user?.email ?? "");
 
-  const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
 
   const [oldPass, setOldPass] = useState("");
   const [newPass, setNewPass] = useState("");
   const [newPassConfirm, setNewPassConfirm] = useState("");
 
-  const [passSuccess, setPassSuccess] = useState("");
   const [passError, setPassError] = useState("");
 
   const [deleting, setDeleting] = useState(false);
@@ -45,9 +45,8 @@ const AccountSettings = () => {
       });
       if (res.status === 200) {
         setUser(res.data);
-        setSuccess(t("accountSettings.infoUpdated"));
         setError("");
-        setTimeout(() => setSuccess(""), 3000);
+        addToast(t("accountSettings.infoUpdated"), { type: "success" });
       }
     } catch (err) {
       const errors = err.response?.data?.errors;
@@ -70,9 +69,8 @@ const AccountSettings = () => {
         new_password_confirmation: newPassConfirm,
       });
       if (res.status === 200) {
-        setPassSuccess(t("accountSettings.passwordUpdated"));
         setPassError("");
-        setTimeout(() => setPassSuccess(""), 3000);
+        addToast(t("accountSettings.passwordUpdated"), { type: "success" });
       }
     } catch (err) {
       const errors = err.response?.data?.errors;
@@ -150,7 +148,6 @@ const AccountSettings = () => {
           </div>
         </div>
 
-        {success && <p className="text-success text-sm">{success}</p>}
         {error && <p className="text-danger text-sm">{error}</p>}
 
         <div className="space-x-2">
@@ -221,7 +218,6 @@ const AccountSettings = () => {
           </div>
         </div>
 
-        {passSuccess && <p className="text-success text-sm">{passSuccess}</p>}
         {passError && <p className="text-danger text-sm">{passError}</p>}
 
         <button
