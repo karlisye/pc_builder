@@ -21,8 +21,8 @@ class BuildController extends Controller
 
     return response()->json([
       'success' => $build->is_public
-        ? 'Build is now public!'
-        : 'Build is now private.',
+        ? __('messages.build_now_public')
+        : __('messages.build_now_private'),
       'is_public' => $build->is_public,
     ]);
   }

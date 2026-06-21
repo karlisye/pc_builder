@@ -3,11 +3,12 @@ import { useTranslation } from "react-i18next";
 import Modal from "../Common/Modal";
 import axios from "axios";
 import { HeartIcon, SavedIcon, StarIcon } from "../Common/Icons";
+import { useToast } from "../../../Contexts/ToastContext";
 
 const BuildVisibility = ({ build, setBuild }) => {
   const { t } = useTranslation("pages");
+  const { addToast } = useToast();
   const [publishing, setPublishing] = useState(false);
-  const [success, setSuccess] = useState("");
 
   const publish = async () => {
     try {
@@ -18,12 +19,11 @@ const BuildVisibility = ({ build, setBuild }) => {
         is_public: res.data.is_public,
       }));
 
-      setSuccess(res.data.success);
+      addToast(res.data.success, { type: "success" });
     } catch (err) {
-      console.error(err);
+      addToast(err.response?.data?.error ?? err.message, { type: "danger" });
     } finally {
       setPublishing(false);
-      setTimeout(() => setSuccess(""), 3000);
     }
   };
 
@@ -78,7 +78,6 @@ const BuildVisibility = ({ build, setBuild }) => {
           </>
         )}
       </div>
-      {success && <p className="block text-success">{success}</p>}
 
       {publishing && (
         <Modal close={() => setPublishing(false)}>
