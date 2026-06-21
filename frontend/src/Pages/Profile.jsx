@@ -5,9 +5,11 @@ import Modal from "./Components/Common/Modal";
 import axios from "axios";
 import BuildsList from "./Components/Profile/BuildsList";
 import { formatDate } from "../lib/formatDate";
+import { useToast } from "../Contexts/ToastContext";
 
 const Profile = () => {
   const { t } = useTranslation("profile");
+  const { addToast } = useToast();
   const [user, setUser] = useState(null);
   const [publicBuildData, setPublicBuildData] = useState(null);
   const [privateBuildData, setPrivateBuildData] = useState(null);
@@ -20,12 +22,9 @@ const Profile = () => {
       setUser(res.data.user);
       setPublicBuildData(res.data.publicBuildData);
       setPrivateBuildData(res.data.privateBuildData);
-      setDescription(res.data.user.description ?? t("overview.aboutMePlaceholder"));
+      setDescription(res.data.user.description ?? "");
     });
   }, []);
-
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
   const fetchProfile = (publicPage = 1, privatePage = 1) =>
     axios
@@ -37,10 +36,13 @@ const Profile = () => {
 
   const publish = async () => {
     try {
-      await axios.patch(`/api/builds/${build.id}/publish`);
+      const res = await axios.patch(`/api/builds/${build.id}/publish`);
       fetchProfile();
+      addToast(res.data.success, { type: "success" });
     } catch (err) {
-      console.error(err);
+      addToast(err.response?.data?.error ?? t("overview.publishError"), {
+        type: "danger",
+      });
     } finally {
       setPublishing(false);
     }
@@ -51,14 +53,11 @@ const Profile = () => {
       await axios.patch(`/api/users/${user.id}`, {
         description,
       });
-      setSuccess(t("overview.saveSuccess"));
+      addToast(t("overview.saveSuccess"), { type: "success" });
     } catch (err) {
-      setError(err.response.data.errors ?? t("overview.saveError"));
-    } finally {
-      setTimeout(() => {
-        setError("");
-        setSuccess("");
-      }, 3000);
+      addToast(err.response?.data?.message ?? t("overview.saveError"), {
+        type: "danger",
+      });
     }
   };
 
@@ -86,6 +85,7 @@ const Profile = () => {
             className="border border-border text-muted w-full min-h-40 p-2 focus:outline outline-border"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            placeholder={t("overview.aboutMePlaceholder")}
             id=""
           ></textarea>
 
@@ -97,9 +97,6 @@ const Profile = () => {
             >
               {t("overview.save")}
             </button>
-
-            {error && <p className="text-danger">{error}</p>}
-            {success && <p className="text-success">{success}</p>}
           </div>
         </div>
 

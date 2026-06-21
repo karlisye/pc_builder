@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import DetailPanel from "./Components/Saved/DetailPanel";
 import Modal from "./Components/Common/Modal";
 import BuildVisibility from "./Components/Saved/BuildVisibility";
@@ -27,6 +27,7 @@ const SLOT_KEYS = [
 const SavedBuilds = () => {
   const { t } = useTranslation("pages");
   const { addToast } = useToast();
+  const [searchParams] = useSearchParams();
   const [builds, setBuilds] = useState([]);
   const [selectedBuild, setSelectedBuild] = useState(null);
   const [loadingBuild, setLoadingBuild] = useState(false);
@@ -34,6 +35,13 @@ const SavedBuilds = () => {
   useEffect(() => {
     axios.get("/api/builds").then((res) => setBuilds(res.data));
   }, []);
+
+  useEffect(() => {
+    const buildId = searchParams.get("buildId");
+    if (buildId) {
+      handleSelect({ id: buildId });
+    }
+  }, [searchParams]);
   const [editing, setEditing] = useState(false);
   const [editData, setEditData] = useState({ name: "", notes: "" });
   const [expandedSlot, setExpandedSlot] = useState(null);
