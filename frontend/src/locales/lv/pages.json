@@ -145,6 +145,7 @@
       "bookmarkError": "Neizdevās pievienot grāmatzīmēm",
       "reviewError": "Neizdevās iesniegt vērtējumu",
       "compatibilityIssues": "Saderības problēmas",
+      "buildIncompatible": "Dažas komponentes nav saderīgas",
       "notes": "Piezīmes",
       "none": "Nav",
       "likeTitle": "Atzīmēt \"patīk\" šai publikācijai",

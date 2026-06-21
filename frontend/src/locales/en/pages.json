@@ -145,6 +145,7 @@
       "bookmarkError": "Failed to bookmark",
       "reviewError": "Failed to submit review",
       "compatibilityIssues": "Compatibility Issues",
+      "buildIncompatible": "Some components are incompatible",
       "notes": "Notes",
       "none": "None",
       "likeTitle": "Like this post",
