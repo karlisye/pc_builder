@@ -1,22 +1,60 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+const getPageNumbers = (currentPage, lastPage) => {
+  const pages = new Set([1, lastPage]);
+
+  for (let i = currentPage - 2; i <= currentPage + 2; i++) {
+    if (i >= 1 && i <= lastPage) pages.add(i);
+  }
+
+  return Array.from(pages).sort((a, b) => a - b);
+};
+
 const PaginationControls = ({ pagination, setPage }) => {
   const { t } = useTranslation("common");
+  const { currentPage, lastPage } = pagination;
+  const pageNumbers = getPageNumbers(currentPage, lastPage);
+
   return (
-    <div className="flex justify-between items-center mt-4">
+    <div
+      className="flex justify-between items-center mt-4 gap-2"
+      aria-label={t("page", { current: currentPage, total: lastPage })}
+    >
       <button
-        disabled={pagination.currentPage === 1}
+        disabled={currentPage === 1}
         onClick={() => setPage((p) => p - 1)}
         className="text-muted hover:text-text disabled:opacity-30 transition cursor-pointer"
       >
         {t("previous")}
       </button>
-      <span className="text-muted text-sm">
-        {t("page", { current: pagination.currentPage, total: pagination.lastPage })}
-      </span>
+
+      <div className="flex items-center gap-1">
+        {pageNumbers.map((page, i) => {
+          const prevPage = pageNumbers[i - 1];
+          const showEllipsis = prevPage !== undefined && page - prevPage > 1;
+
+          return (
+            <React.Fragment key={page}>
+              {showEllipsis && <span className="text-muted px-1">…</span>}
+              <button
+                onClick={() => setPage(page)}
+                disabled={page === currentPage}
+                className={`min-w-8 px-2 py-1 text-sm transition cursor-pointer disabled:cursor-default ${
+                  page === currentPage
+                    ? "bg-primary text-white"
+                    : "text-muted hover:text-text"
+                }`}
+              >
+                {page}
+              </button>
+            </React.Fragment>
+          );
+        })}
+      </div>
+
       <button
-        disabled={pagination.currentPage === pagination.lastPage}
+        disabled={currentPage === lastPage}
         onClick={() => setPage((p) => p + 1)}
         className="text-muted hover:text-text disabled:opacity-30 transition cursor-pointer"
       >

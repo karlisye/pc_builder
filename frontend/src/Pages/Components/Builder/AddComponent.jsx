@@ -29,13 +29,12 @@ const AddComponent = () => {
   useEffect(() => {
     if (!currentCompToAdd) return;
     setPage(1);
-    fetchComponents(1);
   }, [currentCompToAdd, debouncedSearch, filters, sort]);
 
   useEffect(() => {
-    if (!currentCompToAdd || page === 1) return;
+    if (!currentCompToAdd) return;
     fetchComponents(page);
-  }, [page]);
+  }, [currentCompToAdd, debouncedSearch, filters, sort, page]);
 
   const fetchComponents = async (pageNum = 1) => {
     setLoading(true);
