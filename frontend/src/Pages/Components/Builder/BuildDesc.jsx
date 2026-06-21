@@ -5,7 +5,7 @@ import { ArrowIcon } from "../Common/Icons";
 import ClosedSection from "../Common/ClosedSection";
 
 const BuildDesc = () => {
-  const { t } = useTranslation("builder");
+  const { t } = useTranslation(["builder", "common"]);
   const { selectedComponents, warnings, notes, buildIssues, buildId, buildName } =
     useBuilder();
 
@@ -53,8 +53,11 @@ const BuildDesc = () => {
                       key={`${slot}-${i}`}
                       className="border border-danger/80 bg-danger/10 p-4 space-y-2"
                     >
-                      <p className="text-danger text-sm capitalize">
-                        {slot}: {issue}
+                      <p className="text-danger text-sm">
+                        <span className="font-medium">
+                          {t(`common:components.${slot}`, { defaultValue: slot })}:{" "}
+                        </span>
+                        {issue}
                       </p>
                     </div>
                   )),
@@ -84,8 +87,11 @@ const BuildDesc = () => {
                       key={`${slot}-${i}`}
                       className="border border-danger/80 bg-danger/10 p-4"
                     >
-                      <p className="text-danger text-sm capitalize">
-                        {slot}: {issue}
+                      <p className="text-danger text-sm">
+                        <span className="font-medium">
+                          {t(`common:components.${slot}`, { defaultValue: slot })}:{" "}
+                        </span>
+                        {issue}
                       </p>
                     </div>
                   )),

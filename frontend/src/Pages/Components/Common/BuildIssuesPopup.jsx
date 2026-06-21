@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 
 const BuildIssuesPopup = ({ issues, x, y }) => {
-  const { t } = useTranslation("pages");
+  const { t } = useTranslation(["pages", "common"]);
 
   const popupWidth = 288;
   const offset = 12;
@@ -29,7 +29,9 @@ const BuildIssuesPopup = ({ issues, x, y }) => {
       {Object.entries(issues).map(([slot, slotIssues]) =>
         slotIssues.map((issue, i) => (
           <p key={`${slot}-${i}`} className="text-sm text-danger">
-            <span className="capitalize font-medium">{slot}: </span>
+            <span className="font-medium">
+              {t(`common:components.${slot}`, { defaultValue: slot })}:{" "}
+            </span>
             {issue}
           </p>
         )),
