@@ -3,7 +3,8 @@
     "title": "BUILDER",
     "newBuild": "New Build",
     "guideHint": "Unsure where to start? Head on over to the",
-    "guideLink": "guide"
+    "guideLink": "guide",
+    "loadBuildError": "Failed to load build"
   },
   "budgetSlider": {
     "anyBudget": "Any Budget",

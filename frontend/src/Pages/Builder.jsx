@@ -12,9 +12,11 @@ import ComponentGenerator from "./Components/Builder/ComponentGenerator";
 import SidePanel from "./Components/Common/SidePanel";
 import axios from "axios";
 import { loadDraft, saveDraft, clearDraft } from "../lib/builderDraft";
+import { useToast } from "../Contexts/ToastContext";
 
 const Builder = () => {
   const { t } = useTranslation(["builder", "common"]);
+  const { addToast } = useToast();
   const [searchParams] = useSearchParams();
   const [currentCompToAdd, setCurrentCompToAdd] = useState(null);
   const [selectedComponents, setSelectedComponents] = useState({
@@ -74,7 +76,10 @@ const Builder = () => {
       .get("/api/builder", { params: { build: buildParam, shared: sharedParam } })
       .then((res) => {
         const build = res.data.build;
-        if (!build) return;
+        if (!build) {
+          addToast(t("sidePanel.loadBuildError"), { type: "danger" });
+          return;
+        }
 
         const draft = loadDraft();
         const hasMatchingDraft =
@@ -101,6 +106,9 @@ const Builder = () => {
         setBuildName(hasMatchingDraft ? draft.buildName : build.name ?? "");
         setBuildNotes(hasMatchingDraft ? draft.buildNotes : build.notes ?? "");
         setBuildType(hasMatchingDraft ? draft.buildType : build.type ?? "");
+      })
+      .catch(() => {
+        addToast(t("sidePanel.loadBuildError"), { type: "danger" });
       });
   }, [searchParams]);
 

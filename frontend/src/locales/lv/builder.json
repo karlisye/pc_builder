@@ -3,7 +3,8 @@
     "title": "VEIDOTĀJS",
     "newBuild": "Jauna konfigurācija",
     "guideHint": "Nezini, ar ko sākt? Apskati",
-    "guideLink": "ceļvedi"
+    "guideLink": "ceļvedi",
+    "loadBuildError": "Neizdevās ielādēt konfigurāciju"
   },
   "budgetSlider": {
     "anyBudget": "Bez budžeta ierobežojuma",

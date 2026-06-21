@@ -119,6 +119,7 @@
     "deleteBuild": "Dzēst konfigurāciju",
     "buy": "Pirkt",
     "deleteConfirmTitle": "Vai tiešām vēlies dzēst šo konfigurāciju?",
+    "deleteError": "Neizdevās izdzēst konfigurāciju",
     "slotLabels": {
       "cpu": "Procesors",
       "motherboard": "Mātesplate",
@@ -144,6 +145,7 @@
       "likeError": "Neizdevās atzīmēt \"patīk\"",
       "bookmarkError": "Neizdevās pievienot grāmatzīmēm",
       "reviewError": "Neizdevās iesniegt vērtējumu",
+      "makePrivateError": "Neizdevās atjaunot konfigurācijas redzamību",
       "compatibilityIssues": "Saderības problēmas",
       "buildIncompatible": "Dažas komponentes nav saderīgas",
       "notes": "Piezīmes",

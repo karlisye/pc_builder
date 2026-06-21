@@ -8,13 +8,13 @@ import StarRating from '../Common/StarRating';
 import Modal from '../Common/Modal';
 import BuildIssuesPopup from '../Common/BuildIssuesPopup';
 import { formatDate } from '../../../lib/formatDate';
+import { useToast } from '../../../Contexts/ToastContext';
 
 const BuildCard = ({ build }) => {
   const { t } = useTranslation(['pages', 'common']);
   const { user } = useAuth();
+  const { addToast } = useToast();
 
-  const [success, setSuccess] = useState('');
-  const [error, setError] = useState('');
   const [privating, setPrivating] = useState(false);
 
   const [liked, setLiked] = useState(build.liked ?? false);
@@ -45,10 +45,11 @@ const BuildCard = ({ build }) => {
         notes: build.notes,
         components,
       });
-      setSuccess(t('components.buildCard.saveSuccess'));
-      setTimeout(() => setSuccess(''), 5000);
+      addToast(t('components.buildCard.saveSuccess'), { type: 'success' });
     } catch (err) {
-      setError(err.response?.data?.error ?? t('components.buildCard.saveError'));
+      addToast(err.response?.data?.error ?? t('components.buildCard.saveError'), {
+        type: 'danger',
+      });
     }
   };
 
@@ -60,7 +61,9 @@ const BuildCard = ({ build }) => {
         setLikesCount((prev) => (liked ? prev - 1 : prev + 1));
       }
     } catch (err) {
-      setError(err.response?.data?.error ?? t('components.buildCard.likeError'));
+      addToast(err.response?.data?.error ?? t('components.buildCard.likeError'), {
+        type: 'danger',
+      });
     }
   };
 
@@ -72,7 +75,9 @@ const BuildCard = ({ build }) => {
         setBookmarksCount((prev) => (bookmarked ? prev - 1 : prev + 1));
       }
     } catch (err) {
-      setError(err.response?.data?.error ?? t('components.buildCard.bookmarkError'));
+      addToast(err.response?.data?.error ?? t('components.buildCard.bookmarkError'), {
+        type: 'danger',
+      });
     }
   };
 
@@ -81,18 +86,22 @@ const BuildCard = ({ build }) => {
     try {
       await axios.post(`/api/shared/${build.id}/review`, { rating });
     } catch (err) {
-      setError(err.response?.data?.error ?? t('components.buildCard.reviewError'));
+      addToast(err.response?.data?.error ?? t('components.buildCard.reviewError'), {
+        type: 'danger',
+      });
     }
   };
 
   const makePrivate = async () => {
     try {
       const res = await axios.patch(`/api/builds/${build.id}/publish`);
-      setSuccess(res.data.success);
       setPrivating(false);
+      addToast(res.data.success, { type: 'success' });
       setTimeout(() => window.location.reload(), 1000);
     } catch (err) {
-      console.error(err);
+      addToast(err.response?.data?.error ?? t('components.buildCard.makePrivateError'), {
+        type: 'danger',
+      });
     }
   };
 
@@ -267,9 +276,6 @@ const BuildCard = ({ build }) => {
             </div>
           </div>
         </div>
-
-        {success && <p className="text-success ml-auto px-2">{success}</p>}
-        {error && <p className="text-danger ml-auto px-2">{error}</p>}
 
         <div className="bg-primary mt-auto flex">
           <Link

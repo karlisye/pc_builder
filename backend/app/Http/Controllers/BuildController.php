@@ -13,7 +13,7 @@ class BuildController extends Controller
   public function publish(Request $request, Build $build): JsonResponse
   {
     if ($build->user_id !== $request->user()->id) {
-      return response()->json(['error' => 'Not found.'], 404);
+      return response()->json(['error' => __('messages.not_found')], 404);
     }
 
     $build->is_public = !$build->is_public;
@@ -111,7 +111,7 @@ class BuildController extends Controller
   public function show(Request $request, Build $build): JsonResponse
   {
     if ($request->user() && $build->user_id !== $request->user()->id) {
-      return response()->json(['error' => 'Not found.'], 404);
+      return response()->json(['error' => __('messages.not_found')], 404);
     }
 
     return response()->json($build->loadComponents()->loadCount('likes')->loadCount('bookmarks')->loadAvg('reviews', 'rating'));
@@ -120,7 +120,7 @@ class BuildController extends Controller
   public function update(Request $request, Build $build): JsonResponse
   {
     if ($request->user() && $build->user_id !== $request->user()->id) {
-      return response()->json(['error' => 'Not found.'], 404);
+      return response()->json(['error' => __('messages.not_found')], 404);
     }
 
     $validated = $request->validate([
@@ -136,12 +136,12 @@ class BuildController extends Controller
   public function destroy(Request $request, Build $build): JsonResponse
   {
     if ($request->user() && $build->user_id !== $request->user()->id) {
-      return response()->json(['error' => 'Not found.'], 404);
+      return response()->json(['error' => __('messages.not_found')], 404);
     }
 
     $build->delete();
 
-    return response()->json(['message' => 'Build deleted successfully.']);
+    return response()->json(['message' => __('messages.build_deleted')]);
   }
 
   private function calculateTotalPrice(array $components): float

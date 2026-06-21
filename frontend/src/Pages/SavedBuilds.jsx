@@ -9,6 +9,7 @@ import { ArrowIcon, CloseIcon, InfoIcon } from "./Components/Common/Icons";
 import SidePanel from "./Components/Common/SidePanel";
 import BuildIssuesPopup from "./Components/Common/BuildIssuesPopup";
 import { formatDate } from "../lib/formatDate";
+import { useToast } from "../Contexts/ToastContext";
 
 const SLOT_KEYS = [
   "cpu",
@@ -25,6 +26,7 @@ const SLOT_KEYS = [
 
 const SavedBuilds = () => {
   const { t } = useTranslation("pages");
+  const { addToast } = useToast();
   const [builds, setBuilds] = useState([]);
   const [selectedBuild, setSelectedBuild] = useState(null);
   const [loadingBuild, setLoadingBuild] = useState(false);
@@ -102,9 +104,16 @@ const SavedBuilds = () => {
     axios.get("/api/builds").then((res) => setBuilds(res.data));
 
   const handleDelete = async (id) => {
-    await axios.delete(`/api/builds/${id}`);
-    if (selectedBuild?.id === id) setSelectedBuild(null);
-    refreshBuilds();
+    try {
+      const res = await axios.delete(`/api/builds/${id}`);
+      if (selectedBuild?.id === id) setSelectedBuild(null);
+      refreshBuilds();
+      addToast(res.data.message, { type: "success" });
+    } catch (err) {
+      addToast(err.response?.data?.error ?? t("savedBuilds.deleteError"), {
+        type: "danger",
+      });
+    }
   };
 
   const handleSaveEdit = async () => {
