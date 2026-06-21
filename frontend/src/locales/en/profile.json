@@ -13,6 +13,7 @@
     "publishActionPublish": "publish",
     "makePrivate": "Make Private",
     "publish": "Publish",
+    "publishError": "Failed to update build visibility",
     "cancel": "Cancel"
   },
   "buildsList": {

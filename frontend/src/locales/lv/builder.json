@@ -3,7 +3,8 @@
     "title": "VEIDOTĀJS",
     "newBuild": "Jauna konfigurācija",
     "guideHint": "Nezini, ar ko sākt? Apskati",
-    "guideLink": "ceļvedi"
+    "guideLink": "ceļvedi",
+    "loadBuildError": "Neizdevās ielādēt konfigurāciju"
   },
   "budgetSlider": {
     "anyBudget": "Bez budžeta ierobežojuma",
@@ -115,6 +116,7 @@
     }
   },
   "buildDesc": {
+    "currentlyEditing": "Tiek rediģēta konfigurācija: \"{{name}}\"",
     "total": "Kopā",
     "components": "Komponentes",
     "compatibility": "Saderība",
@@ -144,6 +146,7 @@
     "incompatibleWarning": "Viena vai vairākas komponentes jūsu konfigurācijā nav saderīgas. Lai generētu, nomainiet vai noņemiet tās.",
     "generating": "Generē...",
     "generate": "Generēt",
+    "generateSuccess": "Konfigurācija veiksmīgi generēta",
     "loginRequired": "Pieslēdzieties, lai izmantotu automātisko konfigurācijas ģeneratoru.",
     "loginLink": "Pieslēgties"
   },
@@ -164,6 +167,7 @@
     "incompatibleWarning": "Viena vai vairākas komponentes jūsu konfigurācijā nav saderīgas. Lai generētu, nomainiet vai noņemiet tās.",
     "generating": "Ģenerē...",
     "generate": "Ģenerēt",
+    "generateSuccess": "Komponente veiksmīgi generēta",
     "loginRequired": "Pieslēdzieties, lai izmantotu automātisko komponentes ģeneratoru.",
     "loginLink": "Pieslēgties"
   },
@@ -185,10 +189,11 @@
     "rendering": "Renderēšana",
     "streaming": "Straumēšana",
     "saving": "Saglabā...",
-    "saveBuild": "Saglabāt konfigurāciju",
-    "clearBuild": "Notīrīt konfigurāciju",
+    "saveBuild": "Saglabāt",
+    "clearBuild": "Notīrīt",
     "saveAsNewBuild": "Saglabāt kā jaunu konfigurāciju",
     "loginToSave": "Pieslēdzieties, lai saglabātu konfigurāciju.",
-    "loginLink": "Pieslēgties"
+    "loginLink": "Pieslēgties",
+    "restoredNudge": "Mēs atjaunojām jūsu iesākto konfigurāciju. Saglabājiet to tagad, lai tā paliktu jūsu kontā."
   }
 }

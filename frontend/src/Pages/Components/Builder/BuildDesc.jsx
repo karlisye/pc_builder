@@ -5,8 +5,9 @@ import { ArrowIcon } from "../Common/Icons";
 import ClosedSection from "../Common/ClosedSection";
 
 const BuildDesc = () => {
-  const { t } = useTranslation("builder");
-  const { selectedComponents, warnings, notes, buildIssues } = useBuilder();
+  const { t } = useTranslation(["builder", "common"]);
+  const { selectedComponents, warnings, notes, buildIssues, buildId, buildName } =
+    useBuilder();
 
   const filled = Object.values(selectedComponents).filter((v) => v !== null);
   const total = filled.reduce((sum, c) => sum + parseFloat(c.price ?? 0), 0);
@@ -18,6 +19,12 @@ const BuildDesc = () => {
 
   return (
     <div className="space-y-4">
+      {buildId && (
+        <p className="text-secondary-light text-sm">
+          {t("buildDesc.currentlyEditing", { name: buildName })}
+        </p>
+      )}
+
       <div className="border border-secondary p-4 space-y-2">
         <div className="flex justify-between items-center">
           <span className="text-secondary-light text-sm">{t("buildDesc.total")}</span>
@@ -46,8 +53,11 @@ const BuildDesc = () => {
                       key={`${slot}-${i}`}
                       className="border border-danger/80 bg-danger/10 p-4 space-y-2"
                     >
-                      <p className="text-danger text-sm capitalize">
-                        {slot}: {issue}
+                      <p className="text-danger text-sm">
+                        <span className="font-medium">
+                          {t(`common:components.${slot}`, { defaultValue: slot })}:{" "}
+                        </span>
+                        {issue}
                       </p>
                     </div>
                   )),
@@ -77,8 +87,11 @@ const BuildDesc = () => {
                       key={`${slot}-${i}`}
                       className="border border-danger/80 bg-danger/10 p-4"
                     >
-                      <p className="text-danger text-sm capitalize">
-                        {slot}: {issue}
+                      <p className="text-danger text-sm">
+                        <span className="font-medium">
+                          {t(`common:components.${slot}`, { defaultValue: slot })}:{" "}
+                        </span>
+                        {issue}
                       </p>
                     </div>
                   )),

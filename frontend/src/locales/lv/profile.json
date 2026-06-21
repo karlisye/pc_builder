@@ -13,6 +13,7 @@
     "publishActionPublish": "publicēt",
     "makePrivate": "Padarīt privātu",
     "publish": "Publicēt",
+    "publishError": "Neizdevās atjaunot konfigurācijas redzamību",
     "cancel": "Atcelt"
   },
   "buildsList": {

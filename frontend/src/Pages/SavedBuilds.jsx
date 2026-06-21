@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import DetailPanel from "./Components/Saved/DetailPanel";
 import Modal from "./Components/Common/Modal";
 import BuildVisibility from "./Components/Saved/BuildVisibility";
-import { ArrowIcon, CloseIcon } from "./Components/Common/Icons";
+import { ArrowIcon, CloseIcon, InfoIcon } from "./Components/Common/Icons";
 import SidePanel from "./Components/Common/SidePanel";
+import BuildIssuesPopup from "./Components/Common/BuildIssuesPopup";
 import { formatDate } from "../lib/formatDate";
+import { useToast } from "../Contexts/ToastContext";
 
 const SLOT_KEYS = [
   "cpu",
@@ -24,6 +26,8 @@ const SLOT_KEYS = [
 
 const SavedBuilds = () => {
   const { t } = useTranslation("pages");
+  const { addToast } = useToast();
+  const [searchParams] = useSearchParams();
   const [builds, setBuilds] = useState([]);
   const [selectedBuild, setSelectedBuild] = useState(null);
   const [loadingBuild, setLoadingBuild] = useState(false);
@@ -31,11 +35,48 @@ const SavedBuilds = () => {
   useEffect(() => {
     axios.get("/api/builds").then((res) => setBuilds(res.data));
   }, []);
+
+  useEffect(() => {
+    const buildId = searchParams.get("buildId");
+    if (buildId) {
+      handleSelect({ id: buildId });
+    }
+  }, [searchParams]);
   const [editing, setEditing] = useState(false);
   const [editData, setEditData] = useState({ name: "", notes: "" });
   const [expandedSlot, setExpandedSlot] = useState(null);
   const [deleting, setDeleting] = useState(null);
   const [expanded, setExpanded] = useState(false);
+  const [buildIssues, setBuildIssues] = useState({});
+  const [issuesPopup, setIssuesPopup] = useState(null);
+
+  useEffect(() => {
+    if (!selectedBuild) {
+      setBuildIssues({});
+      return;
+    }
+
+    const selected = Object.fromEntries(
+      SLOT_KEYS.map((slot) => [slot === "pc_case" ? "case" : slot, selectedBuild[slot]])
+        .filter(([, component]) => component !== null && component !== undefined)
+        .map(([key, component]) => [key, component.dateks_id]),
+    );
+
+    if (Object.keys(selected).length === 0) {
+      setBuildIssues({});
+      return;
+    }
+
+    axios
+      .post("/api/builder/validate", { selected })
+      .then((res) => setBuildIssues(res.data.issues))
+      .catch(() => setBuildIssues({}));
+  }, [selectedBuild]);
+
+  const handleIssuesPopup = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setIssuesPopup({ x: rect.left, y: rect.bottom });
+  };
 
   useEffect(() => {
     if (expanded) {
@@ -71,9 +112,16 @@ const SavedBuilds = () => {
     axios.get("/api/builds").then((res) => setBuilds(res.data));
 
   const handleDelete = async (id) => {
-    await axios.delete(`/api/builds/${id}`);
-    if (selectedBuild?.id === id) setSelectedBuild(null);
-    refreshBuilds();
+    try {
+      const res = await axios.delete(`/api/builds/${id}`);
+      if (selectedBuild?.id === id) setSelectedBuild(null);
+      refreshBuilds();
+      addToast(res.data.message, { type: "success" });
+    } catch (err) {
+      addToast(err.response?.data?.error ?? t("savedBuilds.deleteError"), {
+        type: "danger",
+      });
+    }
   };
 
   const handleSaveEdit = async () => {
@@ -188,6 +236,15 @@ const SavedBuilds = () => {
                           {selectedBuild.type}
                         </span>
                       )}
+                      {Object.keys(buildIssues).length > 0 && (
+                        <div
+                          className="text-danger/80 hover:text-danger/60 transition flex gap-2"
+                          onMouseEnter={handleIssuesPopup}
+                          onMouseLeave={() => setIssuesPopup(null)}
+                        >
+                          <InfoIcon />
+                        </div>
+                      )}
                     </div>
                     <p className="text-muted text-sm">
                       {formatDate(selectedBuild.created_at)}
@@ -296,6 +353,8 @@ const SavedBuilds = () => {
           )}
         </div>
       </div>
+
+      {issuesPopup && <BuildIssuesPopup issues={buildIssues} {...issuesPopup} />}
 
       {deleting && (
         <Modal close={() => setDeleting(null)}>

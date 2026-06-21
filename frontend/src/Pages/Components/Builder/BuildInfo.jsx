@@ -1,14 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useBuilder } from "../../../Contexts/BuilderContext";
 import { useAuth } from "../../../Contexts/AuthContext";
 import axios from "axios";
 import { CloseIcon } from "../Common/Icons";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import { clearDraft } from "../../../lib/builderDraft";
+import { useToast } from "../../../Contexts/ToastContext";
+
+// Tracks whether the restore nudge has already been shown this page load,
+// so it only appears once on a real page refresh and not on every SPA nav.
+let nudgeShownThisLoad = false;
 
 const BuildInfo = () => {
   const { t } = useTranslation(["builder", "common"]);
   const { user } = useAuth();
+  const { addToast } = useToast();
   const {
     selectedComponents,
     setSelectedComponents,
@@ -21,13 +28,26 @@ const BuildInfo = () => {
     setBuildNotes,
     buildType,
     setBuildType,
+    restoredDraft,
+    setRestoredDraft,
     setWarnings,
     setBuildIssues,
     setNotes,
   } = useBuilder();
+  const [, setSearchParams] = useSearchParams();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+
+  const hasComponents = Object.values(selectedComponents).some(
+    (v) => v !== null,
+  );
+
+  useEffect(() => {
+    if (nudgeShownThisLoad || !restoredDraft) return;
+
+    nudgeShownThisLoad = true;
+    addToast(t("buildInfo.restoredNudge"), { type: "info" });
+  }, [restoredDraft, addToast, t]);
 
   const handleRemove = (name) => {
     setSelectedComponents((prev) => ({
@@ -56,7 +76,6 @@ const BuildInfo = () => {
 
     setSaving(true);
     setError("");
-    setSuccess("");
 
     try {
       const res = await axios.post("/api/builds", {
@@ -67,20 +86,24 @@ const BuildInfo = () => {
         components,
       });
       setBuildId(res.data.id);
-      setSuccess(
-        asNew
-          ? t("buildInfo.savedAsNew")
-          : t("buildInfo.savedSuccessfully"),
+      setSearchParams({ build: res.data.id });
+      clearDraft();
+      addToast(
+        asNew ? t("buildInfo.savedAsNew") : t("buildInfo.savedSuccessfully"),
+        { type: "success" },
       );
-      setTimeout(() => setSuccess(""), 5000);
     } catch (err) {
-      setError(err.response?.data?.error ?? t("buildInfo.failedToSave"));
+      addToast(err.response?.data?.error ?? t("buildInfo.failedToSave"), {
+        type: "danger",
+      });
     } finally {
       setSaving(false);
     }
   };
 
   const handleClear = () => {
+    clearDraft();
+    setRestoredDraft(false);
     setSelectedComponents((prev) =>
       Object.fromEntries(Object.keys(prev).map((key) => [key, null])),
     );
@@ -91,10 +114,6 @@ const BuildInfo = () => {
     setBuildIssues({});
     setNotes([]);
   };
-
-  const hasComponents = Object.values(selectedComponents).some(
-    (v) => v !== null,
-  );
 
   return (
     <div className="space-y-4 mt-4">
@@ -157,7 +176,6 @@ const BuildInfo = () => {
             />
 
             {error && <p className="text-danger text-sm">{error}</p>}
-            {success && <p className="text-green-500 text-sm">{success}</p>}
           </div>
 
           <label className="text-secondary-light" htmlFor="notes">

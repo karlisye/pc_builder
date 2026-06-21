@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ComponentCard from "./Components/Builder/ComponentCard";
 import BuildDesc from "./Components/Builder/BuildDesc";
@@ -11,9 +11,12 @@ import BuildGenerator from "./Components/Builder/BuildGenerator";
 import ComponentGenerator from "./Components/Builder/ComponentGenerator";
 import SidePanel from "./Components/Common/SidePanel";
 import axios from "axios";
+import { loadDraft, saveDraft, clearDraft } from "../lib/builderDraft";
+import { useToast } from "../Contexts/ToastContext";
 
 const Builder = () => {
   const { t } = useTranslation(["builder", "common"]);
+  const { addToast } = useToast();
   const [searchParams] = useSearchParams();
   const [currentCompToAdd, setCurrentCompToAdd] = useState(null);
   const [selectedComponents, setSelectedComponents] = useState({
@@ -39,17 +42,33 @@ const Builder = () => {
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState("price_asc");
   const [buildType, setBuildType] = useState("");
+  const [restoredDraft, setRestoredDraft] = useState(false);
 
   useEffect(() => {
     const buildParam = searchParams.get("build");
     const sharedParam = searchParams.get("shared");
 
     if (!buildParam) {
-      setSelectedComponents({ cpu: null, motherboard: null, ram: null, gpu: null, psu: null, ssd: null, hdd: null, case: null, fan: null, cooler: null });
-      setBuildId(undefined);
-      setBuildName("");
-      setBuildNotes("");
-      setBuildType("");
+      const draft = loadDraft();
+      setRestoredDraft(Boolean(draft));
+      setSelectedComponents(
+        draft?.selectedComponents ?? {
+          cpu: null,
+          motherboard: null,
+          ram: null,
+          gpu: null,
+          psu: null,
+          ssd: null,
+          hdd: null,
+          case: null,
+          fan: null,
+          cooler: null,
+        },
+      );
+      setBuildId(draft?.buildId ?? undefined);
+      setBuildName(draft?.buildName ?? "");
+      setBuildNotes(draft?.buildNotes ?? "");
+      setBuildType(draft?.buildType ?? "");
       return;
     }
 
@@ -57,29 +76,60 @@ const Builder = () => {
       .get("/api/builder", { params: { build: buildParam, shared: sharedParam } })
       .then((res) => {
         const build = res.data.build;
-        if (!build) return;
-        setSelectedComponents({
-          cpu: build.cpu ?? null,
-          motherboard: build.motherboard ?? null,
-          ram: build.ram ?? null,
-          gpu: build.gpu ?? null,
-          psu: build.psu ?? null,
-          ssd: build.ssd ?? null,
-          hdd: build.hdd ?? null,
-          case: build.pc_case ?? null,
-          fan: build.fan ?? null,
-          cooler: build.cooler ?? null,
-        });
+        if (!build) {
+          addToast(t("sidePanel.loadBuildError"), { type: "danger" });
+          return;
+        }
+
+        const draft = loadDraft();
+        const hasMatchingDraft =
+          draft && String(draft.buildId) === String(build.id);
+
+        setRestoredDraft(Boolean(hasMatchingDraft));
+        setSelectedComponents(
+          hasMatchingDraft
+            ? draft.selectedComponents
+            : {
+                cpu: build.cpu ?? null,
+                motherboard: build.motherboard ?? null,
+                ram: build.ram ?? null,
+                gpu: build.gpu ?? null,
+                psu: build.psu ?? null,
+                ssd: build.ssd ?? null,
+                hdd: build.hdd ?? null,
+                case: build.pc_case ?? null,
+                fan: build.fan ?? null,
+                cooler: build.cooler ?? null,
+              },
+        );
         setBuildId(build.id);
-        setBuildName(build.name ?? "");
-        setBuildNotes(build.notes ?? "");
-        setBuildType(build.type ?? "");
+        setBuildName(hasMatchingDraft ? draft.buildName : build.name ?? "");
+        setBuildNotes(hasMatchingDraft ? draft.buildNotes : build.notes ?? "");
+        setBuildType(hasMatchingDraft ? draft.buildType : build.type ?? "");
+      })
+      .catch(() => {
+        addToast(t("sidePanel.loadBuildError"), { type: "danger" });
       });
   }, [searchParams]);
 
   useEffect(() => {
     validateCompatibility();
   }, [selectedComponents]);
+
+  const draftRef = useRef(null);
+  draftRef.current = { buildId, selectedComponents, buildName, buildNotes, buildType };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      saveDraft(draftRef.current);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [selectedComponents, buildName, buildNotes, buildType, buildId]);
+
+  useEffect(() => {
+    return () => saveDraft(draftRef.current);
+  }, []);
 
   const validateCompatibility = async () => {
     const selected = Object.fromEntries(
@@ -109,6 +159,27 @@ const Builder = () => {
     return () => clearTimeout(timer);
   }, [search]);
 
+  const handleNewBuild = () => {
+    clearDraft();
+    setRestoredDraft(false);
+    setSelectedComponents({
+      cpu: null,
+      motherboard: null,
+      ram: null,
+      gpu: null,
+      psu: null,
+      ssd: null,
+      hdd: null,
+      case: null,
+      fan: null,
+      cooler: null,
+    });
+    setBuildId(undefined);
+    setBuildName("");
+    setBuildNotes("");
+    setBuildType("");
+  };
+
   return (
     <BuilderContext
       value={{
@@ -130,6 +201,8 @@ const Builder = () => {
         setBuildNotes,
         buildType,
         setBuildType,
+        restoredDraft,
+        setRestoredDraft,
         debouncedSearch,
         setDebouncedSearch,
         warnings,
@@ -144,10 +217,12 @@ const Builder = () => {
         <SidePanel
           title={t("sidePanel.title")}
           headerRight={
-            buildId && (
+            (buildId ||
+              Object.values(selectedComponents).some((c) => c !== null)) && (
               <Link
                 className="px-6 py-2 border text-secondary-light cursor-pointer hover:text-muted transition text-sm"
                 to="/builder"
+                onClick={handleNewBuild}
               >
                 {t("sidePanel.newBuild")}
               </Link>

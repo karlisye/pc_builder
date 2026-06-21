@@ -63,7 +63,7 @@ class BuilderService
 
     if ($remainingBudget <= 0) {
       return $this->errorResponse(
-        'Selected components already exceed or meet the budget.',
+        __('builder.budget_exceeded'),
       );
     }
 
@@ -96,8 +96,9 @@ class BuilderService
     $estimatedMinimum = $this->estimateMinimumBudget($slotsToFill, $selected, $selectedCost, $preferences);
 
     return $this->errorResponse(
-      "Could not find compatible parts within the given budget. "
-        . "Estimated minimum budget needed: €" . number_format($estimatedMinimum, 2) . ".",
+      __('builder.no_compatible_parts', [
+        'amount' => '€' . number_format($estimatedMinimum, 2),
+      ]),
       $estimatedMinimum
     );
   }
@@ -193,7 +194,7 @@ class BuilderService
         'success' => false,
         'build' => $this->serializeBuild($build),
         'total_price' => round($totalCost, 2),
-        'error' => "Couldn't find compatable components within the budget. Estimated minimum budget is €{$minimum_budget}.",
+        'error' => __('builder.component_budget_too_low', ['amount' => "€{$minimum_budget}"]),
         'estimated_minimum_budget' => $minimum_budget,
       ];
     }
@@ -366,6 +367,7 @@ class BuilderService
     $warnings = [];
     $type = $preferences['type'] ?? 'gaming';
     $tier = $preferences['tier'] ?? 'mid';
+    $typeLabel = __('builder.types')[$type] ?? $type;
 
     // ram capacity check
     $ram = $build['ram'] ?? null;
@@ -382,14 +384,16 @@ class BuilderService
         default => 8,
       };
       if ($ram->capacity < $recommendedCapacity) {
-        $warnings[] = "RAM is below recommended {$recommendedCapacity}GB for {$type} builds at this budget tier.";
+        $warnings[] = __('builder.ram_below_recommended', [
+          'capacity' => $recommendedCapacity, 'type' => $typeLabel,
+        ]);
       }
     }
 
     // gpu warnings
     $gpu = $build['gpu'] ?? null;
     if (!$gpu && in_array($type, ['gaming', 'streaming']) && $tier !== 'budget') {
-      $warnings[] = "No GPU was found within the budget for a {$type} build. Consider increasing your budget.";
+      $warnings[] = __('builder.no_gpu_found', ['type' => $typeLabel]);
     }
 
     if ($gpu) {
@@ -413,16 +417,18 @@ class BuilderService
       };
 
       if ($recommendedVram > 0 && $gpu->vram < $recommendedVram) {
-        $warnings[] = "GPU VRAM ({$gpu->vram}GB) is below recommended {$recommendedVram}GB for {$type} builds at this budget tier.";
+        $warnings[] = __('builder.gpu_vram_below_recommended', [
+          'vram' => $gpu->vram, 'recommended' => $recommendedVram, 'type' => $typeLabel,
+        ]);
       }
     }
 
     // storage warnings
     $ssd = $build['ssd'] ?? null;
     if ($ssd && $ssd->capacity < 256) {
-      $warnings[] = "SSD has less than 256GB of storage, which may not provide enough space for your operating system, applications, and files.";
+      $warnings[] = __('builder.ssd_too_small');
     } else if ($ssd && in_array($type, ['gaming', 'streaming']) && $tier !== 'budget' && $ssd->capacity < 512) {
-      $warnings[] = "A larger SSD is recommended for storing modern games and applications.";
+      $warnings[] = __('builder.larger_ssd_recommended');
     }
 
     return $warnings;
@@ -439,11 +445,11 @@ class BuilderService
     $type = $preferences['type'] ?? 'gaming';
 
     if ($cpu->cooler_included && ! $cooler) {
-      $notes[] = "CPU comes with an included cooler to save costs at this budget tier.";
+      $notes[] = __('builder.cpu_included_cooler');
     }
 
     if ($cpu->integrated_graphics && ! $gpu && $type !== 'office') {
-      $notes[] = "CPU comes with integrated graphics to save costs at this budget tier.";
+      $notes[] = __('builder.cpu_integrated_graphics');
     }
 
     return $notes;

@@ -4,15 +4,15 @@ import { ArrowIcon, HeartIcon, SavedIcon, StarIcon } from "../Common/Icons";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import { formatDate } from "../../../lib/formatDate";
+import { useToast } from "../../../Contexts/ToastContext";
 
 const PublicProfile = () => {
   const { t } = useTranslation("profile");
+  const { addToast } = useToast();
   const { user: userId } = useParams();
   const [data, setData] = useState(null);
   const [page, setPage] = useState(1);
   const [expanded, setExpanded] = useState(false);
-  const [success, setSuccess] = useState("");
-  const [error, setError] = useState("");
 
   useEffect(() => {
     axios
@@ -38,10 +38,11 @@ const PublicProfile = () => {
         notes: build.notes,
         components,
       });
-      setSuccess(t("publicProfile.saveSuccess"));
-      setTimeout(() => setSuccess(""), 5000);
+      addToast(t("publicProfile.saveSuccess"), { type: "success" });
     } catch (err) {
-      setError(err.response?.data?.error ?? t("publicProfile.saveError"));
+      addToast(err.response?.data?.error ?? t("publicProfile.saveError"), {
+        type: "danger",
+      });
     }
   };
 
@@ -116,8 +117,6 @@ const PublicProfile = () => {
         ) : (
           <div>
             <h2 className="text-2xl font-semibold mb-2">{t("publicProfile.sharedBuildsHeading", { name: user.name })}</h2>
-            {success && <p className="text-success ml-auto px-2">{success}</p>}
-            {error && <p className="text-danger ml-auto px-2">{error}</p>}
             <div className="flex gap-1">
               <button
                 className={`bg-primary hover:bg-primary-light flex items-center cursor-pointer overflow-hidden transition-all ${links[0].url ? "w-10" : "w-0"}`}
