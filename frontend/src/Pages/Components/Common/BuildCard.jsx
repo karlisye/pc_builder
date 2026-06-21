@@ -140,6 +140,18 @@ const BuildCard = ({ build }) => {
                     {build.type}
                   </span>
                 )}
+                {Object.keys(buildIssues).length > 0 && (
+                  <div
+                    className="text-danger/80 hover:text-danger/60 transition flex gap-2"
+                    onMouseEnter={handleIssuesPopup}
+                    onMouseLeave={() => setIssuesPopup(null)}
+                  >
+                    <InfoIcon />
+                    <span className="hidden xl:block">
+                      {t('components.buildCard.buildIncompatible')}
+                    </span>
+                  </div>
+                )}
               </div>
               <div className="flex gap-4 items-center">
                 <Link className="text-muted" to={`/profile/${build.user?.id}`}>
@@ -148,19 +160,6 @@ const BuildCard = ({ build }) => {
                 <p className="text-sm text-muted px-2">{formatDate(build.created_at)}</p>
               </div>
             </div>
-
-            {Object.keys(buildIssues).length > 0 && (
-              <div
-                className="text-danger/80 hover:text-danger/60 transition flex gap-2"
-                onMouseEnter={handleIssuesPopup}
-                onMouseLeave={() => setIssuesPopup(null)}
-              >
-                <InfoIcon />
-                <span className="hidden xl:block">
-                  {t('components.buildCard.buildIncompatible')}
-                </span>
-              </div>
-            )}
           </div>
 
           <p className="text-text font-semibold text-xl">€{build.total_price}</p>

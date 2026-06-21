@@ -5,8 +5,9 @@ import { Link } from "react-router-dom";
 import DetailPanel from "./Components/Saved/DetailPanel";
 import Modal from "./Components/Common/Modal";
 import BuildVisibility from "./Components/Saved/BuildVisibility";
-import { ArrowIcon, CloseIcon } from "./Components/Common/Icons";
+import { ArrowIcon, CloseIcon, InfoIcon } from "./Components/Common/Icons";
 import SidePanel from "./Components/Common/SidePanel";
+import BuildIssuesPopup from "./Components/Common/BuildIssuesPopup";
 import { formatDate } from "../lib/formatDate";
 
 const SLOT_KEYS = [
@@ -36,6 +37,36 @@ const SavedBuilds = () => {
   const [expandedSlot, setExpandedSlot] = useState(null);
   const [deleting, setDeleting] = useState(null);
   const [expanded, setExpanded] = useState(false);
+  const [buildIssues, setBuildIssues] = useState({});
+  const [issuesPopup, setIssuesPopup] = useState(null);
+
+  useEffect(() => {
+    if (!selectedBuild) {
+      setBuildIssues({});
+      return;
+    }
+
+    const selected = Object.fromEntries(
+      SLOT_KEYS.map((slot) => [slot === "pc_case" ? "case" : slot, selectedBuild[slot]])
+        .filter(([, component]) => component !== null && component !== undefined)
+        .map(([key, component]) => [key, component.dateks_id]),
+    );
+
+    if (Object.keys(selected).length === 0) {
+      setBuildIssues({});
+      return;
+    }
+
+    axios
+      .post("/api/builder/validate", { selected })
+      .then((res) => setBuildIssues(res.data.issues))
+      .catch(() => setBuildIssues({}));
+  }, [selectedBuild]);
+
+  const handleIssuesPopup = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setIssuesPopup({ x: rect.left, y: rect.bottom });
+  };
 
   useEffect(() => {
     if (expanded) {
@@ -188,6 +219,15 @@ const SavedBuilds = () => {
                           {selectedBuild.type}
                         </span>
                       )}
+                      {Object.keys(buildIssues).length > 0 && (
+                        <div
+                          className="text-danger/80 hover:text-danger/60 transition flex gap-2"
+                          onMouseEnter={handleIssuesPopup}
+                          onMouseLeave={() => setIssuesPopup(null)}
+                        >
+                          <InfoIcon />
+                        </div>
+                      )}
                     </div>
                     <p className="text-muted text-sm">
                       {formatDate(selectedBuild.created_at)}
@@ -296,6 +336,8 @@ const SavedBuilds = () => {
           )}
         </div>
       </div>
+
+      {issuesPopup && <BuildIssuesPopup issues={buildIssues} {...issuesPopup} />}
 
       {deleting && (
         <Modal close={() => setDeleting(null)}>
