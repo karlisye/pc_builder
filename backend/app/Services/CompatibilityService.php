@@ -28,7 +28,7 @@ class CompatibilityService
   {
     $resolved = [];
 
-    foreach ($selectedIds as $type => $dateksId) {
+    foreach ($selectedIds as $type => $productCode) {
       // check if selected types exist in VALID_TYPES
       if (! array_key_exists($type, self::VALID_TYPES)) {
         throw new \InvalidArgumentException(
@@ -39,9 +39,9 @@ class CompatibilityService
 
       // check if component exists with the id
       $modelClass = self::VALID_TYPES[$type];
-      $model = $modelClass::where('dateks_id', $dateksId)->first();
+      $model = $modelClass::where('product_code', $productCode)->first();
       if (!$model) {
-        throw new \InvalidArgumentException("No {$type} found with dateks_id {$dateksId}");
+        throw new \InvalidArgumentException("No {$type} found with product_code {$productCode}");
       }
       $resolved[$type] = $model;
     }

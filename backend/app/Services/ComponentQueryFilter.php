@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Support\ComponentListingJoin;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
 
@@ -9,6 +10,7 @@ class ComponentQueryFilter
 {
   public static function apply(Builder $query, string $type, array $filters, array $compatibleIds): Builder
   {
+    $query = ComponentListingJoin::apply($query);
     $query = self::applyGlobal($query, $filters, $compatibleIds);
     $query = self::applyPerType($query, $type, $filters);
     $query = self::applySort($query, $filters['sort'] ?? null, $compatibleIds);
@@ -32,10 +34,10 @@ class ComponentQueryFilter
     }
 
     if (!empty($stockStatuses)) {
-      $query->whereIn('stock_status', $stockStatuses)
-        ->whereNotNull('price');
+      $query->whereIn('listing_agg.listing_stock_status', $stockStatuses)
+        ->whereNotNull('listing_agg.listing_price');
     } else {
-      $query->where('stock_status', 'out_of_stock');
+      $query->where('listing_agg.listing_stock_status', 'out_of_stock');
     }
 
     if ($showCompatibleOnly) {
@@ -59,11 +61,11 @@ class ComponentQueryFilter
 
     // price range
     if (isset($filters['min_price']) && is_numeric($filters['min_price'])) {
-      $query->where('price', '>=', (float) $filters['min_price']);
+      $query->where('listing_agg.listing_price', '>=', (float) $filters['min_price']);
     }
 
     if (isset($filters['max_price']) && is_numeric($filters['max_price'])) {
-      $query->where('price', '<=', (float) $filters['max_price']);
+      $query->where('listing_agg.listing_price', '<=', (float) $filters['max_price']);
     }
 
     return $query;
@@ -209,11 +211,11 @@ class ComponentQueryFilter
     }
 
     return match ($sort) {
-      'price_asc' => $query->orderBy('price'),
-      'price_desc' => $query->orderByDesc('price'),
+      'price_asc' => $query->orderBy('listing_agg.listing_price'),
+      'price_desc' => $query->orderByDesc('listing_agg.listing_price'),
       'name_asc' => $query->orderBy('name'),
       'name_desc' => $query->orderByDesc('name'),
-      default => $query->orderBy('price'),
+      default => $query->orderBy('listing_agg.listing_price'),
     };
   }
 }

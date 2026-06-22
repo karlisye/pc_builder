@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Services\CompatibilityService;
+use App\Support\ComponentListingJoin;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -41,11 +42,11 @@ class ComponentController extends Controller
     if ($request->filled('selected')) {
       $decoded = json_decode($request->query('selected'), true);
 
-      // check if all values are positive integers
+      // check if all values are non-empty product codes
       foreach ($decoded as $key => $value) {
-        if (! is_int($value) && ! ctype_digit((string) $value)) {
+        if (! is_string($value) || $value === '') {
           return response()->json([
-            'error' => "value for '{$key}' in selected must be a positive integer",
+            'error' => "value for '{$key}' in selected must be a product code string",
           ], 400);
         }
       }
@@ -119,7 +120,7 @@ class ComponentController extends Controller
     return response()->json($paginator);
   }
 
-  public function show(string $type, int $id): JsonResponse
+  public function show(string $type, string $code): JsonResponse
   {
     if (! array_key_exists($type, CompatibilityService::VALID_TYPES)) {
       return response()->json([
@@ -129,11 +130,11 @@ class ComponentController extends Controller
     }
 
     $modelClass = CompatibilityService::VALID_TYPES[$type];
-    $component  = $modelClass::where('dateks_id', $id)->first();
+    $component  = $modelClass::where('product_code', $code)->first();
 
     if (! $component) {
       return response()->json([
-        'error' => "no {$type} found with dateks_id {$id}",
+        'error' => "no {$type} found with product_code {$code}",
       ], 404);
     }
 
@@ -154,10 +155,10 @@ class ComponentController extends Controller
     $result = [];
 
     foreach ($columns as $column) {
-      $result[$column] = $modelClass::query()
+      $result[$column] = ComponentListingJoin::apply($modelClass::query())
         ->whereNotNull($column)
-        ->whereIn('stock_status', ['in_stock', 'orderable'])
-        ->whereNotNull('price')
+        ->whereIn('listing_agg.listing_stock_status', ['in_stock', 'orderable'])
+        ->whereNotNull('listing_agg.listing_price')
         ->distinct()
         ->orderBy($column)
         ->pluck($column);
