@@ -44,7 +44,7 @@ const AddComponent = () => {
       const selected = Object.fromEntries(
         Object.entries(selectedComponents)
           .filter(([_, component]) => component !== null)
-          .map(([type, component]) => [type, component.dateks_id]),
+          .map(([type, component]) => [type, component.product_code]),
       );
 
       const res = await axios.get(

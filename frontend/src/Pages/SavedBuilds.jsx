@@ -59,7 +59,7 @@ const SavedBuilds = () => {
     const selected = Object.fromEntries(
       SLOT_KEYS.map((slot) => [slot === "pc_case" ? "case" : slot, selectedBuild[slot]])
         .filter(([, component]) => component !== null && component !== undefined)
-        .map(([key, component]) => [key, component.dateks_id]),
+        .map(([key, component]) => [key, component.product_code]),
     );
 
     if (Object.keys(selected).length === 0) {

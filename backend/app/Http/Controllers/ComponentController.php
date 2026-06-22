@@ -159,6 +159,7 @@ class ComponentController extends Controller
         ->whereNotNull($column)
         ->whereIn('listing_agg.listing_stock_status', ['in_stock', 'orderable'])
         ->whereNotNull('listing_agg.listing_price')
+        ->select($column)
         ->distinct()
         ->orderBy($column)
         ->pluck($column);

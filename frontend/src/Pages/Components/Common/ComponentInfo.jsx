@@ -30,7 +30,7 @@ const ComponentInfo = ({ component }) => {
             value !== "" &&
             ![
               "id",
-              "dateks_id",
+              "product_code",
               "url",
               "scraped_at",
               "selected",
