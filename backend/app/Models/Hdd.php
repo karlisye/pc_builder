@@ -2,27 +2,26 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasListings;
 use Illuminate\Database\Eloquent\Model;
 
 class Hdd extends Model
 {
+  use HasListings;
+
   public $timestamps = false;
 
   protected $table = 'hdds';
 
+  protected $appends = ['price', 'stock_status', 'stock_quantity'];
+
   protected $fillable = [
-    'dateks_id',
-    'url',
+    'product_code',
     'name',
-    'price',
-    'stock_status',
-    'stock_quantity',
     'capacity',
     'interface',
     'scraped_at',
   ];
 
-  protected $casts = [
-    'price' => 'decimal:2',
-  ];
+  protected $casts = [];
 }

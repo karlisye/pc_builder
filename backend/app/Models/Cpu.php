@@ -2,21 +2,22 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasListings;
 use Illuminate\Database\Eloquent\Model;
 
 class Cpu extends Model
 {
+  use HasListings;
+
   public $timestamps = false;
 
   protected $table = 'cpus';
 
+  protected $appends = ['price', 'stock_status', 'stock_quantity'];
+
   protected $fillable = [
-    'dateks_id',
-    'url',
+    'product_code',
     'name',
-    'price',
-    'stock_status',
-    'stock_quantity',
     'type',
     'socket',
     'cores',
@@ -33,6 +34,5 @@ class Cpu extends Model
   protected $casts = [
     'integrated_graphics' => 'boolean',
     'cooler_included' => 'boolean',
-    'price' => 'decimal:2',
   ];
 }
