@@ -1,8 +1,13 @@
 import importlib
 import time
 import sys
-from config import CATEGORIES, PAGE_DELAY, MAX_ERRORS_PER_CATEGORY
-from database import get_connection, mark_missing_out_of_stock, update_price_stock
+from config import CATEGORIES, PAGE_DELAY, MAX_ERRORS_PER_CATEGORY, SOURCE
+from database import (
+    get_connection,
+    mark_missing_listings_out_of_stock,
+    update_listing_price_stock,
+    upsert_listing,
+)
 from scrapers.list_scraper import get_product_urls
 from scrapers.detail_scraper import scrape_detail_page
 
@@ -103,19 +108,25 @@ def main():
 
         error_count = 0
         skipped = []
-        seen_dateks_ids = []
+        seen_product_codes = []
 
         # iterate over all_urls with index starting from 1
-        for i, (dateks_id, url, price, stock_status, stock_quantity) in enumerate(
+        for i, (product_code, url, price, stock_status, stock_quantity) in enumerate(
             all_urls, 1
         ):
-            seen_dateks_ids.append(dateks_id)
             print(f"  [{i}/{len(all_urls)}] Scraping: {url}")
+
+            if not product_code:
+                print(f"  [SKIP] {url} (no product code found on listing page)")
+                skipped.append((url, "no product code found"))
+                continue
+
+            seen_product_codes.append(product_code)
             try:
                 if mode == "quick":
                     # update only price/availability, skip detail page fetch + parsing
-                    affected = update_price_stock(
-                        conn, table, dateks_id, price, stock_status, stock_quantity, scraped_at
+                    affected = update_listing_price_stock(
+                        conn, table, product_code, SOURCE, price, stock_status, stock_quantity, scraped_at
                     )
                     if affected == 0:
                         print(f"  [SKIP-NEW] {url} (not in db yet, run a full scrape first)")
@@ -123,13 +134,14 @@ def main():
                 else:
                     # load the html from detail page of each product
                     html = scrape_detail_page(url)
-                    # use the specific parser to get all necessary data for each product
-                    data = parser_module.parse(
-                        html, dateks_id, url, price, stock_status, stock_quantity, scraped_at
-                    )
+                    # use the specific parser to get specs for the product table
+                    data = parser_module.parse(html, product_code, url, scraped_at)
                     if data:
-                        # insert or update data in db
+                        # insert or update specs, and the price/stock listing separately
                         parser_module.insert(conn, data)
+                        upsert_listing(
+                            conn, table, product_code, SOURCE, url, price, stock_status, stock_quantity, scraped_at
+                        )
             except Exception as e:
                 if hasattr(e, "errno") and e.errno == 1062:
                     print(f"  [DUP] {url}")
@@ -151,8 +163,8 @@ def main():
             time.sleep(page_delay)
 
         if mode == "full":
-            # mark products that were not found in this run as out of stock (delisted)
-            mark_missing_out_of_stock(conn, table, seen_dateks_ids)
+            # mark listings that were not found in this run as out of stock (delisted)
+            mark_missing_listings_out_of_stock(conn, table, SOURCE, seen_product_codes)
 
         processed = i - len(skipped)
         verb = "updated" if mode == "quick" else "inserted"
