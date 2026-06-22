@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 import re
-from database import insert_row
+from database import upsert_row
 from parsers.helpers import extract_name, extract_specs, to_int
 
 TABLE = "gpus"
@@ -52,4 +52,4 @@ def parse(html, dateks_id, url, price, stock_status, stock_quantity, scraped_at)
 
 
 def insert(conn, data):
-    insert_row(conn, TABLE, data)
+    upsert_row(conn, TABLE, data)

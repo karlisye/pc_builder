@@ -2,7 +2,7 @@ import importlib
 import time
 import sys
 from config import CATEGORIES, PAGE_DELAY, MAX_ERRORS_PER_CATEGORY
-from database import get_connection, wipe_table
+from database import get_connection, mark_missing_out_of_stock, update_price_stock
 from scrapers.list_scraper import get_product_urls
 from scrapers.detail_scraper import scrape_detail_page
 
@@ -41,16 +41,36 @@ def prompt_user():
     return selected
 
 
+def prompt_mode():
+    choice = (
+        input("\nRun full scrape or quick (price/availability only)? [full/quick] (default full): ")
+        .strip()
+        .lower()
+    )
+    if choice == "":
+        return "full"
+    if choice not in ("full", "quick"):
+        print(f"Unknown mode: {choice!r}. Use 'full' or 'quick'.")
+        sys.exit(1)
+    return choice
+
+
 def main():
     if len(sys.argv) > 1:
         selected = get_selected_from_args()
         max_errors = int(sys.argv[2] if len(sys.argv) > 2 else MAX_ERRORS_PER_CATEGORY)
         page_delay = float(sys.argv[3] if len(sys.argv) > 3 else PAGE_DELAY)
+        mode = sys.argv[4].strip().lower() if len(sys.argv) > 4 else "full"
 
     else:
         selected = prompt_user()
         max_errors = MAX_ERRORS_PER_CATEGORY
         page_delay = PAGE_DELAY
+        mode = prompt_mode()
+
+    if mode not in ("full", "quick"):
+        print(f"Unknown mode: {mode!r}. Use 'full' or 'quick'.")
+        sys.exit(1)
 
     # connect to the db
     conn = get_connection()
@@ -59,6 +79,7 @@ def main():
     # print meta data for later use in frontend using [META] tag
     print(f"\n[META] start_time={scraped_at}")
     print(f"[META] categories={','.join(selected)}")
+    print(f"[META] mode={mode}")
     print(f"Categories: {', '.join(selected)}\n")
 
     for category_key in selected:
@@ -68,9 +89,7 @@ def main():
         # import the component parser
         parser_module = importlib.import_module(f"parsers.{config['parser']}")
 
-        # wipe component table from db
-        print(f"[{category_key.upper()}] Wiping table '{table}'...")
-        wipe_table(conn, table)
+        print(f"[{category_key.upper()}] Mode: {mode}")
 
         all_urls = []
         for base_url in config["urls"]:
@@ -84,27 +103,38 @@ def main():
 
         error_count = 0
         skipped = []
+        seen_dateks_ids = []
 
         # iterate over all_urls with index starting from 1
         for i, (dateks_id, url, price, stock_status, stock_quantity) in enumerate(
             all_urls, 1
         ):
+            seen_dateks_ids.append(dateks_id)
             print(f"  [{i}/{len(all_urls)}] Scraping: {url}")
             try:
-                # load the html from detail page of each product
-                html = scrape_detail_page(url)
-                # use the specific parser to get all necessary data for each product
-                data = parser_module.parse(
-                    html, dateks_id, url, price, stock_status, stock_quantity, scraped_at
-                )
-                if data:
-                    # insert data in db
-                    parser_module.insert(conn, data)
+                if mode == "quick":
+                    # update only price/availability, skip detail page fetch + parsing
+                    affected = update_price_stock(
+                        conn, table, dateks_id, price, stock_status, stock_quantity, scraped_at
+                    )
+                    if affected == 0:
+                        print(f"  [SKIP-NEW] {url} (not in db yet, run a full scrape first)")
+                        skipped.append((url, "not in db yet"))
+                else:
+                    # load the html from detail page of each product
+                    html = scrape_detail_page(url)
+                    # use the specific parser to get all necessary data for each product
+                    data = parser_module.parse(
+                        html, dateks_id, url, price, stock_status, stock_quantity, scraped_at
+                    )
+                    if data:
+                        # insert or update data in db
+                        parser_module.insert(conn, data)
             except Exception as e:
                 if hasattr(e, "errno") and e.errno == 1062:
                     print(f"  [DUP] {url}")
                     continue
-                
+
                 # save the error if found
                 error_count += 1
                 skipped.append((url, str(e)))
@@ -116,15 +146,20 @@ def main():
                         f"\n[ABORT] {category_key.upper()} reached {max_errors} errors. Stopping category."
                     )
                     break
-            
+
             # scrape delay after each page
             time.sleep(page_delay)
 
-        inserted = i - error_count
+        if mode == "full":
+            # mark products that were not found in this run as out of stock (delisted)
+            mark_missing_out_of_stock(conn, table, seen_dateks_ids)
+
+        processed = i - len(skipped)
+        verb = "updated" if mode == "quick" else "inserted"
         print(
-            f"\n  [{category_key.upper()}] Done: {inserted} inserted, {error_count} skipped"
+            f"\n  [{category_key.upper()}] Done: {processed} {verb}, {len(skipped)} skipped"
         )
-        print(f"[META] inserted_{category_key}={inserted} skipped_{category_key}={error_count}")
+        print(f"[META] {verb}_{category_key}={processed} skipped_{category_key}={len(skipped)}")
         if skipped:
             print(f"  Skipped URLs:")
             for url, err in skipped:
