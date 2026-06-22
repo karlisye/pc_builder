@@ -19,17 +19,13 @@ def _parse_compatibility(value: str) -> str | None:
     return ",".join(cleaned) if cleaned else None
 
 
-def parse(html, dateks_id, url, price, stock_status, stock_quantity, scraped_at):
+def parse(html, product_code, url, scraped_at):
     soup = BeautifulSoup(html, "html.parser")
     specs = extract_specs(soup)
 
     return {
-        "dateks_id": dateks_id,
-        "url": url,
+        "product_code": product_code,
         "name": extract_name(soup),
-        "price": price,
-        "stock_status": stock_status,
-        "stock_quantity": stock_quantity,
         "compatibility": _parse_compatibility(specs.get("Compatibility")),
         "tdp_support": to_int(specs.get("Cooling capacity (TDP), W")),
         "height_mm": to_int(specs.get("Height, mm")),

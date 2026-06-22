@@ -40,17 +40,13 @@ def _parse_sata_connectors(specs: dict) -> int | None:
     return to_int(specs.get("SATA cconnectors") or specs.get("SATA connectors"))
 
 
-def parse(html, dateks_id, url, price, stock_status, stock_quantity, scraped_at):
+def parse(html, product_code, url, scraped_at):
     soup = BeautifulSoup(html, "html.parser")
     specs = extract_specs(soup)
 
     return {
-        "dateks_id": dateks_id,
-        "url": url,
+        "product_code": product_code,
         "name": extract_name(soup),
-        "price": price,
-        "stock_status": stock_status,
-        "stock_quantity": stock_quantity,
         "wattage": to_int(specs.get("Power output")),
         "efficiency_rating": specs.get("80 PLUS certification"),
         "psu_type": specs.get("Power supply type"),

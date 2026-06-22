@@ -13,17 +13,13 @@ def _parse_kit(value: str) -> int | None:
     return int(match.group()) if match else 1
 
 
-def parse(html, dateks_id, url, price, stock_status, stock_quantity, scraped_at):
+def parse(html, product_code, url, scraped_at):
     soup = BeautifulSoup(html, "html.parser")
     specs = extract_specs(soup)
 
     return {
-        "dateks_id": dateks_id,
-        "url": url,
+        "product_code": product_code,
         "name": extract_name(soup),
-        "price": price,
-        "stock_status": stock_status,
-        "stock_quantity": stock_quantity,
         "memory_type": specs.get("Type"),
         "capacity": to_int(specs.get("Capacity")),
         "frequency": to_int(specs.get("Maximum frequency")),

@@ -24,18 +24,14 @@ def _parse_gpu_type(name: str) -> str | None:
     return None
 
 
-def parse(html, dateks_id, url, price, stock_status, stock_quantity, scraped_at):
+def parse(html, product_code, url, scraped_at):
     soup = BeautifulSoup(html, "html.parser")
     specs = extract_specs(soup)
     name = extract_name(soup)
 
     return {
-        "dateks_id": dateks_id,
-        "url": url,
+        "product_code": product_code,
         "name": name,
-        "price": price,
-        "stock_status": stock_status,
-        "stock_quantity": stock_quantity,
         "type": _parse_gpu_type(name),
         "gpu_model": specs.get("GPU model"),
         "vram": to_int(specs.get("RAM")),
