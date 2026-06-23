@@ -19,6 +19,7 @@
     "seeInStore": "Apskatīt veikalā",
     "remove": "Noņemt",
     "replace": "Aizvietot",
+    "startingFrom": "Sākot no €{{price}}",
     "more": "Vairāk",
     "availabilityTitle": "Pieejamība",
     "lastScraped": "Pēdējā pārbaude: {{date}}",

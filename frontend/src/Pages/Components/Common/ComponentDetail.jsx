@@ -2,17 +2,21 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import ComponentInfo from './ComponentInfo';
 import { CloseIcon } from './Icons';
+import { getCheapestPrice, formatPrice } from '../../../lib/componentPrice';
 
 const ComponentDetail = ({ component, title, onClose, actions }) => {
   const { t } = useTranslation(['builder', 'common']);
   const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
   return (
-    <div className="border border-border w-full hover:bg-background transition p-4 mb-auto">
+    <div className="border border-border w-full hover:bg-background transition p-4 mb-auto bg-background">
       <div className="flex justify-between items-center">
         <div>
           <h3 className="text-xl text-muted">{title}</h3>
           <h2 className="text-text font-semibold text-3xl">{component.name}</h2>
+          <span className="text-muted text-sm">
+            {t('componentCard.startingFrom', { price: formatPrice(getCheapestPrice(component)) })}
+          </span>
         </div>
         {onClose && (
           <button
@@ -39,10 +43,10 @@ const ComponentDetail = ({ component, title, onClose, actions }) => {
             {component.listings.map((listing) => (
               <div
                 key={listing.source}
-                className="grid grid-cols-[1fr_1fr_1fr_1fr_auto] items-center gap-2 border border-border bg-surface p-3 transition"
+                className="grid grid-cols-2 sm:grid-cols-[1fr_1fr_1fr_1fr_auto] items-center gap-2 border border-border bg-surface p-3 transition"
               >
                 <span className="text-text font-medium">{capitalize(listing.source)}</span>
-                <span className="text-muted">€{listing.price}</span>
+                <span className="text-muted">€{formatPrice(listing.price)}</span>
                 <span className="text-muted">
                   {listing.stock_status === 'in_stock'
                     ? t('componentCard.inStockWithQty', {
@@ -64,7 +68,7 @@ const ComponentDetail = ({ component, title, onClose, actions }) => {
                 <a
                   href={listing.url}
                   target="_blank"
-                  className="px-4 py-2 bg-primary text-white text-sm hover:bg-primary-light transition cursor-pointer text-center"
+                  className="px-4 py-4 bg-primary text-white text-sm hover:bg-primary-light transition cursor-pointer text-center col-span-2 sm:col-span-1 sm:py-2"
                 >
                   {t('componentCard.seeInStore')}
                 </a>

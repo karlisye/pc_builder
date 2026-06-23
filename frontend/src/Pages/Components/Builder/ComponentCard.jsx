@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useBuilder } from '../../../Contexts/BuilderContext';
-import { AddIcon, InfoIcon } from '../Common/Icons';
+import { AddIcon, CloseIcon, InfoIcon } from '../Common/Icons';
 import ComponentPopup from './ComponentPopup';
+import { formatPrice } from '../../../lib/componentPrice';
 
 const ComponentCard = ({ component, name }) => {
   const { t } = useTranslation(['builder', 'common']);
@@ -80,7 +81,7 @@ const ComponentCard = ({ component, name }) => {
                   <span className="text-text font-medium truncate">
                     {listing.source ? capitalize(listing.source) : '-'}
                   </span>
-                  <span className="text-muted">€{listing.price}</span>
+                  <span className="text-muted">€{formatPrice(listing.price)}</span>
                   <span className="text-muted truncate">
                     {listing.stock_status === 'in_stock' || listing.stock_status === 'orderable'
                       ? t('componentCard.inStock')
@@ -92,16 +93,17 @@ const ComponentCard = ({ component, name }) => {
 
             <div className="bg-primary mt-auto flex">
               <button
-                className="text-white px-8 py-4 flex-1 text-left hover:bg-danger/50 cursor-pointer transition"
-                onClick={handleRemove}
-              >
-                {t('componentCard.remove')}
-              </button>
-              <button
-                className="text-white py-4 px-8 hover:bg-success/50 transition cursor-pointer"
+                className="text-white py-4 px-8 hover:bg-primary-light transition cursor-pointer flex-1"
                 onClick={() => setViewingComponent({ component, name })}
               >
                 {t('componentCard.more')}
+              </button>
+
+              <button
+                className="text-white p-4 hover:bg-danger/50 cursor-pointer transition"
+                onClick={handleRemove}
+              >
+                <CloseIcon size={20} />
               </button>
             </div>
 

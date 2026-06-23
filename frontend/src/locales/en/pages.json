@@ -116,7 +116,6 @@
     "cancel": "Cancel",
     "edit": "Edit",
     "continueBuild": "Continue Build",
-    "deleteBuild": "Delete Build",
     "buy": "Buy",
     "deleteConfirmTitle": "Are you sure you want to delete this build?",
     "deleteError": "Failed to delete build",

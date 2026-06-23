@@ -6,6 +6,7 @@ import AddComponentSkeleton from '../Skeletons/AddComponentSkeleton';
 import ComponentInfo from '../Common/ComponentInfo';
 import { AddIcon, CloseIcon } from '../Common/Icons';
 import PaginationControls from '../Common/PaginationControls';
+import { formatPrice } from '../../../lib/componentPrice';
 
 const AddComponent = () => {
   const { t } = useTranslation(['builder', 'common']);
@@ -156,7 +157,7 @@ const AddComponent = () => {
                           ? t('addComponent.outOfStock')
                           : !component.compatible
                             ? t('addComponent.notCompatible')
-                            : t('addComponent.startingFrom', { price: component.price })}
+                            : t('addComponent.startingFrom', { price: formatPrice(component.price) })}
                       </span>
                       {component.compatible && !component.out_of_stock && (
                         <button
@@ -195,7 +196,7 @@ const AddComponent = () => {
                                   <span className="text-text font-medium">
                                     {capitalize(listing.source)}
                                   </span>
-                                  <span className="text-muted">€{listing.price}</span>
+                                  <span className="text-muted">€{formatPrice(listing.price)}</span>
                                   <span className="text-muted">
                                     {listing.stock_status === 'in_stock'
                                       ? t('componentCard.inStockWithQty', {

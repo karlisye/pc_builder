@@ -39,6 +39,9 @@ const ComponentInfo = ({ component }) => {
               "out_of_stock",
               "listings",
               "selected_source",
+              "price",
+              "stock_status",
+              "stock_quantity",
             ].includes(key),
         )
         .map(([key, value]) => (

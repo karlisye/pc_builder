@@ -1,31 +1,32 @@
-import React, { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import axios from "axios";
-import { Link, useSearchParams } from "react-router-dom";
-import ComponentDetail from "./Components/Common/ComponentDetail";
-import Modal from "./Components/Common/Modal";
-import BuildVisibility from "./Components/Saved/BuildVisibility";
-import { ArrowIcon, CloseIcon, InfoIcon } from "./Components/Common/Icons";
-import SidePanel from "./Components/Common/SidePanel";
-import BuildIssuesPopup from "./Components/Common/BuildIssuesPopup";
-import { formatDate } from "../lib/formatDate";
-import { useToast } from "../Contexts/ToastContext";
+import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import axios from 'axios';
+import { Link, useSearchParams } from 'react-router-dom';
+import ComponentDetail from './Components/Common/ComponentDetail';
+import Modal from './Components/Common/Modal';
+import BuildVisibility from './Components/Saved/BuildVisibility';
+import { ArrowIcon, CloseIcon, InfoIcon, TrashIcon } from './Components/Common/Icons';
+import SidePanel from './Components/Common/SidePanel';
+import BuildIssuesPopup from './Components/Common/BuildIssuesPopup';
+import { formatDate } from '../lib/formatDate';
+import { formatPrice } from '../lib/componentPrice';
+import { useToast } from '../Contexts/ToastContext';
 
 const SLOT_KEYS = [
-  "cpu",
-  "motherboard",
-  "ram",
-  "gpu",
-  "ssd",
-  "hdd",
-  "pc_case",
-  "cooler",
-  "psu",
-  "fan",
+  'cpu',
+  'motherboard',
+  'ram',
+  'gpu',
+  'ssd',
+  'hdd',
+  'pc_case',
+  'cooler',
+  'psu',
+  'fan',
 ];
 
 const SavedBuilds = () => {
-  const { t } = useTranslation("pages");
+  const { t } = useTranslation('pages');
   const { addToast } = useToast();
   const [searchParams] = useSearchParams();
   const [builds, setBuilds] = useState([]);
@@ -33,17 +34,17 @@ const SavedBuilds = () => {
   const [loadingBuild, setLoadingBuild] = useState(false);
 
   useEffect(() => {
-    axios.get("/api/builds").then((res) => setBuilds(res.data));
+    axios.get('/api/builds').then((res) => setBuilds(res.data));
   }, []);
 
   useEffect(() => {
-    const buildId = searchParams.get("buildId");
+    const buildId = searchParams.get('buildId');
     if (buildId) {
       handleSelect({ id: buildId });
     }
   }, [searchParams]);
   const [editing, setEditing] = useState(false);
-  const [editData, setEditData] = useState({ name: "", notes: "" });
+  const [editData, setEditData] = useState({ name: '', notes: '' });
   const [expandedSlot, setExpandedSlot] = useState(null);
   const [deleting, setDeleting] = useState(null);
   const [expanded, setExpanded] = useState(false);
@@ -57,7 +58,7 @@ const SavedBuilds = () => {
     }
 
     const selected = Object.fromEntries(
-      SLOT_KEYS.map((slot) => [slot === "pc_case" ? "case" : slot, selectedBuild[slot]])
+      SLOT_KEYS.map((slot) => [slot === 'pc_case' ? 'case' : slot, selectedBuild[slot]])
         .filter(([, component]) => component !== null && component !== undefined)
         .map(([key, component]) => [key, component.product_code]),
     );
@@ -68,7 +69,7 @@ const SavedBuilds = () => {
     }
 
     axios
-      .post("/api/builder/validate", { selected })
+      .post('/api/builder/validate', { selected })
       .then((res) => setBuildIssues(res.data.issues))
       .catch(() => setBuildIssues({}));
   }, [selectedBuild]);
@@ -80,12 +81,12 @@ const SavedBuilds = () => {
 
   useEffect(() => {
     if (expanded) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = "";
+      document.body.style.overflow = '';
     }
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = '';
     };
   }, [expanded]);
 
@@ -100,7 +101,7 @@ const SavedBuilds = () => {
     try {
       const res = await axios.get(`/api/builds/${build.id}`);
       setSelectedBuild(res.data);
-      setEditData({ name: res.data.name, notes: res.data.notes ?? "" });
+      setEditData({ name: res.data.name, notes: res.data.notes ?? '' });
     } catch (err) {
       console.error(err);
     } finally {
@@ -108,28 +109,24 @@ const SavedBuilds = () => {
     }
   };
 
-  const refreshBuilds = () =>
-    axios.get("/api/builds").then((res) => setBuilds(res.data));
+  const refreshBuilds = () => axios.get('/api/builds').then((res) => setBuilds(res.data));
 
   const handleDelete = async (id) => {
     try {
       const res = await axios.delete(`/api/builds/${id}`);
       if (selectedBuild?.id === id) setSelectedBuild(null);
       refreshBuilds();
-      addToast(res.data.message, { type: "success" });
+      addToast(res.data.message, { type: 'success' });
     } catch (err) {
-      addToast(err.response?.data?.error ?? t("savedBuilds.deleteError"), {
-        type: "danger",
+      addToast(err.response?.data?.error ?? t('savedBuilds.deleteError'), {
+        type: 'danger',
       });
     }
   };
 
   const handleSaveEdit = async () => {
     try {
-      const res = await axios.patch(
-        `/api/builds/${selectedBuild.id}`,
-        editData,
-      );
+      const res = await axios.patch(`/api/builds/${selectedBuild.id}`, editData);
       setSelectedBuild(res.data);
       setEditing(false);
       refreshBuilds();
@@ -143,24 +140,22 @@ const SavedBuilds = () => {
   return (
     <>
       <div className="h-full flex">
-        <SidePanel title={t("savedBuilds.sidePanelTitle")}>
+        <SidePanel title={t('savedBuilds.sidePanelTitle')}>
           <div className="max-h-100">
             {builds.length === 0 ? (
-              <p className="text-muted">{t("savedBuilds.noSavedBuilds")}</p>
+              <p className="text-muted">{t('savedBuilds.noSavedBuilds')}</p>
             ) : (
               builds.map((build) => (
                 <div
                   key={build.id}
                   onClick={() => handleSelect(build)}
                   className={`hover:bg-secondary border transition-all cursor-pointer p-2 flex justify-between items-center border-secondary mb-2 ${
-                    selectedBuild?.id === build.id ? "border-l-10" : ""
+                    selectedBuild?.id === build.id ? 'border-l-10' : ''
                   }`}
                 >
                   <div>
-                    <h2 className="text-white font-semibold text-xl">
-                      {build.name}
-                    </h2>
-                    <p className="text-muted text-sm">€{build.total_price}</p>
+                    <h2 className="text-white font-semibold text-xl">{build.name}</h2>
+                    <p className="text-muted text-sm">€{formatPrice(build.total_price)}</p>
                   </div>
                   <button
                     onClick={(e) => {
@@ -169,7 +164,7 @@ const SavedBuilds = () => {
                     }}
                     className="text-muted hover:text-danger transition p-2 cursor-pointer"
                   >
-                    {t("savedBuilds.delete")}
+                    <TrashIcon size={20} />
                   </button>
                 </div>
               ))
@@ -178,11 +173,11 @@ const SavedBuilds = () => {
         </SidePanel>
 
         <div className="flex-1 pt-6 px-4 mb-6">
-          {loadingBuild && <p className="text-muted">{t("savedBuilds.loading")}</p>}
+          {loadingBuild && <p className="text-muted">{t('savedBuilds.loading')}</p>}
 
           {!loadingBuild && !selectedBuild && (
             <p className="font-medium text-text text-center">
-              {t("savedBuilds.selectBuildPrompt")}
+              {t('savedBuilds.selectBuildPrompt')}
             </p>
           )}
 
@@ -193,9 +188,7 @@ const SavedBuilds = () => {
                   <input
                     type="text"
                     value={editData.name}
-                    onChange={(e) =>
-                      setEditData((prev) => ({ ...prev, name: e.target.value }))
-                    }
+                    onChange={(e) => setEditData((prev) => ({ ...prev, name: e.target.value }))}
                     className="bg-surface border border-border text-text p-2 w-full focus:outline-1 outline-border"
                   />
                   <textarea
@@ -206,7 +199,7 @@ const SavedBuilds = () => {
                         notes: e.target.value,
                       }))
                     }
-                    placeholder={t("savedBuilds.notesPlaceholder")}
+                    placeholder={t('savedBuilds.notesPlaceholder')}
                     className="bg-surface border border-border text-text p-2 w-full focus:outline-1 outline-border"
                   />
                   <div className="flex gap-4">
@@ -214,18 +207,18 @@ const SavedBuilds = () => {
                       onClick={handleSaveEdit}
                       className="bg-primary text-white p-4 flex-1 hover:bg-primary-light transition cursor-pointer"
                     >
-                      {t("savedBuilds.save")}
+                      {t('savedBuilds.save')}
                     </button>
                     <button
                       onClick={() => setEditing(false)}
                       className="bg-surface text-muted p-4 flex-1 hover:bg-secondary-light transition cursor-pointer"
                     >
-                      {t("savedBuilds.cancel")}
+                      {t('savedBuilds.cancel')}
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="flex justify-between items-start">
+                <div className="flex flex-col sm:flex-row sm:flex-wrap sm:justify-between gap-2">
                   <div>
                     <div className="flex gap-4 items-center">
                       <h2 className="text-text font-semibold text-3xl uppercase">
@@ -246,46 +239,43 @@ const SavedBuilds = () => {
                         </div>
                       )}
                     </div>
-                    <p className="text-muted text-sm">
-                      {formatDate(selectedBuild.created_at)}
-                    </p>
-                    {selectedBuild.notes && (
-                      <p className="text-muted mt-1">{selectedBuild.notes}</p>
-                    )}
+                    <p className="text-muted text-sm">{formatDate(selectedBuild.created_at)}</p>
                   </div>
-                  <button
-                    onClick={() => setEditing(true)}
-                    className="text-muted hover:text-text transition text-sm cursor-pointer"
-                  >
-                    {t("savedBuilds.edit")}
-                  </button>
+
+                  <div className="flex items-center gap-2 sm:ml-auto">
+                    <button
+                      onClick={() => setEditing(true)}
+                      className="text-muted hover:text-text transition text-sm cursor-pointer"
+                    >
+                      {t('savedBuilds.edit')}
+                    </button>
+                    <button
+                      onClick={() => setDeleting(selectedBuild.id)}
+                      className="text-muted hover:text-danger transition cursor-pointer"
+                    >
+                      <TrashIcon size={20} />
+                    </button>
+                  </div>
+
+                  {selectedBuild.notes && (
+                    <p className="text-muted mt-1 sm:w-full">{selectedBuild.notes}</p>
+                  )}
                 </div>
               )}
 
               <div className="flex justify-between items-center">
                 <p className="text-text font-semibold text-2xl">
-                  €{selectedBuild.total_price}
+                  €{formatPrice(selectedBuild.total_price)}
                 </p>
-                <div className="flex items-center gap-4">
-                  <Link
-                    className="py-4 px-8 bg-primary text-white cursor-pointer hover:bg-primary-light transition"
-                    to={`/builder?build=${selectedBuild.id}`}
-                  >
-                    {t("savedBuilds.continueBuild")}
-                  </Link>
-                  <button
-                    className="py-4 px-8 bg-surface text-text cursor-pointer hover:bg-danger/50 transition"
-                    onClick={() => setDeleting(selectedBuild.id)}
-                  >
-                    {t("savedBuilds.deleteBuild")}
-                  </button>
-                </div>
+                <Link
+                  className="py-4 px-8 bg-primary text-white cursor-pointer hover:bg-primary-light transition"
+                  to={`/builder?build=${selectedBuild.id}`}
+                >
+                  {t('savedBuilds.continueBuild')}
+                </Link>
               </div>
 
-              <BuildVisibility
-                build={selectedBuild}
-                setBuild={setSelectedBuild}
-              />
+              <BuildVisibility build={selectedBuild} setBuild={setSelectedBuild} />
 
               <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-4">
                 {SLOT_KEYS.map((slot) => {
@@ -296,24 +286,24 @@ const SavedBuilds = () => {
                     <div key={slot}>
                       <div
                         onClick={() => handleExpandSlot(slot)}
-                        className={`flex cursor-pointer transition-all border border-border ${isExpanded ? "bg-secondary-light hover:bg-secondary-light/80" : "bg-surface hover:bg-secondary-light"}`}
+                        className={`flex cursor-pointer transition-all border border-border ${isExpanded ? 'bg-secondary-light hover:bg-secondary-light/80' : 'bg-surface hover:bg-secondary-light'}`}
                       >
                         <div className="flex-1 m-4">
                           <div className="flex justify-between">
-                            <span className="text-muted text-sm">{t(`savedBuilds.slotLabels.${slot}`)}</span>
                             <span className="text-muted text-sm">
-                              €{component.price}
+                              {t(`savedBuilds.slotLabels.${slot}`)}
+                            </span>
+                            <span className="text-muted text-sm">
+                              €{formatPrice(component.price)}
                             </span>
                           </div>
-                          <span className="text-text line-clamp-1">
-                            {component.name}
-                          </span>
+                          <span className="text-text line-clamp-1">{component.name}</span>
                         </div>
                       </div>
 
                       <div
                         className={`lg:hidden grid transition-all overflow-hidden ${
-                          isExpanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                          isExpanded ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
                         }`}
                       >
                         <div className="overflow-hidden">
@@ -331,7 +321,7 @@ const SavedBuilds = () => {
 
               <div
                 className={`hidden lg:grid transition-all overflow-hidden ${
-                  expandedComponent ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                  expandedComponent ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
                 }`}
               >
                 <div className="overflow-hidden">
@@ -353,10 +343,10 @@ const SavedBuilds = () => {
 
       {deleting && (
         <Modal close={() => setDeleting(null)}>
-          <h1 className="text-text text-3xl mb-10">
-            {t("savedBuilds.deleteConfirmTitle")}
+          <h1 className="text-text text-3xl mb-10 m-4 max-w-120">
+            {t('savedBuilds.deleteConfirmTitle')}
           </h1>
-          <div className="flex gap-4">
+          <div className="flex gap-4 m-4">
             <button
               className="flex-1 p-4 bg-primary text-background cursor-pointer hover:bg-primary-light transition"
               onClick={() => {
@@ -364,13 +354,13 @@ const SavedBuilds = () => {
                 setDeleting(null);
               }}
             >
-              {t("savedBuilds.delete")}
+              {t('savedBuilds.delete')}
             </button>
             <button
               className="flex-1 p-4 bg-surface text-text cursor-pointer hover:bg-secondary-light transition"
               onClick={() => setDeleting(null)}
             >
-              {t("savedBuilds.cancel")}
+              {t('savedBuilds.cancel')}
             </button>
           </div>
         </Modal>

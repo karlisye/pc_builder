@@ -19,6 +19,7 @@
     "seeInStore": "See in store",
     "remove": "Remove",
     "replace": "Replace",
+    "startingFrom": "Starting from €{{price}}",
     "more": "More",
     "availabilityTitle": "Availability",
     "lastScraped": "Last checked: {{date}}",

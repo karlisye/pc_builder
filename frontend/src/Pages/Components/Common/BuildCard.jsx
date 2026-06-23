@@ -9,6 +9,7 @@ import Modal from '../Common/Modal';
 import ComponentDetail from '../Common/ComponentDetail';
 import BuildIssuesPopup from '../Common/BuildIssuesPopup';
 import { formatDate } from '../../../lib/formatDate';
+import { formatPrice } from '../../../lib/componentPrice';
 import { useToast } from '../../../Contexts/ToastContext';
 
 const BuildCard = ({ build }) => {
@@ -134,7 +135,7 @@ const BuildCard = ({ build }) => {
   return (
     <>
       <div className="w-full border flex flex-col border-border shadow hover:bg-background transition overflow-hidden">
-        <div className="flex gap-2 items-center justify-between m-2">
+        <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-2 m-2">
           <div className="flex gap-2 items-center">
             <Link
               className="w-12 h-12 rounded-full bg-secondary-light flex items-center justify-center font-bold"
@@ -173,7 +174,9 @@ const BuildCard = ({ build }) => {
             </div>
           </div>
 
-          <p className="text-text font-semibold text-xl">€{build.total_price}</p>
+          <p className="text-text font-semibold text-xl xl:ml-auto">
+            €{formatPrice(build.total_price)}
+          </p>
         </div>
 
         <div className="flex xl:flex-row flex-col max-h-100 overflow-y-auto">
@@ -299,7 +302,7 @@ const BuildCard = ({ build }) => {
 
       {viewingComponent && (
         <Modal close={() => setViewingComponent(null)}>
-          <div className="w-[min(90vw,40rem)] max-h-[80vh] overflow-y-auto">
+          <div className="w-[min(90vw,64rem)] max-h-[80vh] overflow-y-auto">
             <ComponentDetail
               component={viewingComponent.component}
               title={t(`common:components.${viewingComponent.name}`, {
@@ -313,11 +316,11 @@ const BuildCard = ({ build }) => {
 
       {privating && (
         <Modal close={() => setPrivating(false)}>
-          <h1 className="text-text text-3xl mb-10">
+          <h1 className="text-text text-3xl mb-10 m-4 max-w-120">
             {t('components.buildCard.privateConfirmTitle', { name: build.name })}
           </h1>
 
-          <div className="flex gap-4">
+          <div className="flex gap-4 m-4">
             <button
               className="flex-1 p-4 bg-primary text-background cursor-pointer hover:bg-primary-light transition"
               onClick={makePrivate}

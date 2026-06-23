@@ -127,7 +127,7 @@ const BuildInfo = () => {
               className="flex border border-muted hover:bg-primary-light transition relative"
             >
               <div className="overflow-hidden flex">
-                <span className="capitalize text-secondary-light p-2">
+                <span className="capitalize text-secondary-light p-2 whitespace-nowrap shrink-0">
                   {t(`common:components.${key}`)}:{" "}
                 </span>
                 <span className="text-surface p-2 truncate">{value.name}</span>
