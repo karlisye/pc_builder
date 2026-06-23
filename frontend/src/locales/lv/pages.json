@@ -105,6 +105,10 @@
     "noBuildsFound": "Konfigurācijas nav atrastas",
     "tryAdjustingFilters": "Pamēģini pielāgot filtrus"
   },
+  "buildDetail": {
+    "sidePanelTitle": "DARBĪBAS",
+    "notFoundError": "Konfigurācija nav atrasta"
+  },
   "savedBuilds": {
     "sidePanelTitle": "SAGLABĀTĀS KONFIGURĀCIJAS",
     "noSavedBuilds": "Tev pagaidām nav saglabātu konfigurāciju.",
@@ -149,7 +153,7 @@
       "likeTitle": "Atzīmēt \"patīk\" šai publikācijai",
       "ratingTitle": "Vidējais vērtējums",
       "continue": "Turpināt",
-      "copyToSaved": "Kopēt uz saglabātajām",
+      "copyToSaved": "Kopēt",
       "componentsLabel": "Komponentes"
     },
     "buildFilters": {

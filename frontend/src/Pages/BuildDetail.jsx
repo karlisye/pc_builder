@@ -6,10 +6,24 @@ import { HeartIcon, InfoIcon, StarIcon } from './Components/Common/Icons';
 import Modal from './Components/Common/Modal';
 import ComponentDetail from './Components/Common/ComponentDetail';
 import BuildIssuesPopup from './Components/Common/BuildIssuesPopup';
+import SidePanel from './Components/Common/SidePanel';
 import { formatDate } from '../lib/formatDate';
 import { formatPrice } from '../lib/componentPrice';
 import { useToast } from '../Contexts/ToastContext';
 import { useAuth } from '../Contexts/AuthContext';
+
+const SLOT_KEYS = [
+  'cpu',
+  'motherboard',
+  'ram',
+  'gpu',
+  'ssd',
+  'hdd',
+  'case',
+  'cooler',
+  'psu',
+  'fan',
+];
 
 const BuildDetail = () => {
   const { t } = useTranslation(['pages', 'common']);
@@ -24,7 +38,8 @@ const BuildDetail = () => {
 
   const [buildIssues, setBuildIssues] = useState({});
   const [issuesPopup, setIssuesPopup] = useState(null);
-  const [viewingComponent, setViewingComponent] = useState(null);
+  const [expandedSlot, setExpandedSlot] = useState(null);
+  const [privating, setPrivating] = useState(false);
 
   useEffect(() => {
     axios
@@ -35,7 +50,7 @@ const BuildDetail = () => {
         setLikesCount(res.data.likes_count ?? 0);
       })
       .catch((err) => {
-        setError(err.response?.data?.error ?? t('components.buildCard.saveError'));
+        setError(err.response?.data?.error ?? t('buildDetail.notFoundError'));
       });
   }, [buildId]);
 
@@ -43,9 +58,9 @@ const BuildDetail = () => {
     if (!build) return;
 
     const selected = Object.fromEntries(
-      Object.entries(build.components)
-        .filter(([_, c]) => c !== null)
-        .map(([type, c]) => [type, c.product_code]),
+      SLOT_KEYS.map((slot) => [slot, build.components[slot]])
+        .filter(([, component]) => component !== null)
+        .map(([slot, component]) => [slot, component.product_code]),
     );
 
     if (Object.keys(selected).length === 0) {
@@ -62,6 +77,10 @@ const BuildDetail = () => {
   const handleIssuesPopup = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     setIssuesPopup({ x: rect.left, y: rect.bottom });
+  };
+
+  const handleExpandSlot = (slot) => {
+    setExpandedSlot((prev) => (prev === slot ? null : slot));
   };
 
   const handleSave = async () => {
@@ -85,6 +104,18 @@ const BuildDetail = () => {
     }
   };
 
+  const makePrivate = async () => {
+    try {
+      const res = await axios.patch(`/api/builds/${build.id}/publish`);
+      setBuild((prev) => ({ ...prev, is_public: res.data.is_public }));
+      addToast(res.data.success, { type: 'success' });
+    } catch (err) {
+      addToast(err.response?.data?.error ?? err.message, { type: 'danger' });
+    } finally {
+      setPrivating(false);
+    }
+  };
+
   const like = async () => {
     try {
       const res = await axios.post(`/api/shared/${build.id}/like`);
@@ -105,21 +136,47 @@ const BuildDetail = () => {
 
   if (!build) return null;
 
-  return (
-    <div className="max-w-4xl mx-auto px-4 py-6">
-      <div className="w-full border flex flex-col border-border shadow overflow-hidden">
-        <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-2 m-2">
-          <div className="flex gap-2 items-center">
-            <Link
-              className="w-12 h-12 rounded-full bg-secondary-light flex items-center justify-center font-bold"
-              to={`/profile/${build.user?.id}`}
-            >
-              {build.user?.name?.charAt(0).toUpperCase()}
-            </Link>
+  const expandedComponent = expandedSlot ? build.components[expandedSlot] : null;
 
+  return (
+    <div className="h-full flex">
+      <SidePanel title={t('buildDetail.sidePanelTitle')}>
+        <div className="flex">
+          <Link
+            className="block text-center p-4 bg-secondary text-white hover:bg-secondary-light transition cursor-pointer flex-1"
+            to={`/builder?build=${build.id}&shared=true`}
+          >
+            {t('components.buildCard.continue')}
+          </Link>
+
+          {user && (
+            <button
+              onClick={handleSave}
+              className="w-full p-4 bg-secondary text-white hover:bg-secondary-light transition cursor-pointer flex-1"
+            >
+              {t('components.buildCard.copyToSaved')}
+            </button>
+          )}
+        </div>
+
+        {user?.id === build.user_id && (
+          <div className="mt-4 pt-4 border-t border-primary-light">
+            <button
+              onClick={() => setPrivating(true)}
+              className="text-secondary-light hover:text-danger transition cursor-pointer"
+            >
+              {t('components.saved.buildVisibility.makePrivate')}
+            </button>
+          </div>
+        )}
+      </SidePanel>
+
+      <div className="flex-1 pt-6 px-4 mb-6">
+        <div className="space-y-6">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap sm:justify-between gap-2">
             <div>
-              <div className="flex gap-2 items-center">
-                <h1 className="text-2xl uppercase text-text font-semibold">{build.name}</h1>
+              <div className="flex gap-4 items-center">
+                <h2 className="text-text font-semibold text-3xl uppercase">{build.name}</h2>
                 {build.type && (
                   <span className="py-0.5 px-3 text-text border border-border bg-secondary-light">
                     {build.type}
@@ -132,9 +189,6 @@ const BuildDetail = () => {
                     onMouseLeave={() => setIssuesPopup(null)}
                   >
                     <InfoIcon />
-                    <span className="hidden xl:block">
-                      {t('components.buildCard.buildIncompatible')}
-                    </span>
                   </div>
                 )}
               </div>
@@ -142,107 +196,118 @@ const BuildDetail = () => {
                 <Link className="text-muted" to={`/profile/${build.user?.id}`}>
                   @{build.user?.name}
                 </Link>
-                <p className="text-sm text-muted px-2">{formatDate(build.created_at)}</p>
+                <p className="text-sm text-muted">{formatDate(build.created_at)}</p>
               </div>
             </div>
           </div>
 
-          <p className="text-text font-semibold text-xl xl:ml-auto">
-            €{formatPrice(build.total_price)}
-          </p>
-        </div>
+          {build.notes && <p className="text-text">{build.notes}</p>}
 
-        <div className="flex items-center gap-6 m-2">
-          <span className="flex items-center gap-2" title={t('components.buildCard.likeTitle')}>
-            <button onClick={like}>
-              <HeartIcon
-                filled={liked}
-                className={
-                  liked
-                    ? 'text-danger transition hover:text-danger/90'
-                    : 'transition text-muted hover:text-text'
-                }
-              />
-            </button>
+          <div className="flex items-center gap-6">
+            <p className="text-text font-semibold text-2xl">€{formatPrice(build.total_price)}</p>
 
-            <span className="text-muted">{likesCount ?? 0}</span>
-          </span>
+            <span className="flex items-center gap-2" title={t('components.buildCard.likeTitle')}>
+              <button onClick={like}>
+                <HeartIcon
+                  filled={liked}
+                  className={
+                    liked
+                      ? 'text-danger transition hover:text-danger/90'
+                      : 'transition text-muted hover:text-text'
+                  }
+                />
+              </button>
+              <span className="text-muted">{likesCount ?? 0}</span>
+            </span>
 
-          <span className="flex items-center gap-2" title={t('components.buildCard.ratingTitle')}>
-            <StarIcon filled className={'text-alert'} />
-
-            <span className="text-muted">{Math.round(build.reviews_avg_rating ?? 0)}</span>
-          </span>
-        </div>
-
-        <div className="flex xl:flex-row flex-col">
-          <div className="flex-1 m-2 flex flex-col gap-4">
-            <span className="text-muted font-medium">{t('components.buildCard.notes')}</span>
-            {build.notes ? (
-              <p className="text-text">{build.notes}</p>
-            ) : (
-              <p className="italic text-sm text-muted">{t('components.buildCard.none')}</p>
-            )}
+            <span className="flex items-center gap-2" title={t('components.buildCard.ratingTitle')}>
+              <StarIcon filled className={'text-alert'} />
+              <span className="text-muted">{Math.round(build.reviews_avg_rating ?? 0)}</span>
+            </span>
           </div>
 
-          <div className="flex-2 m-2">
-            <span className="text-muted font-medium">
-              {t('components.buildCard.componentsLabel')}
-            </span>
-            <div className="grid grid-cols-2 gap-2 mt-4">
-              {build.components &&
-                Object.entries(build.components).map(([key, component]) => {
-                  if (!component) return null;
-
-                  return (
-                    <div key={key}>
-                      <span className="text-muted uppercase text-sm block">
-                        {t(`common:components.${key}`, { defaultValue: key })}
-                      </span>
-                      <button
-                        onClick={() => setViewingComponent({ component, name: key })}
-                        className="text-text text-sm text-wrap text-left hover:underline cursor-pointer"
-                      >
-                        {component.name}
-                      </button>
+          <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-4">
+            {SLOT_KEYS.map((slot) => {
+              const component = build.components[slot];
+              if (!component) return null;
+              const isExpanded = expandedSlot === slot;
+              return (
+                <div key={slot}>
+                  <div
+                    onClick={() => handleExpandSlot(slot)}
+                    className={`flex cursor-pointer transition-all border border-border ${isExpanded ? 'bg-secondary-light hover:bg-secondary-light/80' : 'bg-surface hover:bg-secondary-light'}`}
+                  >
+                    <div className="flex-1 m-4">
+                      <div className="flex justify-between">
+                        <span className="text-muted text-sm">
+                          {t(`common:components.${slot}`, { defaultValue: slot })}
+                        </span>
+                        <span className="text-muted text-sm">€{formatPrice(component.price)}</span>
+                      </div>
+                      <span className="text-text line-clamp-1">{component.name}</span>
                     </div>
-                  );
-                })}
+                  </div>
+
+                  <div
+                    className={`lg:hidden grid transition-all overflow-hidden ${
+                      isExpanded ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+                    }`}
+                  >
+                    <div className="overflow-hidden">
+                      <ComponentDetail
+                        component={component}
+                        title={t(`common:components.${slot}`, { defaultValue: slot })}
+                        onClose={() => setExpandedSlot(null)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div
+            className={`hidden lg:grid transition-all overflow-hidden ${
+              expandedComponent ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+            }`}
+          >
+            <div className="overflow-hidden">
+              {expandedComponent && (
+                <ComponentDetail
+                  component={expandedComponent}
+                  title={t(`common:components.${expandedSlot}`, { defaultValue: expandedSlot })}
+                  onClose={() => setExpandedSlot(null)}
+                />
+              )}
             </div>
           </div>
-        </div>
-
-        <div className="bg-primary mt-auto flex">
-          <Link
-            className="text-white px-8 py-4 flex-1 text-center hover:bg-primary-light cursor-pointer transition"
-            to={`/builder?build=${build.id}&shared=true`}
-          >
-            {t('components.buildCard.continue')}
-          </Link>
-
-          {user && (
-            <button
-              className="text-white px-8 py-4 flex-1 hover:bg-primary-light cursor-pointer transition"
-              onClick={handleSave}
-            >
-              {t('components.buildCard.copyToSaved')}
-            </button>
-          )}
         </div>
       </div>
 
       {issuesPopup && <BuildIssuesPopup issues={buildIssues} {...issuesPopup} />}
 
-      {viewingComponent && (
-        <Modal close={() => setViewingComponent(null)}>
-          <div className="w-[min(90vw,64rem)] max-h-[80vh] overflow-y-auto">
-            <ComponentDetail
-              component={viewingComponent.component}
-              title={t(`common:components.${viewingComponent.name}`, {
-                defaultValue: viewingComponent.name,
-              })}
-              onClose={() => setViewingComponent(null)}
-            />
+      {privating && (
+        <Modal close={() => setPrivating(false)}>
+          <h1 className="text-text text-3xl mb-10 m-4 max-w-120">
+            {t('components.saved.buildVisibility.confirmTitle', {
+              action: t('components.saved.buildVisibility.actionPrivate'),
+              name: build.name,
+            })}
+          </h1>
+
+          <div className="flex gap-4 m-4">
+            <button
+              className="flex-1 p-4 bg-primary text-background cursor-pointer hover:bg-primary-light transition"
+              onClick={makePrivate}
+            >
+              {t('components.saved.buildVisibility.makePrivateButton')}
+            </button>
+            <button
+              className="flex-1 p-4 bg-surface text-text cursor-pointer hover:bg-secondary-light transition"
+              onClick={() => setPrivating(false)}
+            >
+              {t('components.saved.buildVisibility.cancel')}
+            </button>
           </div>
         </Modal>
       )}

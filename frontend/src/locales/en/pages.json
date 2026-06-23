@@ -105,6 +105,10 @@
     "noBuildsFound": "No Builds Found",
     "tryAdjustingFilters": "Try adjusting your filters"
   },
+  "buildDetail": {
+    "sidePanelTitle": "ACTIONS",
+    "notFoundError": "Build not found"
+  },
   "savedBuilds": {
     "sidePanelTitle": "SAVED BUILDS",
     "noSavedBuilds": "You have no saved builds yet.",
@@ -149,7 +153,7 @@
       "likeTitle": "Like this post",
       "ratingTitle": "Average rating",
       "continue": "Continue",
-      "copyToSaved": "Copy to saved",
+      "copyToSaved": "Copy",
       "componentsLabel": "Components"
     },
     "buildFilters": {

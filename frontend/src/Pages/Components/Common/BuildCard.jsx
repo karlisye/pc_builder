@@ -1,20 +1,48 @@
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { HeartIcon, StarIcon } from '../Common/Icons';
-import { formatDate } from '../../../lib/formatDate';
 import { formatPrice } from '../../../lib/componentPrice';
+import { useAuth } from '../../../Contexts/AuthContext';
+import { useToast } from '../../../Contexts/ToastContext';
 
 const BuildCard = ({ build }) => {
   const { t } = useTranslation(['pages', 'common']);
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { addToast } = useToast();
+
+  const handleSave = async () => {
+    const components = Object.fromEntries(
+      Object.entries(build.components)
+        .filter(([_, component]) => component !== null)
+        .map(([type, component]) => [type, component.product_code]),
+    );
+
+    try {
+      await axios.post('/api/builds', {
+        name: build.name + ' (copy)',
+        notes: build.notes,
+        components,
+      });
+      addToast(t('components.buildCard.saveSuccess'), { type: 'success' });
+    } catch (err) {
+      addToast(err.response?.data?.error ?? t('components.buildCard.saveError'), {
+        type: 'danger',
+      });
+    }
+  };
 
   return (
     <div className="w-full xl:w-80 border flex flex-col border-border shadow hover:bg-background transition relative">
-      <div className="cursor-pointer" onClick={() => navigate(`/shared/${build.id}`)}>
-        <div className="w-full aspect-square bg-surface" />
+      <div
+        className="flex flex-row xl:flex-col cursor-pointer"
+        onClick={() => navigate(`/shared/${build.id}`)}
+      >
+        <div className="w-28 h-28 xl:w-full xl:h-auto xl:aspect-square bg-surface shrink-0" />
 
-        <div className="p-2 flex flex-col gap-1">
+        <div className="p-2 flex flex-col gap-1 flex-1 min-w-0">
           <h2 className="text-text font-semibold text-xl line-clamp-1">{build.name}</h2>
 
           <Link
@@ -55,6 +83,18 @@ const BuildCard = ({ build }) => {
         >
           {t('components.buildCard.continue')}
         </Link>
+
+        {user && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleSave();
+            }}
+            className="text-white py-4 px-8 flex-1 hover:bg-primary-light cursor-pointer transition"
+          >
+            {t('components.buildCard.copyToSaved')}
+          </button>
+        )}
       </div>
     </div>
   );
