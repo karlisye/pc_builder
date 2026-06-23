@@ -20,7 +20,8 @@
     "seeInStore": "See in store",
     "remove": "Remove",
     "more": "More",
-    "chooseStore": "Choose store"
+    "chooseStore": "Choose store",
+    "availabilityTitle": "Availability"
   },
   "componentPopup": {
     "ram": {

@@ -20,7 +20,8 @@
     "seeInStore": "Apskatīt veikalā",
     "remove": "Noņemt",
     "more": "Vairāk",
-    "chooseStore": "Izvēlieties veikalu"
+    "chooseStore": "Izvēlieties veikalu",
+    "availabilityTitle": "Pieejamība"
   },
   "componentPopup": {
     "ram": {
