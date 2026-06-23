@@ -16,6 +16,7 @@ import Guide from "./Pages/Guide";
 import Builder from "./Pages/Builder";
 import SavedBuilds from "./Pages/SavedBuilds";
 import Shared from "./Pages/Shared";
+import BuildDetail from "./Pages/BuildDetail";
 import NotFound from "./Pages/NotFound";
 
 import Login from "./Pages/Auth/Login";
@@ -74,6 +75,7 @@ const App = () => (
 
             {/* Shared builds are viewable by guests; liking/saving stay auth-gated inline */}
             <Route path="/shared" element={<Shared />} />
+            <Route path="/shared/:buildId" element={<BuildDetail />} />
 
             {/* Profile (nested layout) */}
             <Route element={<AuthRoute><ProfileLayout /></AuthRoute>}>

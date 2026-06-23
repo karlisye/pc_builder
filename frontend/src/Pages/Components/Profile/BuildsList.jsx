@@ -11,7 +11,7 @@ const BuildsList = ({
   onPageChange,
   isPublic = false,
 }) => {
-  const { t } = useTranslation("profile");
+  const { t } = useTranslation(["profile", "builder"]);
   const builds = buildData?.data;
   const links = buildData?.links;
 
@@ -48,7 +48,7 @@ const BuildsList = ({
                         </h3>
                         {build.type && (
                           <span className="bg-secondary-light px-3 py-0.5 text-text border border-border text-sm">
-                            {build.type}
+                            {t(`builder:buildInfo.${build.type}`, { defaultValue: build.type })}
                           </span>
                         )}
                       </div>

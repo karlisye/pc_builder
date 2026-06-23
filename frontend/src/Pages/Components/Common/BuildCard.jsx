@@ -1,33 +1,17 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { HeartIcon, InfoIcon, StarIcon } from '../Common/Icons';
-import Modal from '../Common/Modal';
-import ComponentDetail from '../Common/ComponentDetail';
-import BuildIssuesPopup from '../Common/BuildIssuesPopup';
-import { formatDate } from '../../../lib/formatDate';
+import { HeartIcon, StarIcon } from '../Common/Icons';
 import { formatPrice } from '../../../lib/componentPrice';
-import { useToast } from '../../../Contexts/ToastContext';
 import { useAuth } from '../../../Contexts/AuthContext';
+import { useToast } from '../../../Contexts/ToastContext';
 
 const BuildCard = ({ build }) => {
   const { t } = useTranslation(['pages', 'common']);
-  const { addToast } = useToast();
+  const navigate = useNavigate();
   const { user } = useAuth();
-
-  const [liked, setLiked] = useState(build.liked ?? false);
-
-  const [likesCount, setLikesCount] = useState(build.likes_count ?? 0);
-
-  const [buildIssues, setBuildIssues] = useState({});
-  const [issuesPopup, setIssuesPopup] = useState(null);
-  const [viewingComponent, setViewingComponent] = useState(null);
-
-  const handleIssuesPopup = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setIssuesPopup({ x: rect.left, y: rect.bottom });
-  };
+  const { addToast } = useToast();
 
   const handleSave = async () => {
     const components = Object.fromEntries(
@@ -50,186 +34,69 @@ const BuildCard = ({ build }) => {
     }
   };
 
-  const like = async () => {
-    try {
-      const res = await axios.post(`/api/shared/${build.id}/like`);
-      if (res.status === 200) {
-        setLiked((prev) => !prev);
-        setLikesCount((prev) => (liked ? prev - 1 : prev + 1));
-      }
-    } catch (err) {
-      addToast(err.response?.data?.error ?? t('components.buildCard.likeError'), {
-        type: 'danger',
-      });
-    }
-  };
-
-  const validateCompatibility = async () => {
-    const selected = Object.fromEntries(
-      Object.entries(build.components)
-        .filter(([_, c]) => c !== null)
-        .map(([type, c]) => [type, c.product_code]),
-    );
-
-    if (Object.keys(selected).length === 0) {
-      setBuildIssues({});
-      return;
-    }
-
-    try {
-      const res = await axios.post('/api/builder/validate', { selected });
-      setBuildIssues(res.data.issues);
-    } catch (err) {
-      setBuildIssues({});
-    }
-  };
-
-  useEffect(() => {
-    validateCompatibility();
-  }, []);
-
   return (
-    <>
-      <div className="w-full border flex flex-col border-border shadow hover:bg-background transition overflow-hidden">
-        <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-2 m-2">
-          <div className="flex gap-2 items-center">
-            <Link
-              className="w-12 h-12 rounded-full bg-secondary-light flex items-center justify-center font-bold"
-              to={`/profile/${build.user?.id}`}
-            >
-              {build.user.name?.charAt(0).toUpperCase()}
-            </Link>
+    <div className="w-full xl:w-80 border flex flex-col border-border shadow hover:bg-background transition relative">
+      <div
+        className="flex flex-row xl:flex-col cursor-pointer"
+        onClick={() => navigate(`/shared/${build.id}`)}
+      >
+        <div className="w-28 h-28 xl:w-full xl:h-auto xl:aspect-square bg-surface shrink-0" />
 
-            <div>
-              <div className="flex gap-2 items-center">
-                <h1 className="text-2xl uppercase text-text font-semibold">{build.name}</h1>
-                {build.type && (
-                  <span className="py-0.5 px-3 text-text border border-border bg-secondary-light">
-                    {build.type}
-                  </span>
-                )}
-                {Object.keys(buildIssues).length > 0 && (
-                  <div
-                    className="text-danger/80 hover:text-danger/60 transition flex gap-2"
-                    onMouseEnter={handleIssuesPopup}
-                    onMouseLeave={() => setIssuesPopup(null)}
-                  >
-                    <InfoIcon />
-                    <span className="hidden xl:block">
-                      {t('components.buildCard.buildIncompatible')}
-                    </span>
-                  </div>
-                )}
-              </div>
-              <div className="flex gap-4 items-center">
-                <Link className="text-muted" to={`/profile/${build.user?.id}`}>
-                  @{build.user?.name}
-                </Link>
-                <p className="text-sm text-muted px-2">{formatDate(build.created_at)}</p>
-              </div>
-            </div>
-          </div>
+        <div className="p-2 flex flex-col gap-1 flex-1 min-w-0">
+          <h2 className="text-text font-semibold text-xl line-clamp-1">{build.name}</h2>
 
-          <p className="text-text font-semibold text-xl xl:ml-auto">
-            €{formatPrice(build.total_price)}
-          </p>
-        </div>
-
-        <div className="flex items-center gap-6 m-2">
-          <span className="flex items-center gap-2" title={t('components.buildCard.likeTitle')}>
-            <button onClick={like}>
-              <HeartIcon
-                filled={liked}
-                className={
-                  liked
-                    ? 'text-danger transition hover:text-danger/90'
-                    : 'transition text-muted hover:text-text'
-                }
-              />
-            </button>
-
-            <span className="text-muted">{likesCount ?? 0}</span>
-          </span>
-
-          <span className="flex items-center gap-2" title={t('components.buildCard.ratingTitle')}>
-            <StarIcon filled className={'text-alert'} />
-
-            <span className="text-muted">{Math.round(build.reviews_avg_rating ?? 0)}</span>
-          </span>
-        </div>
-
-        <div className="flex xl:flex-row flex-col max-h-100 overflow-y-auto">
-          <div className="flex-1 m-2 flex flex-col gap-4">
-            <span className="text-muted font-medium">{t('components.buildCard.notes')}</span>
-            {build.notes ? (
-              <p className="text-text">{build.notes}</p>
-            ) : (
-              <p className="italic text-sm text-muted">{t('components.buildCard.none')}</p>
-            )}
-          </div>
-
-          <div className="flex-2 m-2">
-            <span className="text-muted font-medium">
-              {t('components.buildCard.componentsLabel')}
-            </span>
-            <div className="grid grid-cols-2 gap-2 mt-4">
-              {build.components &&
-                Object.entries(build.components).map(([key, component]) => {
-                  if (!component) return null;
-
-                  return (
-                    <div key={key}>
-                      <span className="text-muted uppercase text-sm block">
-                        {t(`common:components.${key}`, { defaultValue: key })}
-                      </span>
-                      <button
-                        onClick={() => setViewingComponent({ component, name: key })}
-                        className="text-text text-sm text-wrap text-left hover:underline cursor-pointer"
-                      >
-                        {component.name}
-                      </button>
-                    </div>
-                  );
-                })}
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-primary mt-auto flex">
           <Link
-            className="text-white px-8 py-4 flex-1 text-center hover:bg-primary-light cursor-pointer transition"
-            to={`/builder?build=${build.id}&shared=true`}
+            className="text-muted text-sm hover:underline"
+            to={`/profile/${build.user?.id}`}
+            onClick={(e) => e.stopPropagation()}
           >
-            {t('components.buildCard.continue')}
+            @{build.user?.name}
           </Link>
 
-          {user && (
-            <button
-              className="text-white px-8 py-4 flex-1 hover:bg-primary-light cursor-pointer transition"
-              onClick={handleSave}
-            >
-              {t('components.buildCard.copyToSaved')}
-            </button>
-          )}
+          <div className="flex gap-4 justify-between">
+            <span className="text-text font-semibold">€{formatPrice(build.total_price)}</span>
+
+            <div className="flex items-center gap-4">
+              <span className="flex items-center gap-1" title={t('components.buildCard.likeTitle')}>
+                <HeartIcon filled size={18} className={'text-danger'} />
+                <span className="text-muted text-sm">{build.likes_count ?? 0}</span>
+              </span>
+              <span
+                className="flex items-center gap-1"
+                title={t('components.buildCard.ratingTitle')}
+              >
+                <StarIcon filled size={18} className={'text-alert'} />
+                <span className="text-muted text-sm">
+                  {Math.round(build.reviews_avg_rating ?? 0)}
+                </span>
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 
-      {issuesPopup && <BuildIssuesPopup issues={buildIssues} {...issuesPopup} />}
+      <div className="bg-primary mt-auto flex">
+        <Link
+          className="text-white py-4 px-8 flex-1 text-center hover:bg-primary-light cursor-pointer transition"
+          to={`/builder?build=${build.id}&shared=true`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {t('components.buildCard.continue')}
+        </Link>
 
-      {viewingComponent && (
-        <Modal close={() => setViewingComponent(null)}>
-          <div className="w-[min(90vw,64rem)] max-h-[80vh] overflow-y-auto">
-            <ComponentDetail
-              component={viewingComponent.component}
-              title={t(`common:components.${viewingComponent.name}`, {
-                defaultValue: viewingComponent.name,
-              })}
-              onClose={() => setViewingComponent(null)}
-            />
-          </div>
-        </Modal>
-      )}
-    </>
+        {user && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleSave();
+            }}
+            className="text-white py-4 px-8 flex-1 hover:bg-primary-light cursor-pointer transition"
+          >
+            {t('components.buildCard.copyToSaved')}
+          </button>
+        )}
+      </div>
+    </div>
   );
 };
 

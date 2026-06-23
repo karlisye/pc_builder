@@ -105,6 +105,27 @@
     "noBuildsFound": "No Builds Found",
     "tryAdjustingFilters": "Try adjusting your filters"
   },
+  "buildDetail": {
+    "sidePanelTitle": "ACTIONS",
+    "notFoundError": "Build not found"
+  },
+  "buildComments": {
+    "title": "Comments",
+    "placeholder": "Write a comment...",
+    "submit": "Post",
+    "replyPlaceholder": "Write a reply...",
+    "reply": "Reply",
+    "replyingTo": "Replying to @{{name}}",
+    "cancel": "Cancel",
+    "loginToComment": "Sign in to leave a comment.",
+    "loginLink": "Log in",
+    "empty": "No comments yet.",
+    "postError": "Failed to post comment",
+    "likeError": "Failed to like comment",
+    "deleteError": "Failed to delete comment",
+    "deleteConfirmTitle": "Are you sure you want to delete this comment?",
+    "delete": "Delete"
+  },
   "savedBuilds": {
     "sidePanelTitle": "SAVED BUILDS",
     "noSavedBuilds": "You have no saved builds yet.",
@@ -142,6 +163,7 @@
       "saveSuccess": "Build saved successfully",
       "saveError": "Failed to save build",
       "likeError": "Failed to like",
+      "likeLoginRequired": "You must log in to like a build",
       "compatibilityIssues": "Compatibility Issues",
       "buildIncompatible": "Some components are incompatible",
       "notes": "Notes",
@@ -149,7 +171,7 @@
       "likeTitle": "Like this post",
       "ratingTitle": "Average rating",
       "continue": "Continue",
-      "copyToSaved": "Copy to saved",
+      "copyToSaved": "Copy",
       "componentsLabel": "Components"
     },
     "buildFilters": {

@@ -8,7 +8,7 @@ import { formatPrice } from "../../../lib/componentPrice";
 import { useToast } from "../../../Contexts/ToastContext";
 
 const PublicProfile = () => {
-  const { t } = useTranslation("profile");
+  const { t } = useTranslation(["profile", "builder"]);
   const { addToast } = useToast();
   const { user: userId } = useParams();
   const [data, setData] = useState(null);
@@ -131,7 +131,7 @@ const PublicProfile = () => {
                           <h3 className="uppercase text-xl font-semibold">{build.name}</h3>
                           {build.type && (
                             <span className="bg-secondary-light px-3 py-0.5 text-text border border-border text-sm">
-                              {build.type}
+                              {t(`builder:buildInfo.${build.type}`, { defaultValue: build.type })}
                             </span>
                           )}
                         </div>

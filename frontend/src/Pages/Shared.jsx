@@ -102,7 +102,7 @@ const Shared = () => {
               </div>
             ) : (
               <>
-                <div className="flex flex-col items-center gap-8 px-4 pt-6">
+                <div className="flex flex-wrap gap-8 justify-center px-4 pt-6">
                   {builds.map((build) => (
                     <BuildCard key={build.id} build={build} />
                   ))}
