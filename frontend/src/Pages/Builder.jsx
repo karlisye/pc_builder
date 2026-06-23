@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ComponentCard from "./Components/Builder/ComponentCard";
-import ComponentDetail from "./Components/Builder/ComponentDetail";
+import ComponentDetail from "./Components/Common/ComponentDetail";
 import BuildDesc from "./Components/Builder/BuildDesc";
 import { BuilderContext } from "../Contexts/BuilderContext";
 import AddComponent from "./Components/Builder/AddComponent";
@@ -256,7 +256,11 @@ const Builder = () => {
           {currentCompToAdd ? (
             <AddComponent />
           ) : viewingComponent ? (
-            <ComponentDetail />
+            <ComponentDetail
+              component={viewingComponent.component}
+              title={t(`common:components.${viewingComponent.name.toLowerCase()}`)}
+              onClose={() => setViewingComponent(null)}
+            />
           ) : (
             <div className="flex flex-wrap mb-auto gap-8 justify-center">
               <ComponentCard name="CPU" component={selectedComponents.cpu} />

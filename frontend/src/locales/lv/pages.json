@@ -227,10 +227,6 @@
         "makePrivateButton": "Padarīt privātu",
         "publishButton": "Publicēt",
         "cancel": "Atcelt"
-      },
-      "detailPanel": {
-        "seeInStore": "Apskatīt veikalā",
-        "availability": "Pieejams"
       }
     }
   }

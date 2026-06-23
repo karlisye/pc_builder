@@ -227,10 +227,6 @@
         "makePrivateButton": "Make Private",
         "publishButton": "Publish",
         "cancel": "Cancel"
-      },
-      "detailPanel": {
-        "seeInStore": "See In Store",
-        "availability": "Available at"
       }
     }
   }

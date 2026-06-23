@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
 import { Link, useSearchParams } from "react-router-dom";
-import DetailPanel from "./Components/Saved/DetailPanel";
+import ComponentDetail from "./Components/Common/ComponentDetail";
 import Modal from "./Components/Common/Modal";
 import BuildVisibility from "./Components/Saved/BuildVisibility";
 import { ArrowIcon, CloseIcon, InfoIcon } from "./Components/Common/Icons";
@@ -317,10 +317,10 @@ const SavedBuilds = () => {
                         }`}
                       >
                         <div className="overflow-hidden">
-                          <DetailPanel
+                          <ComponentDetail
                             component={component}
-                            slot={slot}
-                            setExpandedSlot={setExpandedSlot}
+                            title={t(`savedBuilds.slotLabels.${slot}`)}
+                            onClose={() => setExpandedSlot(null)}
                           />
                         </div>
                       </div>
@@ -336,10 +336,10 @@ const SavedBuilds = () => {
               >
                 <div className="overflow-hidden">
                   {expandedComponent && (
-                    <DetailPanel
+                    <ComponentDetail
                       component={expandedComponent}
-                      slot={expandedSlot}
-                      setExpandedSlot={setExpandedSlot}
+                      title={t(`savedBuilds.slotLabels.${expandedSlot}`)}
+                      onClose={() => setExpandedSlot(null)}
                     />
                   )}
                 </div>

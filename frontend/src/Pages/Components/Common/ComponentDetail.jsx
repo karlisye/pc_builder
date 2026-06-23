@@ -1,47 +1,27 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useBuilder } from '../../../Contexts/BuilderContext';
-import ComponentInfo from '../Common/ComponentInfo';
-import { CloseIcon } from '../Common/Icons';
+import ComponentInfo from './ComponentInfo';
+import { CloseIcon } from './Icons';
 
-const ComponentDetail = () => {
+const ComponentDetail = ({ component, title, onClose }) => {
   const { t } = useTranslation(['builder', 'common']);
-  const { viewingComponent, setViewingComponent, setSelectedComponents } = useBuilder();
-  const { component, name } = viewingComponent;
-
-  const displayName = t(`common:components.${name.toLowerCase()}`);
   const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-
-  const handleChooseStore = (listing) => {
-    const updated = {
-      ...component,
-      price: listing.price,
-      stock_status: listing.stock_status,
-      stock_quantity: listing.stock_quantity,
-      url: listing.url,
-      selected_source: listing.source,
-    };
-
-    setSelectedComponents((prev) => ({
-      ...prev,
-      [name.toLowerCase()]: updated,
-    }));
-    setViewingComponent({ component: updated, name });
-  };
 
   return (
     <div className="border border-border w-full hover:bg-background transition p-4 mb-auto">
       <div className="flex justify-between items-center">
         <div>
-          <h3 className="text-xl text-muted">{displayName}</h3>
+          <h3 className="text-xl text-muted">{title}</h3>
           <h2 className="text-text font-semibold text-3xl">{component.name}</h2>
         </div>
-        <button
-          className="w-10 h-10 text-muted hover:cursor-pointer bg-surface hover:bg-secondary-light transition p-2"
-          onClick={() => setViewingComponent(null)}
-        >
-          <CloseIcon />
-        </button>
+        {onClose && (
+          <button
+            className="w-10 h-10 text-muted hover:cursor-pointer bg-surface hover:bg-secondary-light transition p-2"
+            onClick={onClose}
+          >
+            <CloseIcon />
+          </button>
+        )}
       </div>
 
       <div className="mt-4">
@@ -82,7 +62,6 @@ const ComponentDetail = () => {
                 <a
                   href={listing.url}
                   target="_blank"
-                  onClick={() => handleChooseStore(listing)}
                   className="px-4 py-2 bg-primary text-white text-sm hover:bg-primary-light transition cursor-pointer text-center"
                 >
                   {t('componentCard.seeInStore')}
