@@ -8,6 +8,7 @@ import ComponentDetail from './Components/Common/ComponentDetail';
 import BuildIssuesPopup from './Components/Common/BuildIssuesPopup';
 import SidePanel from './Components/Common/SidePanel';
 import ClosedSection from './Components/Common/ClosedSection';
+import BuildComments from './Components/Common/BuildComments';
 import { formatDate } from '../lib/formatDate';
 import { formatPrice } from '../lib/componentPrice';
 import { useToast } from '../Contexts/ToastContext';
@@ -118,6 +119,11 @@ const BuildDetail = () => {
   };
 
   const like = async () => {
+    if (!user) {
+      addToast(t('components.buildCard.likeLoginRequired'), { type: 'danger' });
+      return;
+    }
+
     try {
       const res = await axios.post(`/api/shared/${build.id}/like`);
       if (res.status === 200) {
@@ -306,6 +312,8 @@ const BuildDetail = () => {
               )}
             </div>
           </div>
+
+          <BuildComments buildId={build.id} />
         </div>
       </div>
 

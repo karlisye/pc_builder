@@ -109,6 +109,23 @@
     "sidePanelTitle": "DARBĪBAS",
     "notFoundError": "Konfigurācija nav atrasta"
   },
+  "buildComments": {
+    "title": "Komentāri",
+    "placeholder": "Raksti komentāru...",
+    "submit": "Publicēt",
+    "replyPlaceholder": "Raksti atbildi...",
+    "reply": "Atbildēt",
+    "replyingTo": "Atbild lietotājam @{{name}}",
+    "cancel": "Atcelt",
+    "loginToComment": "Pieslēdzies, lai atstātu komentāru.",
+    "loginLink": "Pieslēgties",
+    "empty": "Vēl nav komentāru.",
+    "postError": "Neizdevās publicēt komentāru",
+    "likeError": "Neizdevās atzīmēt komentāru",
+    "deleteError": "Neizdevās dzēst komentāru",
+    "deleteConfirmTitle": "Vai tiešām vēlies dzēst šo komentāru?",
+    "delete": "Dzēst"
+  },
   "savedBuilds": {
     "sidePanelTitle": "SAGLABĀTĀS KONFIGURĀCIJAS",
     "noSavedBuilds": "Tev pagaidām nav saglabātu konfigurāciju.",
@@ -146,6 +163,7 @@
       "saveSuccess": "Konfigurācija veiksmīgi saglabāta",
       "saveError": "Neizdevās saglabāt konfigurāciju",
       "likeError": "Neizdevās atzīmēt \"patīk\"",
+      "likeLoginRequired": "Lai atzīmētu \"patīk\" konfigurācijai, jāpieslēdzas",
       "compatibilityIssues": "Saderības problēmas",
       "buildIncompatible": "Dažas komponentes nav saderīgas",
       "notes": "Piezīmes",
