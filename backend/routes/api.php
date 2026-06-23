@@ -23,6 +23,7 @@ Route::get('/builder', [BuilderController::class, 'index']);
 
 // Shared builds are viewable by guests; liking/reviewing/saving stay auth-only below.
 Route::get('/shared', [SharedController::class, 'fetchBuilds']);
+Route::get('/shared/{build}', [SharedController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
   Route::get('/builds', [BuildController::class, 'index']);

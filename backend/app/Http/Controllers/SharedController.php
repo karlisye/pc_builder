@@ -95,6 +95,23 @@ class SharedController extends Controller
     return response()->json($paginator);
   }
 
+  public function show(Request $request, Build $build): JsonResponse
+  {
+    if (!$build->is_public) {
+      return response()->json(['error' => __('messages.not_found')], 404);
+    }
+
+    $userId = $request->user()?->id;
+
+    $build->loadComponents()
+      ->loadCount('likes')
+      ->loadExists(['likes as liked' => fn($q) => $q->where('user_id', $userId)])
+      ->loadAvg('reviews', 'rating')
+      ->load('user');
+
+    return response()->json($build);
+  }
+
   public function like(Request $request, Build $build): JsonResponse
   {
     $existingLike = BuildLike::where('user_id', $request->user()->id)
