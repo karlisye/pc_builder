@@ -26,7 +26,7 @@ const SLOT_KEYS = [
 ];
 
 const SavedBuilds = () => {
-  const { t } = useTranslation('pages');
+  const { t } = useTranslation(['pages', 'builder']);
   const { addToast } = useToast();
   const [searchParams] = useSearchParams();
   const [builds, setBuilds] = useState([]);
@@ -226,7 +226,7 @@ const SavedBuilds = () => {
                       </h2>
                       {selectedBuild.type && (
                         <span className="py-0.5 px-3 text-text border border-border bg-secondary-light">
-                          {selectedBuild.type}
+                          {t(`builder:buildInfo.${selectedBuild.type}`, { defaultValue: selectedBuild.type })}
                         </span>
                       )}
                       {Object.keys(buildIssues).length > 0 && (

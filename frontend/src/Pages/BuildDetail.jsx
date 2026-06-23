@@ -210,7 +210,7 @@ const BuildDetail = () => {
                 <h2 className="text-text font-semibold text-3xl uppercase">{build.name}</h2>
                 {build.type && (
                   <span className="py-0.5 px-3 text-text border border-border bg-secondary-light">
-                    {build.type}
+                    {t(`builder:buildInfo.${build.type}`, { defaultValue: build.type })}
                   </span>
                 )}
                 {Object.keys(buildIssues).length > 0 && (
