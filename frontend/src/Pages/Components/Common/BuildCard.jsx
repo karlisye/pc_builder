@@ -1,10 +1,8 @@
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../../Contexts/AuthContext';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { HeartIcon, InfoIcon, StarIcon } from '../Common/Icons';
-import StarRating from '../Common/StarRating';
 import Modal from '../Common/Modal';
 import ComponentDetail from '../Common/ComponentDetail';
 import BuildIssuesPopup from '../Common/BuildIssuesPopup';
@@ -14,15 +12,11 @@ import { useToast } from '../../../Contexts/ToastContext';
 
 const BuildCard = ({ build }) => {
   const { t } = useTranslation(['pages', 'common']);
-  const { user } = useAuth();
   const { addToast } = useToast();
-
-  const [privating, setPrivating] = useState(false);
 
   const [liked, setLiked] = useState(build.liked ?? false);
 
   const [likesCount, setLikesCount] = useState(build.likes_count ?? 0);
-  const [userRating, setUserRating] = useState(build.reviews?.[0]?.rating ?? null);
 
   const [buildIssues, setBuildIssues] = useState({});
   const [issuesPopup, setIssuesPopup] = useState(null);
@@ -63,30 +57,6 @@ const BuildCard = ({ build }) => {
       }
     } catch (err) {
       addToast(err.response?.data?.error ?? t('components.buildCard.likeError'), {
-        type: 'danger',
-      });
-    }
-  };
-
-  const submitReview = async (rating) => {
-    setUserRating(rating);
-    try {
-      await axios.post(`/api/shared/${build.id}/review`, { rating });
-    } catch (err) {
-      addToast(err.response?.data?.error ?? t('components.buildCard.reviewError'), {
-        type: 'danger',
-      });
-    }
-  };
-
-  const makePrivate = async () => {
-    try {
-      const res = await axios.patch(`/api/builds/${build.id}/publish`);
-      setPrivating(false);
-      addToast(res.data.success, { type: 'success' });
-      setTimeout(() => window.location.reload(), 1000);
-    } catch (err) {
-      addToast(err.response?.data?.error ?? t('components.buildCard.makePrivateError'), {
         type: 'danger',
       });
     }
@@ -163,6 +133,29 @@ const BuildCard = ({ build }) => {
           </p>
         </div>
 
+        <div className="flex items-center gap-6 m-2">
+          <span className="flex items-center gap-2" title={t('components.buildCard.likeTitle')}>
+            <button onClick={like}>
+              <HeartIcon
+                filled={liked}
+                className={
+                  liked
+                    ? 'text-danger transition hover:text-danger/90'
+                    : 'transition text-muted hover:text-text'
+                }
+              />
+            </button>
+
+            <span className="text-muted">{likesCount ?? 0}</span>
+          </span>
+
+          <span className="flex items-center gap-2" title={t('components.buildCard.ratingTitle')}>
+            <StarIcon filled className={'text-alert'} />
+
+            <span className="text-muted">{Math.round(build.reviews_avg_rating ?? 0)}</span>
+          </span>
+        </div>
+
         <div className="flex xl:flex-row flex-col max-h-100 overflow-y-auto">
           <div className="flex-1 m-2 flex flex-col gap-4">
             <span className="text-muted font-medium">{t('components.buildCard.notes')}</span>
@@ -171,54 +164,6 @@ const BuildCard = ({ build }) => {
             ) : (
               <p className="italic text-sm text-muted">{t('components.buildCard.none')}</p>
             )}
-
-            <div className="p-2 border border-border mt-auto">
-              <div className="flex justify-around">
-                <span
-                  className="flex items-center gap-2"
-                  title={t('components.buildCard.likeTitle')}
-                >
-                  <button onClick={like}>
-                    <HeartIcon
-                      filled={liked}
-                      className={
-                        liked
-                          ? 'text-danger transition hover:text-danger/90'
-                          : 'transition text-muted hover:text-text'
-                      }
-                    />
-                  </button>
-
-                  <span className="text-muted">{likesCount ?? 0}</span>
-                </span>
-
-                <span
-                  className="flex items-center gap-2"
-                  title={t('components.buildCard.ratingTitle')}
-                >
-                  <StarIcon filled className={'text-alert'} />
-
-                  <span className="text-muted">{Math.round(build.reviews_avg_rating ?? 0)}</span>
-                </span>
-              </div>
-
-              <div className="w-9/10 mx-auto border border-border my-2"></div>
-
-              {build.user_id !== user.id ? (
-                <div className="flex w-full justify-center">
-                  <StarRating value={userRating} onChange={submitReview} />
-                </div>
-              ) : (
-                <div className="flex justify-center">
-                  <button
-                    onClick={() => setPrivating(true)}
-                    className="text-text hover:text-danger transition"
-                  >
-                    {t('components.buildCard.makePrivate')}
-                  </button>
-                </div>
-              )}
-            </div>
           </div>
 
           <div className="flex-2 m-2">
@@ -277,29 +222,6 @@ const BuildCard = ({ build }) => {
               })}
               onClose={() => setViewingComponent(null)}
             />
-          </div>
-        </Modal>
-      )}
-
-      {privating && (
-        <Modal close={() => setPrivating(false)}>
-          <h1 className="text-text text-3xl mb-10 m-4 max-w-120">
-            {t('components.buildCard.privateConfirmTitle', { name: build.name })}
-          </h1>
-
-          <div className="flex gap-4 m-4">
-            <button
-              className="flex-1 p-4 bg-primary text-background cursor-pointer hover:bg-primary-light transition"
-              onClick={makePrivate}
-            >
-              {t('components.buildCard.makePrivate')}
-            </button>
-            <button
-              className="flex-1 p-4 bg-surface text-text cursor-pointer hover:bg-secondary-light transition"
-              onClick={() => setPrivating(false)}
-            >
-              {t('components.buildCard.cancel')}
-            </button>
           </div>
         </Modal>
       )}
