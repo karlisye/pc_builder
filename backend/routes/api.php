@@ -19,10 +19,12 @@ Route::get('/components/{type}', [ComponentController::class, 'index']);
 Route::get('/components/{type}/filters', [ComponentController::class, 'filters']);
 Route::get('/components/{type}/{id}', [ComponentController::class, 'show']);
 Route::post('/builder/validate', [BuilderController::class, 'validate']);
+Route::get('/builder', [BuilderController::class, 'index']);
+
+// Shared builds are viewable by guests; liking/reviewing/saving stay auth-only below.
+Route::get('/shared', [SharedController::class, 'fetchBuilds']);
 
 Route::middleware('auth:sanctum')->group(function () {
-  Route::get('/builder', [BuilderController::class, 'index']);
-
   Route::get('/builds', [BuildController::class, 'index']);
 
   Route::get('/profile', [UserController::class, 'index']);
@@ -40,7 +42,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
   Route::post('/shared/{build}/like', [SharedController::class, 'like']);
   Route::post('/shared/{build}/review', [SharedController::class, 'review']);
-  Route::get('/shared', [SharedController::class, 'fetchBuilds']);
 
   Route::patch('/users/{user}', [UserController::class, 'update']);
   Route::delete('/users/{user}', [UserController::class, 'destroy']);

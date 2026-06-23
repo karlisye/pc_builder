@@ -80,7 +80,7 @@ class SharedController extends Controller
 
     $query = BuildQueryFilter::apply($query, $filters);
 
-    $userId = $request->user()->id;
+    $userId = $request->user()?->id;
     $query->withComponents()
       // get a boolean "liked" for each returned build
       ->withExists(['likes as liked' => fn($q) => $q->where('user_id', $userId)])
