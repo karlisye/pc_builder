@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { HeartIcon, InfoIcon, SavedIcon, StarIcon } from '../Common/Icons';
 import StarRating from '../Common/StarRating';
 import Modal from '../Common/Modal';
+import ComponentDetail from '../Common/ComponentDetail';
 import BuildIssuesPopup from '../Common/BuildIssuesPopup';
 import { formatDate } from '../../../lib/formatDate';
 import { useToast } from '../../../Contexts/ToastContext';
@@ -26,6 +27,7 @@ const BuildCard = ({ build }) => {
 
   const [buildIssues, setBuildIssues] = useState({});
   const [issuesPopup, setIssuesPopup] = useState(null);
+  const [viewingComponent, setViewingComponent] = useState(null);
 
   const handleIssuesPopup = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -263,13 +265,12 @@ const BuildCard = ({ build }) => {
                       <span className="text-muted uppercase text-sm block">
                         {t(`common:components.${key}`, { defaultValue: key })}
                       </span>
-                      <a
-                        target="_blank"
-                        href={component.url}
-                        className="text-text text-sm text-wrap hover:underline cursor-pointer"
+                      <button
+                        onClick={() => setViewingComponent({ component, name: key })}
+                        className="text-text text-sm text-wrap text-left hover:underline cursor-pointer"
                       >
                         {component.name}
-                      </a>
+                      </button>
                     </div>
                   );
                 })}
@@ -295,6 +296,20 @@ const BuildCard = ({ build }) => {
       </div>
 
       {issuesPopup && <BuildIssuesPopup issues={buildIssues} {...issuesPopup} />}
+
+      {viewingComponent && (
+        <Modal close={() => setViewingComponent(null)}>
+          <div className="w-[min(90vw,40rem)] max-h-[80vh] overflow-y-auto">
+            <ComponentDetail
+              component={viewingComponent.component}
+              title={t(`common:components.${viewingComponent.name}`, {
+                defaultValue: viewingComponent.name,
+              })}
+              onClose={() => setViewingComponent(null)}
+            />
+          </div>
+        </Modal>
+      )}
 
       {privating && (
         <Modal close={() => setPrivating(false)}>
