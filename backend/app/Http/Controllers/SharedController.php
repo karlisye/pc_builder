@@ -88,8 +88,7 @@ class SharedController extends Controller
       ->withCount('likes')
       ->with(['reviews' => fn($q) => $q->where('user_id', $userId)])
       ->withAvg('reviews', 'rating')
-      ->with('user')
-      ->paginate(6);
+      ->with('user');
 
     $paginator = $query->paginate(6);
 

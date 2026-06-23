@@ -1,30 +1,3 @@
-export function SavedIcon({
-  size = 24,
-  filled = false,
-  color = "currentColor",
-  className,
-}) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-    >
-      <path
-        d="M5 3H19C19.552 3 20 3.448 20 4V21L12 17L4 21V4C4 3.448 4.448 3 5 3Z"
-        fill={filled ? color : "none"}
-        stroke={color}
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 export function HeartIcon({
   size = 24,
   filled = false,
