@@ -33,6 +33,7 @@ const BuildInfo = () => {
     setWarnings,
     setBuildIssues,
     setNotes,
+    buildIssues,
   } = useBuilder();
   const [, setSearchParams] = useSearchParams();
   const [saving, setSaving] = useState(false);
@@ -123,7 +124,7 @@ const BuildInfo = () => {
           .map(([key, value]) => (
             <div
               key={key}
-              className="flex border border-muted hover:bg-primary-light transition"
+              className="flex border border-muted hover:bg-primary-light transition relative"
             >
               <div className="overflow-hidden flex">
                 <span className="capitalize text-secondary-light p-2">
@@ -137,6 +138,10 @@ const BuildInfo = () => {
               >
                 <CloseIcon />
               </button>
+
+              {buildIssues[key]?.length > 0 && (
+                <div className="bg-danger/10 absolute w-full h-full pointer-events-none border-2 border-danger/20"></div>
+              )}
             </div>
           ))
       ) : (
