@@ -47,7 +47,7 @@ class BuildController extends Controller
       'notes' => ['sometimes', 'nullable', 'string', 'max:5000'],
       'type' => ['sometimes', 'nullable', 'string', 'in:gaming,office,rendering,streaming'],
       'components' => ['required', 'array', 'min:1'],
-      'components.*' => ['integer', 'min:1'],
+      'components.*' => ['string'],
     ]);
 
     $slots = Build::componentSlots();
@@ -61,18 +61,18 @@ class BuildController extends Controller
       }
     }
 
-    foreach ($validated['components'] as $type => $dateksId) {
+    foreach ($validated['components'] as $type => $productCode) {
       $modelClass = CompatibilityService::VALID_TYPES[$type];
-      if (! $modelClass::where('dateks_id', $dateksId)->exists()) {
+      if (! $modelClass::where('product_code', $productCode)->exists()) {
         return response()->json([
-          'error' => "No {$type} found with dateks_id {$dateksId}.",
+          'error' => "No {$type} found with product_code {$productCode}.",
         ], 404);
       }
     }
 
     $componentFks = array_fill_keys(array_values($slots), null);
-    foreach ($validated['components'] as $type => $dateksId) {
-      $componentFks[$slots[$type]] = $dateksId;
+    foreach ($validated['components'] as $type => $productCode) {
+      $componentFks[$slots[$type]] = $productCode;
     }
 
     $totalPrice = $this->calculateTotalPrice($validated['components']);
@@ -148,9 +148,9 @@ class BuildController extends Controller
   {
     $total = 0.0;
 
-    foreach ($components as $type => $dateksId) {
+    foreach ($components as $type => $productCode) {
       $modelClass = CompatibilityService::VALID_TYPES[$type];
-      $component  = $modelClass::where('dateks_id', $dateksId)->first();
+      $component  = $modelClass::where('product_code', $productCode)->first();
       if ($component?->price) {
         $total += (float) $component->price;
       }

@@ -183,12 +183,12 @@ class AdminController extends Controller
         continue;
       }
 
-      // map component dateks_ids to build foreign keys
+      // map component product_codes to build foreign keys
       $componentFks = [];
       foreach ($result['build'] as $type => $component) {
         $fkColumn = $slots[$type] ?? null;
         if ($fkColumn) {
-          $componentFks[$fkColumn] = $component['dateks_id'];
+          $componentFks[$fkColumn] = $component['product_code'];
         }
       }
 

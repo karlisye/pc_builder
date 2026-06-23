@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import ComponentInfo from "../Common/ComponentInfo";
-import { useBuilder } from "../../../Contexts/BuilderContext";
-import { AddIcon, InfoIcon } from "../Common/Icons";
-import ComponentPopup from "./ComponentPopup";
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import ComponentInfo from '../Common/ComponentInfo';
+import { useBuilder } from '../../../Contexts/BuilderContext';
+import { AddIcon, InfoIcon } from '../Common/Icons';
+import ComponentPopup from './ComponentPopup';
 
 const ComponentCard = ({ component, name }) => {
-  const { t } = useTranslation(["builder", "common"]);
+  const { t } = useTranslation(['builder', 'common']);
   const {
     setCurrentCompToAdd,
     setFilters,
@@ -21,8 +21,8 @@ const ComponentCard = ({ component, name }) => {
   const handleAddComponent = () => {
     setCurrentCompToAdd(name);
     setFilters({});
-    setSearch("");
-    setSort("price_asc");
+    setSearch('');
+    setSort('price_asc');
   };
 
   const handleSeeMore = () => {
@@ -42,6 +42,26 @@ const ComponentCard = ({ component, name }) => {
     setPopup({ component: name, x: rect.left, y: rect.bottom });
   };
 
+  const handleChooseStore = (e) => {
+    const source = e.target.value;
+    const listing = component.listings?.find((l) => l.source === source);
+    if (!listing) return;
+
+    setSelectedComponents((prev) => ({
+      ...prev,
+      [name.toLowerCase()]: {
+        ...component,
+        price: listing.price,
+        stock_status: listing.stock_status,
+        stock_quantity: listing.stock_quantity,
+        url: listing.url,
+        selected_source: listing.source,
+      },
+    }));
+  };
+
+  const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
   const hasIssues = buildIssues[name.toLowerCase()]?.length > 0;
   const displayName = t(`common:components.${name.toLowerCase()}`);
 
@@ -52,9 +72,7 @@ const ComponentCard = ({ component, name }) => {
           <>
             <div className="relative group p-2">
               <h3 className="text-xl text-muted">{displayName}</h3>
-              <h2 className="text-text font-semibold text-3xl line-clamp-1">
-                {component.name}
-              </h2>
+              <h2 className="text-text font-semibold text-3xl line-clamp-1">{component.name}</h2>
               <div className="absolute left-0 mb-1 hidden group-hover:block bg-primary text-white text-xs p-1 whitespace-nowrap z-10">
                 {component.name}
               </div>
@@ -70,32 +88,43 @@ const ComponentCard = ({ component, name }) => {
               <div className="p-2 flex flex-col">
                 {!component.out_of_stock && (
                   <span className="text-muted">
-                    {t("componentCard.price", { price: component.price })}
+                    {t('componentCard.price', { price: component.price })}
                   </span>
                 )}
                 <span className="text-muted">
-                  {t("componentCard.availability", {
+                  {t('componentCard.availability', {
                     status:
-                      component.stock_status === "in_stock"
-                        ? t("componentCard.inStockWithQty", {
+                      component.stock_status === 'in_stock'
+                        ? t('componentCard.inStockWithQty', {
                             count: component.stock_quantity,
                           })
-                        : component.stock_status === "orderable"
-                          ? t("componentCard.orderableWithQty", {
+                        : component.stock_status === 'orderable'
+                          ? t('componentCard.orderableWithQty', {
                               count: component.stock_quantity,
                             })
-                          : t("componentCard.outOfStock"),
+                          : t('componentCard.outOfStock'),
                   })}
                 </span>
+
+                {component.listings?.length > 1 && (
+                  <select
+                    aria-label={t('componentCard.chooseStore')}
+                    value={component.selected_source ?? component.listings[0].source}
+                    onChange={handleChooseStore}
+                    onClick={(e) => e.stopPropagation()}
+                    className="mt-1 bg-surface p-2 text-text text-sm outline-border focus:outline-1"
+                  >
+                    {component.listings.map((listing) => (
+                      <option key={listing.source} value={listing.source}>
+                        {capitalize(listing.source)} €{listing.price}
+                      </option>
+                    ))}
+                  </select>
+                )}
               </div>
             )}
-            <button
-              className="text-info cursor-pointer flex p-2"
-              onClick={handleSeeMore}
-            >
-              {isSeeMoreActive
-                ? t("componentCard.showLess")
-                : t("componentCard.showMore")}
+            <button className="text-info cursor-pointer flex p-2" onClick={handleSeeMore}>
+              {isSeeMoreActive ? t('componentCard.showLess') : t('componentCard.showMore')}
             </button>
 
             <div className="bg-primary mt-auto flex">
@@ -103,14 +132,14 @@ const ComponentCard = ({ component, name }) => {
                 className="text-white px-8 py-4 flex-1 text-left hover:bg-danger/50 cursor-pointer transition"
                 onClick={handleRemove}
               >
-                {t("componentCard.remove")}
+                {t('componentCard.remove')}
               </button>
               <a
                 href={component.url}
                 target="_blank"
                 className="text-white py-4 px-8 hover:bg-success/50 transition"
               >
-                {t("componentCard.buy")}
+                {t('componentCard.buy')}
               </a>
             </div>
 
@@ -121,9 +150,7 @@ const ComponentCard = ({ component, name }) => {
         ) : (
           <>
             <div className="h-full flex flex-col items-center justify-center gap-4 relative">
-              <span className="text-3xl font-semibold text-muted">
-                {displayName}
-              </span>
+              <span className="text-3xl font-semibold text-muted">{displayName}</span>
               <button
                 className="bg-surface p-2 text-muted hover:bg-secondary-light transition cursor-pointer"
                 onClick={handleAddComponent}

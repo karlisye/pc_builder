@@ -21,8 +21,21 @@ class BuilderController extends Controller
     $build = null;
 
     if ($request->has('build')) {
+      $withListings = fn($q) => $q->with(['listings' => fn($q2) => $q2->orderBy('price')]);
+
       $query = Build::where('id', $request->query('build'))
-        ->with(['cpu', 'motherboard', 'ram', 'gpu', 'ssd', 'hdd', 'pcCase', 'cooler', 'psu', 'fan']);
+        ->with([
+          'cpu' => $withListings,
+          'motherboard' => $withListings,
+          'ram' => $withListings,
+          'gpu' => $withListings,
+          'ssd' => $withListings,
+          'hdd' => $withListings,
+          'pcCase' => $withListings,
+          'cooler' => $withListings,
+          'psu' => $withListings,
+          'fan' => $withListings,
+        ]);
 
       if ($request->boolean('shared')) {
         $query->where('is_public', true);

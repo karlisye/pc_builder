@@ -34,7 +34,7 @@ const ComponentGenerator = () => {
       const selected = Object.fromEntries(
         Object.entries(selectedComponents)
           .filter(([_, component]) => component !== null)
-          .map(([type, component]) => [type, component.dateks_id]),
+          .map(([type, component]) => [type, component.product_code]),
       );
 
       const res = await axios.post(`/api/builder/${currentCompToAdd.toLowerCase()}`, {

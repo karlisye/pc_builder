@@ -30,13 +30,15 @@ const ComponentInfo = ({ component }) => {
             value !== "" &&
             ![
               "id",
-              "dateks_id",
+              "product_code",
               "url",
               "scraped_at",
               "selected",
               "compatibility_warning",
               "compatible",
               "out_of_stock",
+              "listings",
+              "selected_source",
             ].includes(key),
         )
         .map(([key, value]) => (

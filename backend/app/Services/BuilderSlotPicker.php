@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\{Cpu, Motherboard, Ram, Gpu, Ssd, Hdd, PcCase, Fan, Psu, Cooler};
 use App\Services\ComponentScorer;
+use App\Support\ComponentListingJoin;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
@@ -17,19 +18,20 @@ class BuilderSlotPicker
   {
     $modelClass = CompatibilityService::VALID_TYPES[$slot];
 
-    $query = $modelClass::query()
-      ->whereNotNull('price');
+    $query = ComponentListingJoin::apply($modelClass::query())
+      ->with(['listings' => fn($q) => $q->orderBy('price')])
+      ->whereNotNull('listing_agg.listing_price');
 
     $shouldIncludeOrderable = filter_var($preferences['include_orderable'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
     if ($shouldIncludeOrderable) {
-      $query->whereIn('stock_status', ['in_stock', 'orderable']);
+      $query->whereIn('listing_agg.listing_stock_status', ['in_stock', 'orderable']);
     } else {
-      $query->where('stock_status', 'in_stock');
+      $query->where('listing_agg.listing_stock_status', 'in_stock');
     }
 
     if ($budget !== null) {
-      $query->where('price', '<=', $budget);
+      $query->where('listing_agg.listing_price', '<=', $budget);
     }
 
     $query = match ($slot) {
@@ -71,15 +73,16 @@ class BuilderSlotPicker
   {
     $modelClass = CompatibilityService::VALID_TYPES[$slot];
 
-    $query = $modelClass::query()
-      ->whereNotNull('price');
+    $query = ComponentListingJoin::apply($modelClass::query())
+      ->with(['listings' => fn($q) => $q->orderBy('price')])
+      ->whereNotNull('listing_agg.listing_price');
 
     $shouldIncludeOrderable = filter_var($preferences['include_orderable'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
     if ($shouldIncludeOrderable) {
-      $query->whereIn('stock_status', ['in_stock', 'orderable']);
+      $query->whereIn('listing_agg.listing_stock_status', ['in_stock', 'orderable']);
     } else {
-      $query->where('stock_status', 'in_stock');
+      $query->where('listing_agg.listing_stock_status', 'in_stock');
     }
 
     $query = match ($slot) {
@@ -106,6 +109,6 @@ class BuilderSlotPicker
       $query->where('cooler_included', true);
     }
 
-    return $query->orderBy('price')->first();
+    return $query->orderBy('listing_agg.listing_price')->first();
   }
 }

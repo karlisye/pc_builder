@@ -37,8 +37,6 @@ def get_product_urls(base_url: str) -> list:
             break
 
         for link in product_links:
-            # scrape dateks_id
-            dateks_id = int(link.get("data-id"))
             # scrape item url
             href = link.get("href")
             full_url = BASE_URL + href
@@ -48,8 +46,15 @@ def get_product_urls(base_url: str) -> list:
             price = None
             stock_status = "out_of_stock"
             stock_quantity = None
+            product_code = None
 
             if prod:
+                # scrape manufacturer product code, e.g. "Product code: BX8071512400F"
+                code_tag = prod.select_one(".code")
+                if code_tag:
+                    code_text = code_tag.get_text(strip=True)
+                    product_code = code_text.split(":", 1)[-1].strip() or None
+
                 # scrape the child html element with class price
                 price_tag = prod.select_one(".price")
 
@@ -86,7 +91,7 @@ def get_product_urls(base_url: str) -> list:
                     stock_status = "out_of_stock"
                     stock_quantity = None
 
-            results.append((dateks_id, full_url, price, stock_status, stock_quantity))
+            results.append((product_code, full_url, price, stock_status, stock_quantity))
 
         print(f"    Page {page + 1}: {len(product_links)} products")
         page += 1

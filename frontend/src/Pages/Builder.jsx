@@ -135,7 +135,7 @@ const Builder = () => {
     const selected = Object.fromEntries(
       Object.entries(selectedComponents)
         .filter(([_, c]) => c !== null)
-        .map(([type, c]) => [type, c.dateks_id]),
+        .map(([type, c]) => [type, c.product_code]),
     );
 
     if (Object.keys(selected).length === 0) {

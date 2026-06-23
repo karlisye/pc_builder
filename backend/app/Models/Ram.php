@@ -2,21 +2,22 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasListings;
 use Illuminate\Database\Eloquent\Model;
 
 class Ram extends Model
 {
+  use HasListings;
+
   public $timestamps = false;
 
   protected $table = 'rams';
 
+  protected $appends = ['price', 'stock_status', 'stock_quantity', 'url'];
+
   protected $fillable = [
-    'dateks_id',
-    'url',
+    'product_code',
     'name',
-    'price',
-    'stock_status',
-    'stock_quantity',
     'memory_type',
     'capacity',
     'frequency',
@@ -25,7 +26,5 @@ class Ram extends Model
     'scraped_at',
   ];
 
-  protected $casts = [
-    'price' => 'decimal:2',
-  ];
+  protected $casts = [];
 }
