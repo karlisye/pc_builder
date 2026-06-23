@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Build;
-use App\Models\BuildBookmark;
 use App\Models\BuildLike;
 use App\Models\BuildReview;
 use App\Services\BuildQueryFilter;
@@ -30,7 +29,7 @@ class SharedController extends Controller
 
     // validate show
     $show = $request->query('show');
-    if ($show && ! in_array($show, ['liked', 'bookmarked', 'personal'], true)) {
+    if ($show && ! in_array($show, ['liked', 'personal'], true)) {
       return response()->json([
         'error' => "'{$show}' is not a show option",
       ], 400);
@@ -85,10 +84,8 @@ class SharedController extends Controller
     $query->withComponents()
       // get a boolean "liked" for each returned build
       ->withExists(['likes as liked' => fn($q) => $q->where('user_id', $userId)])
-      ->withExists(['bookmarks as bookmarked' => fn($q) => $q->where('user_id', $userId)])
       // get "likes_count"
       ->withCount('likes')
-      ->withCount('bookmarks')
       ->with(['reviews' => fn($q) => $q->where('user_id', $userId)])
       ->withAvg('reviews', 'rating')
       ->with('user')
@@ -116,25 +113,6 @@ class SharedController extends Controller
     ]);
 
     return response()->json(['message' => 'liked'], 200);
-  }
-
-  public function bookmark(Request $request, Build $build): JsonResponse
-  {
-    $existingBookmark = BuildBookmark::where('user_id', $request->user()->id)
-      ->where('build_id', $build->id)
-      ->first();
-
-    if ($existingBookmark) {
-      $existingBookmark->delete();
-      return response()->json(['message' => 'unbookmarked'], 200);
-    }
-
-    BuildBookmark::create([
-      'user_id' => $request->user()->id,
-      'build_id' => $build->id
-    ]);
-
-    return response()->json(['message' => 'bookmarked'], 200);
   }
 
   public function review(Request $request, Build $build): JsonResponse

@@ -53,14 +53,13 @@
     "delete": "Dzēst",
     "cancelDelete": "Atcelt"
   },
-  "bookmarked": {
-    "heading": "Atzīmētās konfigurācijas",
-    "empty": "Vēl nav atzīmētu konfigurāciju."
+  "liked": {
+    "heading": "Patīk konfigurācijas",
+    "empty": "Vēl nav patikušu konfigurāciju."
   },
   "publicProfile": {
     "profileHeading": "{{name}} profils",
     "totalLikes": "Patīk atzīmes",
-    "totalBookmarks": "Atzīmētie",
     "averageRating": "Vidējais vērtējums",
     "activeSince": "Aktīvs kopš {{date}}",
     "aboutHeading": "Par {{name}}",

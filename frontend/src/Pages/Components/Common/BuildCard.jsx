@@ -3,7 +3,7 @@ import { useAuth } from '../../../Contexts/AuthContext';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { HeartIcon, InfoIcon, SavedIcon, StarIcon } from '../Common/Icons';
+import { HeartIcon, InfoIcon, StarIcon } from '../Common/Icons';
 import StarRating from '../Common/StarRating';
 import Modal from '../Common/Modal';
 import ComponentDetail from '../Common/ComponentDetail';
@@ -20,10 +20,8 @@ const BuildCard = ({ build }) => {
   const [privating, setPrivating] = useState(false);
 
   const [liked, setLiked] = useState(build.liked ?? false);
-  const [bookmarked, setBookmarked] = useState(build.bookmarked ?? false);
 
   const [likesCount, setLikesCount] = useState(build.likes_count ?? 0);
-  const [bookmarksCount, setBookmarksCount] = useState(build.bookmarks_count ?? 0);
   const [userRating, setUserRating] = useState(build.reviews?.[0]?.rating ?? null);
 
   const [buildIssues, setBuildIssues] = useState({});
@@ -65,20 +63,6 @@ const BuildCard = ({ build }) => {
       }
     } catch (err) {
       addToast(err.response?.data?.error ?? t('components.buildCard.likeError'), {
-        type: 'danger',
-      });
-    }
-  };
-
-  const bookmark = async () => {
-    try {
-      const res = await axios.post(`/api/shared/${build.id}/bookmark`);
-      if (res.status === 200) {
-        setBookmarked((prev) => !prev);
-        setBookmarksCount((prev) => (bookmarked ? prev - 1 : prev + 1));
-      }
-    } catch (err) {
-      addToast(err.response?.data?.error ?? t('components.buildCard.bookmarkError'), {
         type: 'danger',
       });
     }
@@ -206,23 +190,6 @@ const BuildCard = ({ build }) => {
                   </button>
 
                   <span className="text-muted">{likesCount ?? 0}</span>
-                </span>
-                <span
-                  className="flex items-center gap-2"
-                  title={t('components.buildCard.bookmarkTitle')}
-                >
-                  <button onClick={bookmark}>
-                    <SavedIcon
-                      filled={bookmarked}
-                      className={
-                        bookmarked
-                          ? 'text-alert transition hover:text-alert/90'
-                          : 'transition text-muted hover:text-text'
-                      }
-                    />
-                  </button>
-
-                  <span className="text-muted">{bookmarksCount ?? 0}</span>
                 </span>
 
                 <span

@@ -4,14 +4,14 @@ import PaginationControls from "../Common/PaginationControls";
 import BuildCard from "../Common/BuildCard";
 import axios from "axios";
 
-const BookmarkedBuilds = () => {
+const LikedBuilds = () => {
   const { t } = useTranslation("profile");
   const [buildData, setBuildData] = useState(null);
   const [page, setPage] = useState(1);
 
   useEffect(() => {
     axios
-      .get("/api/profile/bookmarked", { params: { page } })
+      .get("/api/profile/liked", { params: { page } })
       .then((res) => setBuildData(res.data));
   }, [page]);
 
@@ -27,12 +27,12 @@ const BookmarkedBuilds = () => {
   return (
     <>
       <h1 className="text-4xl text-text font-semibold mb-4">
-        {t("bookmarked.heading")}
+        {t("liked.heading")}
       </h1>
 
       <div className="flex-1">
         {builds.length === 0 ? (
-          <span className="text-muted mt-6">{t("bookmarked.empty")}</span>
+          <span className="text-muted mt-6">{t("liked.empty")}</span>
         ) : (
           <>
             <div className="flex flex-col items-center gap-8 px-4 pt-6">
@@ -53,4 +53,4 @@ const BookmarkedBuilds = () => {
   );
 };
 
-export default BookmarkedBuilds;
+export default LikedBuilds;

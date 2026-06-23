@@ -53,14 +53,13 @@
     "delete": "Delete",
     "cancelDelete": "Cancel"
   },
-  "bookmarked": {
-    "heading": "Bookmarked Builds",
-    "empty": "No bookmarked builds yet."
+  "liked": {
+    "heading": "Liked Builds",
+    "empty": "No liked builds yet."
   },
   "publicProfile": {
     "profileHeading": "{{name}}'s profile",
     "totalLikes": "Total Likes",
-    "totalBookmarks": "Total Bookmarks",
     "averageRating": "Average Rating",
     "activeSince": "Active since {{date}}",
     "aboutHeading": "About {{name}}",

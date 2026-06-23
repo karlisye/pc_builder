@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ArrowIcon, HeartIcon, SavedIcon, StarIcon } from "../Common/Icons";
+import { ArrowIcon, HeartIcon, StarIcon } from "../Common/Icons";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import { formatDate } from "../../../lib/formatDate";
@@ -23,7 +23,7 @@ const PublicProfile = () => {
 
   if (!data) return null;
 
-  const { user, buildData, totalLikes, totalBookmarks, avgRating } = data;
+  const { user, buildData, totalLikes, avgRating } = data;
   const builds = buildData.data;
   const links = buildData.links;
 
@@ -72,13 +72,6 @@ const PublicProfile = () => {
                 <div className="flex gap-1 items-center">
                   <span className="text-secondary-light font-semibold text-xl">{totalLikes}</span>
                   <HeartIcon className={"text-secondary-light"} size={20} />
-                </div>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-secondary-light text-sm">{t("publicProfile.totalBookmarks")}</span>
-                <div className="flex gap-1 items-center">
-                  <span className="text-secondary-light font-semibold text-xl">{totalBookmarks}</span>
-                  <SavedIcon className={"text-secondary-light"} size={20} />
                 </div>
               </div>
               <div className="flex justify-between items-center">
@@ -148,10 +141,6 @@ const PublicProfile = () => {
                         <div className="flex gap-2">
                           <HeartIcon filled className={"text-danger"} />
                           <span className="text-text">{build.likes_count}</span>
-                        </div>
-                        <div className="flex gap-2">
-                          <SavedIcon filled className={"text-alert"} />
-                          <span className="text-text">{build.bookmarks_count}</span>
                         </div>
                         <div className="flex gap-2">
                           <StarIcon filled className={"text-alert"} />

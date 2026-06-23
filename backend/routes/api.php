@@ -26,7 +26,7 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::get('/builds', [BuildController::class, 'index']);
 
   Route::get('/profile', [UserController::class, 'index']);
-  Route::get('/profile/bookmarked', [UserController::class, 'indexBookmarked']);
+  Route::get('/profile/liked', [UserController::class, 'indexLiked']);
   Route::get('/profile/{user}', [UserController::class, 'show']);
 
   Route::post('/builder', [BuilderController::class, 'generate']);
@@ -39,7 +39,6 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::patch('/builds/{build}/publish', [BuildController::class, 'publish']);
 
   Route::post('/shared/{build}/like', [SharedController::class, 'like']);
-  Route::post('/shared/{build}/bookmark', [SharedController::class, 'bookmark']);
   Route::post('/shared/{build}/review', [SharedController::class, 'review']);
   Route::get('/shared', [SharedController::class, 'fetchBuilds']);
 

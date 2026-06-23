@@ -44,7 +44,6 @@ class BuildQueryFilter
     if (isset($filters['show'])) {
       match ($filters['show']) {
         'liked' => $query->whereHas('likes', fn($q) => $q->where('user_id', $userId)),
-        'bookmarked' => $query->whereHas('bookmarks', fn($q) => $q->where('user_id', $userId)),
         'personal' => $query->where('user_id', $userId),
         default => null,
       };

@@ -33,7 +33,6 @@ class BuildController extends Controller
       ->where('user_id', $request->user()->id)
       ->orderByDesc('created_at')
       ->withCount('likes')
-      ->withCount('bookmarks')
       ->get();
 
     return response()->json($builds);
@@ -114,7 +113,7 @@ class BuildController extends Controller
       return response()->json(['error' => __('messages.not_found')], 404);
     }
 
-    return response()->json($build->loadComponents()->loadCount('likes')->loadCount('bookmarks')->loadAvg('reviews', 'rating'));
+    return response()->json($build->loadComponents()->loadCount('likes')->loadAvg('reviews', 'rating'));
   }
 
   public function update(Request $request, Build $build): JsonResponse

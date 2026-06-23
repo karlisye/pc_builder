@@ -130,7 +130,6 @@ const BuildFilters = ({
         >
           <option value="">{t("components.buildFilters.show.all")}</option>
           <option value="liked">{t("components.buildFilters.show.liked")}</option>
-          <option value="bookmarked">{t("components.buildFilters.show.bookmarked")}</option>
           <option value="personal">{t("components.buildFilters.show.personal")}</option>
         </select>
       </div>
