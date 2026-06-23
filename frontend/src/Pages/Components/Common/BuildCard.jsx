@@ -9,10 +9,12 @@ import BuildIssuesPopup from '../Common/BuildIssuesPopup';
 import { formatDate } from '../../../lib/formatDate';
 import { formatPrice } from '../../../lib/componentPrice';
 import { useToast } from '../../../Contexts/ToastContext';
+import { useAuth } from '../../../Contexts/AuthContext';
 
 const BuildCard = ({ build }) => {
   const { t } = useTranslation(['pages', 'common']);
   const { addToast } = useToast();
+  const { user } = useAuth();
 
   const [liked, setLiked] = useState(build.liked ?? false);
 
@@ -201,12 +203,14 @@ const BuildCard = ({ build }) => {
             {t('components.buildCard.continue')}
           </Link>
 
-          <button
-            className="text-white px-8 py-4 flex-1 hover:bg-primary-light cursor-pointer transition"
-            onClick={handleSave}
-          >
-            {t('components.buildCard.copyToSaved')}
-          </button>
+          {user && (
+            <button
+              className="text-white px-8 py-4 flex-1 hover:bg-primary-light cursor-pointer transition"
+              onClick={handleSave}
+            >
+              {t('components.buildCard.copyToSaved')}
+            </button>
+          )}
         </div>
       </div>
 

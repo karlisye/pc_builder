@@ -71,7 +71,9 @@ const App = () => (
 
             {/* Auth-required */}
             <Route path="/builds" element={<AuthRoute><SavedBuilds /></AuthRoute>} />
-            <Route path="/shared" element={<AuthRoute><Shared /></AuthRoute>} />
+
+            {/* Shared builds are viewable by guests; liking/saving stay auth-gated inline */}
+            <Route path="/shared" element={<Shared />} />
 
             {/* Profile (nested layout) */}
             <Route element={<AuthRoute><ProfileLayout /></AuthRoute>}>

@@ -201,18 +201,42 @@ const Layout = () => {
                 <Link className={navLinkClass('/builder')} to="/builder">
                   {t('nav.build')}
                 </Link>
+                <Link className={navLinkClass('/shared')} to="/shared">
+                  {t('nav.shared')}
+                </Link>
               </div>
 
-              <Link
-                className={`lg:hidden py-4 px-6 transition ${
-                  pathname.startsWith('/builder')
-                    ? 'bg-primary text-white hover:bg-primary-light'
-                    : 'hover:bg-surface text-text'
+              <button
+                ref={menuButtonRef}
+                className={`lg:hidden py-4 px-6 transition flex items-center gap-2 ${
+                  menuActive ? 'bg-primary text-white' : 'hover:bg-surface text-text'
                 }`}
-                to="/builder"
+                onClick={() => setMenuActive((prev) => !prev)}
               >
-                {t('nav.build')}
-              </Link>
+                <MenuIcon />
+              </button>
+
+              <div
+                ref={menuRef}
+                className={`lg:hidden absolute left-0 top-14 w-screen bg-background overflow-hidden transition-all shadow z-50 ${
+                  menuActive ? 'h-24' : 'h-0'
+                }`}
+              >
+                <Link
+                  className={menuLinkClass('/builder')}
+                  to="/builder"
+                  onClick={() => setMenuActive(false)}
+                >
+                  {t('nav.build')}
+                </Link>
+                <Link
+                  className={menuLinkClass('/shared')}
+                  to="/shared"
+                  onClick={() => setMenuActive(false)}
+                >
+                  {t('nav.shared')}
+                </Link>
+              </div>
 
               <div className="ml-auto flex items-center">
                 <LanguageSwitcher className="mr-2" />
@@ -248,11 +272,9 @@ const Layout = () => {
               <Link to="/guide" className="hover:text-white transition">
                 {t('nav.guide')}
               </Link>
-              {user && (
-                <Link to="/shared" className="hover:text-white transition">
-                  {t('nav.shared')}
-                </Link>
-              )}
+              <Link to="/shared" className="hover:text-white transition">
+                {t('nav.shared')}
+              </Link>
             </div>
             <a
               href="https://github.com/karlisye"
