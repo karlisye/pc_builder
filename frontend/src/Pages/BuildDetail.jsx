@@ -7,6 +7,7 @@ import Modal from './Components/Common/Modal';
 import ComponentDetail from './Components/Common/ComponentDetail';
 import BuildIssuesPopup from './Components/Common/BuildIssuesPopup';
 import SidePanel from './Components/Common/SidePanel';
+import ClosedSection from './Components/Common/ClosedSection';
 import { formatDate } from '../lib/formatDate';
 import { formatPrice } from '../lib/componentPrice';
 import { useToast } from '../Contexts/ToastContext';
@@ -26,7 +27,7 @@ const SLOT_KEYS = [
 ];
 
 const BuildDetail = () => {
-  const { t } = useTranslation(['pages', 'common']);
+  const { t } = useTranslation(['pages', 'builder', 'common']);
   const { addToast } = useToast();
   const { user } = useAuth();
   const { buildId } = useParams();
@@ -141,6 +142,30 @@ const BuildDetail = () => {
   return (
     <div className="h-full flex">
       <SidePanel title={t('buildDetail.sidePanelTitle')}>
+        {Object.keys(buildIssues).length > 0 && (
+          <div className="mb-4">
+            <ClosedSection title={t('builder:buildDesc.compatibility')}>
+              <div className="space-y-2">
+                {Object.entries(buildIssues).map(([slot, issues]) =>
+                  issues.map((issue, i) => (
+                    <div
+                      key={`${slot}-${i}`}
+                      className="border border-danger/80 bg-danger/10 p-4 space-y-2"
+                    >
+                      <p className="text-danger text-sm">
+                        <span className="font-medium">
+                          {t(`common:components.${slot}`, { defaultValue: slot })}:{' '}
+                        </span>
+                        {issue}
+                      </p>
+                    </div>
+                  )),
+                )}
+              </div>
+            </ClosedSection>
+          </div>
+        )}
+
         <div className="flex">
           <Link
             className="block text-center p-4 bg-secondary text-white hover:bg-secondary-light transition cursor-pointer flex-1"
