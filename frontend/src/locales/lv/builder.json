@@ -73,7 +73,8 @@
     "outOfStock": "Nav pieejams",
     "notCompatible": "Nav saderīgs",
     "select": "Izvēlēties",
-    "seeInShop": "Apskatīt veikalā"
+    "seeInShop": "Apskatīt veikalā",
+    "startingFrom": "Sākot no €{{price}}"
   },
   "componentFilters": {
     "searchPlaceholder": "Meklēt {{component}}...",

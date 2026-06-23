@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useBuilder } from "../../../Contexts/BuilderContext";
-import axios from "axios";
-import AddComponentSkeleton from "../Skeletons/AddComponentSkeleton";
-import ComponentInfo from "../Common/ComponentInfo";
-import { CloseIcon } from "../Common/Icons";
-import PaginationControls from "../Common/PaginationControls";
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useBuilder } from '../../../Contexts/BuilderContext';
+import axios from 'axios';
+import AddComponentSkeleton from '../Skeletons/AddComponentSkeleton';
+import ComponentInfo from '../Common/ComponentInfo';
+import { CloseIcon } from '../Common/Icons';
+import PaginationControls from '../Common/PaginationControls';
 
 const AddComponent = () => {
-  const { t } = useTranslation(["builder", "common"]);
+  const { t } = useTranslation(['builder', 'common']);
   const {
     currentCompToAdd,
     setCurrentCompToAdd,
@@ -21,10 +21,11 @@ const AddComponent = () => {
   } = useBuilder();
   const [components, setComponents] = useState([]);
   const [pagination, setPagination] = useState(null);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [expandedId, setExpandedId] = useState(null);
+  const [chosenSources, setChosenSources] = useState({});
 
   useEffect(() => {
     if (!currentCompToAdd) return;
@@ -38,7 +39,7 @@ const AddComponent = () => {
 
   const fetchComponents = async (pageNum = 1) => {
     setLoading(true);
-    setError("");
+    setError('');
 
     try {
       const selected = Object.fromEntries(
@@ -47,18 +48,15 @@ const AddComponent = () => {
           .map(([type, component]) => [type, component.product_code]),
       );
 
-      const res = await axios.get(
-        `/api/components/${currentCompToAdd.toLowerCase()}`,
-        {
-          params: {
-            selected: JSON.stringify(selected),
-            page: pageNum,
-            search: search || undefined,
-            sort: sort || undefined,
-            ...filters,
-          },
+      const res = await axios.get(`/api/components/${currentCompToAdd.toLowerCase()}`, {
+        params: {
+          selected: JSON.stringify(selected),
+          page: pageNum,
+          search: search || undefined,
+          sort: sort || undefined,
+          ...filters,
         },
-      );
+      });
 
       setComponents(res.data.data);
       setPagination({
@@ -67,9 +65,7 @@ const AddComponent = () => {
         total: res.data.total,
       });
     } catch (err) {
-      setError(
-        err.response?.data?.error ?? t("addComponent.failedToFetch"),
-      );
+      setError(err.response?.data?.error ?? t('addComponent.failedToFetch'));
     } finally {
       setLoading(false);
     }
@@ -83,6 +79,12 @@ const AddComponent = () => {
     setExpandedId((prev) => (prev === id ? null : id));
   };
 
+  const handleChooseStore = (component, source) => {
+    setChosenSources((prev) => ({ ...prev, [component.product_code]: source }));
+  };
+
+  const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
   const handleSelect = (component) => {
     setSelectedComponents((prev) => ({
       ...prev,
@@ -95,7 +97,7 @@ const AddComponent = () => {
     <div className="border border-border w-full hover:bg-background transition p-4 mb-auto">
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-semibold text-text">
-          {t("addComponent.title", {
+          {t('addComponent.title', {
             component: t(`common:components.${currentCompToAdd?.toLowerCase()}`),
           })}
         </h2>
@@ -115,66 +117,96 @@ const AddComponent = () => {
           {components.length === 0 ? (
             <div className="mx-auto text-center">
               <p className="text-2xl font-semibold text-text">
-                {t("addComponent.noComponentsFound")}
+                {t('addComponent.noComponentsFound')}
               </p>
-              <span className="text-muted">
-                {t("addComponent.tryAdjustingFilters")}
-              </span>
+              <span className="text-muted">{t('addComponent.tryAdjustingFilters')}</span>
             </div>
           ) : (
-            components.map((component) => (
+            components.map((component) => {
+              const chosenSource =
+                chosenSources[component.product_code] ?? component.listings?.[0]?.source;
+              const chosenListing = component.listings?.find(
+                (l) => l.source === chosenSource,
+              );
+              const effectiveComponent = chosenListing
+                ? {
+                    ...component,
+                    price: chosenListing.price,
+                    stock_status: chosenListing.stock_status,
+                    stock_quantity: chosenListing.stock_quantity,
+                    url: chosenListing.url,
+                    selected_source: chosenListing.source,
+                  }
+                : component;
+
+              return (
               <div key={component.id} className="border border-border">
                 <div
                   key={component.id}
                   onClick={() => handleExpand(component.id)}
-                  className={`flex justify-between items-center p-3 cursor-pointer transition ${component.compatible && !component.out_of_stock ? "bg-surface hover:bg-secondary-light" : "bg-muted/50 hover:bg-muted/80"}`}
+                  className={`flex justify-between items-center p-3 cursor-pointer transition ${component.compatible && !component.out_of_stock ? 'bg-surface hover:bg-secondary-light' : 'bg-muted/50 hover:bg-muted/80'}`}
                 >
                   <span
-                    className={`font-medium ${component.compatible && !component.out_of_stock ? "text-text" : "text-text/50"}`}
+                    className={`font-medium ${component.compatible && !component.out_of_stock ? 'text-text' : 'text-text/50'}`}
                   >
                     {component.name}
                   </span>
 
                   <span className="text-muted">
                     {component.out_of_stock
-                      ? t("addComponent.outOfStock")
+                      ? t('addComponent.outOfStock')
                       : !component.compatible
-                        ? t("addComponent.notCompatible")
-                        : `€${component.price}`}
+                        ? t('addComponent.notCompatible')
+                        : t('addComponent.startingFrom', { price: component.price })}
                   </span>
                 </div>
                 <div
                   className={`bg-background transition-all overflow-hidden grid ${
-                    expandedId === component.id
-                      ? "grid-rows-[1fr]"
-                      : "grid-rows-[0fr]"
+                    expandedId === component.id ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
                   }`}
                 >
                   <div className="overflow-hidden">
                     <div className="p-3">
-                      <ComponentInfo component={component} />
+                      {component.listings?.length > 1 && (
+                        <select
+                          aria-label={t('componentCard.chooseStore')}
+                          value={chosenSource}
+                          onChange={(e) => handleChooseStore(component, e.target.value)}
+                          onClick={(e) => e.stopPropagation()}
+                          className="mb-3 bg-surface p-2 text-text text-sm outline-border focus:outline-1"
+                        >
+                          {component.listings.map((listing) => (
+                            <option key={listing.source} value={listing.source}>
+                              {capitalize(listing.source)} €{listing.price}
+                            </option>
+                          ))}
+                        </select>
+                      )}
+
+                      <ComponentInfo component={effectiveComponent} />
 
                       <div className="flex gap-2 mt-3">
                         <button
-                          onClick={() => handleSelect(component)}
+                          onClick={() => handleSelect(effectiveComponent)}
                           className="p-4 bg-primary text-white hover:bg-primary-light transition cursor-pointer flex-1"
                         >
-                          {t("addComponent.select")}
+                          {t('addComponent.select')}
                         </button>
 
                         <a
-                          href={component.url}
+                          href={effectiveComponent.url}
                           target="_blank"
                           className="p-4 bg-surface text-text hover:bg-secondary-light transition cursor-pointer"
                         >
-                          {t("addComponent.seeInShop")}
+                          {t('addComponent.seeInShop')}
                         </a>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            ))
+              );
+            })
           )}
         </div>
       )}

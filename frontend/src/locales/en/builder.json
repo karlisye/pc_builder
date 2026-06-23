@@ -73,7 +73,8 @@
     "outOfStock": "Out Of Stock",
     "notCompatible": "Not Compatible",
     "select": "Select",
-    "seeInShop": "See in Shop"
+    "seeInShop": "See in Shop",
+    "startingFrom": "Starting from €{{price}}"
   },
   "componentFilters": {
     "searchPlaceholder": "Search {{component}}...",
