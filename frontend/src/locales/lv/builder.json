@@ -18,6 +18,7 @@
     "inStock": "Pieejams",
     "seeInStore": "Apskatīt veikalā",
     "remove": "Noņemt",
+    "replace": "Aizvietot",
     "more": "Vairāk",
     "availabilityTitle": "Pieejamība",
     "lastScraped": "Pēdējā pārbaude: {{date}}",

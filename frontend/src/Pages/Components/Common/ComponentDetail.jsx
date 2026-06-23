@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import ComponentInfo from './ComponentInfo';
 import { CloseIcon } from './Icons';
 
-const ComponentDetail = ({ component, title, onClose }) => {
+const ComponentDetail = ({ component, title, onClose, actions }) => {
   const { t } = useTranslation(['builder', 'common']);
   const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -23,6 +23,8 @@ const ComponentDetail = ({ component, title, onClose }) => {
           </button>
         )}
       </div>
+
+      {actions && <div className="flex gap-2 mt-4">{actions}</div>}
 
       <div className="mt-4">
         <ComponentInfo component={component} />

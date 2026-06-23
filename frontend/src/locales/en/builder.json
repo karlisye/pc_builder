@@ -18,6 +18,7 @@
     "inStock": "Available",
     "seeInStore": "See in store",
     "remove": "Remove",
+    "replace": "Replace",
     "more": "More",
     "availabilityTitle": "Availability",
     "lastScraped": "Last checked: {{date}}",
