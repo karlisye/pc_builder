@@ -39,8 +39,10 @@ class BuilderController extends Controller
 
       if ($request->boolean('shared')) {
         $query->where('is_public', true);
-      } else {
+      } elseif ($request->user()) {
         $query->where('user_id', $request->user()->id);
+      } else {
+        return response()->json(['build' => null], 401);
       }
 
       $build = $query->first();
