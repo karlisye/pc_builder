@@ -83,6 +83,29 @@ export function ArrowIcon({ size = 16, active }) {
   );
 }
 
+export function TrashIcon({ size = 24, color = "currentColor", className }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      <path
+        d="M4 7H20M9 7V4.5C9 3.67 9.67 3 10.5 3H13.5C14.33 3 15 3.67 15 4.5V7M18.5 7L17.79 19.14C17.74 19.92 17.09 20.5 16.3 20.5H7.7C6.91 20.5 6.26 19.92 6.21 19.14L5.5 7"
+        stroke={color}
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <line x1="10" y1="11" x2="10" y2="16" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
+      <line x1="14" y1="11" x2="14" y2="16" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function CloseIcon({ size = 24 }) {
   return (
     <svg

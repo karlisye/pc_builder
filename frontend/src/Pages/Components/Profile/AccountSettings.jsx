@@ -1,29 +1,29 @@
-import axios from "axios";
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import Modal from "../Common/Modal";
-import { useAuth } from "../../../Contexts/AuthContext";
-import { useToast } from "../../../Contexts/ToastContext";
+import axios from 'axios';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import Modal from '../Common/Modal';
+import { useAuth } from '../../../Contexts/AuthContext';
+import { useToast } from '../../../Contexts/ToastContext';
 
 const AccountSettings = () => {
-  const { t } = useTranslation("profile");
+  const { t } = useTranslation('profile');
   const { user, setUser } = useAuth();
   const { addToast } = useToast();
   const [editActive, setEditActive] = useState(false);
-  const [name, setName] = useState(user?.name ?? "");
-  const [email, setEmail] = useState(user?.email ?? "");
+  const [name, setName] = useState(user?.name ?? '');
+  const [email, setEmail] = useState(user?.email ?? '');
 
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
-  const [oldPass, setOldPass] = useState("");
-  const [newPass, setNewPass] = useState("");
-  const [newPassConfirm, setNewPassConfirm] = useState("");
+  const [oldPass, setOldPass] = useState('');
+  const [newPass, setNewPass] = useState('');
+  const [newPassConfirm, setNewPassConfirm] = useState('');
 
-  const [passError, setPassError] = useState("");
+  const [passError, setPassError] = useState('');
 
   const [deleting, setDeleting] = useState(false);
-  const [deleteConfirm, setDeleteConfirm] = useState("");
-  const [deleteError, setDeleteError] = useState("");
+  const [deleteConfirm, setDeleteConfirm] = useState('');
+  const [deleteError, setDeleteError] = useState('');
 
   const handleEdit = async (e) => {
     e.preventDefault();
@@ -34,7 +34,7 @@ const AccountSettings = () => {
     }
 
     if (name.length < 3) {
-      setError(t("accountSettings.nameTooShort"));
+      setError(t('accountSettings.nameTooShort'));
       return;
     }
 
@@ -45,15 +45,13 @@ const AccountSettings = () => {
       });
       if (res.status === 200) {
         setUser(res.data);
-        setError("");
-        addToast(t("accountSettings.infoUpdated"), { type: "success" });
+        setError('');
+        addToast(t('accountSettings.infoUpdated'), { type: 'success' });
       }
     } catch (err) {
       const errors = err.response?.data?.errors;
       setError(
-        errors
-          ? Object.values(errors).flat().join(", ")
-          : t("accountSettings.infoUpdateError"),
+        errors ? Object.values(errors).flat().join(', ') : t('accountSettings.infoUpdateError'),
       );
     } finally {
       setEditActive(false);
@@ -69,8 +67,8 @@ const AccountSettings = () => {
         new_password_confirmation: newPassConfirm,
       });
       if (res.status === 200) {
-        setPassError("");
-        addToast(t("accountSettings.passwordUpdated"), { type: "success" });
+        setPassError('');
+        addToast(t('accountSettings.passwordUpdated'), { type: 'success' });
       }
     } catch (err) {
       const errors = err.response?.data?.errors;
@@ -83,18 +81,18 @@ const AccountSettings = () => {
                   {err}
                 </span>
               ))
-          : t("accountSettings.passwordUpdateError"),
+          : t('accountSettings.passwordUpdateError'),
       );
     } finally {
-      setOldPass("");
-      setNewPass("");
-      setNewPassConfirm("");
+      setOldPass('');
+      setNewPass('');
+      setNewPassConfirm('');
     }
   };
 
   const handleDeleteAccount = async () => {
-    if (deleteConfirm !== t("accountSettings.deleteConfirmKeyword")) {
-      setDeleteError(t("accountSettings.deleteConfirmIncorrect"));
+    if (deleteConfirm !== t('accountSettings.deleteConfirmKeyword')) {
+      setDeleteError(t('accountSettings.deleteConfirmIncorrect'));
       return;
     }
 
@@ -104,24 +102,22 @@ const AccountSettings = () => {
       console.error(err);
     } finally {
       setUser(null);
-      window.location.href = "/";
+      window.location.href = '/';
     }
   };
 
   return (
     <>
-      <h1 className="text-4xl text-text font-semibold mb-4">
-        {t("accountSettings.heading")}
-      </h1>
+      <h1 className="text-4xl text-text font-semibold mb-4">{t('accountSettings.heading')}</h1>
 
       <h2 className="text-2xl text-text font-semibold mb-4">
-        {t("accountSettings.personalInfoHeading")}
+        {t('accountSettings.personalInfoHeading')}
       </h2>
       <form>
         <div className="grid xl:grid-cols-2 gap-4">
           <div className="">
             <label className="block text-muted" htmlFor="name">
-              {t("accountSettings.nameLabel")}
+              {t('accountSettings.nameLabel')}
             </label>
             <input
               className="p-2 bg-surface w-full disabled:text-muted focus:outline outline-border transition"
@@ -135,7 +131,7 @@ const AccountSettings = () => {
 
           <div className="">
             <label className="block text-muted" htmlFor="email">
-              {t("accountSettings.emailLabel")}
+              {t('accountSettings.emailLabel')}
             </label>
             <input
               className="p-2 bg-surface w-full disabled:text-muted focus:outline outline-border transition"
@@ -155,7 +151,7 @@ const AccountSettings = () => {
             className="py-2 px-6 bg-primary text-white hover:bg-primary-light cursor-pointer mt-2 transition"
             onClick={handleEdit}
           >
-            {editActive ? t("accountSettings.save") : t("accountSettings.edit")}
+            {editActive ? t('accountSettings.save') : t('accountSettings.edit')}
           </button>
 
           {editActive && (
@@ -165,21 +161,23 @@ const AccountSettings = () => {
                 setEditActive(false);
                 setName(user.name);
                 setEmail(user.email);
-                setError("");
+                setError('');
               }}
             >
-              {t("accountSettings.cancel")}
+              {t('accountSettings.cancel')}
             </button>
           )}
         </div>
       </form>
 
-      <h2 className="text-2xl text-text font-semibold my-4">{t("accountSettings.changePasswordHeading")}</h2>
+      <h2 className="text-2xl text-text font-semibold my-4">
+        {t('accountSettings.changePasswordHeading')}
+      </h2>
       <form onSubmit={updatePassword}>
         <div className="grid xl:grid-cols-2 gap-4">
           <div className="">
             <label className="block text-muted" htmlFor="oldPass">
-              {t("accountSettings.oldPasswordLabel")}
+              {t('accountSettings.oldPasswordLabel')}
             </label>
             <input
               className="p-2 bg-surface w-full disabled:text-muted focus:outline outline-border transition"
@@ -193,7 +191,7 @@ const AccountSettings = () => {
 
           <div className="">
             <label className="block text-muted" htmlFor="newPass">
-              {t("accountSettings.newPasswordLabel")}
+              {t('accountSettings.newPasswordLabel')}
             </label>
             <input
               className="p-2 bg-surface w-full disabled:text-muted focus:outline outline-border transition"
@@ -206,7 +204,7 @@ const AccountSettings = () => {
 
           <div className="">
             <label className="block text-muted" htmlFor="newPassConfirm">
-              {t("accountSettings.confirmNewPasswordLabel")}
+              {t('accountSettings.confirmNewPasswordLabel')}
             </label>
             <input
               className="p-2 bg-surface w-full disabled:text-muted focus:outline outline-border transition"
@@ -224,34 +222,34 @@ const AccountSettings = () => {
           className="py-2 px-6 bg-primary text-white hover:bg-primary-light cursor-pointer mt-2 transition disabled:text-muted"
           disabled={!oldPass || !newPass || !newPassConfirm}
         >
-          {t("accountSettings.save")}
+          {t('accountSettings.save')}
         </button>
       </form>
 
       <h2 className="text-2xl text-text font-semibold my-4">
-        {t("accountSettings.deleteAccountHeading")}
+        {t('accountSettings.deleteAccountHeading')}
       </h2>
       <button
         className="py-4 px-8 bg-primary text-white hover:bg-danger/80 cursor-pointer mt-2 transition disabled:text-muted mb-6"
         onClick={() => setDeleting(true)}
       >
-        {t("accountSettings.deleteAccountButton")}
+        {t('accountSettings.deleteAccountButton')}
       </button>
 
       {deleting && (
         <Modal close={() => setDeleting(false)}>
-          <h1 className="text-text font-semibold text-3xl">
-            {t("accountSettings.deleteConfirmTitle")}
+          <h1 className="text-text font-semibold text-3xl mt-4 mx-4 max-w-120">
+            {t('accountSettings.deleteConfirmTitle')}
           </h1>
-          <p className="text-muted text-sm mb-4">
-            {t("accountSettings.deleteConfirmSubtitle")}
+          <p className="text-muted text-sm mb-4 mx-4">
+            {t('accountSettings.deleteConfirmSubtitle')}
           </p>
 
-          <div className="w-full flex flex-col mb-4">
+          <div className="flex flex-col m-4">
             <span className="text-muted">
-              {t("accountSettings.deleteConfirmInstruction")}
-              <span className="text-danger"> {t("accountSettings.deleteConfirmKeyword")} </span>
-              {t("accountSettings.deleteConfirmInstructionSuffix")}
+              {t('accountSettings.deleteConfirmInstruction')}
+              <span className="text-danger"> {t('accountSettings.deleteConfirmKeyword')} </span>
+              {t('accountSettings.deleteConfirmInstructionSuffix')}
             </span>
             <input
               type="text"
@@ -263,21 +261,21 @@ const AccountSettings = () => {
 
           {deleteError && <p className="text-danger text-sm">{deleteError}</p>}
 
-          <div className="flex gap-4">
+          <div className="flex gap-4 m-4">
             <button
               className="flex-1 p-4 bg-primary text-background cursor-pointer hover:bg-primary-light transition"
               onClick={handleDeleteAccount}
             >
-              {t("accountSettings.delete")}
+              {t('accountSettings.delete')}
             </button>
             <button
               className="flex-1 p-4 bg-surface text-text cursor-pointer hover:bg-secondary-light transition"
               onClick={() => {
                 setDeleting(false);
-                setDeleteError("");
+                setDeleteError('');
               }}
             >
-              {t("accountSettings.cancelDelete")}
+              {t('accountSettings.cancelDelete')}
             </button>
           </div>
         </Modal>

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useBuilder } from "../../../Contexts/BuilderContext";
 import { ArrowIcon } from "../Common/Icons";
 import ClosedSection from "../Common/ClosedSection";
+import { getCheapestPrice } from "../../../lib/componentPrice";
 
 const BuildDesc = () => {
   const { t } = useTranslation(["builder", "common"]);
@@ -10,7 +11,7 @@ const BuildDesc = () => {
     useBuilder();
 
   const filled = Object.values(selectedComponents).filter((v) => v !== null);
-  const total = filled.reduce((sum, c) => sum + parseFloat(c.price ?? 0), 0);
+  const total = filled.reduce((sum, c) => sum + getCheapestPrice(c), 0);
   const count = filled.length;
   const totalSlots = Object.keys(selectedComponents).length;
 

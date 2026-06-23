@@ -4,8 +4,9 @@ import { useBuilder } from '../../../Contexts/BuilderContext';
 import axios from 'axios';
 import AddComponentSkeleton from '../Skeletons/AddComponentSkeleton';
 import ComponentInfo from '../Common/ComponentInfo';
-import { CloseIcon } from '../Common/Icons';
+import { AddIcon, CloseIcon } from '../Common/Icons';
 import PaginationControls from '../Common/PaginationControls';
+import { formatPrice } from '../../../lib/componentPrice';
 
 const AddComponent = () => {
   const { t } = useTranslation(['builder', 'common']);
@@ -125,9 +126,7 @@ const AddComponent = () => {
             components.map((component) => {
               const chosenSource =
                 chosenSources[component.product_code] ?? component.listings?.[0]?.source;
-              const chosenListing = component.listings?.find(
-                (l) => l.source === chosenSource,
-              );
+              const chosenListing = component.listings?.find((l) => l.source === chosenSource);
               const effectiveComponent = chosenListing
                 ? {
                     ...component,
@@ -140,71 +139,111 @@ const AddComponent = () => {
                 : component;
 
               return (
-              <div key={component.id} className="border border-border">
-                <div
-                  key={component.id}
-                  onClick={() => handleExpand(component.id)}
-                  className={`flex justify-between items-center p-3 cursor-pointer transition ${component.compatible && !component.out_of_stock ? 'bg-surface hover:bg-secondary-light' : 'bg-muted/50 hover:bg-muted/80'}`}
-                >
-                  <span
-                    className={`font-medium ${component.compatible && !component.out_of_stock ? 'text-text' : 'text-text/50'}`}
+                <div key={component.id} className="border border-border">
+                  <div
+                    key={component.id}
+                    onClick={() => handleExpand(component.id)}
+                    className={`flex justify-between items-center p-3 cursor-pointer transition ${component.compatible && !component.out_of_stock ? 'bg-surface hover:bg-secondary-light' : 'bg-muted/50 hover:bg-muted/80'}`}
                   >
-                    {component.name}
-                  </span>
+                    <span
+                      className={`font-medium ${component.compatible && !component.out_of_stock ? 'text-text' : 'text-text/50'}`}
+                    >
+                      {component.name}
+                    </span>
 
-                  <span className="text-muted">
-                    {component.out_of_stock
-                      ? t('addComponent.outOfStock')
-                      : !component.compatible
-                        ? t('addComponent.notCompatible')
-                        : t('addComponent.startingFrom', { price: component.price })}
-                  </span>
-                </div>
-                <div
-                  className={`bg-background transition-all overflow-hidden grid ${
-                    expandedId === component.id ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
-                  }`}
-                >
-                  <div className="overflow-hidden">
-                    <div className="p-3">
-                      {component.listings?.length > 1 && (
-                        <select
-                          aria-label={t('componentCard.chooseStore')}
-                          value={chosenSource}
-                          onChange={(e) => handleChooseStore(component, e.target.value)}
-                          onClick={(e) => e.stopPropagation()}
-                          className="mb-3 bg-surface p-2 text-text text-sm outline-border focus:outline-1"
-                        >
-                          {component.listings.map((listing) => (
-                            <option key={listing.source} value={listing.source}>
-                              {capitalize(listing.source)} €{listing.price}
-                            </option>
-                          ))}
-                        </select>
-                      )}
-
-                      <ComponentInfo component={effectiveComponent} />
-
-                      <div className="flex gap-2 mt-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-muted">
+                        {component.out_of_stock
+                          ? t('addComponent.outOfStock')
+                          : !component.compatible
+                            ? t('addComponent.notCompatible')
+                            : t('addComponent.startingFrom', { price: formatPrice(component.price) })}
+                      </span>
+                      {component.compatible && !component.out_of_stock && (
                         <button
-                          onClick={() => handleSelect(effectiveComponent)}
-                          className="p-4 bg-primary text-white hover:bg-primary-light transition cursor-pointer flex-1"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSelect(component);
+                          }}
+                          title={t('addComponent.select')}
+                          className="text-surface hover:text-white bg-primary hover:bg-primary-light transition cursor-pointer p-1"
                         >
-                          {t('addComponent.select')}
+                          <AddIcon size={20} />
                         </button>
+                      )}
+                    </div>
+                  </div>
+                  <div
+                    className={`bg-background transition-all overflow-hidden grid ${
+                      expandedId === component.id ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+                    }`}
+                  >
+                    <div className="overflow-hidden">
+                      <div className="p-3">
+                        <ComponentInfo component={effectiveComponent} />
 
-                        <a
-                          href={effectiveComponent.url}
-                          target="_blank"
-                          className="p-4 bg-surface text-text hover:bg-secondary-light transition cursor-pointer"
-                        >
-                          {t('addComponent.seeInShop')}
-                        </a>
+                        {component.listings?.length > 0 && (
+                          <div className="mt-3">
+                            <h3 className="text-sm font-semibold text-text mb-2">
+                              {t('componentCard.availabilityTitle')}
+                            </h3>
+                            <div className="flex flex-col gap-2">
+                              {component.listings.map((listing) => (
+                                <div
+                                  key={listing.source}
+                                  className="grid grid-cols-[1fr_1fr_1fr_1fr_auto] items-center gap-2 border border-border bg-surface p-3 transition"
+                                >
+                                  <span className="text-text font-medium">
+                                    {capitalize(listing.source)}
+                                  </span>
+                                  <span className="text-muted">€{formatPrice(listing.price)}</span>
+                                  <span className="text-muted">
+                                    {listing.stock_status === 'in_stock'
+                                      ? t('componentCard.inStockWithQty', {
+                                          count: listing.stock_quantity,
+                                        })
+                                      : listing.stock_status === 'orderable'
+                                        ? t('componentCard.orderableWithQty', {
+                                            count: listing.stock_quantity,
+                                          })
+                                        : t('componentCard.outOfStock')}
+                                  </span>
+                                  <span className="text-muted text-sm">
+                                    {listing.scraped_at
+                                      ? t('componentCard.lastScraped', {
+                                          date: new Date(listing.scraped_at).toLocaleDateString(),
+                                        })
+                                      : t('componentCard.neverScraped')}
+                                  </span>
+                                  <a
+                                    href={listing.url}
+                                    target="_blank"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleChooseStore(component, listing.source);
+                                    }}
+                                    className="px-4 py-2 bg-primary text-white text-sm hover:bg-primary-light transition cursor-pointer text-center"
+                                  >
+                                    {t('componentCard.seeInStore')}
+                                  </a>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="flex gap-2 mt-3">
+                          <button
+                            onClick={() => handleSelect(effectiveComponent)}
+                            className="p-4 bg-primary text-white hover:bg-primary-light transition cursor-pointer flex-1"
+                          >
+                            {t('addComponent.select')}
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
               );
             })
           )}

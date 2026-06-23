@@ -4,6 +4,7 @@ import { ArrowIcon, HeartIcon, SavedIcon, StarIcon } from "../Common/Icons";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import { formatDate } from "../../../lib/formatDate";
+import { formatPrice } from "../../../lib/componentPrice";
 import { useToast } from "../../../Contexts/ToastContext";
 
 const PublicProfile = () => {
@@ -141,7 +142,7 @@ const PublicProfile = () => {
                             </span>
                           )}
                         </div>
-                        <span>€{build.total_price}</span>
+                        <span>€{formatPrice(build.total_price)}</span>
                       </div>
                       <div className="flex gap-4 m-2">
                         <div className="flex gap-2">

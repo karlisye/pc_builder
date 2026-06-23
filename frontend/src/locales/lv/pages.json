@@ -116,7 +116,6 @@
     "cancel": "Atcelt",
     "edit": "Redigēt",
     "continueBuild": "Turpināt konfigurāciju",
-    "deleteBuild": "Dzēst konfigurāciju",
     "buy": "Pirkt",
     "deleteConfirmTitle": "Vai tiešām vēlies dzēst šo konfigurāciju?",
     "deleteError": "Neizdevās izdzēst konfigurāciju",
@@ -227,10 +226,6 @@
         "makePrivateButton": "Padarīt privātu",
         "publishButton": "Publicēt",
         "cancel": "Atcelt"
-      },
-      "detailPanel": {
-        "seeInStore": "Apskatīt veikalā",
-        "availability": "Pieejams"
       }
     }
   }

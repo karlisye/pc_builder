@@ -2,6 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { ArrowIcon, HeartIcon, SavedIcon, StarIcon } from "../Common/Icons";
 import { Link } from "react-router-dom";
+import { formatPrice } from "../../../lib/componentPrice";
 
 const BuildsList = ({
   buildData,
@@ -52,7 +53,7 @@ const BuildsList = ({
                         )}
                       </div>
 
-                      <span>€{build.total_price}</span>
+                      <span>€{formatPrice(build.total_price)}</span>
                     </div>
 
                     {isPublic && (

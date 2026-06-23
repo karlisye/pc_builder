@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 const Modal = ({ children, close }) => {
   return (
@@ -6,10 +6,7 @@ const Modal = ({ children, close }) => {
       className="fixed backdrop-blur-xs top-0 bottom-0 left-0 right-0 flex items-center justify-center z-10"
       onClick={close}
     >
-      <div
-        className="relative bg-background px-10 py-8"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="relative bg-background p-1 m-4" onClick={(e) => e.stopPropagation()}>
         {children}
       </div>
     </div>
