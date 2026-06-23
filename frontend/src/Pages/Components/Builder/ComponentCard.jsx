@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ComponentInfo from '../Common/ComponentInfo';
 import { useBuilder } from '../../../Contexts/BuilderContext';
 import { AddIcon, InfoIcon } from '../Common/Icons';
 import ComponentPopup from './ComponentPopup';
@@ -15,7 +14,6 @@ const ComponentCard = ({ component, name }) => {
     setSelectedComponents,
     buildIssues,
   } = useBuilder();
-  const [isSeeMoreActive, setIsSeeMoreActive] = useState(false);
   const [popup, setPopup] = useState(null);
 
   const handleAddComponent = () => {
@@ -23,10 +21,6 @@ const ComponentCard = ({ component, name }) => {
     setFilters({});
     setSearch('');
     setSort('price_asc');
-  };
-
-  const handleSeeMore = () => {
-    setIsSeeMoreActive((p) => !p);
   };
 
   const handleRemove = () => {
@@ -78,54 +72,50 @@ const ComponentCard = ({ component, name }) => {
               </div>
             </div>
 
-            {isSeeMoreActive ? (
-              <div className="max-h-55 p-2">
-                <div className="overflow-auto h-full">
-                  <ComponentInfo component={component} />
-                </div>
-              </div>
-            ) : (
-              <div className="p-2 flex flex-col">
-                {!component.out_of_stock && (
-                  <span className="text-muted">
-                    {t('componentCard.price', { price: component.price })}
-                  </span>
-                )}
+            <div className="p-2 flex flex-col">
+              {!component.out_of_stock && (
                 <span className="text-muted">
-                  {t('componentCard.availability', {
-                    status:
-                      component.stock_status === 'in_stock'
-                        ? t('componentCard.inStockWithQty', {
+                  {t('componentCard.price', { price: component.price })}
+                </span>
+              )}
+              <span className="text-muted">
+                {t('componentCard.availability', {
+                  status:
+                    component.stock_status === 'in_stock'
+                      ? t('componentCard.inStockWithQty', {
+                          count: component.stock_quantity,
+                        })
+                      : component.stock_status === 'orderable'
+                        ? t('componentCard.orderableWithQty', {
                             count: component.stock_quantity,
                           })
-                        : component.stock_status === 'orderable'
-                          ? t('componentCard.orderableWithQty', {
-                              count: component.stock_quantity,
-                            })
-                          : t('componentCard.outOfStock'),
-                  })}
-                </span>
+                        : t('componentCard.outOfStock'),
+                })}
+              </span>
 
-                {component.listings?.length > 1 && (
-                  <select
-                    aria-label={t('componentCard.chooseStore')}
-                    value={component.selected_source ?? component.listings[0].source}
-                    onChange={handleChooseStore}
-                    onClick={(e) => e.stopPropagation()}
-                    className="mt-1 bg-surface p-2 text-text text-sm outline-border focus:outline-1"
-                  >
-                    {component.listings.map((listing) => (
-                      <option key={listing.source} value={listing.source}>
-                        {capitalize(listing.source)} €{listing.price}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              </div>
-            )}
-            <button className="text-info cursor-pointer flex p-2" onClick={handleSeeMore}>
-              {isSeeMoreActive ? t('componentCard.showLess') : t('componentCard.showMore')}
-            </button>
+              {component.listings?.length > 1 && (
+                <select
+                  aria-label={t('componentCard.chooseStore')}
+                  value={component.selected_source ?? component.listings[0].source}
+                  onChange={handleChooseStore}
+                  onClick={(e) => e.stopPropagation()}
+                  className="mt-1 bg-surface p-2 text-text text-sm outline-border focus:outline-1"
+                >
+                  {component.listings.map((listing) => (
+                    <option key={listing.source} value={listing.source}>
+                      {capitalize(listing.source)} €{listing.price}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
+            <a
+              href={component.url}
+              target="_blank"
+              className="text-info cursor-pointer flex p-2"
+            >
+              {t('componentCard.seeInStore')}
+            </a>
 
             <div className="bg-primary mt-auto flex">
               <button

@@ -17,8 +17,7 @@
     "inStockWithQty": "In Stock ({{count}})",
     "orderableWithQty": "Can be ordered ({{count}})",
     "outOfStock": "Out of Stock",
-    "showMore": "Show more",
-    "showLess": "Show less",
+    "seeInStore": "See in store",
     "remove": "Remove",
     "buy": "Buy",
     "chooseStore": "Choose store"
