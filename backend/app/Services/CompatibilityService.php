@@ -54,7 +54,7 @@ class CompatibilityService
     $modelClass = self::VALID_TYPES[$type];
 
     // get all components
-    $query = $modelClass::query();
+    $query = $modelClass::query()->with(['listings' => fn($q) => $q->orderBy('price')]);
 
     // get only available components
     $compatibleQuery = $modelClass::query();

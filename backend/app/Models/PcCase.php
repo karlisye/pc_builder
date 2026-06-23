@@ -13,7 +13,7 @@ class PcCase extends Model
 
   protected $table = 'cases';
 
-  protected $appends = ['price', 'stock_status', 'stock_quantity'];
+  protected $appends = ['price', 'stock_status', 'stock_quantity', 'url'];
 
   protected $fillable = [
     'product_code',

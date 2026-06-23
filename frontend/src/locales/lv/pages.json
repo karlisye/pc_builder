@@ -229,7 +229,8 @@
         "cancel": "Atcelt"
       },
       "detailPanel": {
-        "seeInStore": "Apskatīt veikalā"
+        "seeInStore": "Apskatīt veikalā",
+        "availability": "Pieejams"
       }
     }
   }

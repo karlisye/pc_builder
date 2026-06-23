@@ -13,7 +13,7 @@ class Gpu extends Model
 
   protected $table = 'gpus';
 
-  protected $appends = ['price', 'stock_status', 'stock_quantity'];
+  protected $appends = ['price', 'stock_status', 'stock_quantity', 'url'];
 
   protected $fillable = [
     'product_code',

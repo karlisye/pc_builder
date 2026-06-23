@@ -13,7 +13,7 @@ class Ssd extends Model
 
   protected $table = 'ssds';
 
-  protected $appends = ['price', 'stock_status', 'stock_quantity'];
+  protected $appends = ['price', 'stock_status', 'stock_quantity', 'url'];
 
   protected $fillable = [
     'product_code',

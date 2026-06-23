@@ -37,6 +37,8 @@ const ComponentInfo = ({ component }) => {
               "compatibility_warning",
               "compatible",
               "out_of_stock",
+              "listings",
+              "selected_source",
             ].includes(key),
         )
         .map(([key, value]) => (

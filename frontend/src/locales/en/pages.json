@@ -229,7 +229,8 @@
         "cancel": "Cancel"
       },
       "detailPanel": {
-        "seeInStore": "See In Store"
+        "seeInStore": "See In Store",
+        "availability": "Available at"
       }
     }
   }

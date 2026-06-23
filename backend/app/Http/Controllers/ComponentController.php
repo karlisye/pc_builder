@@ -130,7 +130,9 @@ class ComponentController extends Controller
     }
 
     $modelClass = CompatibilityService::VALID_TYPES[$type];
-    $component  = $modelClass::where('product_code', $code)->first();
+    $component  = $modelClass::where('product_code', $code)
+      ->with(['listings' => fn($q) => $q->orderBy('price')])
+      ->first();
 
     if (! $component) {
       return response()->json([

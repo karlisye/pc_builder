@@ -20,7 +20,8 @@
     "showMore": "Rādīt vairāk",
     "showLess": "Rādīt mazāk",
     "remove": "Noņemt",
-    "buy": "Pirkt"
+    "buy": "Pirkt",
+    "chooseStore": "Izvēlieties veikalu"
   },
   "componentPopup": {
     "ram": {

@@ -107,17 +107,19 @@ class Build extends Model
 
   public function loadComponents(): self
   {
+    $withListings = fn($q) => $q->with(['listings' => fn($q2) => $q2->orderBy('price')]);
+
     $this->load([
-      'cpu',
-      'motherboard',
-      'ram',
-      'gpu',
-      'ssd',
-      'hdd',
-      'pcCase',
-      'cooler',
-      'psu',
-      'fan',
+      'cpu' => $withListings,
+      'motherboard' => $withListings,
+      'ram' => $withListings,
+      'gpu' => $withListings,
+      'ssd' => $withListings,
+      'hdd' => $withListings,
+      'pcCase' => $withListings,
+      'cooler' => $withListings,
+      'psu' => $withListings,
+      'fan' => $withListings,
     ]);
 
     return $this;

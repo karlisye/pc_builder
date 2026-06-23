@@ -309,28 +309,20 @@ const SavedBuilds = () => {
                             {component.name}
                           </span>
                         </div>
-                        <a
-                          className={`flex items-center transition-all text-text border-l border-border overflow-hidden ${
-                            isExpanded
-                              ? "w-24 px-8 bg-success/30 hover:bg-success/50"
-                              : "w-0 px-0"
-                          }`}
-                          target="_blank"
-                          href={component.url}
-                        >
-                          {t("savedBuilds.buy")}
-                        </a>
                       </div>
 
                       <div
-                        className="lg:hidden overflow-hidden transition-all"
-                        style={{ maxHeight: isExpanded ? "500px" : "0px" }}
+                        className={`lg:hidden grid transition-all overflow-hidden ${
+                          isExpanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                        }`}
                       >
-                        <DetailPanel
-                          component={component}
-                          slot={slot}
-                          setExpandedSlot={setExpandedSlot}
-                        />
+                        <div className="overflow-hidden">
+                          <DetailPanel
+                            component={component}
+                            slot={slot}
+                            setExpandedSlot={setExpandedSlot}
+                          />
+                        </div>
                       </div>
                     </div>
                   );
@@ -338,16 +330,19 @@ const SavedBuilds = () => {
               </div>
 
               <div
-                className="hidden lg:block overflow-hidden transition-all"
-                style={{ maxHeight: expandedComponent ? "500px" : "0px" }}
+                className={`hidden lg:grid transition-all overflow-hidden ${
+                  expandedComponent ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                }`}
               >
-                {expandedComponent && (
-                  <DetailPanel
-                    component={expandedComponent}
-                    slot={expandedSlot}
-                    setExpandedSlot={setExpandedSlot}
-                  />
-                )}
+                <div className="overflow-hidden">
+                  {expandedComponent && (
+                    <DetailPanel
+                      component={expandedComponent}
+                      slot={expandedSlot}
+                      setExpandedSlot={setExpandedSlot}
+                    />
+                  )}
+                </div>
               </div>
             </div>
           )}

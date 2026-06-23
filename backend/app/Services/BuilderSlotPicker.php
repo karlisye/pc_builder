@@ -19,6 +19,7 @@ class BuilderSlotPicker
     $modelClass = CompatibilityService::VALID_TYPES[$slot];
 
     $query = ComponentListingJoin::apply($modelClass::query())
+      ->with(['listings' => fn($q) => $q->orderBy('price')])
       ->whereNotNull('listing_agg.listing_price');
 
     $shouldIncludeOrderable = filter_var($preferences['include_orderable'] ?? false, FILTER_VALIDATE_BOOLEAN);
@@ -73,6 +74,7 @@ class BuilderSlotPicker
     $modelClass = CompatibilityService::VALID_TYPES[$slot];
 
     $query = ComponentListingJoin::apply($modelClass::query())
+      ->with(['listings' => fn($q) => $q->orderBy('price')])
       ->whereNotNull('listing_agg.listing_price');
 
     $shouldIncludeOrderable = filter_var($preferences['include_orderable'] ?? false, FILTER_VALIDATE_BOOLEAN);

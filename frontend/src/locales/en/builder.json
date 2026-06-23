@@ -20,7 +20,8 @@
     "showMore": "Show more",
     "showLess": "Show less",
     "remove": "Remove",
-    "buy": "Buy"
+    "buy": "Buy",
+    "chooseStore": "Choose store"
   },
   "componentPopup": {
     "ram": {
