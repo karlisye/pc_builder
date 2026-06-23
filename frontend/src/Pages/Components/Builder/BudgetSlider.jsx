@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useBuilder } from "../../../Contexts/BuilderContext";
+import { getCheapestPrice } from "../../../lib/componentPrice";
 
 const BudgetSlider = ({
   value,
@@ -17,7 +18,7 @@ const BudgetSlider = ({
   const [isUnlimited, setIsUnlimited] = useState(false);
 
   const filled = Object.values(selectedComponents).filter((v) => v !== null);
-  const total = filled.reduce((sum, c) => sum + parseFloat(c.price ?? 0), 0);
+  const total = filled.reduce((sum, c) => sum + getCheapestPrice(c), 0);
   const remaining = value - total;
 
   const percentage = (((isUnlimited ? min : value) - min) / (max - min)) * 100;

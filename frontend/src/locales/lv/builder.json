@@ -12,16 +12,16 @@
     "remainingBudget": "Atlikušais budžets"
   },
   "componentCard": {
-    "price": "Cena: €{{price}}",
-    "availability": "Pieejamība: {{status}}",
     "inStockWithQty": "Pieejams ({{count}})",
     "orderableWithQty": "Pieejams pēc pasūtījuma ({{count}})",
     "outOfStock": "Nav pieejams",
+    "inStock": "Pieejams",
     "seeInStore": "Apskatīt veikalā",
     "remove": "Noņemt",
     "more": "Vairāk",
-    "chooseStore": "Izvēlieties veikalu",
-    "availabilityTitle": "Pieejamība"
+    "availabilityTitle": "Pieejamība",
+    "lastScraped": "Pēdējā pārbaude: {{date}}",
+    "neverScraped": "Pēdējā pārbaude: nekad"
   },
   "componentPopup": {
     "ram": {
@@ -73,7 +73,6 @@
     "outOfStock": "Nav pieejams",
     "notCompatible": "Nav saderīgs",
     "select": "Izvēlēties",
-    "seeInShop": "Apskatīt veikalā",
     "startingFrom": "Sākot no €{{price}}"
   },
   "componentFilters": {

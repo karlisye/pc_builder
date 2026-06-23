@@ -12,16 +12,16 @@
     "remainingBudget": "Remaining Budget"
   },
   "componentCard": {
-    "price": "Price: €{{price}}",
-    "availability": "Availability: {{status}}",
     "inStockWithQty": "In Stock ({{count}})",
     "orderableWithQty": "Can be ordered ({{count}})",
     "outOfStock": "Out of Stock",
+    "inStock": "Available",
     "seeInStore": "See in store",
     "remove": "Remove",
     "more": "More",
-    "chooseStore": "Choose store",
-    "availabilityTitle": "Availability"
+    "availabilityTitle": "Availability",
+    "lastScraped": "Last checked: {{date}}",
+    "neverScraped": "Last checked: never"
   },
   "componentPopup": {
     "ram": {
@@ -73,7 +73,6 @@
     "outOfStock": "Out Of Stock",
     "notCompatible": "Not Compatible",
     "select": "Select",
-    "seeInShop": "See in Shop",
     "startingFrom": "Starting from €{{price}}"
   },
   "componentFilters": {

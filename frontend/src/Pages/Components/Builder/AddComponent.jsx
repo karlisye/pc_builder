@@ -167,23 +167,57 @@ const AddComponent = () => {
                 >
                   <div className="overflow-hidden">
                     <div className="p-3">
-                      {component.listings?.length > 1 && (
-                        <select
-                          aria-label={t('componentCard.chooseStore')}
-                          value={chosenSource}
-                          onChange={(e) => handleChooseStore(component, e.target.value)}
-                          onClick={(e) => e.stopPropagation()}
-                          className="mb-3 bg-surface p-2 text-text text-sm outline-border focus:outline-1"
-                        >
-                          {component.listings.map((listing) => (
-                            <option key={listing.source} value={listing.source}>
-                              {capitalize(listing.source)} €{listing.price}
-                            </option>
-                          ))}
-                        </select>
-                      )}
-
                       <ComponentInfo component={effectiveComponent} />
+
+                      {component.listings?.length > 0 && (
+                        <div className="mt-3">
+                          <h3 className="text-sm font-semibold text-text mb-2">
+                            {t('componentCard.availabilityTitle')}
+                          </h3>
+                          <div className="flex flex-col gap-2">
+                            {component.listings.map((listing) => (
+                              <div
+                                key={listing.source}
+                                className="grid grid-cols-[1fr_1fr_1fr_1fr_auto] items-center gap-2 border border-border bg-surface p-3 transition"
+                              >
+                                <span className="text-text font-medium">
+                                  {capitalize(listing.source)}
+                                </span>
+                                <span className="text-muted">€{listing.price}</span>
+                                <span className="text-muted">
+                                  {listing.stock_status === 'in_stock'
+                                    ? t('componentCard.inStockWithQty', {
+                                        count: listing.stock_quantity,
+                                      })
+                                    : listing.stock_status === 'orderable'
+                                      ? t('componentCard.orderableWithQty', {
+                                          count: listing.stock_quantity,
+                                        })
+                                      : t('componentCard.outOfStock')}
+                                </span>
+                                <span className="text-muted text-sm">
+                                  {listing.scraped_at
+                                    ? t('componentCard.lastScraped', {
+                                        date: new Date(listing.scraped_at).toLocaleDateString(),
+                                      })
+                                    : t('componentCard.neverScraped')}
+                                </span>
+                                <a
+                                  href={listing.url}
+                                  target="_blank"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleChooseStore(component, listing.source);
+                                  }}
+                                  className="px-4 py-2 bg-primary text-white text-sm hover:bg-primary-light transition cursor-pointer text-center"
+                                >
+                                  {t('componentCard.seeInStore')}
+                                </a>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
 
                       <div className="flex gap-2 mt-3">
                         <button
@@ -192,14 +226,6 @@ const AddComponent = () => {
                         >
                           {t('addComponent.select')}
                         </button>
-
-                        <a
-                          href={effectiveComponent.url}
-                          target="_blank"
-                          className="p-4 bg-surface text-text hover:bg-secondary-light transition cursor-pointer"
-                        >
-                          {t('addComponent.seeInShop')}
-                        </a>
                       </div>
                     </div>
                   </div>

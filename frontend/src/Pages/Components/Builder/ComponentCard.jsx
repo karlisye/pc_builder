@@ -37,28 +37,24 @@ const ComponentCard = ({ component, name }) => {
     setPopup({ component: name, x: rect.left, y: rect.bottom });
   };
 
-  const handleChooseStore = (e) => {
-    const source = e.target.value;
-    const listing = component.listings?.find((l) => l.source === source);
-    if (!listing) return;
-
-    setSelectedComponents((prev) => ({
-      ...prev,
-      [name.toLowerCase()]: {
-        ...component,
-        price: listing.price,
-        stock_status: listing.stock_status,
-        stock_quantity: listing.stock_quantity,
-        url: listing.url,
-        selected_source: listing.source,
-      },
-    }));
-  };
-
   const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
   const hasIssues = buildIssues[name.toLowerCase()]?.length > 0;
   const displayName = t(`common:components.${name.toLowerCase()}`);
+
+  const listings = component?.listings?.length
+    ? component.listings
+    : component
+      ? [
+          {
+            source: component.selected_source,
+            price: component.price,
+            stock_status: component.stock_status,
+            stock_quantity: component.stock_quantity,
+            url: component.url,
+          },
+        ]
+      : [];
 
   return (
     <div className="w-full xl:w-80 h-100 border flex flex-col border-border shadow hover:bg-background transition relative">
@@ -73,50 +69,26 @@ const ComponentCard = ({ component, name }) => {
               </div>
             </div>
 
-            <div className="p-2 flex flex-col">
-              {!component.out_of_stock && (
-                <span className="text-muted">
-                  {t('componentCard.price', { price: component.price })}
-                </span>
-              )}
-              <span className="text-muted">
-                {t('componentCard.availability', {
-                  status:
-                    component.stock_status === 'in_stock'
-                      ? t('componentCard.inStockWithQty', {
-                          count: component.stock_quantity,
-                        })
-                      : component.stock_status === 'orderable'
-                        ? t('componentCard.orderableWithQty', {
-                            count: component.stock_quantity,
-                          })
-                        : t('componentCard.outOfStock'),
-                })}
-              </span>
-
-              {component.listings?.length > 1 && (
-                <select
-                  aria-label={t('componentCard.chooseStore')}
-                  value={component.selected_source ?? component.listings[0].source}
-                  onChange={handleChooseStore}
-                  onClick={(e) => e.stopPropagation()}
-                  className="mt-1 bg-surface p-2 text-text text-sm outline-border focus:outline-1"
+            <div className="p-2 flex flex-col gap-1 overflow-y-auto max-h-32">
+              {listings.map((listing, i) => (
+                <a
+                  key={listing.source ?? i}
+                  href={listing.url}
+                  target="_blank"
+                  className="grid grid-cols-3 gap-1 text-sm border border-border bg-surface p-1 hover:bg-secondary-light transition cursor-pointer"
                 >
-                  {component.listings.map((listing) => (
-                    <option key={listing.source} value={listing.source}>
-                      {capitalize(listing.source)} €{listing.price}
-                    </option>
-                  ))}
-                </select>
-              )}
+                  <span className="text-text font-medium truncate">
+                    {listing.source ? capitalize(listing.source) : '-'}
+                  </span>
+                  <span className="text-muted">€{listing.price}</span>
+                  <span className="text-muted truncate">
+                    {listing.stock_status === 'in_stock' || listing.stock_status === 'orderable'
+                      ? t('componentCard.inStock')
+                      : t('componentCard.outOfStock')}
+                  </span>
+                </a>
+              ))}
             </div>
-            <a
-              href={component.url}
-              target="_blank"
-              className="text-info cursor-pointer flex p-2"
-            >
-              {t('componentCard.seeInStore')}
-            </a>
 
             <div className="bg-primary mt-auto flex">
               <button

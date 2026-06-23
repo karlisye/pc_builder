@@ -57,7 +57,7 @@ const ComponentDetail = () => {
             {component.listings.map((listing) => (
               <div
                 key={listing.source}
-                className="grid grid-cols-[1fr_1fr_1fr_auto] items-center gap-2 border border-border bg-surface p-3 transition"
+                className="grid grid-cols-[1fr_1fr_1fr_1fr_auto] items-center gap-2 border border-border bg-surface p-3 transition"
               >
                 <span className="text-text font-medium">{capitalize(listing.source)}</span>
                 <span className="text-muted">€{listing.price}</span>
@@ -71,6 +71,13 @@ const ComponentDetail = () => {
                           count: listing.stock_quantity,
                         })
                       : t('componentCard.outOfStock')}
+                </span>
+                <span className="text-muted text-sm">
+                  {listing.scraped_at
+                    ? t('componentCard.lastScraped', {
+                        date: new Date(listing.scraped_at).toLocaleDateString(),
+                      })
+                    : t('componentCard.neverScraped')}
                 </span>
                 <a
                   href={listing.url}

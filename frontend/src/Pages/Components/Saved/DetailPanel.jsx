@@ -33,7 +33,7 @@ const DetailPanel = ({ component, slot, setExpandedSlot }) => {
                   key={listing.source}
                   href={listing.url}
                   target="_blank"
-                  className="bg-surface p-3 hover:bg-success/50 transition cursor-pointer text-sm flex justify-between items-center gap-4"
+                  className="bg-surface p-3 hover:bg-secondary-light transition cursor-pointer text-sm flex justify-between items-center gap-4"
                 >
                   <span className="text-muted truncate">{capitalize(listing.source)}</span>
                   <span className="text-text font-semibold whitespace-nowrap">
