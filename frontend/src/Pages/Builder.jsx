@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ComponentCard from "./Components/Builder/ComponentCard";
+import ComponentDetail from "./Components/Builder/ComponentDetail";
 import BuildDesc from "./Components/Builder/BuildDesc";
 import { BuilderContext } from "../Contexts/BuilderContext";
 import AddComponent from "./Components/Builder/AddComponent";
@@ -43,6 +44,7 @@ const Builder = () => {
   const [sort, setSort] = useState("price_asc");
   const [buildType, setBuildType] = useState("");
   const [restoredDraft, setRestoredDraft] = useState(false);
+  const [viewingComponent, setViewingComponent] = useState(null);
 
   useEffect(() => {
     const buildParam = searchParams.get("build");
@@ -178,6 +180,7 @@ const Builder = () => {
     setBuildName("");
     setBuildNotes("");
     setBuildType("");
+    setViewingComponent(null);
   };
 
   return (
@@ -211,6 +214,8 @@ const Builder = () => {
         setNotes,
         buildIssues,
         setBuildIssues,
+        viewingComponent,
+        setViewingComponent,
       }}
     >
       <div className="h-full flex">
@@ -250,6 +255,8 @@ const Builder = () => {
         <div className="flex-1 flex px-4 py-6">
           {currentCompToAdd ? (
             <AddComponent />
+          ) : viewingComponent ? (
+            <ComponentDetail />
           ) : (
             <div className="flex flex-wrap mb-auto gap-8 justify-center">
               <ComponentCard name="CPU" component={selectedComponents.cpu} />

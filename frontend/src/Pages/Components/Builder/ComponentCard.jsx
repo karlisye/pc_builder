@@ -13,6 +13,7 @@ const ComponentCard = ({ component, name }) => {
     setSort,
     setSelectedComponents,
     buildIssues,
+    setViewingComponent,
   } = useBuilder();
   const [popup, setPopup] = useState(null);
 
@@ -124,13 +125,12 @@ const ComponentCard = ({ component, name }) => {
               >
                 {t('componentCard.remove')}
               </button>
-              <a
-                href={component.url}
-                target="_blank"
-                className="text-white py-4 px-8 hover:bg-success/50 transition"
+              <button
+                className="text-white py-4 px-8 hover:bg-success/50 transition cursor-pointer"
+                onClick={() => setViewingComponent({ component, name })}
               >
-                {t('componentCard.buy')}
-              </a>
+                {t('componentCard.more')}
+              </button>
             </div>
 
             {hasIssues && (
