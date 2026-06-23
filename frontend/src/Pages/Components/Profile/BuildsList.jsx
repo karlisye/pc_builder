@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { ArrowIcon, HeartIcon, SavedIcon, StarIcon } from "../Common/Icons";
+import { ArrowIcon, HeartIcon, StarIcon } from "../Common/Icons";
 import { Link } from "react-router-dom";
 import { formatPrice } from "../../../lib/componentPrice";
 
@@ -61,13 +61,6 @@ const BuildsList = ({
                         <div className="flex gap-2">
                           <HeartIcon filled className={"text-danger"} />
                           <span className="text-text">{build.likes_count}</span>
-                        </div>
-
-                        <div className="flex gap-2">
-                          <SavedIcon filled className={"text-alert"} />
-                          <span className="text-text">
-                            {build.bookmarks_count}
-                          </span>
                         </div>
 
                         <div className="flex gap-2">

@@ -23,7 +23,7 @@ import Register from "./Pages/Auth/Register";
 
 import Profile from "./Pages/Profile";
 import AccountSettings from "./Pages/Components/Profile/AccountSettings";
-import BookmarkedBuilds from "./Pages/Components/Profile/BookmarkedBuilds";
+import LikedBuilds from "./Pages/Components/Profile/LikedBuilds";
 import PublicProfile from "./Pages/Components/Profile/PublicProfile";
 
 import AdminDashboard from "./Pages/Admin/Dashboard";
@@ -77,7 +77,7 @@ const App = () => (
             <Route element={<AuthRoute><ProfileLayout /></AuthRoute>}>
               <Route path="/profile" element={<Profile />} />
               <Route path="/profile/account" element={<AccountSettings />} />
-              <Route path="/profile/bookmarked" element={<BookmarkedBuilds />} />
+              <Route path="/profile/liked" element={<LikedBuilds />} />
             </Route>
 
             <Route path="/profile/:user" element={<PublicProfile />} />

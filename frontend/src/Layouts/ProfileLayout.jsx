@@ -22,10 +22,10 @@ export default function ProfileLayout() {
           {t("profile.account")}
         </Link>
         <Link
-          to="/profile/bookmarked"
-          className={`p-4 border border-secondary text-white hover:bg-secondary ${pathname.startsWith("/profile/bookmarked") ? "border-l-8" : ""}`}
+          to="/profile/liked"
+          className={`p-4 border border-secondary text-white hover:bg-secondary ${pathname.startsWith("/profile/liked") ? "border-l-8" : ""}`}
         >
-          {t("profile.bookmarked")}
+          {t("profile.liked")}
         </Link>
       </SidePanel>
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Modal from '../Common/Modal';
 import axios from 'axios';
-import { HeartIcon, SavedIcon, StarIcon } from '../Common/Icons';
+import { HeartIcon, StarIcon } from '../Common/Icons';
 import { useToast } from '../../../Contexts/ToastContext';
 
 const BuildVisibility = ({ build, setBuild }) => {
@@ -44,11 +44,6 @@ const BuildVisibility = ({ build, setBuild }) => {
               <div className="flex gap-2">
                 <HeartIcon filled className={'text-danger'} />
                 <span>{build.likes_count}</span>
-              </div>
-
-              <div className="flex gap-2">
-                <SavedIcon filled className={'text-alert'} />
-                <span>{build.bookmarks_count}</span>
               </div>
 
               <div className="flex gap-2">

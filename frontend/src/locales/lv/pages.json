@@ -142,21 +142,14 @@
       "saveSuccess": "Konfigurācija veiksmīgi saglabāta",
       "saveError": "Neizdevās saglabāt konfigurāciju",
       "likeError": "Neizdevās atzīmēt \"patīk\"",
-      "bookmarkError": "Neizdevās pievienot grāmatzīmēm",
-      "reviewError": "Neizdevās iesniegt vērtējumu",
-      "makePrivateError": "Neizdevās atjaunot konfigurācijas redzamību",
       "compatibilityIssues": "Saderības problēmas",
       "buildIncompatible": "Dažas komponentes nav saderīgas",
       "notes": "Piezīmes",
       "none": "Nav",
       "likeTitle": "Atzīmēt \"patīk\" šai publikācijai",
-      "bookmarkTitle": "Pievienot šo publikāciju grāmatzīmēm",
       "ratingTitle": "Vidējais vērtējums",
-      "makePrivate": "Padarīt privātu",
       "continue": "Turpināt",
       "copyToSaved": "Kopēt uz saglabātajām",
-      "privateConfirmTitle": "Vai tiešām vēlies padarīt konfigurāciju {{name}} privātu?",
-      "cancel": "Atcelt",
       "componentsLabel": "Komponentes"
     },
     "buildFilters": {
@@ -203,7 +196,6 @@
         "label": "Rādīt",
         "all": "Visi",
         "liked": "Patīk",
-        "bookmarked": "Grāmatzīmes",
         "personal": "Personīgās"
       },
       "clearFilters": "Notīrīt filtrus"

@@ -6,7 +6,6 @@ use App\Models\{Cpu, Motherboard, Ram, Gpu, Ssd, Hdd, PcCase, Fan, Psu, Cooler};
 use App\Services\ComponentScorer;
 use App\Support\ComponentListingJoin;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 
 class BuilderSlotPicker
 {

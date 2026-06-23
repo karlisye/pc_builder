@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Support\ComponentListingJoin;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Log;
 
 class ComponentQueryFilter
 {

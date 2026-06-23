@@ -17,7 +17,6 @@ class UserController extends Controller
     $builds = Build::query()
       ->where('user_id', $user->id)
       ->withCount('likes')
-      ->withCount('bookmarks')
       ->withAvg('reviews', 'rating')
       ->where('is_public', true)
       ->paginate(4);
@@ -26,7 +25,6 @@ class UserController extends Controller
       'user' => $user,
       'buildData' => $builds,
       'totalLikes' => $user->totalLikes(),
-      'totalBookmarks' => $user->totalBookmarks(),
       'avgRating' => $user->averageRating(),
     ]);
   }
@@ -38,7 +36,6 @@ class UserController extends Controller
     $buildQuery = fn() => Build::query()
       ->where('user_id', $user->id)
       ->withCount('likes')
-      ->withCount('bookmarks')
       ->withAvg('reviews', 'rating');
 
     return response()->json([
@@ -48,22 +45,20 @@ class UserController extends Controller
     ]);
   }
 
-  public function indexBookmarked(Request $request): JsonResponse
+  public function indexLiked(Request $request): JsonResponse
   {
     $user = $request->user();
 
-    $bookmarkedBuilds = Build::query()
-      ->whereHas('bookmarks', fn($q) => $q->where('user_id', $user->id))
+    $likedBuilds = Build::query()
+      ->whereHas('likes', fn($q) => $q->where('user_id', $user->id))
       ->withExists(['likes as liked' => fn($q) => $q->where('user_id', $user->id)])
-      ->withExists(['bookmarks as bookmarked' => fn($q) => $q->where('user_id', $user->id)])
       ->withCount('likes')
-      ->withCount('bookmarks')
       ->withAvg('reviews', 'rating')
       ->with('user')
       ->with(['reviews' => fn($q) => $q->where('user_id', $user->id)])
       ->paginate(4);
 
-    return response()->json($bookmarkedBuilds);
+    return response()->json($likedBuilds);
   }
 
   public function update(Request $request, User $user): JsonResponse

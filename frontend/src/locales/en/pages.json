@@ -142,21 +142,14 @@
       "saveSuccess": "Build saved successfully",
       "saveError": "Failed to save build",
       "likeError": "Failed to like",
-      "bookmarkError": "Failed to bookmark",
-      "reviewError": "Failed to submit review",
-      "makePrivateError": "Failed to update build visibility",
       "compatibilityIssues": "Compatibility Issues",
       "buildIncompatible": "Some components are incompatible",
       "notes": "Notes",
       "none": "None",
       "likeTitle": "Like this post",
-      "bookmarkTitle": "Bookmark this post",
       "ratingTitle": "Average rating",
-      "makePrivate": "Make Private",
       "continue": "Continue",
       "copyToSaved": "Copy to saved",
-      "privateConfirmTitle": "Are you sure you want to private {{name}} build?",
-      "cancel": "Cancel",
       "componentsLabel": "Components"
     },
     "buildFilters": {
@@ -203,7 +196,6 @@
         "label": "Show",
         "all": "All",
         "liked": "Liked",
-        "bookmarked": "Bookmarked",
         "personal": "Personal"
       },
       "clearFilters": "Clear Filters"
