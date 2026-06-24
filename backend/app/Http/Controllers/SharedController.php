@@ -107,6 +107,7 @@ class SharedController extends Controller
       ->loadCount('likes')
       ->loadExists(['likes as liked' => fn($q) => $q->where('user_id', $userId)])
       ->loadAvg('reviews', 'rating')
+      ->load(['reviews' => fn($q) => $q->where('user_id', $userId)])
       ->load('user');
 
     return response()->json($build);

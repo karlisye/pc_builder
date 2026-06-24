@@ -109,6 +109,13 @@
     "sidePanelTitle": "DARBĪBAS",
     "notFoundError": "Konfigurācija nav atrasta"
   },
+  "buildRating": {
+    "title": "Novērtē šo konfigurāciju",
+    "yourRating": "Tavs vērtējums: {{rating}}/5",
+    "loginToRate": "Pieslēdzies, lai novērtētu šo konfigurāciju.",
+    "loginLink": "Pieslēgties",
+    "error": "Neizdevās iesniegt vērtējumu"
+  },
   "buildComments": {
     "title": "Komentāri",
     "placeholder": "Raksti komentāru...",
@@ -124,7 +131,8 @@
     "likeError": "Neizdevās atzīmēt komentāru",
     "deleteError": "Neizdevās dzēst komentāru",
     "deleteConfirmTitle": "Vai tiešām vēlies dzēst šo komentāru?",
-    "delete": "Dzēst"
+    "delete": "Dzēst",
+    "owner": "Īpašnieks"
   },
   "savedBuilds": {
     "sidePanelTitle": "SAGLABĀTĀS KONFIGURĀCIJAS",

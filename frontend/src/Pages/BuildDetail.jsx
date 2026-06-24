@@ -9,6 +9,7 @@ import BuildIssuesPopup from './Components/Common/BuildIssuesPopup';
 import SidePanel from './Components/Common/SidePanel';
 import ClosedSection from './Components/Common/ClosedSection';
 import BuildComments from './Components/Common/BuildComments';
+import BuildRating from './Components/Common/BuildRating';
 import { formatDate } from '../lib/formatDate';
 import { formatPrice } from '../lib/componentPrice';
 import { useToast } from '../Contexts/ToastContext';
@@ -313,7 +314,9 @@ const BuildDetail = () => {
             </div>
           </div>
 
-          <BuildComments buildId={build.id} />
+          <BuildRating buildId={build.id} initialRating={build.reviews?.[0]?.rating} />
+
+          <BuildComments buildId={build.id} ownerId={build.user_id} />
         </div>
       </div>
 

@@ -8,7 +8,15 @@ import { formatDate } from '../../../lib/formatDate';
 import { useAuth } from '../../../Contexts/AuthContext';
 import { useToast } from '../../../Contexts/ToastContext';
 
-const Comment = ({ comment, onLike, onReply, onDelete, isReply = false, replyingToName = null }) => {
+const Comment = ({
+  comment,
+  onLike,
+  onReply,
+  onDelete,
+  ownerId,
+  isReply = false,
+  replyingToName = null,
+}) => {
   const { t } = useTranslation('pages');
   const { user } = useAuth();
   const [replying, setReplying] = useState(false);
@@ -40,6 +48,12 @@ const Comment = ({ comment, onLike, onReply, onDelete, isReply = false, replying
           <Link className="text-text font-medium" to={`/profile/${comment.user?.id}`}>
             @{comment.user?.name}
           </Link>
+
+          {comment.user?.id === ownerId && (
+            <span className="py-0.5 px-2 text-xs text-white bg-primary">
+              {t('buildComments.owner')}
+            </span>
+          )}
 
           {comment.rating != null && (
             <span className="flex items-center gap-1">
@@ -130,6 +144,7 @@ const Comment = ({ comment, onLike, onReply, onDelete, isReply = false, replying
               comment={reply}
               onLike={onLike}
               onDelete={onDelete}
+              ownerId={ownerId}
               isReply
               replyingToName={comment.user?.name}
             />
@@ -140,7 +155,7 @@ const Comment = ({ comment, onLike, onReply, onDelete, isReply = false, replying
   );
 };
 
-const BuildComments = ({ buildId }) => {
+const BuildComments = ({ buildId, ownerId }) => {
   const { t } = useTranslation('pages');
   const { user } = useAuth();
   const { addToast } = useToast();
@@ -277,6 +292,7 @@ const BuildComments = ({ buildId }) => {
               onLike={handleLike}
               onReply={handleReply}
               onDelete={setDeleting}
+              ownerId={ownerId}
             />
           ))}
         </div>
