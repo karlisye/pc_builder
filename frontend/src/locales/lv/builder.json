@@ -12,6 +12,8 @@
     "remainingBudget": "Atlikušais budžets"
   },
   "componentCard": {
+    "stores": "Veikali",
+    "moreStores": "+{{count}} veikali",
     "inStockWithQty": "Pieejams ({{count}})",
     "orderableWithQty": "Pieejams pēc pasūtījuma ({{count}})",
     "outOfStock": "Nav pieejams",

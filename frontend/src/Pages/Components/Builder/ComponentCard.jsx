@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useBuilder } from '../../../Contexts/BuilderContext';
 import { AddIcon, CloseIcon, InfoIcon } from '../Common/Icons';
 import ComponentPopup from './ComponentPopup';
-import { formatPrice } from '../../../lib/componentPrice';
+import { formatPrice, getCheapestPrice } from '../../../lib/componentPrice';
 
 const ComponentCard = ({ component, name }) => {
   const { t } = useTranslation(['builder', 'common']);
@@ -58,37 +58,72 @@ const ComponentCard = ({ component, name }) => {
       : [];
 
   return (
-    <div className="w-full xl:w-80 h-100 border flex flex-col border-border shadow hover:bg-background transition relative">
+    <div className="w-full xl:w-80 max-h-120 xl:h-120 h-80 border flex flex-col border-border shadow hover:bg-background transition relative">
       <>
         {component ? (
           <>
-            <div className="relative group p-2">
-              <h3 className="text-xl text-muted">{displayName}</h3>
-              <h2 className="text-text font-semibold text-3xl line-clamp-1">{component.name}</h2>
-              <div className="absolute left-0 mb-1 hidden group-hover:block bg-primary text-white text-xs p-1 whitespace-nowrap z-10">
-                {component.name}
+            <div className="flex flex-row xl:flex-col gap-2 p-2">
+              <div className="w-40 h-40 xl:w-full xl:h-40 bg-surface shrink-0 xl:my-1" />
+
+              <div className="relative group min-w-0">
+                <h3 className="text-xl text-muted">{displayName}</h3>
+                <h2 className="text-text font-semibold text-3xl xl:line-clamp-2 line-clamp-3">
+                  {component.name}
+                </h2>
+                <span className="text-muted text-sm">
+                  {t('componentCard.startingFrom', {
+                    price: formatPrice(getCheapestPrice(component)),
+                  })}
+                </span>
+                <div className="absolute left-0 mb-1 hidden group-hover:block bg-primary text-white text-xs p-1 whitespace-nowrap z-10">
+                  {component.name}
+                </div>
               </div>
             </div>
 
-            <div className="p-2 flex flex-col gap-1 overflow-y-auto max-h-32">
-              {listings.map((listing, i) => (
-                <a
-                  key={listing.source ?? i}
-                  href={listing.url}
-                  target="_blank"
-                  className="grid grid-cols-3 gap-1 text-sm border border-border bg-surface p-1 hover:bg-secondary-light transition cursor-pointer"
-                >
-                  <span className="text-text font-medium truncate">
-                    {listing.source ? capitalize(listing.source) : '-'}
-                  </span>
-                  <span className="text-muted">€{formatPrice(listing.price)}</span>
-                  <span className="text-muted truncate">
-                    {listing.stock_status === 'in_stock' || listing.stock_status === 'orderable'
-                      ? t('componentCard.inStock')
-                      : t('componentCard.outOfStock')}
-                  </span>
-                </a>
-              ))}
+            <span className="text-muted text-sm font-medium pt-2 px-2">
+              {t('componentCard.stores')}
+            </span>
+            <div className="pb-2 px-2 flex flex-col gap-1">
+              {(() => {
+                const sorted = [...listings].sort(
+                  (a, b) => parseFloat(a.price ?? Infinity) - parseFloat(b.price ?? Infinity),
+                );
+                const cheapest = sorted[0];
+                const remaining = sorted.length - 1;
+
+                if (!cheapest) return null;
+
+                return (
+                  <>
+                    <a
+                      href={cheapest.url}
+                      target="_blank"
+                      className="grid grid-cols-3 gap-1 text-sm border border-border bg-surface p-1 hover:bg-secondary-light transition cursor-pointer"
+                    >
+                      <span className="text-text font-medium truncate">
+                        {cheapest.source ? capitalize(cheapest.source) : '-'}
+                      </span>
+                      <span className="text-muted">€{formatPrice(cheapest.price)}</span>
+                      <span className="text-muted truncate">
+                        {cheapest.stock_status === 'in_stock' ||
+                        cheapest.stock_status === 'orderable'
+                          ? t('componentCard.inStock')
+                          : t('componentCard.outOfStock')}
+                      </span>
+                    </a>
+
+                    {remaining > 0 && (
+                      <button
+                        onClick={() => setViewingComponent({ component, name })}
+                        className="text-info text-sm text-left hover:underline cursor-pointer"
+                      >
+                        {t('componentCard.moreStores', { count: remaining })}
+                      </button>
+                    )}
+                  </>
+                );
+              })()}
             </div>
 
             <div className="bg-primary mt-auto flex">
@@ -126,7 +161,7 @@ const ComponentCard = ({ component, name }) => {
         )}
 
         <div
-          className="absolute top-0 right-0 m-2 text-border hover:text-muted transition"
+          className="absolute top-0 right-0 m-2 text-muted hover:text-text transition"
           onMouseEnter={handlePopup}
           onMouseLeave={() => setPopup(null)}
         >
