@@ -95,7 +95,7 @@ const AddComponent = () => {
   };
 
   return (
-    <div className="border border-border w-full hover:bg-background transition p-4 mb-auto">
+    <div className="border border-border w-full min-w-0 hover:bg-background transition p-4 mb-auto">
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-semibold text-text">
           {t('addComponent.title', {
@@ -139,23 +139,23 @@ const AddComponent = () => {
                 : component;
 
               return (
-                <div key={component.id} className="border border-border">
+                <div key={component.id} className="border border-border min-w-0">
                   <div
                     key={component.id}
                     onClick={() => handleExpand(component.id)}
-                    className={`flex justify-between items-center p-2 cursor-pointer transition ${component.compatible && !component.out_of_stock ? 'bg-surface hover:bg-secondary-light' : 'bg-muted/50 hover:bg-muted/80'}`}
+                    className={`flex justify-between items-center gap-2 p-2 min-w-0 cursor-pointer transition ${component.compatible && !component.out_of_stock ? 'bg-surface hover:bg-secondary-light' : 'bg-muted/50 hover:bg-muted/80'}`}
                   >
-                    <div className="flex items-center gap-3 min-w-0">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
                       <div className="w-10 h-10 bg-background shrink-0" />
                       <span
-                        className={`font-medium truncate ${component.compatible && !component.out_of_stock ? 'text-text' : 'text-text/50'}`}
+                        className={`font-medium truncate min-w-0 ${component.compatible && !component.out_of_stock ? 'text-text' : 'text-text/50'}`}
                       >
                         {component.name}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <span className="text-muted">
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-muted text-sm whitespace-nowrap">
                         {component.out_of_stock
                           ? t('addComponent.outOfStock')
                           : !component.compatible
@@ -185,7 +185,13 @@ const AddComponent = () => {
                   >
                     <div className="overflow-hidden">
                       <div className="p-3">
-                        <ComponentInfo component={effectiveComponent} />
+                        <div className="flex flex-col xl:flex-row gap-4">
+                          <div className="w-full xl:w-80 h-80 bg-surface shrink-0" />
+
+                          <div className="flex-1 min-w-0">
+                            <ComponentInfo component={effectiveComponent} />
+                          </div>
+                        </div>
 
                         {component.listings?.length > 0 && (
                           <div className="mt-3">
@@ -196,7 +202,7 @@ const AddComponent = () => {
                               {component.listings.map((listing) => (
                                 <div
                                   key={listing.source}
-                                  className="grid grid-cols-[1fr_1fr_1fr_1fr_auto] items-center gap-2 border border-border bg-surface p-3 transition"
+                                  className="grid grid-cols-2 xl:grid-cols-[1fr_1fr_1fr_1fr_auto] items-center gap-2 border border-border bg-surface p-3 transition"
                                 >
                                   <span className="text-text font-medium">
                                     {capitalize(listing.source)}
@@ -227,7 +233,7 @@ const AddComponent = () => {
                                       e.stopPropagation();
                                       handleChooseStore(component, listing.source);
                                     }}
-                                    className="px-4 py-2 bg-primary text-white text-sm hover:bg-primary-light transition cursor-pointer text-center"
+                                    className="px-4 py-4 bg-primary text-white text-sm hover:bg-primary-light transition cursor-pointer text-center col-span-2 xl:col-span-1 xl:py-2"
                                   >
                                     {t('componentCard.seeInStore')}
                                   </a>

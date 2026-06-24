@@ -30,8 +30,12 @@ const ComponentDetail = ({ component, title, onClose, actions }) => {
 
       {actions && <div className="flex gap-2 mt-4">{actions}</div>}
 
-      <div className="mt-4">
-        <ComponentInfo component={component} />
+      <div className="mt-4 flex flex-col xl:flex-row gap-4">
+        <div className="w-full xl:w-80 h-80 bg-surface shrink-0" />
+
+        <div className="flex-1 min-w-0">
+          <ComponentInfo component={component} />
+        </div>
       </div>
 
       {component.listings?.length > 0 && (

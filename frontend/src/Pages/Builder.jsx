@@ -217,7 +217,7 @@ const Builder = () => {
         setViewingComponent,
       }}
     >
-      <div className="h-full flex">
+      <div className="h-full flex min-w-0">
         <SidePanel
           title={t('sidePanel.title')}
           headerRight={
@@ -247,7 +247,7 @@ const Builder = () => {
           </p>
         </SidePanel>
 
-        <div className="flex-1 flex px-4 py-6">
+        <div className="flex-1 flex px-4 py-6 min-w-0">
           {currentCompToAdd ? (
             <AddComponent />
           ) : viewingComponent ? (
