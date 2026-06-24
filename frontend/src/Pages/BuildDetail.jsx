@@ -269,14 +269,16 @@ const BuildDetail = () => {
                     onClick={() => handleExpandSlot(slot)}
                     className={`flex cursor-pointer transition-all border border-border ${isExpanded ? 'bg-secondary-light hover:bg-secondary-light/80' : 'bg-surface hover:bg-secondary-light'}`}
                   >
-                    <div className="flex-1 m-4">
+                    <div className="w-16 h-16 bg-background shrink-0 m-2" />
+
+                    <div className="flex-1 min-w-0 m-2 ml-0">
                       <div className="flex justify-between">
                         <span className="text-muted text-sm">
                           {t(`common:components.${slot}`, { defaultValue: slot })}
                         </span>
                         <span className="text-muted text-sm">€{formatPrice(component.price)}</span>
                       </div>
-                      <span className="text-text line-clamp-1">{component.name}</span>
+                      <span className="text-text line-clamp-2">{component.name}</span>
                     </div>
                   </div>
 

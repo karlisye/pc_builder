@@ -226,7 +226,9 @@ const SavedBuilds = () => {
                       </h2>
                       {selectedBuild.type && (
                         <span className="py-0.5 px-3 text-text border border-border bg-secondary-light">
-                          {t(`builder:buildInfo.${selectedBuild.type}`, { defaultValue: selectedBuild.type })}
+                          {t(`builder:buildInfo.${selectedBuild.type}`, {
+                            defaultValue: selectedBuild.type,
+                          })}
                         </span>
                       )}
                       {Object.keys(buildIssues).length > 0 && (
@@ -288,7 +290,9 @@ const SavedBuilds = () => {
                         onClick={() => handleExpandSlot(slot)}
                         className={`flex cursor-pointer transition-all border border-border ${isExpanded ? 'bg-secondary-light hover:bg-secondary-light/80' : 'bg-surface hover:bg-secondary-light'}`}
                       >
-                        <div className="flex-1 m-4">
+                        <div className="w-16 h-16 bg-background shrink-0 m-2" />
+
+                        <div className="flex-1 min-w-0 m-2 ml-0">
                           <div className="flex justify-between">
                             <span className="text-muted text-sm">
                               {t(`savedBuilds.slotLabels.${slot}`)}
@@ -297,7 +301,7 @@ const SavedBuilds = () => {
                               €{formatPrice(component.price)}
                             </span>
                           </div>
-                          <span className="text-text line-clamp-1">{component.name}</span>
+                          <span className="text-text line-clamp-2">{component.name}</span>
                         </div>
                       </div>
 
