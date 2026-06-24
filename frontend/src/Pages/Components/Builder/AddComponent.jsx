@@ -143,13 +143,16 @@ const AddComponent = () => {
                   <div
                     key={component.id}
                     onClick={() => handleExpand(component.id)}
-                    className={`flex justify-between items-center p-3 cursor-pointer transition ${component.compatible && !component.out_of_stock ? 'bg-surface hover:bg-secondary-light' : 'bg-muted/50 hover:bg-muted/80'}`}
+                    className={`flex justify-between items-center p-2 cursor-pointer transition ${component.compatible && !component.out_of_stock ? 'bg-surface hover:bg-secondary-light' : 'bg-muted/50 hover:bg-muted/80'}`}
                   >
-                    <span
-                      className={`font-medium ${component.compatible && !component.out_of_stock ? 'text-text' : 'text-text/50'}`}
-                    >
-                      {component.name}
-                    </span>
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-10 h-10 bg-background shrink-0" />
+                      <span
+                        className={`font-medium truncate ${component.compatible && !component.out_of_stock ? 'text-text' : 'text-text/50'}`}
+                      >
+                        {component.name}
+                      </span>
+                    </div>
 
                     <div className="flex items-center gap-2">
                       <span className="text-muted">
@@ -157,7 +160,9 @@ const AddComponent = () => {
                           ? t('addComponent.outOfStock')
                           : !component.compatible
                             ? t('addComponent.notCompatible')
-                            : t('addComponent.startingFrom', { price: formatPrice(component.price) })}
+                            : t('addComponent.startingFrom', {
+                                price: formatPrice(component.price),
+                              })}
                       </span>
                       {component.compatible && !component.out_of_stock && (
                         <button
