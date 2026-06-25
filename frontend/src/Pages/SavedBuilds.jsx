@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { Link, useSearchParams } from 'react-router-dom';
 import ComponentDetail from './Components/Common/ComponentDetail';
 import Modal from './Components/Common/Modal';
-import BuildVisibility from './Components/Saved/BuildVisibility';
-import { ArrowIcon, CloseIcon, InfoIcon, TrashIcon } from './Components/Common/Icons';
+import { ArrowIcon, CloseIcon, DotsIcon, InfoIcon, TrashIcon } from './Components/Common/Icons';
 import SidePanel from './Components/Common/SidePanel';
 import BuildIssuesPopup from './Components/Common/BuildIssuesPopup';
 import { formatDate } from '../lib/formatDate';
@@ -50,6 +49,27 @@ const SavedBuilds = () => {
   const [expanded, setExpanded] = useState(false);
   const [buildIssues, setBuildIssues] = useState({});
   const [issuesPopup, setIssuesPopup] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [publishing, setPublishing] = useState(false);
+  const menuRef = useRef(null);
+  const menuButtonRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        !menuButtonRef.current.contains(event.target)
+      ) {
+        setMenuOpen(false);
+      }
+    };
+
+    if (menuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [menuOpen]);
 
   useEffect(() => {
     if (!selectedBuild) {
@@ -98,6 +118,7 @@ const SavedBuilds = () => {
     setLoadingBuild(true);
     setEditing(false);
     setExpandedSlot(null);
+    setMenuOpen(false);
     try {
       const res = await axios.get(`/api/builds/${build.id}`);
       setSelectedBuild(res.data);
@@ -132,6 +153,18 @@ const SavedBuilds = () => {
       refreshBuilds();
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const handlePublish = async () => {
+    try {
+      const res = await axios.patch(`/api/builds/${selectedBuild.id}/publish`);
+      setSelectedBuild((prev) => ({ ...prev, is_public: res.data.is_public }));
+      addToast(res.data.success, { type: 'success' });
+    } catch (err) {
+      addToast(err.response?.data?.error ?? err.message, { type: 'danger' });
+    } finally {
+      setPublishing(false);
     }
   };
 
@@ -226,7 +259,9 @@ const SavedBuilds = () => {
                       </h2>
                       {selectedBuild.type && (
                         <span className="py-0.5 px-3 text-text border border-border bg-secondary-light">
-                          {t(`builder:buildInfo.${selectedBuild.type}`, { defaultValue: selectedBuild.type })}
+                          {t(`builder:buildInfo.${selectedBuild.type}`, {
+                            defaultValue: selectedBuild.type,
+                          })}
                         </span>
                       )}
                       {Object.keys(buildIssues).length > 0 && (
@@ -242,19 +277,51 @@ const SavedBuilds = () => {
                     <p className="text-muted text-sm">{formatDate(selectedBuild.created_at)}</p>
                   </div>
 
-                  <div className="flex items-center gap-2 sm:ml-auto">
+                  <div className="relative sm:ml-auto">
                     <button
-                      onClick={() => setEditing(true)}
-                      className="text-muted hover:text-text transition text-sm cursor-pointer"
+                      ref={menuButtonRef}
+                      onClick={() => setMenuOpen((prev) => !prev)}
+                      className={`p-2 transition cursor-pointer ${menuOpen ? 'text-text' : 'text-muted hover:text-text'}`}
                     >
-                      {t('savedBuilds.edit')}
+                      <DotsIcon size={20} />
                     </button>
-                    <button
-                      onClick={() => setDeleting(selectedBuild.id)}
-                      className="text-muted hover:text-danger transition cursor-pointer"
-                    >
-                      <TrashIcon size={20} />
-                    </button>
+
+                    {menuOpen && (
+                      <div
+                        ref={menuRef}
+                        className="absolute right-0 top-10 w-72 bg-background border border-border shadow z-10"
+                      >
+                        <button
+                          onClick={() => {
+                            setEditing(true);
+                            setMenuOpen(false);
+                          }}
+                          className="w-full px-4 py-2 text-left text-text hover:bg-secondary-light transition cursor-pointer"
+                        >
+                          {t('savedBuilds.edit')}
+                        </button>
+                        <button
+                          onClick={() => {
+                            setPublishing(true);
+                            setMenuOpen(false);
+                          }}
+                          className="w-full px-4 py-2 text-left text-text hover:bg-secondary-light transition cursor-pointer"
+                        >
+                          {selectedBuild.is_public
+                            ? t('components.saved.buildVisibility.makePrivate')
+                            : t('components.saved.buildVisibility.publish')}
+                        </button>
+                        <button
+                          onClick={() => {
+                            setDeleting(selectedBuild.id);
+                            setMenuOpen(false);
+                          }}
+                          className="w-full px-4 py-2 text-left text-danger hover:bg-secondary-light transition cursor-pointer"
+                        >
+                          {t('savedBuilds.delete')}
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   {selectedBuild.notes && (
@@ -275,8 +342,6 @@ const SavedBuilds = () => {
                 </Link>
               </div>
 
-              <BuildVisibility build={selectedBuild} setBuild={setSelectedBuild} />
-
               <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-4">
                 {SLOT_KEYS.map((slot) => {
                   const component = selectedBuild[slot];
@@ -288,7 +353,9 @@ const SavedBuilds = () => {
                         onClick={() => handleExpandSlot(slot)}
                         className={`flex cursor-pointer transition-all border border-border ${isExpanded ? 'bg-secondary-light hover:bg-secondary-light/80' : 'bg-surface hover:bg-secondary-light'}`}
                       >
-                        <div className="flex-1 m-4">
+                        <div className="w-16 h-16 bg-background shrink-0 m-2" />
+
+                        <div className="flex-1 min-w-0 m-2 ml-0">
                           <div className="flex justify-between">
                             <span className="text-muted text-sm">
                               {t(`savedBuilds.slotLabels.${slot}`)}
@@ -297,7 +364,7 @@ const SavedBuilds = () => {
                               €{formatPrice(component.price)}
                             </span>
                           </div>
-                          <span className="text-text line-clamp-1">{component.name}</span>
+                          <span className="text-text line-clamp-2">{component.name}</span>
                         </div>
                       </div>
 
@@ -361,6 +428,36 @@ const SavedBuilds = () => {
               onClick={() => setDeleting(null)}
             >
               {t('savedBuilds.cancel')}
+            </button>
+          </div>
+        </Modal>
+      )}
+
+      {publishing && (
+        <Modal close={() => setPublishing(false)}>
+          <h1 className="text-text text-3xl mb-10 m-4 max-w-120">
+            {t('components.saved.buildVisibility.confirmTitle', {
+              action: selectedBuild.is_public
+                ? t('components.saved.buildVisibility.actionPrivate')
+                : t('components.saved.buildVisibility.actionPublish'),
+              name: selectedBuild.name,
+            })}
+          </h1>
+
+          <div className="flex gap-4 m-4">
+            <button
+              className="flex-1 p-4 bg-primary text-background cursor-pointer hover:bg-primary-light transition"
+              onClick={handlePublish}
+            >
+              {selectedBuild.is_public
+                ? t('components.saved.buildVisibility.makePrivateButton')
+                : t('components.saved.buildVisibility.publishButton')}
+            </button>
+            <button
+              className="flex-1 p-4 bg-surface text-text cursor-pointer hover:bg-secondary-light transition"
+              onClick={() => setPublishing(false)}
+            >
+              {t('components.saved.buildVisibility.cancel')}
             </button>
           </div>
         </Modal>

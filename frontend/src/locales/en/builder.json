@@ -12,6 +12,8 @@
     "remainingBudget": "Remaining Budget"
   },
   "componentCard": {
+    "stores": "Stores",
+    "moreStores": "+{{count}} stores",
     "inStockWithQty": "In Stock ({{count}})",
     "orderableWithQty": "Can be ordered ({{count}})",
     "outOfStock": "Out of Stock",

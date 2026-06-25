@@ -9,6 +9,7 @@ import BuildIssuesPopup from './Components/Common/BuildIssuesPopup';
 import SidePanel from './Components/Common/SidePanel';
 import ClosedSection from './Components/Common/ClosedSection';
 import BuildComments from './Components/Common/BuildComments';
+import BuildRating from './Components/Common/BuildRating';
 import { formatDate } from '../lib/formatDate';
 import { formatPrice } from '../lib/componentPrice';
 import { useToast } from '../Contexts/ToastContext';
@@ -268,14 +269,16 @@ const BuildDetail = () => {
                     onClick={() => handleExpandSlot(slot)}
                     className={`flex cursor-pointer transition-all border border-border ${isExpanded ? 'bg-secondary-light hover:bg-secondary-light/80' : 'bg-surface hover:bg-secondary-light'}`}
                   >
-                    <div className="flex-1 m-4">
+                    <div className="w-16 h-16 bg-background shrink-0 m-2" />
+
+                    <div className="flex-1 min-w-0 m-2 ml-0">
                       <div className="flex justify-between">
                         <span className="text-muted text-sm">
                           {t(`common:components.${slot}`, { defaultValue: slot })}
                         </span>
                         <span className="text-muted text-sm">€{formatPrice(component.price)}</span>
                       </div>
-                      <span className="text-text line-clamp-1">{component.name}</span>
+                      <span className="text-text line-clamp-2">{component.name}</span>
                     </div>
                   </div>
 
@@ -313,7 +316,9 @@ const BuildDetail = () => {
             </div>
           </div>
 
-          <BuildComments buildId={build.id} />
+          <BuildRating buildId={build.id} initialRating={build.reviews?.[0]?.rating} />
+
+          <BuildComments buildId={build.id} ownerId={build.user_id} />
         </div>
       </div>
 
