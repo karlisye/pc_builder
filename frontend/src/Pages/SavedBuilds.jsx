@@ -316,7 +316,7 @@ const SavedBuilds = () => {
                             setDeleting(selectedBuild.id);
                             setMenuOpen(false);
                           }}
-                          className="w-full px-4 py-2 text-left text-danger hover:bg-secondary-light transition cursor-pointer"
+                          className="w-full px-4 py-2 text-left text-danger hover:bg-danger/20 transition cursor-pointer"
                         >
                           {t('savedBuilds.delete')}
                         </button>
