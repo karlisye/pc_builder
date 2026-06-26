@@ -113,7 +113,7 @@ _Scrape History Page_
 
 The easiest way to run the full stack is with Docker Compose.
 
-Copy the backend environment file and fill in your values:
+Copy the backend environment file and fil in your values:
 
 ```bash
 cp backend/.env.example backend/.env
