@@ -2,11 +2,9 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\BuildCommentController;
 use App\Http\Controllers\BuildController;
 use App\Http\Controllers\BuilderController;
 use App\Http\Controllers\ComponentController;
-use App\Http\Controllers\SharedController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,17 +20,8 @@ Route::get('/components/{type}/{id}', [ComponentController::class, 'show']);
 Route::post('/builder/validate', [BuilderController::class, 'validate']);
 Route::get('/builder', [BuilderController::class, 'index']);
 
-// Shared builds are viewable by guests; liking/reviewing/saving stay auth-only below.
-Route::get('/shared', [SharedController::class, 'fetchBuilds']);
-Route::get('/shared/{build}', [SharedController::class, 'show']);
-Route::get('/shared/{build}/comments', [BuildCommentController::class, 'index']);
-
 Route::middleware('auth:sanctum')->group(function () {
   Route::get('/builds', [BuildController::class, 'index']);
-
-  Route::get('/profile', [UserController::class, 'index']);
-  Route::get('/profile/liked', [UserController::class, 'indexLiked']);
-  Route::get('/profile/{user}', [UserController::class, 'show']);
 
   Route::post('/builder', [BuilderController::class, 'generate']);
   Route::post('/builder/{type}', [BuilderController::class, 'generateComp']);
@@ -41,13 +30,6 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::get('/builds/{build}', [BuildController::class, 'show']);  // must stay after /builds in group
   Route::patch('/builds/{build}', [BuildController::class, 'update']);
   Route::delete('/builds/{build}', [BuildController::class, 'destroy']);
-  Route::patch('/builds/{build}/publish', [BuildController::class, 'publish']);
-
-  Route::post('/shared/{build}/like', [SharedController::class, 'like']);
-  Route::post('/shared/{build}/review', [SharedController::class, 'review']);
-  Route::post('/shared/{build}/comments', [BuildCommentController::class, 'store']);
-  Route::post('/comments/{comment}/like', [BuildCommentController::class, 'like']);
-  Route::delete('/comments/{comment}', [BuildCommentController::class, 'destroy']);
 
   Route::patch('/users/{user}', [UserController::class, 'update']);
   Route::delete('/users/{user}', [UserController::class, 'destroy']);

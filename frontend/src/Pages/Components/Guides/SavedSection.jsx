@@ -100,14 +100,6 @@ const SavedSection = () => {
         </p>
 
         <p className="text-text">{t("guides.savedSection.deleteStep2")}</p>
-
-        <h2 className="text-2xl font-semibold text-text">
-          {t("guides.savedSection.publishingHeading")}
-        </h2>
-
-        <p className="text-text">{t("guides.savedSection.publishStep1")}</p>
-
-        <p className="text-text">{t("guides.savedSection.publishStep2")}</p>
       </div>
     </div>
   );

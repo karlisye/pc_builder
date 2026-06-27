@@ -10,29 +10,11 @@ use Illuminate\Http\Request;
 
 class BuildController extends Controller
 {
-  public function publish(Request $request, Build $build): JsonResponse
-  {
-    if ($build->user_id !== $request->user()->id) {
-      return response()->json(['error' => __('messages.not_found')], 404);
-    }
-
-    $build->is_public = !$build->is_public;
-    $build->save();
-
-    return response()->json([
-      'success' => $build->is_public
-        ? __('messages.build_now_public')
-        : __('messages.build_now_private'),
-      'is_public' => $build->is_public,
-    ]);
-  }
-
   public function index(Request $request): JsonResponse
   {
     $builds = Build::query()
       ->where('user_id', $request->user()->id)
       ->orderByDesc('created_at')
-      ->withCount('likes')
       ->get();
 
     return response()->json($builds);
@@ -113,7 +95,7 @@ class BuildController extends Controller
       return response()->json(['error' => __('messages.not_found')], 404);
     }
 
-    return response()->json($build->loadComponents()->loadCount('likes')->loadAvg('reviews', 'rating'));
+    return response()->json($build->loadComponents());
   }
 
   public function update(Request $request, Build $build): JsonResponse

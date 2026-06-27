@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Build extends Model
 {
@@ -24,7 +23,6 @@ class Build extends Model
     'cooler_product_code',
     'psu_product_code',
     'fan_product_code',
-    'is_public'
   ];
 
   protected $casts = [
@@ -165,16 +163,6 @@ class Build extends Model
     return collect(self::componentSlots())
       ->filter(fn($idColumn) => !is_null($this->$idColumn))
       ->count();
-  }
-
-  public function likes(): HasMany
-  {
-    return $this->hasMany(BuildLike::class);
-  }
-
-  public function reviews(): HasMany
-  {
-    return $this->hasMany(BuildReview::class);
   }
 
   public static function totalComponentCount(): int

@@ -86,9 +86,6 @@ const Layout = () => {
                 <Link className={navLinkClass('/builds')} to="/builds">
                   {t('nav.saved')}
                 </Link>
-                <Link className={navLinkClass('/shared')} to="/shared">
-                  {t('nav.shared')}
-                </Link>
               </div>
 
               <button
@@ -104,7 +101,7 @@ const Layout = () => {
               <div
                 ref={menuRef}
                 className={`lg:hidden absolute left-0 top-14 w-screen bg-background overflow-hidden transition-all shadow z-50 ${
-                  menuActive ? 'h-36' : 'h-0'
+                  menuActive ? 'h-24' : 'h-0'
                 }`}
               >
                 <Link
@@ -120,13 +117,6 @@ const Layout = () => {
                   onClick={() => setMenuActive(false)}
                 >
                   {t('nav.saved')}
-                </Link>
-                <Link
-                  className={menuLinkClass('/shared')}
-                  to="/shared"
-                  onClick={() => setMenuActive(false)}
-                >
-                  {t('nav.shared')}
                 </Link>
               </div>
 
@@ -201,9 +191,6 @@ const Layout = () => {
                 <Link className={navLinkClass('/builder')} to="/builder">
                   {t('nav.build')}
                 </Link>
-                <Link className={navLinkClass('/shared')} to="/shared">
-                  {t('nav.shared')}
-                </Link>
               </div>
 
               <button
@@ -219,7 +206,7 @@ const Layout = () => {
               <div
                 ref={menuRef}
                 className={`lg:hidden absolute left-0 top-14 w-screen bg-background overflow-hidden transition-all shadow z-50 ${
-                  menuActive ? 'h-24' : 'h-0'
+                  menuActive ? 'h-12' : 'h-0'
                 }`}
               >
                 <Link
@@ -228,13 +215,6 @@ const Layout = () => {
                   onClick={() => setMenuActive(false)}
                 >
                   {t('nav.build')}
-                </Link>
-                <Link
-                  className={menuLinkClass('/shared')}
-                  to="/shared"
-                  onClick={() => setMenuActive(false)}
-                >
-                  {t('nav.shared')}
                 </Link>
               </div>
 
@@ -271,9 +251,6 @@ const Layout = () => {
               )}
               <Link to="/guide" className="hover:text-white transition">
                 {t('nav.guide')}
-              </Link>
-              <Link to="/shared" className="hover:text-white transition">
-                {t('nav.shared')}
               </Link>
             </div>
             <a

@@ -3,7 +3,6 @@
     "build": "Veidot",
     "saved": "Saglabātie",
     "guide": "Pamācība",
-    "shared": "Kopīgotie",
     "dashboard": "Panelis",
     "profile": "Profils",
     "signIn": "Pieslēgties",
@@ -20,11 +19,5 @@
     "test": "Testi",
     "exit": "Iziet",
     "footerTitle": "BUILDER ADMIN PANELIS"
-  },
-  "profile": {
-    "title": "PROFILS",
-    "overview": "Pārskats",
-    "account": "Konts",
-    "liked": "Patīk"
   }
 }

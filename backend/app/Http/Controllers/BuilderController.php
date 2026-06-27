@@ -37,9 +37,7 @@ class BuilderController extends Controller
           'fan' => $withListings,
         ]);
 
-      if ($request->boolean('shared')) {
-        $query->where('is_public', true);
-      } elseif ($request->user()) {
+      if ($request->user()) {
         $query->where('user_id', $request->user()->id);
       } else {
         return response()->json(['build' => null], 401);

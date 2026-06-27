@@ -211,7 +211,6 @@ class AdminController extends Controller
         'notes'       => $note,
         'type'        => $type,
         'total_price' => $result['total_price'],
-        'is_public'   => true,
         ...$componentFks,
       ]);
 

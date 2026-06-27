@@ -32,22 +32,6 @@ const Home = () => {
           </div>
         </div>
       </div>
-
-      <div className="bg-primary px-6 py-10 relative">
-        <div className="w-1/2 left-1/2 top-0 bg-white h-80 absolute pt-10 opacity-0 xl:opacity-100">
-          <div className="border-t-4 border-r-4 border-secondary-light max-w-174 h-full"></div>
-        </div>
-        <div className="max-w-348 mx-auto xl:h-150 border-4 border-secondary p-2 flex gap-8 lg:flex-row flex-col z-0">
-          <div>
-            <h1 className="sm:text-9xl text-7xl font-bold text-surface mb-4 flex flex-wrap">
-              {t('home.share.title')}
-            </h1>
-            <p className="text-xl text-surface">{t('home.share.description')}</p>
-          </div>
-
-          <div className="flex h-full"></div>
-        </div>
-      </div>
     </div>
   );
 };

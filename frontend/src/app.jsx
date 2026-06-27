@@ -9,23 +9,17 @@ import ToastContainer from "./Pages/Components/Common/ToastContainer";
 
 import Layout from "./Layouts/Layout";
 import AdminLayout from "./Layouts/AdminLayout";
-import ProfileLayout from "./Layouts/ProfileLayout";
 
 import Home from "./Pages/Home";
 import Guide from "./Pages/Guide";
 import Builder from "./Pages/Builder";
 import SavedBuilds from "./Pages/SavedBuilds";
-import Shared from "./Pages/Shared";
-import BuildDetail from "./Pages/BuildDetail";
 import NotFound from "./Pages/NotFound";
 
 import Login from "./Pages/Auth/Login";
 import Register from "./Pages/Auth/Register";
 
-import Profile from "./Pages/Profile";
 import AccountSettings from "./Pages/Components/Profile/AccountSettings";
-import LikedBuilds from "./Pages/Components/Profile/LikedBuilds";
-import PublicProfile from "./Pages/Components/Profile/PublicProfile";
 
 import AdminDashboard from "./Pages/Admin/Dashboard";
 import AdminScraper from "./Pages/Admin/Scraper";
@@ -73,18 +67,7 @@ const App = () => (
             {/* Auth-required */}
             <Route path="/builds" element={<AuthRoute><SavedBuilds /></AuthRoute>} />
 
-            {/* Shared builds are viewable by guests; liking/saving stay auth-gated inline */}
-            <Route path="/shared" element={<Shared />} />
-            <Route path="/shared/:buildId" element={<BuildDetail />} />
-
-            {/* Profile (nested layout) */}
-            <Route element={<AuthRoute><ProfileLayout /></AuthRoute>}>
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/profile/account" element={<AccountSettings />} />
-              <Route path="/profile/liked" element={<LikedBuilds />} />
-            </Route>
-
-            <Route path="/profile/:user" element={<PublicProfile />} />
+            <Route path="/profile" element={<AuthRoute><AccountSettings /></AuthRoute>} />
           </Route>
 
           {/* Admin */}

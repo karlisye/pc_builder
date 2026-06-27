@@ -1,30 +1,4 @@
 {
-  "overview": {
-    "activeSince": "Active since {{date}}",
-    "aboutMeHeading": "About Me",
-    "aboutMePlaceholder": "Add an About Me",
-    "save": "Save",
-    "saveSuccess": "About Me saved",
-    "saveError": "Failed to update About Me",
-    "publicBuildsHeading": "Public Builds",
-    "privateBuildsHeading": "Private Builds",
-    "publishConfirm": "Are you sure you want to {{action}} {{name}} build?",
-    "publishActionPrivate": "private",
-    "publishActionPublish": "publish",
-    "makePrivate": "Make Private",
-    "publish": "Publish",
-    "publishError": "Failed to update build visibility",
-    "cancel": "Cancel"
-  },
-  "buildsList": {
-    "noPublicBuilds": "No public builds yet.",
-    "noPrivateBuilds": "No private builds yet.",
-    "notes": "Notes",
-    "components": "Components",
-    "edit": "Edit",
-    "makePrivate": "Make Private",
-    "makePublic": "Make Public"
-  },
   "accountSettings": {
     "heading": "Account Settings",
     "personalInfoHeading": "Personal Information",
@@ -52,25 +26,5 @@
     "deleteConfirmIncorrect": "Delete confirmation is incorrect",
     "delete": "Delete",
     "cancelDelete": "Cancel"
-  },
-  "liked": {
-    "heading": "Liked Builds",
-    "empty": "No liked builds yet."
-  },
-  "publicProfile": {
-    "profileHeading": "{{name}}'s profile",
-    "totalLikes": "Total Likes",
-    "averageRating": "Average Rating",
-    "activeSince": "Active since {{date}}",
-    "aboutHeading": "About {{name}}",
-    "aboutEmpty": "{{name}}'s About Me is not set up yet...",
-    "noSharedBuilds": "{{name}} has no shared builds yet.",
-    "sharedBuildsHeading": "{{name}}'s shared builds",
-    "saveSuccess": "Build saved successfully",
-    "saveError": "Failed to save build",
-    "notes": "Notes",
-    "components": "Components",
-    "continue": "Continue",
-    "copyToSaved": "Copy to saved"
   }
 }

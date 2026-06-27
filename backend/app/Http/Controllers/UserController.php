@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Build;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -12,55 +11,6 @@ use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
-  public function show(Request $request, User $user): JsonResponse
-  {
-    $builds = Build::query()
-      ->where('user_id', $user->id)
-      ->withCount('likes')
-      ->withAvg('reviews', 'rating')
-      ->where('is_public', true)
-      ->paginate(4);
-
-    return response()->json([
-      'user' => $user,
-      'buildData' => $builds,
-      'totalLikes' => $user->totalLikes(),
-      'avgRating' => $user->averageRating(),
-    ]);
-  }
-
-  public function index(Request $request): JsonResponse
-  {
-    $user = $request->user();
-
-    $buildQuery = fn() => Build::query()
-      ->where('user_id', $user->id)
-      ->withCount('likes')
-      ->withAvg('reviews', 'rating');
-
-    return response()->json([
-      'user' => $user,
-      'privateBuildData' => $buildQuery()->where('is_public', false)->paginate(2, ['*'], 'privatePage'),
-      'publicBuildData' => $buildQuery()->where('is_public', true)->paginate(2, ['*'], 'publicPage'),
-    ]);
-  }
-
-  public function indexLiked(Request $request): JsonResponse
-  {
-    $user = $request->user();
-
-    $likedBuilds = Build::query()
-      ->whereHas('likes', fn($q) => $q->where('user_id', $user->id))
-      ->withExists(['likes as liked' => fn($q) => $q->where('user_id', $user->id)])
-      ->withCount('likes')
-      ->withAvg('reviews', 'rating')
-      ->with('user')
-      ->with(['reviews' => fn($q) => $q->where('user_id', $user->id)])
-      ->paginate(4);
-
-    return response()->json($likedBuilds);
-  }
-
   public function update(Request $request, User $user): JsonResponse
   {
     $validated = $request->validate([
