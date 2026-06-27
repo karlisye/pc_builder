@@ -10,6 +10,7 @@ use App\Services\BuilderService;
 use GuzzleHttp\Client;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -91,6 +92,9 @@ class AdminController extends Controller
           'skipped' => $result['skipped'],
         ]);
       }
+
+      // scraped data changed - cached component listings/filters are now stale
+      Cache::flush();
 
       return response()->json([
         'message' => 'Scrape session stored successfully',
