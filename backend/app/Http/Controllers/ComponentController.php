@@ -7,6 +7,7 @@ use App\Services\CompatibilityService;
 use App\Support\ComponentListingJoin;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class ComponentController extends Controller
 {
@@ -115,7 +116,11 @@ class ComponentController extends Controller
       'interface',
     ]);
 
-    $paginator = $this->compatibility->getCompatible($type, $selected, $filters);
+    $cacheKey = "components:{$type}:list:" . md5(json_encode([$selected, $filters, $request->query('page', 1)]));
+
+    $paginator = Cache::remember($cacheKey, now()->addMinutes(15), function () use ($type, $selected, $filters) {
+      return $this->compatibility->getCompatible($type, $selected, $filters);
+    });
 
     return response()->json($paginator);
   }
@@ -152,20 +157,24 @@ class ComponentController extends Controller
       ], 400);
     }
 
-    $modelClass = CompatibilityService::VALID_TYPES[$type];
-    $columns = self::FILTER_COLUMNS[$type] ?? [];
-    $result = [];
+    $result = Cache::remember("components:{$type}:filters", now()->addHours(6), function () use ($type) {
+      $modelClass = CompatibilityService::VALID_TYPES[$type];
+      $columns = self::FILTER_COLUMNS[$type] ?? [];
+      $result = [];
 
-    foreach ($columns as $column) {
-      $result[$column] = ComponentListingJoin::apply($modelClass::query())
-        ->whereNotNull($column)
-        ->whereIn('listing_agg.listing_stock_status', ['in_stock', 'orderable'])
-        ->whereNotNull('listing_agg.listing_price')
-        ->select($column)
-        ->distinct()
-        ->orderBy($column)
-        ->pluck($column);
-    }
+      foreach ($columns as $column) {
+        $result[$column] = ComponentListingJoin::apply($modelClass::query())
+          ->whereNotNull($column)
+          ->whereIn('listing_agg.listing_stock_status', ['in_stock', 'orderable'])
+          ->whereNotNull('listing_agg.listing_price')
+          ->select($column)
+          ->distinct()
+          ->orderBy($column)
+          ->pluck($column);
+      }
+
+      return $result;
+    });
 
     return response()->json($result);
   }
