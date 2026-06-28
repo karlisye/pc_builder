@@ -58,6 +58,38 @@ def _parse_modules_count(value: str) -> int | None:
     return int(match.group()) if match else None
 
 
+# .original isn't reliably English -- some listings never got translated and
+# the line stays in Polish, so the same field needs all of: the English key
+# ("Maximum internal memory"), its Polish equivalent ("pojemność pamięci"),
+# and as a last resort the Latvian .translated div ("atmiņas ietilpība")
+_MAX_MEMORY_PHRASES = (
+    "maximum internal memory",
+    "pojemność pamięci",
+    "atmiņas ietilpība",
+)
+
+
+def _max_memory_capacity_from_original(soup) -> int | None:
+    # the matching line can also appear in either key order ("Memory -
+    # Maximum internal memory - 64 GB" or "Maximum internal memory Memory -
+    # 64 GB" depending on the product) -- match on line content instead of
+    # a fixed key so both orderings are picked up
+    for selector in ("div.specs div.original", "div.specs div.translated"):
+        div = soup.select_one(selector)
+        if not div:
+            continue
+        for br in div.find_all("br"):
+            br.replace_with("\n")
+        for line in div.get_text().split("\n"):
+            line = line.strip()
+            line_lower = line.lower()
+            if any(phrase in line_lower for phrase in _MAX_MEMORY_PHRASES):
+                match = re.search(r"(\d+)\s*GB\s*$", line, re.IGNORECASE)
+                if match:
+                    return int(match.group(1))
+    return None
+
+
 def parse(html, product_code, url, scraped_at):
     soup = BeautifulSoup(html, "html.parser")
     specs = extract_specs(soup)
@@ -117,9 +149,7 @@ def parse(html, product_code, url, scraped_at):
         ports_section.get("SATA 3 Porti") or specs.get("SATA3 ports")
     )
 
-    max_memory_capacity = to_int(
-        original.get("Memory - Maximum internal memory")
-    )
+    max_memory_capacity = _max_memory_capacity_from_original(soup)
 
     return {
         "product_code": product_code,
