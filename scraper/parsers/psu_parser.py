@@ -42,19 +42,16 @@ def _parse_pcie_5(value: str) -> bool | None:
     return True
 
 
-def _parse_connector_count(value: str) -> int | None:
-    if not value:
-        return None
-    match = re.match(r"(\d+)\s*[xX]", value.strip())
-    return int(match.group(1)) if match else None
-
-
-def _parse_eps_connectors(specs: dict) -> int | None:
-    return _parse_connector_count(specs.get("Processor plug-in"))
-
-
 def _parse_sata_connectors(specs: dict) -> int | None:
     return to_int(specs.get("SATA cconnectors") or specs.get("SATA connectors"))
+
+
+def _none_if_not_specified(value: str) -> str | None:
+    if not value:
+        return None
+    if value.strip().lower() in ("nav", "nav norādīts", ""):
+        return None
+    return value
 
 
 def parse(html, product_code, url, scraped_at):
@@ -80,8 +77,7 @@ def parse(html, product_code, url, scraped_at):
         "psu_type": specs.get("Barošanas bloka tips") or specs.get("Power supply type"),
         "modular": _parse_modular(specs.get("Modulārie kabeļi") or specs.get("Modular cables")),
         "fan_size_mm": to_int(specs.get("Ventilatora izmērs") or specs.get("Fan size")),
-        "pcie_connectors": specs.get("PCI-E"),
-        "eps_connectors": _parse_eps_connectors(specs),
+        "pcie_connectors": _none_if_not_specified(specs.get("PCI-E")),
         "sata_connectors": to_int(specs.get("SATA spraudņi")) or _parse_sata_connectors(specs),
         "amps_12v": to_float(specs.get("Kopējais strāvas stiprums (+12V)")),
         "pcie_5": _parse_pcie_5(specs.get("PCI-E 5.0/5.1")),

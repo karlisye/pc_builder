@@ -24,12 +24,9 @@ class Psu extends Model
     'modular',
     'fan_size_mm',
     'pcie_connectors',
-    'eps_connectors',
     'sata_connectors',
     'scraped_at',
   ];
 
-  protected $casts = [
-    'modular' => 'boolean',
-  ];
+  protected $casts = [];
 }
