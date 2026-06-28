@@ -1,3 +1,4 @@
+import re
 from bs4 import BeautifulSoup
 from database import upsert_row
 from parsers.helpers import (
@@ -11,6 +12,25 @@ from parsers.helpers import (
 )
 
 TABLE = "fans"
+
+
+def _noise_max_db_from_original(soup) -> float | None:
+    # fallback for products where #params never got either spelling of the
+    # "Trošņa/Trokšņa līmenis (MAX), dB(A)" key -- match on line content so
+    # it doesn't matter whether the line is "Section - Key - Value" or
+    # "Key Section - Value"
+    div = soup.select_one("div.specs div.original")
+    if not div:
+        return None
+    for br in div.find_all("br"):
+        br.replace_with("\n")
+    for line in div.get_text().split("\n"):
+        line = line.strip()
+        if "noise level (max)" in line.lower():
+            match = re.search(r"([\d.]+)\s*dB", line, re.IGNORECASE)
+            if match:
+                return float(match.group(1))
+    return None
 
 
 def parse(html, product_code, url, scraped_at):
@@ -30,6 +50,13 @@ def parse(html, product_code, url, scraped_at):
         or original.get("Performance - Fan speed (min)")
     )
 
+    noise_max_db = to_float(
+        specs.get("Trošņa līmenis (MAX), dB(A)")
+        or specs.get("Trokšņa līmenis (MAX), dB(A)")
+    )
+    if noise_max_db is None:
+        noise_max_db = _noise_max_db_from_original(soup)
+
     return {
         "product_code": product_code,
         "name": name,
@@ -43,7 +70,7 @@ def parse(html, product_code, url, scraped_at):
         "units_in_package": to_int(specs.get("Skaits iepakojumā") or specs.get("Units in package")),
         "rgb_type": specs.get("Apgaismojuma veids"),
         "led_color": specs.get("LED izgaismojuma krāsa"),
-        "noise_max_db": to_float(specs.get("Trošņa līmenis (MAX), dB(A)")),
+        "noise_max_db": noise_max_db,
         "scraped_at": scraped_at,
     }
 
