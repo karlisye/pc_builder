@@ -1,9 +1,10 @@
 import importlib
 import time
 import sys
-from config import CATEGORIES, PAGE_DELAY, MAX_ERRORS_PER_CATEGORY, SOURCE
+from config import CATEGORIES, PAGE_DELAY, DETAIL_PAGE_DELAY, MAX_ERRORS_PER_CATEGORY, SOURCE
 from database import (
     get_connection,
+    get_existing_ean,
     mark_missing_listings_out_of_stock,
     update_listing_price_stock,
     upsert_listing,
@@ -132,6 +133,16 @@ def main():
                         print(f"  [SKIP-NEW] {url} (not in db yet, run a full scrape first)")
                         skipped.append((url, "not in db yet"))
                 else:
+                    # dateks is the source of truth for EAN: once a product has one stored,
+                    # never re-scrape its detail page again, just keep price/stock current
+                    existing_ean = get_existing_ean(conn, table, product_code)
+                    if existing_ean:
+                        print(f"  [SKIP-HAS-EAN] {url}")
+                        upsert_listing(
+                            conn, table, product_code, SOURCE, url, price, stock_status, stock_quantity, scraped_at
+                        )
+                        continue
+
                     # load the html from detail page of each product
                     html = scrape_detail_page(url)
                     # use the specific parser to get specs for the product table
@@ -142,6 +153,9 @@ def main():
                         upsert_listing(
                             conn, table, product_code, SOURCE, url, price, stock_status, stock_quantity, scraped_at
                         )
+                    # only sleep the longer detail-page delay when a detail page was actually fetched
+                    time.sleep(DETAIL_PAGE_DELAY)
+                    continue
             except Exception as e:
                 if hasattr(e, "errno") and e.errno == 1062:
                     print(f"  [DUP] {url}")
