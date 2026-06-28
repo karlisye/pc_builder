@@ -7,10 +7,6 @@
     "auto": {
       "title": "MAKE THE BUILDING EASY",
       "description": "Automatically complete your build at any stage using our smart auto-builder."
-    },
-    "share": {
-      "title": "SHARE YOUR BUILDS",
-      "description": "Browse community builds, get inspired, and share your own."
     }
   },
   "guide": {
@@ -93,46 +89,8 @@
       "continueStep1": "1. Click the <continueBuild>Continue Build</continueBuild> button to resume editing your build from where you left off. You will be redirected to the build page with your current configuration.",
       "deletingHeading": "Deleting a Build",
       "deleteStep1": "1. Click the <deleteBuild>Delete Build</deleteBuild> button (or the delete option in the build info panel) to remove the selected build.",
-      "deleteStep2": "2. A confirmation popup will appear. Confirm to permanently delete the build.",
-      "publishingHeading": "Publishing your build",
-      "publishStep1": "1. Press on the button under components to publish your build. A popup window will show up to confirm changing builds visibility.",
-      "publishStep2": "2. Once the build is public, you can see it in the Shared section and you can private it by following the first step again on the same build."
+      "deleteStep2": "2. A confirmation popup will appear. Confirm to permanently delete the build."
     }
-  },
-  "shared": {
-    "sidePanelTitle": "SHARED BUILDS",
-    "fetchError": "Failed to fetch builds",
-    "noBuildsFound": "No Builds Found",
-    "tryAdjustingFilters": "Try adjusting your filters"
-  },
-  "buildDetail": {
-    "sidePanelTitle": "ACTIONS",
-    "notFoundError": "Build not found"
-  },
-  "buildRating": {
-    "title": "Rate this build",
-    "yourRating": "Your rating: {{rating}}/5",
-    "loginToRate": "Sign in to rate this build.",
-    "loginLink": "Log in",
-    "error": "Failed to submit rating"
-  },
-  "buildComments": {
-    "title": "Comments",
-    "placeholder": "Write a comment...",
-    "submit": "Post",
-    "replyPlaceholder": "Write a reply...",
-    "reply": "Reply",
-    "replyingTo": "Replying to @{{name}}",
-    "cancel": "Cancel",
-    "loginToComment": "Sign in to leave a comment.",
-    "loginLink": "Log in",
-    "empty": "No comments yet.",
-    "postError": "Failed to post comment",
-    "likeError": "Failed to like comment",
-    "deleteError": "Failed to delete comment",
-    "deleteConfirmTitle": "Are you sure you want to delete this comment?",
-    "delete": "Delete",
-    "owner": "Owner"
   },
   "savedBuilds": {
     "sidePanelTitle": "SAVED BUILDS",
@@ -168,87 +126,10 @@
   },
   "components": {
     "buildCard": {
-      "saveSuccess": "Build saved successfully",
-      "saveError": "Failed to save build",
-      "likeError": "Failed to like",
-      "likeLoginRequired": "You must log in to like a build",
-      "compatibilityIssues": "Compatibility Issues",
-      "buildIncompatible": "Some components are incompatible",
-      "notes": "Notes",
-      "none": "None",
-      "likeTitle": "Like this post",
-      "ratingTitle": "Average rating",
-      "continue": "Continue",
-      "copyToSaved": "Copy",
-      "componentsLabel": "Components"
-    },
-    "buildFilters": {
-      "searchPlaceholder": "Search by build or author...",
-      "sort": {
-        "dateNewest": "Date: Newest",
-        "dateOldest": "Date: Oldest",
-        "priceLowHigh": "Price: Low to High",
-        "priceHighLow": "Price: High to Low",
-        "likesLowHigh": "Likes: Low to High",
-        "likesHighLow": "Likes: High to Low",
-        "ratingLowHigh": "Rating: Low to High",
-        "ratingHighLow": "Rating: High to Low"
-      },
-      "minPricePlaceholder": "Min price (€)",
-      "maxPricePlaceholder": "Max price (€)",
-      "rating": {
-        "any": "Min rating: Any",
-        "star1": "Min rating: 1 star",
-        "star2": "Min rating: 2 stars",
-        "star3": "Min rating: 3 stars",
-        "star4": "Min rating: 4 stars",
-        "star5": "Min rating: 5 stars"
-      },
-      "type": {
-        "all": "Type: All",
-        "gaming": "Type: Gaming",
-        "office": "Type: Office",
-        "rendering": "Type: Rendering",
-        "streaming": "Type: Streaming"
-      },
-      "gpu": {
-        "any": "GPU: Any",
-        "nvidia": "GPU: NVIDIA",
-        "amd": "GPU: AMD",
-        "intel": "GPU: INTEL"
-      },
-      "cpu": {
-        "any": "CPU: Any",
-        "amd": "CPU: AMD",
-        "intel": "CPU: INTEL"
-      },
-      "show": {
-        "label": "Show",
-        "all": "All",
-        "liked": "Liked",
-        "personal": "Personal"
-      },
-      "clearFilters": "Clear Filters"
+      "compatibilityIssues": "Compatibility Issues"
     },
     "sidePanel": {
       "brand": "PC BUILDER"
-    },
-    "saved": {
-      "buildVisibility": {
-        "publicStatus": "Your build is currently",
-        "publicLabel": "public",
-        "privateStatusPrefix": "Your build is currently",
-        "privateLabel": "not published",
-        "privateStatusSuffix": "and can't be accessed by other people",
-        "makePrivate": "Make my build private",
-        "publish": "Publish my build",
-        "confirmTitle": "Are you sure you want to {{action}} {{name}} build?",
-        "actionPrivate": "private",
-        "actionPublish": "publish",
-        "makePrivateButton": "Make Private",
-        "publishButton": "Publish",
-        "cancel": "Cancel"
-      }
     }
   }
 }

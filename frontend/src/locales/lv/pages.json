@@ -7,10 +7,6 @@
     "auto": {
       "title": "BŪVĒ VIEGLI UN ĀTRI",
       "description": "Automātiski pabeidz savu konfigurāciju jebkurā posmā, izmantojot mūsu inteliģento automātisko konstruktoru."
-    },
-    "share": {
-      "title": "DALIES AR SAVĀM KONFIGURĀCIJĀM",
-      "description": "Apskati kopienas izveidotās konfigurācijas, smelies iedvesmu un dalies ar savām."
     }
   },
   "guide": {
@@ -93,46 +89,8 @@
       "continueStep1": "1. Nospied pogu <continueBuild>Turpināt konfigurāciju</continueBuild>, lai turpinātu konfigurācijas veidošanu no vietas, kur to pārtrauci. Tu tiksi pārvirzīts uz konstruktora lapu ar savu pašreizējo konfigurāciju.",
       "deletingHeading": "Konfigurācijas dzēšana",
       "deleteStep1": "1. Nospied pogu <deleteBuild>Dzēst konfigurāciju</deleteBuild> (vai dzēšanas opciju konfigurācijas informācijas panelī), lai noņemtu izvēlēto konfigurāciju.",
-      "deleteStep2": "2. Parādīsies apstiprinājuma logs. Apstiprini, lai neatgriezeniski dzēstu konfigurāciju.",
-      "publishingHeading": "Konfigurācijas publicēšana",
-      "publishStep1": "1. Nospied pogu pie komponentēm, lai publicētu savu konfigurāciju. Parādīsies uznirstošais logs, lai apstiprinātu konfigurācijas redzamības izmaiņas.",
-      "publishStep2": "2. Kad konfigurācija ir publiska, to var apskatīt sadaļā \"Kopīgotie\", un to var atkal padarīt privātu, atkārtojot pirmo soli tai pašai konfigurācijai."
+      "deleteStep2": "2. Parādīsies apstiprinājuma logs. Apstiprini, lai neatgriezeniski dzēstu konfigurāciju."
     }
-  },
-  "shared": {
-    "sidePanelTitle": "DALĪTĀS KONFIGURĀCIJAS",
-    "fetchError": "Neizdevās ielādēt konfigurācijas",
-    "noBuildsFound": "Konfigurācijas nav atrastas",
-    "tryAdjustingFilters": "Pamēģini pielāgot filtrus"
-  },
-  "buildDetail": {
-    "sidePanelTitle": "DARBĪBAS",
-    "notFoundError": "Konfigurācija nav atrasta"
-  },
-  "buildRating": {
-    "title": "Novērtē šo konfigurāciju",
-    "yourRating": "Tavs vērtējums: {{rating}}/5",
-    "loginToRate": "Pieslēdzies, lai novērtētu šo konfigurāciju.",
-    "loginLink": "Pieslēgties",
-    "error": "Neizdevās iesniegt vērtējumu"
-  },
-  "buildComments": {
-    "title": "Komentāri",
-    "placeholder": "Raksti komentāru...",
-    "submit": "Publicēt",
-    "replyPlaceholder": "Raksti atbildi...",
-    "reply": "Atbildēt",
-    "replyingTo": "Atbild lietotājam @{{name}}",
-    "cancel": "Atcelt",
-    "loginToComment": "Pieslēdzies, lai atstātu komentāru.",
-    "loginLink": "Pieslēgties",
-    "empty": "Vēl nav komentāru.",
-    "postError": "Neizdevās publicēt komentāru",
-    "likeError": "Neizdevās atzīmēt komentāru",
-    "deleteError": "Neizdevās dzēst komentāru",
-    "deleteConfirmTitle": "Vai tiešām vēlies dzēst šo komentāru?",
-    "delete": "Dzēst",
-    "owner": "Īpašnieks"
   },
   "savedBuilds": {
     "sidePanelTitle": "SAGLABĀTĀS KONFIGURĀCIJAS",
@@ -168,87 +126,10 @@
   },
   "components": {
     "buildCard": {
-      "saveSuccess": "Konfigurācija veiksmīgi saglabāta",
-      "saveError": "Neizdevās saglabāt konfigurāciju",
-      "likeError": "Neizdevās atzīmēt \"patīk\"",
-      "likeLoginRequired": "Lai atzīmētu \"patīk\" konfigurācijai, jāpieslēdzas",
-      "compatibilityIssues": "Saderības problēmas",
-      "buildIncompatible": "Dažas komponentes nav saderīgas",
-      "notes": "Piezīmes",
-      "none": "Nav",
-      "likeTitle": "Atzīmēt \"patīk\" šai publikācijai",
-      "ratingTitle": "Vidējais vērtējums",
-      "continue": "Turpināt",
-      "copyToSaved": "Kopēt",
-      "componentsLabel": "Komponentes"
-    },
-    "buildFilters": {
-      "searchPlaceholder": "Meklēt...",
-      "sort": {
-        "dateNewest": "Datums: Jaunākie",
-        "dateOldest": "Datums: Vecākie",
-        "priceLowHigh": "Cena: No mazākās",
-        "priceHighLow": "Cena: No lielākās",
-        "likesLowHigh": "Patīk: No mazākā",
-        "likesHighLow": "Patīk: No lielākā",
-        "ratingLowHigh": "Vērtējums: No mazākā",
-        "ratingHighLow": "Vērtējums: No lielākā"
-      },
-      "minPricePlaceholder": "Min. cena (€)",
-      "maxPricePlaceholder": "Maks. cena (€)",
-      "rating": {
-        "any": "Min. vērtējums: Jebkurš",
-        "star1": "Min. vērtējums: 1 zvaigzne",
-        "star2": "Min. vērtējums: 2 zvaigznes",
-        "star3": "Min. vērtējums: 3 zvaigznes",
-        "star4": "Min. vērtējums: 4 zvaigznes",
-        "star5": "Min. vērtējums: 5 zvaigznes"
-      },
-      "type": {
-        "all": "Tips: Visi",
-        "gaming": "Tips: Spēlēm",
-        "office": "Tips: Birojam",
-        "rendering": "Tips: Renderēšanai",
-        "streaming": "Tips: Straumēšanai"
-      },
-      "gpu": {
-        "any": "GPU: Jebkurš",
-        "nvidia": "GPU: NVIDIA",
-        "amd": "GPU: AMD",
-        "intel": "GPU: INTEL"
-      },
-      "cpu": {
-        "any": "CPU: Jebkurš",
-        "amd": "CPU: AMD",
-        "intel": "CPU: INTEL"
-      },
-      "show": {
-        "label": "Rādīt",
-        "all": "Visi",
-        "liked": "Patīk",
-        "personal": "Personīgās"
-      },
-      "clearFilters": "Notīrīt filtrus"
+      "compatibilityIssues": "Saderības problēmas"
     },
     "sidePanel": {
       "brand": "PC BUILDER"
-    },
-    "saved": {
-      "buildVisibility": {
-        "publicStatus": "Tava konfigurācija šobrīd ir",
-        "publicLabel": "publiska",
-        "privateStatusPrefix": "Tava konfigurācija šobrīd ir",
-        "privateLabel": "nepublicēta",
-        "privateStatusSuffix": "un citi lietotāji tai nevar piekļūt",
-        "makePrivate": "Padarīt manu konfigurāciju privātu",
-        "publish": "Publicēt manu konfigurāciju",
-        "confirmTitle": "Vai tiešām vēlies {{action}} konfigurāciju {{name}}?",
-        "actionPrivate": "padarīt privātu",
-        "actionPublish": "publicēt",
-        "makePrivateButton": "Padarīt privātu",
-        "publishButton": "Publicēt",
-        "cancel": "Atcelt"
-      }
     }
   }
 }

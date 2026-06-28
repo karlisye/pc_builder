@@ -50,7 +50,6 @@ const SavedBuilds = () => {
   const [buildIssues, setBuildIssues] = useState({});
   const [issuesPopup, setIssuesPopup] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [publishing, setPublishing] = useState(false);
   const menuRef = useRef(null);
   const menuButtonRef = useRef(null);
 
@@ -153,18 +152,6 @@ const SavedBuilds = () => {
       refreshBuilds();
     } catch (err) {
       console.error(err);
-    }
-  };
-
-  const handlePublish = async () => {
-    try {
-      const res = await axios.patch(`/api/builds/${selectedBuild.id}/publish`);
-      setSelectedBuild((prev) => ({ ...prev, is_public: res.data.is_public }));
-      addToast(res.data.success, { type: 'success' });
-    } catch (err) {
-      addToast(err.response?.data?.error ?? err.message, { type: 'danger' });
-    } finally {
-      setPublishing(false);
     }
   };
 
@@ -302,17 +289,6 @@ const SavedBuilds = () => {
                         </button>
                         <button
                           onClick={() => {
-                            setPublishing(true);
-                            setMenuOpen(false);
-                          }}
-                          className="w-full px-4 py-2 text-left text-text hover:bg-secondary-light transition cursor-pointer"
-                        >
-                          {selectedBuild.is_public
-                            ? t('components.saved.buildVisibility.makePrivate')
-                            : t('components.saved.buildVisibility.publish')}
-                        </button>
-                        <button
-                          onClick={() => {
                             setDeleting(selectedBuild.id);
                             setMenuOpen(false);
                           }}
@@ -428,36 +404,6 @@ const SavedBuilds = () => {
               onClick={() => setDeleting(null)}
             >
               {t('savedBuilds.cancel')}
-            </button>
-          </div>
-        </Modal>
-      )}
-
-      {publishing && (
-        <Modal close={() => setPublishing(false)}>
-          <h1 className="text-text text-3xl mb-10 m-4 max-w-120">
-            {t('components.saved.buildVisibility.confirmTitle', {
-              action: selectedBuild.is_public
-                ? t('components.saved.buildVisibility.actionPrivate')
-                : t('components.saved.buildVisibility.actionPublish'),
-              name: selectedBuild.name,
-            })}
-          </h1>
-
-          <div className="flex gap-4 m-4">
-            <button
-              className="flex-1 p-4 bg-primary text-background cursor-pointer hover:bg-primary-light transition"
-              onClick={handlePublish}
-            >
-              {selectedBuild.is_public
-                ? t('components.saved.buildVisibility.makePrivateButton')
-                : t('components.saved.buildVisibility.publishButton')}
-            </button>
-            <button
-              className="flex-1 p-4 bg-surface text-text cursor-pointer hover:bg-secondary-light transition"
-              onClick={() => setPublishing(false)}
-            >
-              {t('components.saved.buildVisibility.cancel')}
             </button>
           </div>
         </Modal>

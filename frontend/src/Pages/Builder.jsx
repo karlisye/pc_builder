@@ -48,7 +48,6 @@ const Builder = () => {
 
   useEffect(() => {
     const buildParam = searchParams.get('build');
-    const sharedParam = searchParams.get('shared');
 
     if (!buildParam) {
       const draft = loadDraft();
@@ -75,7 +74,7 @@ const Builder = () => {
     }
 
     axios
-      .get('/api/builder', { params: { build: buildParam, shared: sharedParam } })
+      .get('/api/builder', { params: { build: buildParam } })
       .then((res) => {
         const build = res.data.build;
         if (!build) {

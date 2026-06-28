@@ -3,7 +3,6 @@
     "build": "Build",
     "saved": "Saved",
     "guide": "Guide",
-    "shared": "Shared",
     "dashboard": "Dashboard",
     "profile": "Profile",
     "signIn": "Sign In",
@@ -20,11 +19,5 @@
     "test": "Test",
     "exit": "Exit",
     "footerTitle": "BUILDER ADMIN DASHBOARD"
-  },
-  "profile": {
-    "title": "PROFILE",
-    "overview": "Overview",
-    "account": "Account",
-    "liked": "Liked"
   }
 }

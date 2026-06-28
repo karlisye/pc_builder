@@ -1,30 +1,4 @@
 {
-  "overview": {
-    "activeSince": "Aktīvs kopš {{date}}",
-    "aboutMeHeading": "Par mani",
-    "aboutMePlaceholder": "Pievienojiet aprakstu par sevi",
-    "save": "Saglabāt",
-    "saveSuccess": "Apraksts saglabāts",
-    "saveError": "Neizdevās atjaunināt aprakstu",
-    "publicBuildsHeading": "Publiskās konfigurācijas",
-    "privateBuildsHeading": "Privātās konfigurācijas",
-    "publishConfirm": "Vai tiešām vēlaties {{action}} konfigurāciju {{name}}?",
-    "publishActionPrivate": "padarīt privātu",
-    "publishActionPublish": "publicēt",
-    "makePrivate": "Padarīt privātu",
-    "publish": "Publicēt",
-    "publishError": "Neizdevās atjaunot konfigurācijas redzamību",
-    "cancel": "Atcelt"
-  },
-  "buildsList": {
-    "noPublicBuilds": "Vēl nav publisku konfigurāciju.",
-    "noPrivateBuilds": "Vēl nav privātu konfigurāciju.",
-    "notes": "Piezīmes",
-    "components": "Komponentes",
-    "edit": "Labot",
-    "makePrivate": "Padarīt privātu",
-    "makePublic": "Padarīt publisku"
-  },
   "accountSettings": {
     "heading": "Konta iestatījumi",
     "personalInfoHeading": "Personas informācija",
@@ -52,25 +26,5 @@
     "deleteConfirmIncorrect": "Apstiprinājuma teksts nav pareizs",
     "delete": "Dzēst",
     "cancelDelete": "Atcelt"
-  },
-  "liked": {
-    "heading": "Patīk konfigurācijas",
-    "empty": "Vēl nav patikušu konfigurāciju."
-  },
-  "publicProfile": {
-    "profileHeading": "{{name}} profils",
-    "totalLikes": "Patīk atzīmes",
-    "averageRating": "Vidējais vērtējums",
-    "activeSince": "Aktīvs kopš {{date}}",
-    "aboutHeading": "Par {{name}}",
-    "aboutEmpty": "{{name}} aprakstu vēl nav pievienojis...",
-    "noSharedBuilds": "{{name}} vēl nav koplietotu konfigurāciju.",
-    "sharedBuildsHeading": "{{name}} koplietotās konfigurācijas",
-    "saveSuccess": "Konfigurācija veiksmīgi saglabāta",
-    "saveError": "Neizdevās saglabāt konfigurāciju",
-    "notes": "Piezīmes",
-    "components": "Komponentes",
-    "continue": "Turpināt",
-    "copyToSaved": "Kopēt uz saglabātajām"
   }
 }
