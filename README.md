@@ -15,29 +15,23 @@ PC Builder is a full-stack web app for creating and saving compatible custom PC 
 
 ## Screenshots
 
-![Home](screenshots/home.png)
-_Home Screen_
-
-![Builder](screenshots/builder_page.png)
+![Builder](screenshots/build.png)
 _Builder Page_
 
-![Builder](screenshots/component_select.png)
+![Builder](screenshots/add_comp.png)
 _Component Selection_
 
 ![Builder](screenshots/incompatible.png)
 _Incompatible Component Selection_
 
-![Builder](screenshots/auto_builder_section.png)
+![Builder](screenshots/auto_build.png)
 _Automatic Builder Section_
 
-![Saved](screenshots/saved_page.png)
+![Saved](screenshots/saved.png)
 _Saved Page_
 
-![Admin](screenshots/scraper_page.png)
-_Scraper Page_
-
-![Admin](screenshots/history_page.png)
-_Scrape History Page_
+![Admin](screenshots/avail.png)
+_Component Availability_
 
 ## Tech Stack
 
