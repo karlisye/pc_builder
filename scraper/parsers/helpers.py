@@ -108,7 +108,7 @@ def extract_original(soup) -> dict:
 
 # pull the EAN code out of the .original dict, trying known key variants in order
 def get_ean(original: dict) -> str | None:
-    for key in ("EAN_code", "EANCode", "Eans", "EAN", "ean"):
+    for key in ("EAN_code", "EANCode", "Eans", "EAN", "ean", "EAN kods"):
         value = original.get(key)
         if value:
             stripped = value.strip().lstrip("0")

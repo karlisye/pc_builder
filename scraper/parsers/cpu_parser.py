@@ -32,6 +32,35 @@ def _parse_integrated_graphics(value: str) -> bool | None:
     return True if value.strip() else None
 
 
+def _memory_types_from_original(soup) -> str | None:
+    # "Memory - Memory types supported by processor" can repeat (one line per
+    # supported type, e.g. DDR4-SDRAM and DDR5-SDRAM); extract_original's
+    # first-occurrence dict would only keep one, so re-scan the raw lines here
+    div = soup.select_one("div.specs div.original")
+    if not div:
+        return None
+    for br in div.find_all("br"):
+        br.replace_with("\n")
+    types = []
+    for line in div.get_text().split("\n"):
+        line = line.strip()
+        if not line or " - " not in line:
+            continue
+        key, _, value = line.rpartition(" - ")
+        if key.strip() == "Memory - Memory types supported by processor":
+            value = value.strip().removesuffix("-SDRAM")
+            if value and value not in types:
+                types.append(value)
+    return "/".join(types) if types else None
+
+
+def _parse_memory_type(soup, original: dict) -> str | None:
+    direct = original.get("Memory Types")
+    if direct:
+        return direct
+    return _memory_types_from_original(soup)
+
+
 def parse(html, product_code, url, scraped_at):
     soup = BeautifulSoup(html, "html.parser")
     specs = extract_specs(soup)
@@ -66,7 +95,6 @@ def parse(html, product_code, url, scraped_at):
         "ean": ean,
         "brand": brand,
         "image_url": image_url,
-        "type": "intel" if "procesori-intel" in url else "amd",
         "socket": _normalise_socket(specs.get("Socket") or specs.get("Procesora ligzda")),
         "cores": total_cores,
         "threads": to_int(specs.get("Threads")),
@@ -78,7 +106,7 @@ def parse(html, product_code, url, scraped_at):
         ),
         "cooler_included": cooler_included,
         "passmark": passmark,
-        "memory_type": original.get("Memory Types"),
+        "memory_type": _parse_memory_type(soup, original),
         "pcie_version": to_float(
             original.get("Features - PCI Express slots version")
         ),
