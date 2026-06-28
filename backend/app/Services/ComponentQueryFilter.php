@@ -171,8 +171,8 @@ class ComponentQueryFilter
     if (! empty($f['efficiency_rating']))
       $query->where('efficiency_rating', $f['efficiency_rating']);
 
-    if (isset($f['modular']) && $f['modular'] !== '')
-      $query->where('modular', filter_var($f['modular'], FILTER_VALIDATE_BOOLEAN));
+    if (! empty($f['modular']))
+      $query->where('modular', $f['modular']);
 
     if (! empty($f['psu_type']))
       $query->where('psu_type', $f['psu_type']);

@@ -34,5 +34,7 @@ class Psu extends Model
     'scraped_at',
   ];
 
-  protected $casts = [];
+  protected $casts = [
+    'pcie_5' => 'boolean',
+  ];
 }

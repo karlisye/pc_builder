@@ -34,5 +34,7 @@ class PcCase extends Model
     'scraped_at',
   ];
 
-  protected $casts = [];
+  protected $casts = [
+    'psu_included' => 'boolean',
+  ];
 }
