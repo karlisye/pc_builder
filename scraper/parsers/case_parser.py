@@ -38,26 +38,23 @@ def _parse_fans_included(value: str) -> int | None:
     return to_int(value)
 
 
-def _extract_radiator_support(soup) -> str | None:
-    # scan the raw .original lines directly (not the deduped extract_original dict)
-    # because this key can repeat with different values that should all be collected
+def _max_psu_length_mm(soup) -> int | None:
+    # the "Maximum PSU length" line can use a literal " > " section
+    # separator instead of " - " (e.g. "Design > Maximum PSU length - 16.5
+    # cm"), which breaks an exact "Section - Key" lookup -- match on line
+    # content instead, and use to_float since values can be fractional cm
     div = soup.select_one("div.specs div.original")
     if not div:
         return None
     for br in div.find_all("br"):
         br.replace_with("\n")
-    values = set()
     for line in div.get_text().split("\n"):
         line = line.strip()
-        if not line or " - " not in line:
-            continue
-        key, _, value = line.rpartition(" - ")
-        if key.strip() == "Cooling - Front fans diameters supported":
-            for num in re.findall(r"\d+", value):
-                values.add(int(num))
-    if not values:
-        return None
-    return ",".join(str(v) for v in sorted(values))
+        if "maximum psu length" in line.lower():
+            match = re.search(r"([\d.]+)\s*cm", line, re.IGNORECASE)
+            if match:
+                return int(float(match.group(1)) * 10)
+    return None
 
 
 def parse(html, product_code, url, scraped_at):
@@ -72,8 +69,7 @@ def parse(html, product_code, url, scraped_at):
     image_url = image[0] if isinstance(image, list) else image
     name = extract_name(soup) or jsonld.get("name")
 
-    max_psu_length_cm = to_int(original.get("Design - Maximum PSU length"))
-    max_psu_length = max_psu_length_cm * 10 if max_psu_length_cm is not None else None
+    max_psu_length = _max_psu_length_mm(soup)
 
     return {
         "product_code": product_code,
@@ -93,7 +89,7 @@ def parse(html, product_code, url, scraped_at):
         "psu_wattage": _parse_psu_wattage(specs.get("Barošanas bloks") or specs.get("PSU")),
         "psu_included": _parse_psu_included(specs.get("Barošanas bloks") or specs.get("PSU")),
         "fans_included": _parse_fans_included(specs.get("Ventilatoru skaits")),
-        "radiator_support": _extract_radiator_support(soup),
+        "max_radiator_size": to_int(specs.get("Maks. radiatora izmērs, mm")),
         "max_psu_length": max_psu_length,
         "scraped_at": scraped_at,
     }
