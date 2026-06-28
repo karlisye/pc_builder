@@ -53,7 +53,7 @@ class BuilderController extends Controller
   {
     $validated = $request->validate([
       'selected' => ['sometimes', 'array'],
-      'selected.*' => ['integer', 'min:1'],
+      'selected.*' => ['string', 'min:1'],
       'budget' => ['sometimes', 'nullable', 'numeric', 'min:1'],
       'preferences' => ['sometimes', 'array'],
     ]);
@@ -89,7 +89,7 @@ class BuilderController extends Controller
   {
     $validated = $request->validate([
       'selected' => ['sometimes', 'array'],
-      'selected.*' => ['integer', 'min:1'],
+      'selected.*' => ['string', 'min:1'],
       'budget' => ['sometimes', 'nullable', 'numeric', 'min:1'],
       'preferences' => ['sometimes', 'array'],
     ]);

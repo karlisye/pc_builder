@@ -31,7 +31,15 @@ const ComponentDetail = ({ component, title, onClose, actions }) => {
       {actions && <div className="flex gap-2 mt-4">{actions}</div>}
 
       <div className="mt-4 flex flex-col xl:flex-row gap-4">
-        <div className="w-full xl:w-80 h-80 bg-surface shrink-0" />
+        <div className="w-full xl:w-80 h-80 bg-surface shrink-0 flex items-center justify-center overflow-hidden">
+          {component.image_url && (
+            <img
+              src={component.image_url}
+              alt={component.name}
+              className="w-full h-full object-contain"
+            />
+          )}
+        </div>
 
         <div className="flex-1 min-w-0">
           <ComponentInfo component={component} />
