@@ -18,10 +18,17 @@ class Cooler extends Model
   protected $fillable = [
     'product_code',
     'name',
+    'ean',
+    'brand',
+    'image_url',
     'compatibility',
     'tdp_support',
     'height_mm',
     'fan_size_mm',
+    'fan_count',
+    'rpm_max',
+    'rpm_min',
+    'connector',
     'scraped_at',
   ];
 

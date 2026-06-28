@@ -18,6 +18,9 @@ class Psu extends Model
   protected $fillable = [
     'product_code',
     'name',
+    'ean',
+    'brand',
+    'image_url',
     'wattage',
     'efficiency_rating',
     'psu_type',
@@ -25,6 +28,9 @@ class Psu extends Model
     'fan_size_mm',
     'pcie_connectors',
     'sata_connectors',
+    'amps_12v',
+    'pcie_5',
+    'cpu_connectors',
     'scraped_at',
   ];
 

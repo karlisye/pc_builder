@@ -18,10 +18,17 @@ class Fan extends Model
   protected $fillable = [
     'product_code',
     'name',
+    'ean',
+    'brand',
+    'image_url',
     'size_mm',
     'connector',
     'rpm_max',
+    'rpm_min',
     'units_in_package',
+    'rgb_type',
+    'led_color',
+    'noise_max_db',
     'scraped_at',
   ];
 
