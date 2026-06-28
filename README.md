@@ -1,17 +1,17 @@
 # PC Builder
 
-PC Builder is a full-stack web app for creating, saving, sharing, and reviewing compatible custom PC builds. It combines a Laravel JSON API backend, a standalone React frontend, and a Python scraper that imports live component data from Dateks into MySQL.
+PC Builder is a full-stack web app for creating and saving compatible custom PC builds. It combines a Laravel JSON API backend, a standalone React frontend, and a Python scraper that imports live component data from Dateks into MySQL.
 
 ## Features
 
 - Guided PC build generator based on budget, build type, and CPU/GPU preferences.
-- Manual component selection with compatibility-aware filtering.
+- Manual component selection with compatibility-aware filtering, available to guests.
 - Compatibility validation for CPU sockets, motherboard RAM type, GPU/case clearance, cooler/case clearance, cooler sockets, cooler TDP, motherboard/case form factor, and PSU wattage.
-- Saved builds with notes, names, total price, visibility controls, and component relationships.
-- Shared public builds with search, sorting, filtering, likes, bookmarks, and star reviews.
-- User registration, login, profile pages, public profiles, and account management.
-- Admin dashboard for running scraper jobs and viewing scrape history.
+- Saved builds with notes, names, total price, and component relationships.
+- User registration, login, and account settings.
+- Admin dashboard for running scraper jobs, viewing scrape history, and generating sample builds.
 - Python scraper for CPUs, motherboards, RAM, GPUs, SSDs, HDDs, cases, fans, PSUs, and coolers.
+- English and Latvian localization (i18next).
 
 ## Screenshots
 
@@ -32,12 +32,6 @@ _Automatic Builder Section_
 
 ![Saved](screenshots/saved_page.png)
 _Saved Page_
-
-![Shared](screenshots/shared_page.png)
-_Shared Build Page_
-
-![Profile](screenshots/profile_page.png)
-_Profile Page_
 
 ![Admin](screenshots/scraper_page.png)
 _Scraper Page_
@@ -224,7 +218,7 @@ Each category maps to one or more Dateks listing URLs, a parser module, and a da
 
 ### Builder
 
-The builder lets users generate a complete build or fill individual component slots. The main services are:
+The builder lets users generate a complete build or fill individual component slots. Manual component selection is available to guests; auto-generation requires an account. The main services are:
 
 - `BuilderService` - coordinates build generation, budget tiers, component allocations, warnings, and notes.
 - `BuilderSlotPicker` - chooses compatible components for each slot.
@@ -234,15 +228,11 @@ The builder lets users generate a complete build or fill individual component sl
 
 ### Saved Builds
 
-Users can save generated or manually assembled builds. A build can store a name, notes, type, total price, public/private status, and references to selected component records.
-
-### Shared Builds
-
-Public builds can be browsed on the shared page. Users can filter by price, type, CPU/GPU preference, rating, liked builds, bookmarked builds, and personal builds. Shared builds support likes, bookmarks, and one rating per user.
+Users can save generated or manually assembled builds. A build stores a name, notes, type, total price, and references to selected component records.
 
 ### Admin Scraper
 
-Admin users can start scraper runs from the app. The Laravel backend streams logs from the Python scraper service, then stores scrape session metadata and category-level results.
+Admin users can start scraper runs from the app. The Laravel backend streams logs from the Python scraper service, then stores scrape session metadata and category-level results. Admins can also generate a batch of sample builds for the current user via the Populate feature.
 
 ## API Routes
 
@@ -274,30 +264,21 @@ Admin users can start scraper runs from the app. The Laravel backend streams log
 - `GET /api/builds/{build}` - fetch a build
 - `PATCH /api/builds/{build}` - update a build
 - `DELETE /api/builds/{build}` - delete a build
-- `PATCH /api/builds/{build}/publish` - toggle public visibility
 
-### Shared
+### Users
 
-- `GET /api/shared` - fetch public builds
-- `POST /api/shared/{build}/like` - toggle like
-- `POST /api/shared/{build}/bookmark` - toggle bookmark
-- `POST /api/shared/{build}/review` - create or update rating
-
-### Profile
-
-- `GET /api/profile` - current user's profile builds
-- `GET /api/profile/bookmarked` - bookmarked builds
-- `GET /api/profile/{user}` - public profile of a user
 - `PATCH /api/users/{user}` - update user
 - `DELETE /api/users/{user}` - delete user
 
 ### Admin
 
 - `GET /api/admin` - dashboard stats
+- `POST /api/scrape` - queue a scrape job
+- `GET /api/scrape/history` - paginated scrape history
 - `POST /api/admin/scrape` - run scraper and stream logs
-- `POST /api/admin/populate` - generate sample builds
+- `POST /api/admin/populate` - generate sample builds for the current user
 
-## Compatibility Rules
+## Compatibility Rules (In Progress)
 
 Compatibility checks are handled in Laravel. Current checks include:
 
@@ -321,7 +302,7 @@ cd backend
 ./vendor/bin/pest
 ```
 
-Alternatively, use the Populate feature in the Admin Dashboard to generate 17 sample builds across different budgets and preferences. Generated builds are automatically published and accessible on the shared builds page.
+Alternatively, use the Populate feature in the Admin Dashboard to generate sample builds across different budgets and preferences for the logged-in user.
 
 ## Development Notes
 
@@ -330,3 +311,4 @@ Alternatively, use the Populate feature in the Admin Dashboard to generate 17 sa
 - Detailed specs come from Dateks product pages.
 - Admin scraper logs are streamed from the Python Flask service through Laravel to the browser.
 - The project uses admin role middleware for scraper and dashboard pages.
+- The frontend is localized in English and Latvian via i18next, with translation files under `frontend/src/locales/`.
