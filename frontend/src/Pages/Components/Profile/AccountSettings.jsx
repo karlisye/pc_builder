@@ -107,7 +107,7 @@ const AccountSettings = () => {
   };
 
   return (
-    <>
+    <div className="py-6 px-4">
       <h1 className="text-4xl text-text font-semibold mb-4">{t('accountSettings.heading')}</h1>
 
       <h2 className="text-2xl text-text font-semibold mb-4">
@@ -280,7 +280,7 @@ const AccountSettings = () => {
           </div>
         </Modal>
       )}
-    </>
+    </div>
   );
 };
 
