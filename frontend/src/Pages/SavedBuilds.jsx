@@ -329,7 +329,15 @@ const SavedBuilds = () => {
                         onClick={() => handleExpandSlot(slot)}
                         className={`flex cursor-pointer transition-all border border-border ${isExpanded ? 'bg-secondary-light hover:bg-secondary-light/80' : 'bg-surface hover:bg-secondary-light'}`}
                       >
-                        <div className="w-16 h-16 bg-background shrink-0 m-2" />
+                        <div className="w-16 h-16 bg-background shrink-0 m-2 flex items-center justify-center overflow-hidden">
+                          {component.image_url && (
+                            <img
+                              src={component.image_url}
+                              alt={component.name}
+                              className="w-full h-full object-contain"
+                            />
+                          )}
+                        </div>
 
                         <div className="flex-1 min-w-0 m-2 ml-0">
                           <div className="flex justify-between">

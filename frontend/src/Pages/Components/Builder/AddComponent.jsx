@@ -146,7 +146,15 @@ const AddComponent = () => {
                     className={`flex justify-between items-center gap-2 p-2 min-w-0 cursor-pointer transition ${component.compatible && !component.out_of_stock ? 'bg-surface hover:bg-secondary-light' : 'bg-muted/50 hover:bg-muted/80'}`}
                   >
                     <div className="flex items-center gap-3 min-w-0 flex-1">
-                      <div className="w-10 h-10 bg-background shrink-0" />
+                      <div className="w-10 h-10 bg-background shrink-0 flex items-center justify-center overflow-hidden">
+                        {component.image_url && (
+                          <img
+                            src={component.image_url}
+                            alt={component.name}
+                            className="w-full h-full object-contain"
+                          />
+                        )}
+                      </div>
                       <span
                         className={`font-medium truncate min-w-0 ${component.compatible && !component.out_of_stock ? 'text-text' : 'text-text/50'}`}
                       >
@@ -186,7 +194,15 @@ const AddComponent = () => {
                     <div className="overflow-hidden">
                       <div className="p-3">
                         <div className="flex flex-col xl:flex-row gap-4">
-                          <div className="w-full xl:w-80 h-80 bg-surface shrink-0" />
+                          <div className="w-full xl:w-80 h-80 bg-surface shrink-0 flex items-center justify-center overflow-hidden">
+                            {component.image_url && (
+                              <img
+                                src={component.image_url}
+                                alt={component.name}
+                                className="w-full h-full object-contain"
+                              />
+                            )}
+                          </div>
 
                           <div className="flex-1 min-w-0">
                             <ComponentInfo component={effectiveComponent} />

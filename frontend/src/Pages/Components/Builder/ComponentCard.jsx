@@ -63,7 +63,15 @@ const ComponentCard = ({ component, name }) => {
         {component ? (
           <>
             <div className="flex flex-row xl:flex-col gap-2 p-2">
-              <div className="w-40 h-40 xl:w-full xl:h-40 bg-surface shrink-0 xl:my-1" />
+              <div className="w-40 h-40 xl:w-full xl:h-40 bg-surface shrink-0 xl:my-1 flex items-center justify-center overflow-hidden">
+                {component.image_url && (
+                  <img
+                    src={component.image_url}
+                    alt={component.name}
+                    className="w-full h-full object-contain"
+                  />
+                )}
+              </div>
 
               <div className="relative group min-w-0">
                 <h3 className="text-xl text-muted">{displayName}</h3>
