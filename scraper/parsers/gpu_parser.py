@@ -21,7 +21,7 @@ def _parse_pcie_version(value: str) -> float | None:
     return float(match.group(1)) if match else None
 
 
-def _parse_gpu_type(name: str) -> str | None:
+def _parse_gpu_family(name: str) -> str | None:
     name_lower = name.lower()
     if "radeon" in name_lower or " rx " in name_lower:
         return "amd"
@@ -30,6 +30,14 @@ def _parse_gpu_type(name: str) -> str | None:
     if "arc" in name_lower or "intel" in name_lower:
         return "intel"
     return None
+
+
+def _parse_power_connectors(value: str) -> str | None:
+    if not value:
+        return None
+    if value.strip().lower() in ("nav", "nav norādīts", ""):
+        return None
+    return value
 
 
 def _strip_pcie_lanes(value: str) -> str | None:
@@ -59,10 +67,8 @@ def parse(html, product_code, url, scraped_at):
         "ean": ean,
         "brand": brand,
         "image_url": image_url,
-        "type": _parse_gpu_type(name),
         "gpu_model": basic_section.get("GPU modelis") or specs.get("GPU model"),
-        "gpu_family": original.get("Graphics processor family Processor")
-        or original.get("Graphics processor family"),
+        "gpu_family": _parse_gpu_family(name),
         "vram": to_int(memory_section.get("Operatīvā atmiņa") or specs.get("RAM")),
         "vram_type": memory_section.get("Atmiņas tehnoloģija"),
         "tdp": to_int(
@@ -80,8 +86,9 @@ def parse(html, product_code, url, scraped_at):
         "length_mm": to_int(
             basic_section.get("Garums (mm)") or specs.get("Length (mm)")
         ),
-        "power_connectors": basic_section.get("Barošanas ligzdas")
-        or specs.get("Power sockets"),
+        "power_connectors": _parse_power_connectors(
+            basic_section.get("Barošanas ligzdas") or specs.get("Power sockets")
+        ),
         "cuda": to_int(
             basic_section.get("Stream procesori / CUDA kodoli")
             or basic_section.get("Stream procesori")

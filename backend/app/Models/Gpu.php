@@ -18,7 +18,6 @@ class Gpu extends Model
   protected $fillable = [
     'product_code',
     'name',
-    'type',
     'gpu_model',
     'vram',
     'tdp',

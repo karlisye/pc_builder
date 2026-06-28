@@ -18,7 +18,6 @@ class Cpu extends Model
   protected $fillable = [
     'product_code',
     'name',
-    'type',
     'socket',
     'cores',
     'threads',

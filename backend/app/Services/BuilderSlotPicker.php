@@ -45,9 +45,17 @@ class BuilderSlotPicker
     };
 
     // preferences
+    // TODO: gpus.type column was dropped (gpu_family now covers this, scraped
+    // from the product name the same way type used to be) -- switch to
+    // ->where('gpu_family', $preferences['gpu']) once preference values are
+    // confirmed to match ('amd'/'nvidia'/'intel').
     if (isset($preferences['gpu']) && $slot === 'gpu') {
       $query->where('type', $preferences['gpu']);
     }
+    // TODO: cpus.type column was dropped (2026_06_28_020000_drop_type_from_cpus_table)
+    // since it duplicated brand. This now queries a non-existent column whenever
+    // preferences['cpu'] is set -- switch to ->where('brand', $preferences['cpu']) once
+    // preference values are confirmed to match the scraped brand casing ("Intel"/"AMD").
     if (isset($preferences['cpu']) && $slot === 'cpu') {
       $query->where('type', $preferences['cpu']);
     }
@@ -95,9 +103,17 @@ class BuilderSlotPicker
       default => $query,
     };
 
+    // TODO: gpus.type column was dropped (gpu_family now covers this, scraped
+    // from the product name the same way type used to be) -- switch to
+    // ->where('gpu_family', $preferences['gpu']) once preference values are
+    // confirmed to match ('amd'/'nvidia'/'intel').
     if (isset($preferences['gpu']) && $slot === 'gpu') {
       $query->where('type', $preferences['gpu']);
     }
+    // TODO: cpus.type column was dropped (2026_06_28_020000_drop_type_from_cpus_table)
+    // since it duplicated brand. This now queries a non-existent column whenever
+    // preferences['cpu'] is set -- switch to ->where('brand', $preferences['cpu']) once
+    // preference values are confirmed to match the scraped brand casing ("Intel"/"AMD").
     if (isset($preferences['cpu']) && $slot === 'cpu') {
       $query->where('type', $preferences['cpu']);
     }
