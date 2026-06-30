@@ -77,6 +77,18 @@ def update_listing_price_stock(conn, component_type, product_code, source, price
     cursor.close()
     return affected
 
+# fetch the stored EAN for a product, if any. dateks is the source of truth for EAN, so
+# once a product has one stored we never need to re-scrape its detail page again
+def get_existing_ean(conn, table, product_code) -> str | None:
+    sql = f"SELECT ean FROM `{table}` WHERE product_code = %s"
+    cursor = conn.cursor()
+    cursor.execute(sql, [product_code])
+    row = cursor.fetchone()
+    cursor.close()
+    if row and row[0]:
+        return row[0]
+    return None
+
 # mark listings whose product_code was not seen in the latest full scrape as out of stock
 # (instead of deleting them, so specs/history are preserved for delisted products)
 def mark_missing_listings_out_of_stock(conn, component_type, source, seen_product_codes: list):

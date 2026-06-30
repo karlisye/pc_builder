@@ -46,10 +46,10 @@ class BuilderSlotPicker
 
     // preferences
     if (isset($preferences['gpu']) && $slot === 'gpu') {
-      $query->where('type', $preferences['gpu']);
+      $query->where('gpu_family', $preferences['gpu']);
     }
     if (isset($preferences['cpu']) && $slot === 'cpu') {
-      $query->where('type', $preferences['cpu']);
+      $query->where('brand', $preferences['cpu']);
     }
     if (isset($preferences['integrated_graphics']) && $slot === 'cpu') {
       $query->where('integrated_graphics', true);
@@ -96,10 +96,10 @@ class BuilderSlotPicker
     };
 
     if (isset($preferences['gpu']) && $slot === 'gpu') {
-      $query->where('type', $preferences['gpu']);
+      $query->where('gpu_family', $preferences['gpu']);
     }
     if (isset($preferences['cpu']) && $slot === 'cpu') {
-      $query->where('type', $preferences['cpu']);
+      $query->where('brand', $preferences['cpu']);
     }
     if (isset($preferences['integrated_graphics']) && $slot === 'cpu') {
       $query->where('integrated_graphics', true);

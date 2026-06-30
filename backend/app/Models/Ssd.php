@@ -18,12 +18,19 @@ class Ssd extends Model
   protected $fillable = [
     'product_code',
     'name',
+    'ean',
+    'brand',
+    'image_url',
     'capacity',
     'type',
     'form_factor',
     'interface',
     'read_speed',
     'write_speed',
+    'nand_type',
+    'tbw',
+    'random_read_iops',
+    'random_write_iops',
     'scraped_at',
   ];
 

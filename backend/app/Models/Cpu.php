@@ -18,7 +18,9 @@ class Cpu extends Model
   protected $fillable = [
     'product_code',
     'name',
-    'type',
+    'ean',
+    'brand',
+    'image_url',
     'socket',
     'cores',
     'threads',
@@ -28,6 +30,8 @@ class Cpu extends Model
     'integrated_graphics',
     'cooler_included',
     'passmark',
+    'memory_type',
+    'pcie_version',
     'scraped_at',
   ];
 

@@ -18,18 +18,23 @@ class Psu extends Model
   protected $fillable = [
     'product_code',
     'name',
+    'ean',
+    'brand',
+    'image_url',
     'wattage',
     'efficiency_rating',
     'psu_type',
     'modular',
     'fan_size_mm',
     'pcie_connectors',
-    'eps_connectors',
     'sata_connectors',
+    'amps_12v',
+    'pcie_5',
+    'cpu_connectors',
     'scraped_at',
   ];
 
   protected $casts = [
-    'modular' => 'boolean',
+    'pcie_5' => 'boolean',
   ];
 }

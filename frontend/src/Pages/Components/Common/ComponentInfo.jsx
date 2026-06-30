@@ -32,6 +32,7 @@ const ComponentInfo = ({ component }) => {
               "id",
               "product_code",
               "url",
+              "image_url",
               "scraped_at",
               "selected",
               "compatibility_warning",

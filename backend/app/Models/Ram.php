@@ -18,13 +18,20 @@ class Ram extends Model
   protected $fillable = [
     'product_code',
     'name',
+    'ean',
+    'brand',
+    'image_url',
     'memory_type',
     'capacity',
     'frequency',
     'cl_latency',
     'modules_count',
+    'voltage',
+    'xmp',
     'scraped_at',
   ];
 
-  protected $casts = [];
+  protected $casts = [
+    'xmp' => 'boolean',
+  ];
 }

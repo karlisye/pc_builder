@@ -6,8 +6,22 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     proxy: {
-      "/api": "http://localhost:8000",
-      "/sanctum": "http://localhost:8000",
+      "/api": {
+        target: "http://localhost:8000",
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq) => {
+            proxyReq.setHeader("Origin", "http://localhost:5173");
+          });
+        },
+      },
+      "/sanctum": {
+        target: "http://localhost:8000",
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq) => {
+            proxyReq.setHeader("Origin", "http://localhost:5173");
+          });
+        },
+      },
     },
   },
 });

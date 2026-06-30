@@ -1,5 +1,8 @@
 PAGE_DELAY = 0.2
 
+# extra delay applied only after an actual detail page fetch (full scrape mode)
+DETAIL_PAGE_DELAY = 0.2
+
 MAX_ERRORS_PER_CATEGORY = 10
 
 # identifies which site these listings came from, stored on the `listings` table

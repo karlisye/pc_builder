@@ -16,6 +16,7 @@
     "moreStores": "+{{count}} stores",
     "inStockWithQty": "In Stock ({{count}})",
     "orderableWithQty": "Can be ordered ({{count}})",
+    "orderable": "Can be ordered",
     "outOfStock": "Out of Stock",
     "inStock": "Available",
     "seeInStore": "See in store",

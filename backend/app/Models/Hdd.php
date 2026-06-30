@@ -18,8 +18,13 @@ class Hdd extends Model
   protected $fillable = [
     'product_code',
     'name',
+    'ean',
+    'brand',
+    'image_url',
     'capacity',
     'interface',
+    'rpm',
+    'cache_mb',
     'scraped_at',
   ];
 

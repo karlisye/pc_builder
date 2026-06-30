@@ -16,6 +16,7 @@
     "moreStores": "+{{count}} veikali",
     "inStockWithQty": "Pieejams ({{count}})",
     "orderableWithQty": "Pieejams pēc pasūtījuma ({{count}})",
+    "orderable": "Pieejams pēc pasūtījuma",
     "outOfStock": "Nav pieejams",
     "inStock": "Pieejams",
     "seeInStore": "Apskatīt veikalā",
