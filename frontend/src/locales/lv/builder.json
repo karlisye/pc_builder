@@ -77,6 +77,7 @@
     "tryAdjustingFilters": "Pamēģiniet pielāgot filtrus",
     "outOfStock": "Nav pieejams",
     "notCompatible": "Nav saderīgs",
+    "caseIncludesPsu": "Korpusā iekļauts barošanas bloks",
     "select": "Izvēlēties",
     "startingFrom": "Sākot no €{{price}}"
   },

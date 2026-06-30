@@ -36,5 +36,13 @@ return [
     'psu_insufficient_pcie_connectors' => 'Only :available PCIe power connectors available — GPU requires :required',
     'ssd_no_m2_slots' => 'M.2 SSD selected but motherboard has no M.2 slots',
     'motherboard_no_m2_slots' => 'No M.2 slots — cannot use selected M.2 SSD',
+    'ssd_no_sata_ports' => 'SATA SSD selected but motherboard has no SATA ports',
+    'motherboard_no_sata_ports_ssd' => 'No SATA ports available for the selected SATA SSD',
     'motherboard_sata_ports_exceeded' => 'Only :ports SATA ports available for :count SATA drives',
+    'hdd_no_sata_ports' => 'SATA HDD selected but motherboard has no SATA ports',
+    'motherboard_no_sata_ports_hdd' => 'No SATA ports available for the selected HDD',
+    'hdd_no_35_bays' => 'HDD selected but case has no 3.5" drive bays',
+    'case_no_35_bays' => 'Case has no 3.5" bays — cannot mount the selected HDD',
+    'psu_and_case_psu_conflict' => 'This case already includes a built-in PSU — a separate PSU is not needed',
+    'case_psu_already_included' => 'Case includes a built-in PSU — a separate PSU is redundant',
 ];

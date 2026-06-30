@@ -162,6 +162,21 @@ class ComponentFilters
       self::applyFormFactorFilter($query, $mb->form_factor, side: 'case');
     }
 
+    // if a separate PSU is selected, cases with a built-in PSU are incompatible
+    if ($selected['psu'] ?? null) {
+      $query->where(function (Builder $q) {
+        $q->whereNull('psu_included')->orWhere('psu_included', 0);
+      });
+    }
+
+    // if HDD is selected, case must have at least one 3.5" bay
+    if ($selected['hdd'] ?? null) {
+      $query->where(function (Builder $q) {
+        $q->whereNull('bays_35')
+          ->orWhere('bays_35', '>', 0);
+      });
+    }
+
     return $query;
   }
 
@@ -199,6 +214,11 @@ class ComponentFilters
     $ram = $selected['ram'] ?? null;
     $fan = $selected['fan'] ?? null;
     $case = $selected['case'] ?? null;
+
+    // if selected case includes a built-in PSU, no separate PSU is compatible
+    if ($case?->psu_included) {
+      return $query->whereRaw('1 = 0');
+    }
 
     $cpuTdp = $cpu?->tdp;
     $gpuTdp = $gpu?->tdp;
@@ -258,6 +278,14 @@ class ComponentFilters
       });
     }
 
+    // if MB has no SATA ports, SATA SSDs can't connect
+    if (($mb = $selected['motherboard'] ?? null) && $mb->sata_ports === 0) {
+      $query->where(function (Builder $q) {
+        $q->whereNull('interface')
+          ->orWhereRaw("LOWER(interface) NOT LIKE '%sata%'");
+      });
+    }
+
     return $query;
   }
 
@@ -266,6 +294,11 @@ class ComponentFilters
     // if MB has no SATA ports, SATA HDDs can't connect
     if (($mb = $selected['motherboard'] ?? null) && $mb->sata_ports === 0) {
       $query->whereRaw("LOWER(interface) NOT LIKE '%sata%'");
+    }
+
+    // if case has no 3.5" bays, standard HDDs can't be mounted
+    if (($case = $selected['case'] ?? null) && $case->bays_35 === 0) {
+      $query->whereRaw('1 = 0');
     }
 
     return $query;

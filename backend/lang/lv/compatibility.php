@@ -36,5 +36,13 @@ return [
     'psu_insufficient_pcie_connectors' => 'Pieejami tikai :available PCIe strāvas savienotāji — videokartei nepieciešami :required',
     'ssd_no_m2_slots' => 'Izvēlēts M.2 SSD, bet mātesplatei nav M.2 slotu',
     'motherboard_no_m2_slots' => 'Nav M.2 slotu — nevar izmantot izvēlēto M.2 SSD',
+    'ssd_no_sata_ports' => 'Izvēlēts SATA SSD, bet mātesplatei nav SATA portu',
+    'motherboard_no_sata_ports_ssd' => 'Nav SATA portu izvēlētajam SATA SSD',
     'motherboard_sata_ports_exceeded' => 'Pieejami tikai :ports SATA porti :count SATA diskiem',
+    'hdd_no_sata_ports' => 'Izvēlēts SATA HDD, bet mātesplatei nav SATA portu',
+    'motherboard_no_sata_ports_hdd' => 'Nav SATA portu izvēlētajam HDD',
+    'hdd_no_35_bays' => 'Izvēlēts HDD, bet korpusam nav 3.5" diskdziņu nodalījumu',
+    'case_no_35_bays' => 'Korpusam nav 3.5" nodalījumu — nevar uzstādīt izvēlēto HDD',
+    'psu_and_case_psu_conflict' => 'Šajā korpusā jau ir iebūvēts barošanas bloks — atsevišķs barošanas bloks nav nepieciešams',
+    'case_psu_already_included' => 'Korpusā ir iekļauts iebūvēts barošanas bloks — atsevišķs barošanas bloks ir lieks',
 ];

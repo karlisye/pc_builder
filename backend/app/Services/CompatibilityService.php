@@ -82,16 +82,20 @@ class CompatibilityService
     // e.g. if user already has cpu selected, but still wants to see cpus, will return the cpu id
     $selectedIdForType = isset($selected[$type]) ? $selected[$type]->id : null;
     $warning  = CompatibilityHelper::exoticFormFactorWarning($selected);
+    $caseHasPsu = $type === 'psu' && ($selected['case'] ?? null)?->psu_included;
 
     $paginator = $query->paginate(15);
 
     // add the selected boolean and manual check warning to each component
     // add compatible and out_of_stock flags to each component
-    $paginator->getCollection()->transform(function ($item) use ($selectedIdForType, $warning, $compatibleIds) {
+    $paginator->getCollection()->transform(function ($item) use ($selectedIdForType, $warning, $compatibleIds, $caseHasPsu) {
       $item->selected = ($item->id === $selectedIdForType);
       $item->compatibility_warning = $warning;
       $item->compatible = in_array($item->id, $compatibleIds);
       $item->out_of_stock = $item->stock_status === 'out_of_stock';
+      if ($caseHasPsu) {
+        $item->case_includes_psu = true;
+      }
       return $item;
     });
 
@@ -168,13 +172,13 @@ class CompatibilityService
       }
     }
 
-    // ram speed vs motherboard max (soft warning)
+    // ram speed vs motherboard max
     if ($ram && $mb && $ram->frequency !== null && $mb->memory_max_speed !== null) {
       if ($ram->frequency > $mb->memory_max_speed) {
-        $warnings['ram'][] = __('compatibility.ram_speed_exceeds_mb_max', [
+        $issues['ram'][] = __('compatibility.ram_speed_exceeds_mb_max', [
           'ram_freq' => $ram->frequency, 'mb_max' => $mb->memory_max_speed,
         ]);
-        $warnings['motherboard'][] = __('compatibility.mb_max_speed_exceeded', [
+        $issues['motherboard'][] = __('compatibility.mb_max_speed_exceeded', [
           'mb_max' => $mb->memory_max_speed, 'ram_freq' => $ram->frequency,
         ]);
       }
@@ -239,13 +243,13 @@ class CompatibilityService
       }
     }
 
-    // psu / case form factor (soft warning — adapters exist for SFX in ATX)
+    // psu / case form factor (ATX cases require ATX PSU)
     if ($psu && $case && $psu->psu_type && $case->form_factor) {
       if (CompatibilityHelper::isAtxCaseFormFactor($case->form_factor) && $psu->psu_type !== 'ATX') {
-        $warnings['psu'][] = __('compatibility.psu_form_factor_atx_case', [
+        $issues['psu'][] = __('compatibility.psu_form_factor_atx_case', [
           'psu_type' => $psu->psu_type, 'case_form' => $case->form_factor,
         ]);
-        $warnings['case'][] = __('compatibility.case_psu_form_factor_mismatch', [
+        $issues['case'][] = __('compatibility.case_psu_form_factor_mismatch', [
           'case_form' => $case->form_factor, 'psu_type' => $psu->psu_type,
         ]);
       }
@@ -279,6 +283,12 @@ class CompatibilityService
       $issues['motherboard'][] = __('compatibility.motherboard_no_m2_slots');
     }
 
+    // sata ssd / motherboard sata ports
+    if ($ssd && $mb && str_contains(strtolower($ssd->interface ?? ''), 'sata') && $mb->sata_ports === 0) {
+      $issues['ssd'][] = __('compatibility.ssd_no_sata_ports');
+      $issues['motherboard'][] = __('compatibility.motherboard_no_sata_ports_ssd');
+    }
+
     // sata device count / motherboard sata ports
     if ($mb && $mb->sata_ports !== null) {
       $sataCount = 0;
@@ -295,8 +305,28 @@ class CompatibilityService
       }
     }
 
+    // hdd / motherboard sata ports
+    if ($hdd && $mb && str_contains(strtolower($hdd->interface ?? ''), 'sata') && $mb->sata_ports === 0) {
+      $issues['hdd'][] = __('compatibility.hdd_no_sata_ports');
+      $issues['motherboard'][] = __('compatibility.motherboard_no_sata_ports_hdd');
+    }
+
+    // hdd / case 3.5" bays
+    if ($hdd && $case && $case->bays_35 === 0) {
+      $issues['hdd'][] = __('compatibility.hdd_no_35_bays');
+      $issues['case'][] = __('compatibility.case_no_35_bays');
+    }
+
+    // case with built-in PSU and a separate PSU are both selected
+    if ($psu && $case?->psu_included) {
+      $issues['psu'][] = __('compatibility.psu_and_case_psu_conflict');
+      $issues['case'][] = __('compatibility.case_psu_already_included');
+    }
+
     // psu wattage (unified: cpu+gpu, or gpu-only)
-    if ($psu && $gpu) {
+    // use case psu_wattage when no separate PSU is selected but case includes one
+    $effectivePsuWattage = $psu?->wattage ?? ($case?->psu_included ? $case->psu_wattage : null);
+    if ($effectivePsuWattage !== null && $gpu) {
       $ramWattage = ($ram?->modules_count ?? 0) * 5;
       $fanWattage = ($fan?->units_in_package ?? 0) * 3;
 
@@ -306,9 +336,10 @@ class CompatibilityService
       $minPsuRequired = $gpu->min_psu ?? 0;
       $requiredWattage = max($tdpRequired, $minPsuRequired);
 
-      if ($psu->wattage !== null && $requiredWattage > 0 && $psu->wattage < $requiredWattage) {
-        $issues['psu'][] = __('compatibility.psu_insufficient_wattage', [
-          'psu_wattage' => $psu->wattage, 'required' => ceil($requiredWattage),
+      if ($requiredWattage > 0 && $effectivePsuWattage < $requiredWattage) {
+        $targetKey = $psu ? 'psu' : 'case';
+        $issues[$targetKey][] = __('compatibility.psu_insufficient_wattage', [
+          'psu_wattage' => $effectivePsuWattage, 'required' => ceil($requiredWattage),
         ]);
         if ($cpu) {
           $issues['cpu'][] = __('compatibility.cpu_psu_wattage_too_low');

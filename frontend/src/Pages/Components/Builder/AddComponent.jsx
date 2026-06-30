@@ -167,7 +167,9 @@ const AddComponent = () => {
                         {component.out_of_stock
                           ? t('addComponent.outOfStock')
                           : !component.compatible
-                            ? t('addComponent.notCompatible')
+                            ? component.case_includes_psu
+                              ? t('addComponent.caseIncludesPsu')
+                              : t('addComponent.notCompatible')
                             : t('addComponent.startingFrom', {
                                 price: formatPrice(component.price),
                               })}
