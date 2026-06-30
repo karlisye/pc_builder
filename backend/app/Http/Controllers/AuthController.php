@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
@@ -24,6 +25,7 @@ class AuthController extends Controller
       'password' => Hash::make($credentials['password']),
     ]);
 
+
     Auth::login($user);
     $request->session()->regenerate();
 
@@ -37,8 +39,11 @@ class AuthController extends Controller
       'password' => ['required']
     ]);
 
+    Log::debug('validation passed');
+
     if (Auth::attempt($credentials)) {
       $request->session()->regenerate();
+      Log::debug('session regenerated');
       return response()->json($request->user());
     }
 
