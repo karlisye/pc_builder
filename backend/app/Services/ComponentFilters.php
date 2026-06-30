@@ -23,14 +23,12 @@ class ComponentFilters
     }
 
     if (($ram = $selected['ram'] ?? null)?->memory_type) {
-      $compatibleSockets = match ($ram->memory_type) {
-        'DDR4' => ['AM4', 'LGA1200', 'LGA1700', 'LGA2066'],
-        'DDR5' => ['AM5', 'LGA1700', 'LGA1851', 'sTR5'],
-        default => [],
-      };
-      if (!empty($compatibleSockets)) {
-        $query->whereIn('socket', $compatibleSockets);
-      }
+      $ramType = $ram->memory_type;
+      $query->where(function (Builder $q) use ($ramType) {
+        $q->whereNull('memory_type')
+          ->orWhere('memory_type', $ramType)
+          ->orWhere('memory_type', 'DDR4/DDR5');
+      });
     }
 
     return $query;
@@ -59,6 +57,13 @@ class ComponentFilters
       $query->where('memory_type', $mb->memory_type);
     }
 
+    if (($cpu = $selected['cpu'] ?? null)?->memory_type) {
+      $cpuMemType = $cpu->memory_type;
+      if ($cpuMemType !== 'DDR4/DDR5') {
+        $query->where('memory_type', $cpuMemType);
+      }
+    }
+
     return $query;
   }
 
@@ -75,6 +80,14 @@ class ComponentFilters
       $query->where(function (Builder $q) use ($psu) {
         $q->whereNull('min_psu')
           ->orWhere('min_psu', '<=', $psu->wattage);
+      });
+    }
+
+    // if PSU lacks 16-pin connector, filter out GPUs that require it
+    if (($psu = $selected['psu'] ?? null) && !$psu->pcie_5) {
+      $query->where(function (Builder $q) {
+        $q->whereNull('power_connectors')
+          ->orWhereRaw("power_connectors NOT REGEXP '16.?pin|12vhpwr'");
       });
     }
 
@@ -133,18 +146,43 @@ class ComponentFilters
 
   public static function psu(Builder $query, array $selected): Builder
   {
-    $cpuTdp = ($selected['cpu'] ?? null)?->tdp;
-    $gpuTdp = ($selected['gpu'] ?? null)?->tdp;
-    $gpuMinPsu = ($selected['gpu'] ?? null)?->min_psu;
+    $cpu = $selected['cpu'] ?? null;
+    $gpu = $selected['gpu'] ?? null;
+    $ram = $selected['ram'] ?? null;
+    $fan = $selected['fan'] ?? null;
     $case = $selected['case'] ?? null;
 
-    // need at least gpu min_psu or both tdps to filter
+    $cpuTdp = $cpu?->tdp;
+    $gpuTdp = $gpu?->tdp;
+    $gpuMinPsu = $gpu?->min_psu;
+
+    // case form factor: ATX cases only accept ATX PSUs
+    if ($case?->form_factor && CompatibilityHelper::isAtxCaseFormFactor($case->form_factor)) {
+      $query->where(function (Builder $q) {
+        $q->whereNull('psu_type')->orWhere('psu_type', 'ATX');
+      });
+    }
+
+    // GPU 16-pin connector: only show PSUs with pcie_5 if GPU requires it
+    if ($gpu?->power_connectors) {
+      $gpuConn = CompatibilityHelper::parseGpuConnectors($gpu->power_connectors);
+      if ($gpuConn['requires_16pin']) {
+        $query->where(function (Builder $q) {
+          $q->whereNull('pcie_5')->orWhere('pcie_5', 1);
+        });
+      }
+    }
+
+    // need at least gpu min_psu or both tdps to filter wattage
     if ($cpuTdp === null && $gpuMinPsu === null) {
       return $query;
     }
 
+    $ramWattage = ($ram?->modules_count ?? 0) * 5;
+    $fanWattage = ($fan?->units_in_package ?? 0) * 3;
+
     $tdpRequired = ($cpuTdp !== null && $gpuTdp !== null)
-      ? ($cpuTdp + $gpuTdp) * 1.3
+      ? ($cpuTdp + $gpuTdp + $ramWattage + $fanWattage) * 1.3
       : 0;
 
     $requiredWattage = max($tdpRequired, $gpuMinPsu ?? 0);
@@ -161,8 +199,18 @@ class ComponentFilters
       $q->whereNull('wattage')
         ->orWhere('wattage', '>=', $requiredWattage);
     });
+  }
 
-    // TODO: add connectors compatibility check
+  public static function ssd(Builder $query, array $selected): Builder
+  {
+    if (($mb = $selected['motherboard'] ?? null) && $mb->m2_slots === 0) {
+      $query->where(function (Builder $q) {
+        $q->whereNull('form_factor')
+          ->orWhere('form_factor', '!=', 'M.2');
+      });
+    }
+
+    return $query;
   }
 
   private static function applyFormFactorFilter(Builder $query, ?string $formFactor, string $side): void
