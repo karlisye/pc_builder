@@ -226,13 +226,13 @@ const AddComponent = () => {
                                   <span className="text-muted">€{formatPrice(listing.price)}</span>
                                   <span className="text-muted">
                                     {listing.stock_status === 'in_stock'
-                                      ? t('componentCard.inStockWithQty', {
-                                          count: listing.stock_quantity,
-                                        })
+                                      ? listing.stock_quantity != null
+                                        ? t('componentCard.inStockWithQty', { count: listing.stock_quantity })
+                                        : t('componentCard.inStock')
                                       : listing.stock_status === 'orderable'
-                                        ? t('componentCard.orderableWithQty', {
-                                            count: listing.stock_quantity,
-                                          })
+                                        ? listing.stock_quantity != null
+                                          ? t('componentCard.orderableWithQty', { count: listing.stock_quantity })
+                                          : t('componentCard.orderable')
                                         : t('componentCard.outOfStock')}
                                   </span>
                                   <span className="text-muted text-sm">
