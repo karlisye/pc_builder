@@ -37,4 +37,32 @@ CATEGORIES = {
         "table": "motherboards",
         "component_type": "motherboards",
     },
+    "case": {
+        "urls": [
+            "https://www.rdveikals.lv/categories/lv/435/sort/5/filter/0_0_0_0/page/1/Datoru-korpusi.html",
+        ],
+        "table": "cases",
+        "component_type": "cases",
+    },
+    "psu": {
+        "urls": [
+            "https://www.rdveikals.lv/categories/lv/415/sort/5/filter/0_0_0_0/page/1/Baro%C5%A1anas-bloki.html",
+        ],
+        "table": "psus",
+        "component_type": "psus",
+    },
+    "cooler": {
+        "urls": [
+            "https://www.rdveikals.lv/categories/lv/437/sort/5/filter/0_0_0_0/page/1/Dzes%C4%93t%C4%81ji.html",
+        ],
+        "table": "coolers",
+        "component_type": "coolers",
+    },
+    "hdd": {
+        "urls": [
+            "https://www.rdveikals.lv/categories/lv/422/sort/5/filter/0_0_0_0/page/1/Cietie-diski-HDD.html",
+        ],
+        "table": "hdds",
+        "component_type": "hdds",
+    },
 }
