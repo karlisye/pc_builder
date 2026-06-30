@@ -65,11 +65,19 @@ def find_product_code(conn, table: str, name: str, brand: str) -> str | None:
     """
     _load(conn, table)
 
-    # --- fast path: name contains an embedded product code (e.g. CPU names) ---
-    codes_in_name = _CPU_CODE_RE.findall(name)
-    for code in codes_in_name:
-        if code.lower() in _code_sets.get(table, set()):
-            # find and return the matching entry's product_code (preserving original case)
+    # --- fast path: name contains an embedded product code ---
+    # First try CPU-specific regex (BX/CM/100- patterns).
+    # Then fall back to scanning every whitespace token — covers RAM codes
+    # and other categories where the model number appears verbatim in the name.
+    code_set = _code_sets.get(table, set())
+    candidates_from_name: list[str] = _CPU_CODE_RE.findall(name)
+    # add all whitespace tokens (strip common punctuation around them)
+    for tok in re.split(r'\s+', name.strip()):
+        tok = tok.strip('/').strip()
+        if tok:
+            candidates_from_name.append(tok)
+    for code in candidates_from_name:
+        if code.lower() in code_set:
             for pc, _, _ in _cache[table]:
                 if pc.lower() == code.lower():
                     return pc

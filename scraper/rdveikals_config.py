@@ -16,4 +16,11 @@ CATEGORIES = {
         "table": "cpus",
         "component_type": "cpus",
     },
+    "ram": {
+        "urls": [
+            "https://www.rdveikals.lv/categories/lv/433/sort/5/filter/0_0_0_0/page/1/Operat%C4%ABv%C4%81-atmi%C5%86a-RAM.html",
+        ],
+        "table": "rams",
+        "component_type": "rams",
+    },
 }

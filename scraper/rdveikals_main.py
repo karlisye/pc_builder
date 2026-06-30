@@ -74,7 +74,7 @@ def run(category: str, max_errors: int, page_delay: float):
             seen_product_codes.append(product_code)
             matched += 1
 
-    print(f"\n  Matched: {matched}  |  Unmatched: {unmatched}")
+    print(f"\n  Total inserted: {matched}  |  Total skipped: {unmatched}")
     if unmatched_names:
         print("  Unmatched names:")
         for n in unmatched_names:
