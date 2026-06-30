@@ -23,4 +23,18 @@ CATEGORIES = {
         "table": "rams",
         "component_type": "rams",
     },
+    "ssd": {
+        "urls": [
+            "https://www.rdveikals.lv/categories/lv/416/sort/5/filter/0_0_0_0/page/1/SSD-diski.html",
+        ],
+        "table": "ssds",
+        "component_type": "ssds",
+    },
+    "motherboard": {
+        "urls": [
+            "https://www.rdveikals.lv/categories/lv/426/sort/5/filter/0_0_0_0/page/1/M%C4%81tesplates.html",
+        ],
+        "table": "motherboards",
+        "component_type": "motherboards",
+    },
 }
