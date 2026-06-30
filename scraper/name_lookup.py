@@ -3,6 +3,8 @@ import re
 
 # per-table cache: { table: [(product_code, name_tokens, brand_lower)] }
 _cache: dict[str, list] = {}
+# per-table set of product codes for O(1) exact-code lookup
+_code_sets: dict[str, set] = {}
 
 SIMILARITY_THRESHOLD = 0.82
 
@@ -14,11 +16,14 @@ def _load(conn, table: str):
     cursor.execute(f"SELECT product_code, name, brand FROM `{table}` WHERE name IS NOT NULL")
     rows = cursor.fetchall()
     cursor.close()
-    _cache[table] = [
+    entries = [
         (pc, _tokenize(_normalize_db_name(name, brand or "")), (brand or "").strip().lower())
         for pc, name, brand in rows
         if name
     ]
+    # also keep a set of all product codes for fast exact-code lookup
+    _cache[table] = entries
+    _code_sets[table] = {pc.lower() for pc, _, _ in entries}
 
 
 def _tokenize(text: str) -> str:
@@ -45,13 +50,30 @@ def _normalize_db_name(name: str, brand: str) -> str:
     return s
 
 
+_CPU_CODE_RE = re.compile(
+    r'\b(BX\d{7,}[A-Z0-9]*|CM\d{9,}[A-Z0-9]*|100[-\d]{9,}[A-Z0-9]*)\b',
+    re.IGNORECASE,
+)
+
+
 def find_product_code(conn, table: str, name: str, brand: str) -> str | None:
     """
     Return the product_code for the best-matching component in `table`, or None.
 
-    Matching is brand-filtered first, then fuzzy on tokenized name.
+    For CPUs (and any product whose name embeds an explicit product code), tries
+    a direct code extraction first.  Falls back to brand-filtered fuzzy matching.
     """
     _load(conn, table)
+
+    # --- fast path: name contains an embedded product code (e.g. CPU names) ---
+    codes_in_name = _CPU_CODE_RE.findall(name)
+    for code in codes_in_name:
+        if code.lower() in _code_sets.get(table, set()):
+            # find and return the matching entry's product_code (preserving original case)
+            for pc, _, _ in _cache[table]:
+                if pc.lower() == code.lower():
+                    return pc
+
     brand_lower = brand.strip().lower()
     query_tokens = _tokenize(name)
 
@@ -92,3 +114,4 @@ def find_product_code(conn, table: str, name: str, brand: str) -> str | None:
 def clear_cache():
     """Call between categories so stale data isn't reused across table switches."""
     _cache.clear()
+    _code_sets.clear()
