@@ -150,8 +150,10 @@ class ComponentQueryFilter
     if (isset($f['capacity_max']) && is_numeric($f['capacity_max']))
       $query->where('capacity', '<=', (int) $f['capacity_max']);
 
-    if (isset($f['frequency']) && is_numeric($f['frequency']))
-      $query->where('frequency', (int) $f['frequency']);
+    if (isset($f['frequency_min']) && is_numeric($f['frequency_min']))
+      $query->where('frequency', '>=', (int) $f['frequency_min']);
+    if (isset($f['frequency_max']) && is_numeric($f['frequency_max']))
+      $query->where('frequency', '<=', (int) $f['frequency_max']);
 
     if (isset($f['xmp']) && $f['xmp'] !== '')
       $query->where('xmp', filter_var($f['xmp'], FILTER_VALIDATE_BOOLEAN));

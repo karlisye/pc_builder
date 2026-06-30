@@ -89,6 +89,7 @@
       "nameAsc": "Name: A to Z",
       "nameDesc": "Name: Z to A"
     },
+    "price": "Price (€)",
     "minPrice": "Min price (€)",
     "maxPrice": "Max price (€)",
     "failedToFetchFilters": "Failed to fetch filters",

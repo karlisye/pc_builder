@@ -1,7 +1,17 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-const RangeSlider = ({ label, values, minValue, maxValue, onChange }) => {
-  const sorted = useMemo(() => [...values].sort((a, b) => a - b), [values]);
+// Accepts either:
+//   values={[...]}           — snaps to distinct available values (discrete)
+//   min={n} max={n} step={n} — generates evenly spaced steps (continuous)
+const RangeSlider = ({ label, values, min: minProp, max: maxProp, step = 1, minValue, maxValue, onChange, format }) => {
+  const sorted = useMemo(() => {
+    if (values?.length) return [...values].sort((a, b) => a - b);
+    const arr = [];
+    for (let v = minProp; v < maxProp; v += step) arr.push(Math.round(v * 100) / 100);
+    arr.push(maxProp);
+    return arr;
+  }, [values, minProp, maxProp, step]);
+
   const lastIdx = sorted.length - 1;
 
   const toIdx = useCallback(
@@ -19,17 +29,11 @@ const RangeSlider = ({ label, values, minValue, maxValue, onChange }) => {
   const [minIdx, setMinIdx] = useState(() => toIdx(minValue));
   const [maxIdx, setMaxIdx] = useState(() => toIdx(maxValue));
 
-  // Keep refs so the mouseup commit always reads latest values
   const minIdxRef = useRef(minIdx);
   const maxIdxRef = useRef(maxIdx);
-  useEffect(() => {
-    minIdxRef.current = minIdx;
-  }, [minIdx]);
-  useEffect(() => {
-    maxIdxRef.current = maxIdx;
-  }, [maxIdx]);
+  useEffect(() => { minIdxRef.current = minIdx; }, [minIdx]);
+  useEffect(() => { maxIdxRef.current = maxIdx; }, [maxIdx]);
 
-  // Sync when parent resets (clear filters)
   useEffect(() => {
     setMinIdx(toIdx(minValue));
     setMaxIdx(toIdx(maxValue));
@@ -49,18 +53,17 @@ const RangeSlider = ({ label, values, minValue, maxValue, onChange }) => {
     onChange(sorted[minIdxRef.current], sorted[maxIdxRef.current]);
   }, [sorted, onChange]);
 
+  const fmt = format ?? ((v) => v);
   const atBounds = minIdx === 0 && maxIdx === lastIdx;
   const displayMin = sorted[minIdx];
   const displayMax = sorted[maxIdx];
 
   return (
-    <div className="col-span-2 space-y-2 border p-1.5 border-secondary">
+    <div className="col-span-2 space-y-2">
       <div className="flex justify-between items-center">
         <span className="text-sm text-secondary-light">{label}</span>
-        <span
-          className={`text-sm tabular-nums ${atBounds ? 'text-secondary-light' : 'text-white'}`}
-        >
-          {displayMin === displayMax ? displayMin : `${displayMin} – ${displayMax}`}
+        <span className={`text-sm tabular-nums ${atBounds ? 'text-secondary-light' : 'text-white'}`}>
+          {displayMin === displayMax ? fmt(displayMin) : `${fmt(displayMin)} – ${fmt(displayMax)}`}
         </span>
       </div>
 

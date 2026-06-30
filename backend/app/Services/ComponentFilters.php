@@ -60,6 +60,14 @@ class ComponentFilters
       });
     }
 
+    // motherboard max speed must support the RAM frequency
+    if (($ram = $selected['ram'] ?? null)?->frequency !== null) {
+      $query->where(function (Builder $q) use ($ram) {
+        $q->whereNull('memory_max_speed')
+          ->orWhere('memory_max_speed', '>=', $ram->frequency);
+      });
+    }
+
     if ($case = $selected['case'] ?? null) {
       self::applyFormFactorFilter($query, $case->form_factor, side: 'motherboard');
     }
@@ -93,6 +101,14 @@ class ComponentFilters
       $query->where(function (Builder $q) use ($mb) {
         $q->whereNull('capacity')
           ->orWhere('capacity', '<=', $mb->max_memory_capacity);
+      });
+    }
+
+    // ram frequency must not exceed motherboard max speed
+    if (($mb = $selected['motherboard'] ?? null)?->memory_max_speed !== null) {
+      $query->where(function (Builder $q) use ($mb) {
+        $q->whereNull('frequency')
+          ->orWhere('frequency', '<=', $mb->memory_max_speed);
       });
     }
 

@@ -106,7 +106,8 @@ class ComponentController extends Controller
       'modules_count',
       'capacity_min',
       'capacity_max',
-      'frequency',
+      'frequency_min',
+      'frequency_max',
       'xmp',
       // gpu
       'gpu_family',
@@ -215,6 +216,17 @@ class ComponentController extends Controller
         ->orderBy('brand')
         ->toBase()
         ->pluck('brand');
+
+      // price bounds for the range slider
+      $priceAgg = ComponentListingJoin::apply($modelClass::query())
+        ->whereIn('listing_agg.listing_stock_status', ['in_stock', 'orderable'])
+        ->whereNotNull('listing_agg.listing_price')
+        ->select(\Illuminate\Support\Facades\DB::raw('FLOOR(MIN(listing_agg.listing_price)) as price_min, CEIL(MAX(listing_agg.listing_price)) as price_max'))
+        ->toBase()
+        ->first();
+
+      $result['price_min'] = (int) ($priceAgg->price_min ?? 0);
+      $result['price_max'] = (int) ($priceAgg->price_max ?? 9999);
 
       return $result;
     });

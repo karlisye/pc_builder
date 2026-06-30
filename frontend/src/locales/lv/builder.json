@@ -89,6 +89,7 @@
       "nameAsc": "Nosaukums: A līdz Z",
       "nameDesc": "Nosaukums: Z līdz A"
     },
+    "price": "Cena (€)",
     "minPrice": "Min. cena (€)",
     "maxPrice": "Maks. cena (€)",
     "failedToFetchFilters": "Neizdevās iegūt filtrus",

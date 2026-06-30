@@ -8,6 +8,7 @@ import RangeSlider from "./RangeSlider";
 const RANGE_FILTER_FIELDS = new Set([
   'cores',
   'capacity',
+  'frequency',
   'vram',
   'min_psu',
   'wattage',
@@ -111,27 +112,27 @@ const ComponentFilters = () => {
       </div>
 
       <div className="grid grid-cols-2 gap-2">
-        <input
-          type="number"
-          id="minPrice"
-          className="bg-secondary p-2 text-white outline-border focus:outline-1"
-          placeholder={t("componentFilters.minPrice")}
-          value={filters["min_price"] ?? ""}
-          onChange={(e) =>
-            updateFilter("min_price", e.target.value || undefined)
-          }
-        />
-
-        <input
-          type="number"
-          id="maxPrice"
-          className="bg-secondary p-2 text-white outline-border focus:outline-1"
-          placeholder={t("componentFilters.maxPrice")}
-          value={filters["max_price"] ?? ""}
-          onChange={(e) =>
-            updateFilter("max_price", e.target.value || undefined)
-          }
-        />
+        {availableFilters.price_min != null && availableFilters.price_max != null && (
+          <RangeSlider
+            label={t("componentFilters.price")}
+            min={availableFilters.price_min}
+            max={availableFilters.price_max}
+            step={5}
+            minValue={Number(filters["min_price"] ?? availableFilters.price_min)}
+            maxValue={Number(filters["max_price"] ?? availableFilters.price_max)}
+            format={(v) => `€${v}`}
+            onChange={(newMin, newMax) => {
+              setFilters((prev) => {
+                const next = { ...prev };
+                if (newMin <= availableFilters.price_min) delete next["min_price"];
+                else next["min_price"] = newMin;
+                if (newMax >= availableFilters.price_max) delete next["max_price"];
+                else next["max_price"] = newMax;
+                return next;
+              });
+            }}
+          />
+        )}
 
         {availableFilters['brand']?.length > 0 && (
           <select
