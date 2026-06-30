@@ -44,6 +44,14 @@ class ComponentFilters
       $query->where('memory_type', $ram->memory_type);
     }
 
+    // motherboard must have enough slots for the RAM kit
+    if (($ram = $selected['ram'] ?? null)?->modules_count !== null) {
+      $query->where(function (Builder $q) use ($ram) {
+        $q->whereNull('memory_slots')
+          ->orWhere('memory_slots', '>=', $ram->modules_count);
+      });
+    }
+
     if ($case = $selected['case'] ?? null) {
       self::applyFormFactorFilter($query, $case->form_factor, side: 'motherboard');
     }
@@ -62,6 +70,14 @@ class ComponentFilters
       if ($cpuMemType !== 'DDR4/DDR5') {
         $query->where('memory_type', $cpuMemType);
       }
+    }
+
+    // kit must fit in available slots
+    if (($mb = $selected['motherboard'] ?? null)?->memory_slots !== null) {
+      $query->where(function (Builder $q) use ($mb) {
+        $q->whereNull('modules_count')
+          ->orWhere('modules_count', '<=', $mb->memory_slots);
+      });
     }
 
     return $query;
@@ -208,6 +224,16 @@ class ComponentFilters
         $q->whereNull('form_factor')
           ->orWhere('form_factor', '!=', 'M.2');
       });
+    }
+
+    return $query;
+  }
+
+  public static function hdd(Builder $query, array $selected): Builder
+  {
+    // if MB has no SATA ports, SATA HDDs can't connect
+    if (($mb = $selected['motherboard'] ?? null) && $mb->sata_ports === 0) {
+      $query->whereRaw("LOWER(interface) NOT LIKE '%sata%'");
     }
 
     return $query;

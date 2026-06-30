@@ -22,6 +22,8 @@ return [
     'gpu_psu_wattage_too_low_specific' => 'PSU wattage too low (:psu_wattage W vs :gpu_min_psu W required)',
     'cpu_ram_memory_mismatch' => 'CPU supports :cpu_type, but selected RAM is :ram_type',
     'ram_cpu_memory_mismatch' => ':ram_type RAM is not compatible with this CPU (:cpu_type)',
+    'ram_too_many_modules' => ':modules-module kit does not fit — motherboard only has :slots slots',
+    'motherboard_not_enough_slots' => 'Only :slots memory slots available, but selected RAM kit has :modules modules',
     'ram_speed_exceeds_mb_max' => 'RAM speed (:ram_freq MHz) exceeds motherboard maximum (:mb_max MHz) — may not run at full speed',
     'mb_max_speed_exceeded' => 'Max supported RAM speed is :mb_max MHz, but selected RAM runs at :ram_freq MHz',
     'psu_form_factor_atx_case' => ':psu_type PSU may not fit this ATX case (:case_form) without an adapter bracket',

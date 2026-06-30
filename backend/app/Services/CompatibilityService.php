@@ -69,6 +69,7 @@ class CompatibilityService
       'cooler' => ComponentFilters::cooler($compatibleQuery, $selected),
       'psu' => ComponentFilters::psu($compatibleQuery, $selected),
       'ssd' => ComponentFilters::ssd($compatibleQuery, $selected),
+      'hdd' => ComponentFilters::hdd($compatibleQuery, $selected),
 
       default => $compatibleQuery,
     };
@@ -141,6 +142,18 @@ class CompatibilityService
       $issues['ram'][] = __('compatibility.ram_cpu_memory_mismatch', [
         'ram_type' => $ram->memory_type, 'cpu_type' => $cpu->memory_type,
       ]);
+    }
+
+    // ram modules vs motherboard memory slots
+    if ($ram && $mb && $ram->modules_count !== null && $mb->memory_slots !== null) {
+      if ($ram->modules_count > $mb->memory_slots) {
+        $issues['ram'][] = __('compatibility.ram_too_many_modules', [
+          'modules' => $ram->modules_count, 'slots' => $mb->memory_slots,
+        ]);
+        $issues['motherboard'][] = __('compatibility.motherboard_not_enough_slots', [
+          'slots' => $mb->memory_slots, 'modules' => $ram->modules_count,
+        ]);
+      }
     }
 
     // ram speed vs motherboard max (soft warning)

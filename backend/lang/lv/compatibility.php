@@ -22,6 +22,8 @@ return [
     'gpu_psu_wattage_too_low_specific' => 'Barošanas bloka jauda pārāk zema (:psu_wattage W pret :gpu_min_psu W nepieciešams)',
     'cpu_ram_memory_mismatch' => 'Procesors atbalsta :cpu_type, bet izvēlētā RAM ir :ram_type',
     'ram_cpu_memory_mismatch' => ':ram_type RAM nav saderīgs ar šo procesoru (:cpu_type)',
+    'ram_too_many_modules' => ':modules moduļu komplekts neietilpst — mātesplatei ir tikai :slots sloti',
+    'motherboard_not_enough_slots' => 'Pieejami tikai :slots atmiņas sloti, bet izvēlētajam RAM komplektam ir :modules moduļi',
     'ram_speed_exceeds_mb_max' => 'RAM ātrums (:ram_freq MHz) pārsniedz mātesplates maksimumu (:mb_max MHz) — var nestrādāt pilnā ātrumā',
     'mb_max_speed_exceeded' => 'Maksimālais atbalstītais RAM ātrums ir :mb_max MHz, bet izvēlētā RAM darbojas ar :ram_freq MHz',
     'psu_form_factor_atx_case' => ':psu_type barošanas bloks var neiedert šajā ATX korpusā (:case_form) bez adaptera kronšteina',
