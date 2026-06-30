@@ -156,6 +156,18 @@ class CompatibilityService
       }
     }
 
+    // ram capacity vs motherboard max memory
+    if ($ram && $mb && $ram->capacity !== null && $mb->max_memory_capacity !== null) {
+      if ($ram->capacity > $mb->max_memory_capacity) {
+        $issues['ram'][] = __('compatibility.ram_exceeds_max_capacity', [
+          'ram_capacity' => $ram->capacity, 'mb_max' => $mb->max_memory_capacity,
+        ]);
+        $issues['motherboard'][] = __('compatibility.motherboard_max_capacity_exceeded', [
+          'mb_max' => $mb->max_memory_capacity, 'ram_capacity' => $ram->capacity,
+        ]);
+      }
+    }
+
     // ram speed vs motherboard max (soft warning)
     if ($ram && $mb && $ram->frequency !== null && $mb->memory_max_speed !== null) {
       if ($ram->frequency > $mb->memory_max_speed) {

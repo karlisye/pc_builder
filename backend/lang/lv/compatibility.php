@@ -24,6 +24,8 @@ return [
     'ram_cpu_memory_mismatch' => ':ram_type RAM nav saderīgs ar šo procesoru (:cpu_type)',
     'ram_too_many_modules' => ':modules moduļu komplekts neietilpst — mātesplatei ir tikai :slots sloti',
     'motherboard_not_enough_slots' => 'Pieejami tikai :slots atmiņas sloti, bet izvēlētajam RAM komplektam ir :modules moduļi',
+    'ram_exceeds_max_capacity' => ':ram_capacity GB RAM pārsniedz mātesplates maksimumu :mb_max GB',
+    'motherboard_max_capacity_exceeded' => 'Mātesplate atbalsta līdz :mb_max GB RAM, bet izvēlētais komplekts ir :ram_capacity GB',
     'ram_speed_exceeds_mb_max' => 'RAM ātrums (:ram_freq MHz) pārsniedz mātesplates maksimumu (:mb_max MHz) — var nestrādāt pilnā ātrumā',
     'mb_max_speed_exceeded' => 'Maksimālais atbalstītais RAM ātrums ir :mb_max MHz, bet izvēlētā RAM darbojas ar :ram_freq MHz',
     'psu_form_factor_atx_case' => ':psu_type barošanas bloks var neiedert šajā ATX korpusā (:case_form) bez adaptera kronšteina',

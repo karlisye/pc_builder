@@ -52,6 +52,14 @@ class ComponentFilters
       });
     }
 
+    // motherboard max memory must accommodate the RAM kit capacity
+    if (($ram = $selected['ram'] ?? null)?->capacity !== null) {
+      $query->where(function (Builder $q) use ($ram) {
+        $q->whereNull('max_memory_capacity')
+          ->orWhere('max_memory_capacity', '>=', $ram->capacity);
+      });
+    }
+
     if ($case = $selected['case'] ?? null) {
       self::applyFormFactorFilter($query, $case->form_factor, side: 'motherboard');
     }
@@ -77,6 +85,14 @@ class ComponentFilters
       $query->where(function (Builder $q) use ($mb) {
         $q->whereNull('modules_count')
           ->orWhere('modules_count', '<=', $mb->memory_slots);
+      });
+    }
+
+    // kit capacity must not exceed motherboard max memory
+    if (($mb = $selected['motherboard'] ?? null)?->max_memory_capacity !== null) {
+      $query->where(function (Builder $q) use ($mb) {
+        $q->whereNull('capacity')
+          ->orWhere('capacity', '<=', $mb->max_memory_capacity);
       });
     }
 
