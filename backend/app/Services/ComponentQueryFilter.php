@@ -47,6 +47,11 @@ class ComponentQueryFilter
       }
     }
 
+    // brand filter
+    if (! empty($filters['brand'])) {
+      $query->where('brand', $filters['brand']);
+    }
+
     // search by name
     if (! empty($filters['search'])) {
       $searchTerms = array_filter(explode(' ', $filters['search']));
@@ -81,6 +86,8 @@ class ComponentQueryFilter
       'cooler' => self::cooler($query, $filters),
       'psu' => self::psu($query, $filters),
       'ssd' => self::ssd($query, $filters),
+      'hdd' => self::hdd($query, $filters),
+      'fan' => self::fan($query, $filters),
       default => $query,
     };
   }
@@ -89,6 +96,12 @@ class ComponentQueryFilter
   {
     if (! empty($f['socket']))
       $query->where('socket', $f['socket']);
+
+    if (! empty($f['memory_type']))
+      $query->where(function (Builder $q) use ($f) {
+        $q->where('memory_type', $f['memory_type'])
+          ->orWhere('memory_type', 'DDR4/DDR5');
+      });
 
     if (isset($f['cores']) && is_numeric($f['cores']))
       $query->where('cores', (int) $f['cores']);
@@ -127,17 +140,26 @@ class ComponentQueryFilter
     if (! empty($f['memory_type']))
       $query->where('memory_type', $f['memory_type']);
 
+    if (isset($f['modules_count']) && is_numeric($f['modules_count']))
+      $query->where('modules_count', (int) $f['modules_count']);
+
     if (isset($f['capacity']) && is_numeric($f['capacity']))
       $query->where('capacity', (int) $f['capacity']);
 
     if (isset($f['frequency']) && is_numeric($f['frequency']))
       $query->where('frequency', (int) $f['frequency']);
 
+    if (isset($f['xmp']) && $f['xmp'] !== '')
+      $query->where('xmp', filter_var($f['xmp'], FILTER_VALIDATE_BOOLEAN));
+
     return $query;
   }
 
   private static function gpu(Builder $query, array $f): Builder
   {
+    if (! empty($f['gpu_family']))
+      $query->where('gpu_family', $f['gpu_family']);
+
     if (isset($f['vram']) && is_numeric($f['vram']))
       $query->where('vram', (int) $f['vram']);
 
@@ -152,6 +174,9 @@ class ComponentQueryFilter
     if (! empty($f['form_factor']))
       $query->where('form_factor', $f['form_factor']);
 
+    if (isset($f['psu_included']) && $f['psu_included'] !== '')
+      $query->where('psu_included', filter_var($f['psu_included'], FILTER_VALIDATE_BOOLEAN));
+
     return $query;
   }
 
@@ -159,6 +184,31 @@ class ComponentQueryFilter
   {
     if (isset($f['tdp_support']) && is_numeric($f['tdp_support']))
       $query->where('tdp_support', '>=', (int) $f['tdp_support']);
+
+    if (isset($f['fan_size_mm']) && is_numeric($f['fan_size_mm']))
+      $query->where('fan_size_mm', (int) $f['fan_size_mm']);
+
+    return $query;
+  }
+
+  private static function hdd(Builder $query, array $f): Builder
+  {
+    if (isset($f['capacity']) && is_numeric($f['capacity']))
+      $query->where('capacity', (int) $f['capacity']);
+
+    if (! empty($f['interface']))
+      $query->where('interface', $f['interface']);
+
+    return $query;
+  }
+
+  private static function fan(Builder $query, array $f): Builder
+  {
+    if (isset($f['size_mm']) && is_numeric($f['size_mm']))
+      $query->where('size_mm', (int) $f['size_mm']);
+
+    if (isset($f['units_in_package']) && is_numeric($f['units_in_package']))
+      $query->where('units_in_package', (int) $f['units_in_package']);
 
     return $query;
   }
@@ -176,6 +226,9 @@ class ComponentQueryFilter
 
     if (! empty($f['psu_type']))
       $query->where('psu_type', $f['psu_type']);
+
+    if (isset($f['pcie_5']) && $f['pcie_5'] !== '')
+      $query->where('pcie_5', filter_var($f['pcie_5'], FILTER_VALIDATE_BOOLEAN));
 
     return $query;
   }

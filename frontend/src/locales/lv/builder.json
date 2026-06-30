@@ -101,6 +101,7 @@
     "compatibleOnly": "Tikai saderīgi",
     "clearFilters": "Notīrīt filtrus",
     "labels": {
+      "brand": "Zīmols",
       "socket": "Ligzda",
       "cores": "Kodoli",
       "integrated_graphics": "Iebūvēta grafika",
@@ -118,8 +119,16 @@
       "efficiency_rating": "Efektivitātes klase",
       "modular": "Modulārs",
       "psu_type": "Barošanas bloka tips",
+      "pcie_5": "PCIe 5.0 savienotājs",
+      "modules_count": "Komplekta lielums",
+      "xmp": "XMP/EXPO",
+      "gpu_family": "GPU zīmols",
       "type": "Tips",
-      "interface": "Interfeiss"
+      "interface": "Interfeiss",
+      "fan_size_mm": "Ventilatora izmērs (mm)",
+      "size_mm": "Izmērs (mm)",
+      "units_in_package": "Iepakojuma lielums",
+      "psu_included": "Barošanas bloks iekļauts"
     }
   },
   "buildDesc": {

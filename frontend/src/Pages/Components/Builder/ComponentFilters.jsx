@@ -4,14 +4,25 @@ import axios from "axios";
 import { useBuilder } from "../../../Contexts/BuilderContext";
 import { ArrowIcon } from "../Common/Icons";
 
+const BOOLEAN_FILTERS = new Set([
+  'integrated_graphics',
+  'cooler_included',
+  'wifi',
+  'xmp',
+  'pcie_5',
+  'psu_included',
+]);
+
 const FILTER_CONFIG = {
-  cpu: ["socket", "cores", "integrated_graphics", "cooler_included"],
+  cpu: ["socket", "memory_type", "cores", "integrated_graphics", "cooler_included"],
   motherboard: ["socket", "chipset", "form_factor", "memory_type", "wifi"],
-  ram: ["memory_type", "capacity", "frequency"],
-  gpu: ["vram", "min_psu"],
-  case: ["form_factor"],
-  cooler: ["tdp_support"],
-  psu: ["wattage", "efficiency_rating", "modular", "psu_type"],
+  ram: ["memory_type", "modules_count", "capacity", "frequency", "xmp"],
+  gpu: ["gpu_family", "vram", "min_psu"],
+  case: ["form_factor", "psu_included"],
+  cooler: ["tdp_support", "fan_size_mm"],
+  hdd: ["capacity", "interface"],
+  fan: ["size_mm", "units_in_package"],
+  psu: ["wattage", "efficiency_rating", "modular", "psu_type", "pcie_5"],
   ssd: ["capacity", "type", "form_factor", "interface"],
 };
 
@@ -110,6 +121,19 @@ const ComponentFilters = () => {
           }
         />
 
+        {availableFilters['brand']?.length > 0 && (
+          <select
+            value={filters['brand'] ?? ''}
+            onChange={(e) => updateFilter('brand', e.target.value || undefined)}
+            className="bg-secondary-light p-2 text-text outline-border focus:outline-1"
+          >
+            <option value="">{t('componentFilters.labels.brand')}: {t('componentFilters.all')}</option>
+            {availableFilters['brand'].map((value) => (
+              <option key={value} value={value}>{value}</option>
+            ))}
+          </select>
+        )}
+
         {activeColumns.map((column) => {
           const values = availableFilters[column] ?? [];
           if (values.length === 0) return null;
@@ -129,10 +153,12 @@ const ComponentFilters = () => {
               </option>
               {values.map((value) => (
                 <option key={value} value={value}>
-                  {value === true || value === 1
-                    ? t("componentFilters.yes")
-                    : value === false || value === 0
-                      ? t("componentFilters.no")
+                  {BOOLEAN_FILTERS.has(column)
+                    ? (value === true || value === 1 || value === '1'
+                        ? t("componentFilters.yes")
+                        : t("componentFilters.no"))
+                    : column === 'gpu_family'
+                      ? String(value).toUpperCase()
                       : value}
                 </option>
               ))}
