@@ -103,8 +103,10 @@ class ComponentQueryFilter
           ->orWhere('memory_type', 'DDR4/DDR5');
       });
 
-    if (isset($f['cores']) && is_numeric($f['cores']))
-      $query->where('cores', (int) $f['cores']);
+    if (isset($f['cores_min']) && is_numeric($f['cores_min']))
+      $query->where('cores', '>=', (int) $f['cores_min']);
+    if (isset($f['cores_max']) && is_numeric($f['cores_max']))
+      $query->where('cores', '<=', (int) $f['cores_max']);
 
     if (isset($f['integrated_graphics']) && $f['integrated_graphics'] !== '')
       $query->where('integrated_graphics', filter_var($f['integrated_graphics'], FILTER_VALIDATE_BOOLEAN));
@@ -143,8 +145,10 @@ class ComponentQueryFilter
     if (isset($f['modules_count']) && is_numeric($f['modules_count']))
       $query->where('modules_count', (int) $f['modules_count']);
 
-    if (isset($f['capacity']) && is_numeric($f['capacity']))
-      $query->where('capacity', (int) $f['capacity']);
+    if (isset($f['capacity_min']) && is_numeric($f['capacity_min']))
+      $query->where('capacity', '>=', (int) $f['capacity_min']);
+    if (isset($f['capacity_max']) && is_numeric($f['capacity_max']))
+      $query->where('capacity', '<=', (int) $f['capacity_max']);
 
     if (isset($f['frequency']) && is_numeric($f['frequency']))
       $query->where('frequency', (int) $f['frequency']);
@@ -160,11 +164,15 @@ class ComponentQueryFilter
     if (! empty($f['gpu_family']))
       $query->where('gpu_family', $f['gpu_family']);
 
-    if (isset($f['vram']) && is_numeric($f['vram']))
-      $query->where('vram', (int) $f['vram']);
+    if (isset($f['vram_min']) && is_numeric($f['vram_min']))
+      $query->where('vram', '>=', (int) $f['vram_min']);
+    if (isset($f['vram_max']) && is_numeric($f['vram_max']))
+      $query->where('vram', '<=', (int) $f['vram_max']);
 
-    if (isset($f['min_psu']) && is_numeric($f['min_psu']))
-      $query->where('min_psu', '<=', (int) $f['min_psu']);
+    if (isset($f['min_psu_min']) && is_numeric($f['min_psu_min']))
+      $query->where('min_psu', '>=', (int) $f['min_psu_min']);
+    if (isset($f['min_psu_max']) && is_numeric($f['min_psu_max']))
+      $query->where('min_psu', '<=', (int) $f['min_psu_max']);
 
     return $query;
   }
@@ -182,19 +190,25 @@ class ComponentQueryFilter
 
   private static function cooler(Builder $query, array $f): Builder
   {
-    if (isset($f['tdp_support']) && is_numeric($f['tdp_support']))
-      $query->where('tdp_support', '>=', (int) $f['tdp_support']);
+    if (isset($f['tdp_support_min']) && is_numeric($f['tdp_support_min']))
+      $query->where('tdp_support', '>=', (int) $f['tdp_support_min']);
+    if (isset($f['tdp_support_max']) && is_numeric($f['tdp_support_max']))
+      $query->where('tdp_support', '<=', (int) $f['tdp_support_max']);
 
-    if (isset($f['fan_size_mm']) && is_numeric($f['fan_size_mm']))
-      $query->where('fan_size_mm', (int) $f['fan_size_mm']);
+    if (isset($f['fan_size_mm_min']) && is_numeric($f['fan_size_mm_min']))
+      $query->where('fan_size_mm', '>=', (int) $f['fan_size_mm_min']);
+    if (isset($f['fan_size_mm_max']) && is_numeric($f['fan_size_mm_max']))
+      $query->where('fan_size_mm', '<=', (int) $f['fan_size_mm_max']);
 
     return $query;
   }
 
   private static function hdd(Builder $query, array $f): Builder
   {
-    if (isset($f['capacity']) && is_numeric($f['capacity']))
-      $query->where('capacity', (int) $f['capacity']);
+    if (isset($f['capacity_min']) && is_numeric($f['capacity_min']))
+      $query->where('capacity', '>=', (int) $f['capacity_min']);
+    if (isset($f['capacity_max']) && is_numeric($f['capacity_max']))
+      $query->where('capacity', '<=', (int) $f['capacity_max']);
 
     if (! empty($f['interface']))
       $query->where('interface', $f['interface']);
@@ -204,8 +218,10 @@ class ComponentQueryFilter
 
   private static function fan(Builder $query, array $f): Builder
   {
-    if (isset($f['size_mm']) && is_numeric($f['size_mm']))
-      $query->where('size_mm', (int) $f['size_mm']);
+    if (isset($f['size_mm_min']) && is_numeric($f['size_mm_min']))
+      $query->where('size_mm', '>=', (int) $f['size_mm_min']);
+    if (isset($f['size_mm_max']) && is_numeric($f['size_mm_max']))
+      $query->where('size_mm', '<=', (int) $f['size_mm_max']);
 
     if (isset($f['units_in_package']) && is_numeric($f['units_in_package']))
       $query->where('units_in_package', (int) $f['units_in_package']);
@@ -215,8 +231,10 @@ class ComponentQueryFilter
 
   private static function psu(Builder $query, array $f): Builder
   {
-    if (isset($f['wattage']) && is_numeric($f['wattage']))
-      $query->where('wattage', '>=', (int) $f['wattage']);
+    if (isset($f['wattage_min']) && is_numeric($f['wattage_min']))
+      $query->where('wattage', '>=', (int) $f['wattage_min']);
+    if (isset($f['wattage_max']) && is_numeric($f['wattage_max']))
+      $query->where('wattage', '<=', (int) $f['wattage_max']);
 
     if (! empty($f['efficiency_rating']))
       $query->where('efficiency_rating', $f['efficiency_rating']);
@@ -235,8 +253,10 @@ class ComponentQueryFilter
 
   private static function ssd(Builder $query, array $f): Builder
   {
-    if (isset($f['capacity']) && is_numeric($f['capacity']))
-      $query->where('capacity', (int) $f['capacity']);
+    if (isset($f['capacity_min']) && is_numeric($f['capacity_min']))
+      $query->where('capacity', '>=', (int) $f['capacity_min']);
+    if (isset($f['capacity_max']) && is_numeric($f['capacity_max']))
+      $query->where('capacity', '<=', (int) $f['capacity_max']);
 
     if (! empty($f['type']))
       $query->where('type', $f['type']);

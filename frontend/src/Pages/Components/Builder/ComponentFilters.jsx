@@ -3,6 +3,18 @@ import { useTranslation } from "react-i18next";
 import axios from "axios";
 import { useBuilder } from "../../../Contexts/BuilderContext";
 import { ArrowIcon } from "../Common/Icons";
+import RangeSlider from "./RangeSlider";
+
+const RANGE_FILTER_FIELDS = new Set([
+  'cores',
+  'capacity',
+  'vram',
+  'min_psu',
+  'wattage',
+  'size_mm',
+  'fan_size_mm',
+  'tdp_support',
+]);
 
 const BOOLEAN_FILTERS = new Set([
   'integrated_graphics',
@@ -136,7 +148,7 @@ const ComponentFilters = () => {
 
         {activeColumns.map((column) => {
           const values = availableFilters[column] ?? [];
-          if (values.length === 0) return null;
+          if (values.length === 0 || RANGE_FILTER_FIELDS.has(column)) return null;
 
           return (
             <select
@@ -163,6 +175,35 @@ const ComponentFilters = () => {
                 </option>
               ))}
             </select>
+          );
+        })}
+
+        {activeColumns.map((column) => {
+          if (!RANGE_FILTER_FIELDS.has(column)) return null;
+          const values = availableFilters[column] ?? [];
+          if (values.length < 2) return null;
+          const boundsMin = Math.min(...values);
+          const boundsMax = Math.max(...values);
+          const curMin = Number(filters[`${column}_min`] ?? boundsMin);
+          const curMax = Number(filters[`${column}_max`] ?? boundsMax);
+          return (
+            <RangeSlider
+              key={column}
+              label={t(`componentFilters.labels.${column}`, column)}
+              values={values}
+              minValue={curMin}
+              maxValue={curMax}
+              onChange={(newMin, newMax) => {
+                setFilters((prev) => {
+                  const next = { ...prev };
+                  if (newMin <= boundsMin) delete next[`${column}_min`];
+                  else next[`${column}_min`] = newMin;
+                  if (newMax >= boundsMax) delete next[`${column}_max`];
+                  else next[`${column}_max`] = newMax;
+                  return next;
+                });
+              }}
+            />
           );
         })}
 

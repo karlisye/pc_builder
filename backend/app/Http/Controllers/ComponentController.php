@@ -94,7 +94,8 @@ class ComponentController extends Controller
       // cpu
       'socket',
       'memory_type',
-      'cores',
+      'cores_min',
+      'cores_max',
       'integrated_graphics',
       'cooler_included',
       // motherboard
@@ -103,17 +104,24 @@ class ComponentController extends Controller
       'wifi',
       // ram
       'modules_count',
-      'capacity',
+      'capacity_min',
+      'capacity_max',
       'frequency',
       'xmp',
       // gpu
       'gpu_family',
-      'vram',
-      'min_psu',
+      'vram_min',
+      'vram_max',
+      'min_psu_min',
+      'min_psu_max',
       // cooler
-      'tdp_support',
+      'tdp_support_min',
+      'tdp_support_max',
+      'fan_size_mm_min',
+      'fan_size_mm_max',
       // psu
-      'wattage',
+      'wattage_min',
+      'wattage_max',
       'efficiency_rating',
       'modular',
       'psu_type',
@@ -123,10 +131,9 @@ class ComponentController extends Controller
       'interface',
       // hdd (interface shared with ssd)
       // fan
-      'size_mm',
+      'size_mm_min',
+      'size_mm_max',
       'units_in_package',
-      // cooler
-      'fan_size_mm',
       // case
       'psu_included',
     ]);
