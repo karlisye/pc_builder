@@ -83,6 +83,7 @@
   "componentFilters": {
     "searchPlaceholder": "Meklēt {{component}}...",
     "sort": {
+      "recommended": "Ieteicamais",
       "priceAsc": "Cena: no zemākās",
       "priceDesc": "Cena: no augstākās",
       "nameAsc": "Nosaukums: A līdz Z",

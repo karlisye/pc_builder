@@ -83,6 +83,7 @@
   "componentFilters": {
     "searchPlaceholder": "Search {{component}}...",
     "sort": {
+      "recommended": "Recommended",
       "priceAsc": "Price: Low to High",
       "priceDesc": "Price: High to Low",
       "nameAsc": "Name: A to Z",

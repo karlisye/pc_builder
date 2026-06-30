@@ -79,6 +79,7 @@ const ComponentFilters = () => {
           onChange={(e) => setSort(e.target.value)}
           className="bg-secondary-light p-2 text-text outline-border focus:outline-1"
         >
+          <option value="">{t("componentFilters.sort.recommended")}</option>
           <option value="price_asc">{t("componentFilters.sort.priceAsc")}</option>
           <option value="price_desc">{t("componentFilters.sort.priceDesc")}</option>
           <option value="name_asc">{t("componentFilters.sort.nameAsc")}</option>

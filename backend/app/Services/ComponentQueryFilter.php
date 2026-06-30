@@ -12,7 +12,7 @@ class ComponentQueryFilter
     $query = ComponentListingJoin::apply($query);
     $query = self::applyGlobal($query, $filters, $compatibleIds);
     $query = self::applyPerType($query, $type, $filters);
-    $query = self::applySort($query, $filters['sort'] ?? null, $compatibleIds);
+    $query = self::applySort($query, $type, $filters['sort'] ?? null, $compatibleIds);
 
     return $query;
   }
@@ -197,7 +197,7 @@ class ComponentQueryFilter
     return $query;
   }
 
-  private static function applySort(Builder $query, ?string $sort, array $compatibleIds = []): Builder
+  private static function applySort(Builder $query, string $type, ?string $sort, array $compatibleIds = []): Builder
   {
     // display compatible first
     if (!empty($compatibleIds)) {
@@ -214,7 +214,12 @@ class ComponentQueryFilter
       'price_desc' => $query->orderByDesc('listing_agg.listing_price'),
       'name_asc' => $query->orderBy('name'),
       'name_desc' => $query->orderByDesc('name'),
-      default => $query->orderBy('listing_agg.listing_price'),
+      default => self::defaultSort($query, $type),
     };
+  }
+
+  private static function defaultSort(Builder $query, string $type): Builder
+  {
+    return $query->orderBy('ean');
   }
 }

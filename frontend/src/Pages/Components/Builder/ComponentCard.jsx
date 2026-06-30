@@ -22,7 +22,7 @@ const ComponentCard = ({ component, name }) => {
     setCurrentCompToAdd(name);
     setFilters({});
     setSearch('');
-    setSort('price_asc');
+    setSort('');
   };
 
   const handleRemove = () => {

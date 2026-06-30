@@ -41,7 +41,7 @@ const Builder = () => {
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [buildIssues, setBuildIssues] = useState({});
   const [filters, setFilters] = useState({});
-  const [sort, setSort] = useState('price_asc');
+  const [sort, setSort] = useState('');
   const [buildType, setBuildType] = useState('');
   const [restoredDraft, setRestoredDraft] = useState(false);
   const [viewingComponent, setViewingComponent] = useState(null);
@@ -262,7 +262,7 @@ const Builder = () => {
                       setCurrentCompToAdd(viewingComponent.name);
                       setFilters({});
                       setSearch('');
-                      setSort('price_asc');
+                      setSort('');
                       setViewingComponent(null);
                     }}
                   >
