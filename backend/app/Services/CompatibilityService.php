@@ -70,7 +70,6 @@ class CompatibilityService
       'psu' => ComponentFilters::psu($compatibleQuery, $selected),
       'ssd' => ComponentFilters::ssd($compatibleQuery, $selected),
       'hdd' => ComponentFilters::hdd($compatibleQuery, $selected),
-
       default => $compatibleQuery,
     };
 

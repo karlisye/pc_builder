@@ -297,10 +297,10 @@ const Builder = () => {
               <ComponentCard name="GPU" component={selectedComponents.gpu} />
               <ComponentCard name="PSU" component={selectedComponents.psu} />
               <ComponentCard name="SSD" component={selectedComponents.ssd} />
-              <ComponentCard name="HDD" component={selectedComponents.hdd} />
               <ComponentCard name="Case" component={selectedComponents.case} />
-              <ComponentCard name="Fan" component={selectedComponents.fan} />
               <ComponentCard name="Cooler" component={selectedComponents.cooler} />
+              <ComponentCard name="HDD" component={selectedComponents.hdd} />
+              <ComponentCard name="Fan" component={selectedComponents.fan} />
             </div>
           )}
         </div>
