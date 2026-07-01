@@ -3,6 +3,8 @@
 use App\Models\Cpu;
 use App\Models\Gpu;
 use App\Models\Motherboard;
+use App\Models\PcCase;
+use App\Models\Psu;
 use App\Models\Ram;
 use App\Models\Ssd;
 
@@ -302,4 +304,80 @@ it('auto-generated psu wattage is capped near what the build needs, not maxed ou
   $generousCeiling = max($requiredWattage * 3, 900);
 
   expect($wattage)->toBeLessThanOrEqual($generousCeiling);
+});
+
+it('auto-generated cpu+gpu combo does not exceed a preselected weak psu', function () {
+  $psu = Psu::whereHas('listings')->whereNotNull('wattage')->where('wattage', '<=', 450)->orderByDesc('wattage')->first();
+
+  if (!$psu) {
+    test()->markTestSkipped('No weak PSU found in DB');
+  }
+
+  $res = generate(basePayload(5000, ['type' => 'gaming'], ['psu' => $psu->product_code]))
+    ->assertStatus(200)
+    ->assertJsonPath('success', true);
+
+  $cpuTdp = $res->json('build.cpu.tdp');
+  $gpuTdp = $res->json('build.gpu.tdp');
+  $gpuMinPsu = $res->json('build.gpu.min_psu');
+  $ramModules = $res->json('build.ram.modules_count') ?? 0;
+
+  expect($cpuTdp)->not->toBeNull();
+  expect($gpuTdp)->not->toBeNull();
+
+  // fan is picked after psu/gpu so its few watts aren't known at filter
+  // time - allow a small tolerance for that instead of pinning to the exact
+  // formula (see design-decisions.md for why this residual gap is accepted)
+  $required = max(($cpuTdp + $gpuTdp + $ramModules * 5) * 1.3, $gpuMinPsu ?? 0);
+
+  expect($required)->toBeLessThanOrEqual($psu->wattage * 1.15);
+});
+
+it('auto-generated cpu does not exceed psu capacity when a power-hungry gpu is preselected', function () {
+  $gpu = Gpu::whereHas('listings')->whereNotNull('tdp')->whereNotNull('min_psu')->orderByDesc('tdp')->first();
+  $psu = Psu::whereHas('listings')->whereNotNull('wattage')->where('wattage', '>=', $gpu?->min_psu ?? 0)->orderBy('wattage')->first();
+
+  if (!$gpu || !$psu) {
+    test()->markTestSkipped('No high-tdp GPU / matching PSU pair found in DB');
+  }
+
+  $res = generate(basePayload(20000, ['type' => 'gaming'], ['gpu' => $gpu->product_code, 'psu' => $psu->product_code]))
+    ->assertStatus(200)
+    ->assertJsonPath('success', true);
+
+  $cpuTdp = $res->json('build.cpu.tdp');
+  $ramModules = $res->json('build.ram.modules_count') ?? 0;
+
+  expect($cpuTdp)->not->toBeNull();
+
+  $required = max(($cpuTdp + $gpu->tdp + $ramModules * 5) * 1.3, $gpu->min_psu ?? 0);
+
+  expect($required)->toBeLessThanOrEqual($psu->wattage * 1.15);
+});
+
+it('auto-generated cpu+gpu combo does not exceed a case with a weak built-in psu', function () {
+  $case = PcCase::whereHas('listings')->where('psu_included', 1)->whereNotNull('psu_wattage')->where('psu_wattage', '<=', 550)->orderByDesc('psu_wattage')->first();
+
+  if (!$case) {
+    test()->markTestSkipped('No case with a weak built-in PSU found in DB');
+  }
+
+  $res = generate(basePayload(5000, ['type' => 'gaming'], ['case' => $case->product_code]))
+    ->assertStatus(200)
+    ->assertJsonPath('success', true);
+
+  $cpuTdp = $res->json('build.cpu.tdp');
+  $gpuTdp = $res->json('build.gpu.tdp');
+  $gpuMinPsu = $res->json('build.gpu.min_psu');
+  $ramModules = $res->json('build.ram.modules_count') ?? 0;
+
+  if ($gpuTdp === null) {
+    // integrated-graphics build - no wattage constraint to check
+    expect(true)->toBeTrue();
+    return;
+  }
+
+  $required = max(($cpuTdp + $gpuTdp + $ramModules * 5) * 1.3, $gpuMinPsu ?? 0);
+
+  expect($required)->toBeLessThanOrEqual($case->psu_wattage * 1.15);
 });

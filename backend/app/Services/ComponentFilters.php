@@ -31,6 +31,26 @@ class ComponentFilters
       });
     }
 
+    // combined cpu+gpu draw must fit within the selected/case-included PSU
+    // (mirrors the formula in psu(), case(), and validateBuild())
+    $gpu = $selected['gpu'] ?? null;
+    $effectiveWattage = ($selected['psu'] ?? null)?->wattage
+      ?? (($selected['case'] ?? null)?->psu_included ? ($selected['case']->psu_wattage ?? null) : null);
+
+    if ($effectiveWattage !== null && $gpu?->tdp !== null) {
+      $ram = $selected['ram'] ?? null;
+      $fan = $selected['fan'] ?? null;
+      $ramWattage = ($ram?->modules_count ?? 0) * 5;
+      $fanWattage = ($fan?->units_in_package ?? 0) * 3;
+
+      $maxCpuTdp = ($effectiveWattage / 1.3) - $gpu->tdp - $ramWattage - $fanWattage;
+
+      $query->where(function (Builder $q) use ($maxCpuTdp) {
+        $q->whereNull('tdp')
+          ->orWhere('tdp', '<=', $maxCpuTdp);
+      });
+    }
+
     return $query;
   }
 
@@ -132,6 +152,24 @@ class ComponentFilters
         $q->whereNull('min_psu')
           ->orWhere('min_psu', '<=', $effectiveWattage);
       });
+
+      // combined cpu+gpu draw must also fit within the selected/case-included
+      // PSU, not just the GPU's own min_psu recommendation (mirrors the
+      // formula in cpu(), psu(), case(), and validateBuild())
+      $cpu = $selected['cpu'] ?? null;
+      if ($cpu?->tdp !== null) {
+        $ram = $selected['ram'] ?? null;
+        $fan = $selected['fan'] ?? null;
+        $ramWattage = ($ram?->modules_count ?? 0) * 5;
+        $fanWattage = ($fan?->units_in_package ?? 0) * 3;
+
+        $maxGpuTdp = ($effectiveWattage / 1.3) - $cpu->tdp - $ramWattage - $fanWattage;
+
+        $query->where(function (Builder $q) use ($maxGpuTdp) {
+          $q->whereNull('tdp')
+            ->orWhere('tdp', '<=', $maxGpuTdp);
+        });
+      }
     }
 
     // if PSU lacks 16-pin connector, filter out GPUs that require it
