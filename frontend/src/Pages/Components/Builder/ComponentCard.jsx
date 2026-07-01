@@ -179,7 +179,7 @@ const ComponentCard = ({ component, name }) => {
                 </span>
               ) : (
                 !isOptional && (
-                  <span className="absolute top-2 left-2 text-danger text-lg leading-none">*</span>
+                  <span className="absolute top-2 left-2 text-primary text-lg leading-none">*</span>
                 )
               )}
               <span className="text-3xl font-semibold text-muted">{displayName}</span>

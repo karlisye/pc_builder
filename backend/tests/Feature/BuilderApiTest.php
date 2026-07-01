@@ -92,13 +92,13 @@ it('high budget rendering build succeeds', function () {
 
 // budget constraints
 it('selected components exceeding budget returns error', function () {
-  $cpu = Cpu::where('price', '>', 400)->whereNotNull('price')->first();
+  $cpu = Cpu::whereHas('listings', fn($q) => $q->where('price', '>', 400))->first();
 
   if (!$cpu) {
     test()->markTestSkipped('No CPU over €400 found in DB');
   }
 
-  generate(basePayload(300, ['type' => 'office'], ['cpu' => $cpu->dateks_id]))
+  generate(basePayload(300, ['type' => 'office'], ['cpu' => $cpu->product_code]))
     ->assertStatus(400)
     ->assertJsonPath('success', false);
 });
@@ -109,7 +109,7 @@ it('nvidia preference returns nvidia gpu', function () {
     ->assertStatus(200)
     ->assertJsonPath('success', true);
 
-  expect($res->json('build.gpu.type'))->toBe('nvidia');
+  expect($res->json('build.gpu.gpu_family'))->toBe('nvidia');
 });
 
 it('amd preference returns amd gpu', function () {
@@ -117,7 +117,7 @@ it('amd preference returns amd gpu', function () {
     ->assertStatus(200)
     ->assertJsonPath('success', true);
 
-  expect($res->json('build.gpu.type'))->toBe('amd');
+  expect($res->json('build.gpu.gpu_family'))->toBe('amd');
 });
 
 it('amd cpu preference returns amd cpu', function () {
@@ -125,7 +125,7 @@ it('amd cpu preference returns amd cpu', function () {
     ->assertStatus(200)
     ->assertJsonPath('success', true);
 
-  expect($res->json('build.cpu.type'))->toBe('amd');
+  expect(strtolower($res->json('build.cpu.brand')))->toBe('amd');
 });
 
 it('intel cpu preference returns intel cpu', function () {
@@ -133,7 +133,7 @@ it('intel cpu preference returns intel cpu', function () {
     ->assertStatus(200)
     ->assertJsonPath('success', true);
 
-  expect($res->json('build.cpu.type'))->toBe('intel');
+  expect(strtolower($res->json('build.cpu.brand')))->toBe('intel');
 });
 
 
@@ -187,13 +187,13 @@ it('motherboard and ram have matching memory type', function () {
 
 // warnings
 it('low ram triggers warning', function () {
-  $ram = Ram::where('capacity', '<', 8)->where('memory_type', 'DDR4')->whereNotNull('price')->first();
+  $ram = Ram::where('capacity', '<', 8)->where('memory_type', 'DDR4')->whereHas('listings')->first();
 
   if (!$ram) {
     test()->markTestSkipped('No low capacity RAM found in DB');
   }
 
-  $res = generate(basePayload(2000, ['type' => 'gaming'], ['ram' => $ram->dateks_id]))
+  $res = generate(basePayload(2000, ['type' => 'gaming'], ['ram' => $ram->product_code]))
     ->assertStatus(200);
 
   $hasRamWarning = collect($res->json('warnings'))
@@ -203,13 +203,13 @@ it('low ram triggers warning', function () {
 });
 
 it('low ram on specific type triggers warning', function () {
-  $ram = Ram::where('capacity', '<', 32)->where('memory_type', 'DDR5')->whereNotNull('price')->first();
+  $ram = Ram::where('capacity', '<', 32)->where('memory_type', 'DDR5')->whereHas('listings')->first();
 
   if (!$ram) {
     test()->markTestSkipped('No 32GB RAM found in DB');
   }
 
-  $res = generate(basePayload(2000, ['type' => 'rendering'], ['ram' => $ram->dateks_id]))
+  $res = generate(basePayload(2000, ['type' => 'rendering'], ['ram' => $ram->product_code]))
     ->assertStatus(200);
 
   $hasRamWarning = collect($res->json('warnings'))
@@ -219,13 +219,13 @@ it('low ram on specific type triggers warning', function () {
 });
 
 it('low vram triggers warning', function () {
-  $gpu = Gpu::where('vram', '<', 8)->whereNotNull('price')->first();
+  $gpu = Gpu::where('vram', '<', 8)->whereHas('listings')->first();
 
   if (!$gpu) {
     test()->markTestSkipped('No low vram GPU found in DB');
   }
 
-  $res = generate(basePayload(1200, ['type' => 'gaming'], ['gpu' => $gpu->dateks_id]))
+  $res = generate(basePayload(1200, ['type' => 'gaming'], ['gpu' => $gpu->product_code]))
     ->assertStatus(200);
 
   $hasRamWarning = collect($res->json('warnings'))
@@ -235,13 +235,13 @@ it('low vram triggers warning', function () {
 });
 
 it('low storage triggers warning', function () {
-  $ssd = Ssd::where('capacity', '<', 256)->whereNotNull('price')->where('price', '<', '200')->first();
+  $ssd = Ssd::where('capacity', '<', 256)->whereHas('listings', fn($q) => $q->where('price', '<', 200))->first();
 
   if (!$ssd) {
     test()->markTestSkipped('No low capacity SSD found in DB');
   }
 
-  $res = generate(basePayload(1200, ['type' => 'gaming'], ['ssd' => $ssd->dateks_id]))
+  $res = generate(basePayload(1200, ['type' => 'gaming'], ['ssd' => $ssd->product_code]))
     ->assertStatus(200);
 
   $hasRamWarning = collect($res->json('warnings'))
@@ -261,14 +261,18 @@ it('zero budget returns 422', function () {
 });
 
 it('invalid selected component id returns 400', function () {
-  generate(basePayload(1000, ['type' => 'gaming'], ['cpu' => 999999]))
+  generate(basePayload(1000, ['type' => 'gaming'], ['cpu' => 'nonexistent-product-code']))
     ->assertStatus(400);
 });
 
 it('incompatible components returns 400', function () {
-  $ram = Ram::where('memory_type', 'DDR5')->whereNotNull('price')->first();
-  $motherboard = Motherboard::where('memory_type', 'DDR4')->whereNotNull('price')->first();
+  $ram = Ram::where('memory_type', 'DDR5')->whereHas('listings')->first();
+  $motherboard = Motherboard::where('memory_type', 'DDR4')->whereHas('listings')->first();
 
-  generate(basePayload(1000, ['type' => 'gaming'], ['ram' => $ram->id, 'motherboard' => $motherboard->id]))
+  if (!$ram || !$motherboard) {
+    test()->markTestSkipped('No DDR5 RAM / DDR4 motherboard pair found in DB');
+  }
+
+  generate(basePayload(1000, ['type' => 'gaming'], ['ram' => $ram->product_code, 'motherboard' => $motherboard->product_code]))
     ->assertStatus(400);
 });
