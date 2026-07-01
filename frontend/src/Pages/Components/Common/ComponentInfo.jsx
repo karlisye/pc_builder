@@ -80,7 +80,6 @@ const ComponentInfo = ({ component }) => {
               'image_url',
               'scraped_at',
               'selected',
-              'compatibility_warning',
               'compatible',
               'out_of_stock',
               'listings',

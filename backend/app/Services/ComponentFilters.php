@@ -406,7 +406,8 @@ class ComponentFilters
     }
 
     if ($side === 'case') {
-      // if mb form factor unknown, just skip and show warning
+      // if mb form factor unknown, skip restricting (motherboard form factors in stock are
+      // consistently standard, unlike case form factors — see the 'motherboard' branch below)
       if (! CompatibilityHelper::isKnownMotherboardFormFactor($formFactor)) {
         return;
       }
@@ -419,9 +420,11 @@ class ComponentFilters
           ->orWhereIn('form_factor', $compatibleCases);
       });
     } elseif ($side === 'motherboard') {
-      // if case form factor unknown, just skip and show warning
+      // unrecognized case form factor (e.g. "Raspberry Pi", "UCFF 4\" x 4\"") — try to pull a known
+      // size out of the label, otherwise fall back to the smallest known size. Never leave the
+      // motherboard query unrestricted here, or a full-size board could get matched to a tiny case
       if (! CompatibilityHelper::isKnownCaseFormFactor($formFactor)) {
-        return;
+        $formFactor = CompatibilityHelper::inferKnownCaseFormFactor($formFactor) ?? 'mITX';
       }
 
       $compatibleMotherboards = CompatibilityHelper::compatibleMotherboardsFor($formFactor);

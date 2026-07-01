@@ -80,16 +80,13 @@ class CompatibilityService
 
     // e.g. if user already has cpu selected, but still wants to see cpus, will return the cpu id
     $selectedIdForType = isset($selected[$type]) ? $selected[$type]->id : null;
-    $warning  = CompatibilityHelper::exoticFormFactorWarning($selected);
     $caseHasPsu = $type === 'psu' && ($selected['case'] ?? null)?->psu_included;
 
     $paginator = $query->paginate(15);
 
-    // add the selected boolean and manual check warning to each component
-    // add compatible and out_of_stock flags to each component
-    $paginator->getCollection()->transform(function ($item) use ($selectedIdForType, $warning, $compatibleIds, $caseHasPsu) {
+    // add the selected boolean, compatible and out_of_stock flags to each component
+    $paginator->getCollection()->transform(function ($item) use ($selectedIdForType, $compatibleIds, $caseHasPsu) {
       $item->selected = ($item->id === $selectedIdForType);
-      $item->compatibility_warning = $warning;
       $item->compatible = in_array($item->id, $compatibleIds);
       $item->out_of_stock = $item->stock_status === 'out_of_stock';
       if ($caseHasPsu) {
@@ -237,9 +234,15 @@ class CompatibilityService
     }
 
     // motherboard / case form factor
-    if ($mb && $case) {
-      $compatibleCases = CompatibilityHelper::compatibleCasesFor($mb->form_factor);
-      if (!empty($compatibleCases) && !in_array($case->form_factor, $compatibleCases)) {
+    if ($mb && $case && $mb->form_factor && $case->form_factor) {
+      // unrecognized case labels (e.g. "Raspberry Pi") are treated the same way the auto-builder's
+      // filters treat them: pull a known size out of the label, or assume the smallest known size
+      $effectiveCaseFormFactor = CompatibilityHelper::isKnownCaseFormFactor($case->form_factor)
+        ? $case->form_factor
+        : (CompatibilityHelper::inferKnownCaseFormFactor($case->form_factor) ?? 'mITX');
+
+      $compatibleMotherboards = CompatibilityHelper::compatibleMotherboardsFor($effectiveCaseFormFactor);
+      if (!empty($compatibleMotherboards) && !in_array($mb->form_factor, $compatibleMotherboards)) {
         $issues['motherboard'][] = __('compatibility.motherboard_form_factor_incompatible', [
           'mb_form' => $mb->form_factor, 'case_form' => $case->form_factor,
         ]);

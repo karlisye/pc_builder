@@ -245,6 +245,41 @@ describe('Motherboard form factor with no case support', function () {
   });
 });
 
+describe('Unrecognized case form factor', function () {
+  // "Raspberry Pi" is a real scraped case form factor value — not in KNOWN_CASE_FORM_FACTORS,
+  // and with no size hint in the label, so it must fall back to the smallest known size (mITX)
+  it('flags a full-size motherboard paired with an exotic-labeled compact case', function () {
+    $case = PcCase::where('form_factor', 'Raspberry Pi')->first();
+    $mb = Motherboard::where('form_factor', 'ATX')->first();
+    if (!$case || !$mb) test()->markTestSkipped('Need a "Raspberry Pi" form factor case and an ATX motherboard');
+
+    $res = validate(['case' => $case->product_code, 'motherboard' => $mb->product_code]);
+    expect(hasIssue($res, 'motherboard'))->toBeTrue();
+    expect(hasIssue($res, 'case'))->toBeTrue();
+  });
+
+  it('does not flag a mini-ITX motherboard paired with an exotic-labeled compact case', function () {
+    $case = PcCase::where('form_factor', 'Raspberry Pi')->first();
+    $mb = Motherboard::whereIn('form_factor', ['mITX', 'Mini-ITX', 'ITX'])->first();
+    if (!$case || !$mb) test()->markTestSkipped('Need a "Raspberry Pi" form factor case and a mini-ITX motherboard');
+
+    $res = validate(['case' => $case->product_code, 'motherboard' => $mb->product_code]);
+    expect(hasIssue($res, 'motherboard'))->toBeFalse();
+    expect(hasIssue($res, 'case'))->toBeFalse();
+  });
+
+  it('auto-picks a motherboard that actually fits an exotic-labeled compact case', function () {
+    $case = PcCase::where('form_factor', 'Raspberry Pi')->first();
+    if (!$case) test()->markTestSkipped('Need a "Raspberry Pi" form factor case');
+
+    $picker = app(\App\Services\BuilderSlotPicker::class);
+    $mb = $picker->pick('motherboard', ['case' => $case], []);
+    if (!$mb) test()->markTestSkipped('No motherboard available in stock to pick');
+
+    expect(in_array($mb->form_factor, ['mITX', 'Mini-ITX', 'ITX'], true))->toBeTrue();
+  });
+});
+
 describe('Case form factor with no motherboard support', function () {
   it('flags case when no motherboard in stock fits it', function () {
     $mbFFs = Motherboard::whereNotNull('form_factor')->distinct()->pluck('form_factor');
