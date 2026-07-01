@@ -28,6 +28,7 @@ class BuilderService
 
   private const MAX_ATTEMPTS = 5;
   private const RETRY_REDUCTION = 0.02;
+  private const CASE_FANS_SUFFICIENT = 4;
 
   public function __construct(
     private readonly BuilderSlotPicker $picker
@@ -214,7 +215,7 @@ class BuilderService
 
   private function generateUnlimited(array $selected, array $preferences): array
   {
-    $orderedSlots = ['cpu', 'motherboard', 'ram', 'gpu', 'case', 'cooler', 'psu', 'ssd', 'fan'];
+    $orderedSlots = ['cpu', 'motherboard', 'ram', 'gpu', 'case', 'cooler', 'psu', 'ssd'];
     $slotsToFill = array_diff($orderedSlots, array_keys($selected));
     $build = $selected;
 
@@ -225,10 +226,12 @@ class BuilderService
       }
     }
 
-    // add fan at the end
-    $fan = $this->picker->pick('fan', $build, $preferences);
-    if ($fan) {
-      $build['fan'] = $fan;
+    // add fan at the end, unless the case already includes enough fans
+    if (! isset($build['fan']) && ! $this->shouldSkipFan($build)) {
+      $fan = $this->picker->pick('fan', $build, $preferences);
+      if ($fan) {
+        $build['fan'] = $fan;
+      }
     }
 
     $totalCost = $this->totalCost($build);
@@ -279,8 +282,17 @@ class BuilderService
       if ($slot === 'psu' && $this->shouldSkipPsu($build)) {
         return false;
       }
+      if ($slot === 'fan' && $this->shouldSkipFan($build)) {
+        return false;
+      }
       return true;
     }));
+  }
+
+  private function shouldSkipFan(array $build): bool
+  {
+    $case = $build['case'] ?? null;
+    return $case && $case->fans_included >= self::CASE_FANS_SUFFICIENT;
   }
 
   private function shouldSkipCooler(array $build): bool
@@ -443,6 +455,8 @@ class BuilderService
     $cpu = $build['cpu'] ?? null;
     $cooler = $build['cooler'] ?? null;
     $gpu = $build['gpu'] ?? null;
+    $case = $build['case'] ?? null;
+    $fan = $build['fan'] ?? null;
 
     $type = $preferences['type'] ?? 'gaming';
 
@@ -452,6 +466,10 @@ class BuilderService
 
     if ($cpu->integrated_graphics && ! $gpu && $type !== 'office') {
       $notes[] = __('builder.cpu_integrated_graphics');
+    }
+
+    if ($case && ! $fan && $case->fans_included >= self::CASE_FANS_SUFFICIENT) {
+      $notes[] = __('builder.case_includes_fans', ['count' => $case->fans_included]);
     }
 
     return $notes;

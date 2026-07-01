@@ -11,6 +11,7 @@ return [
   'larger_ssd_recommended' => 'Ieteicams lielāks SSD modernu spēļu un programmu glabāšanai.',
   'cpu_included_cooler' => 'Procesoram ir iekļauts dzesētājs, lai samazinātu izmaksas šajā budžeta līmenī.',
   'cpu_integrated_graphics' => 'Procesoram ir iebūvēta grafikas karte, lai samazinātu izmaksas šajā budžeta līmenī.',
+  'case_includes_fans' => 'Korpusam jau ir iekļauti :count ventilatori, tāpēc papildu ventilatori netika pievienoti.',
 
   'types' => [
     'gaming' => 'spēļu',
