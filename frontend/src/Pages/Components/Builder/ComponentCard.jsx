@@ -28,6 +28,7 @@ const ComponentCard = ({ component, name }) => {
     return false;
   };
   const isOptional = resolveOptional();
+  const includedInCase = name.toLowerCase() === 'psu' && !!selectedComponents.case?.psu_included;
   const [popup, setPopup] = useState(null);
 
   const handleAddComponent = () => {
@@ -169,8 +170,17 @@ const ComponentCard = ({ component, name }) => {
         ) : (
           <>
             <div className="h-full flex flex-col items-center justify-center gap-4 relative">
-              {!isOptional && (
-                <span className="absolute top-2 left-2 text-danger text-lg leading-none">*</span>
+              {includedInCase && (
+                <div className="bg-muted/10 absolute w-full h-full pointer-events-none border border-muted/20"></div>
+              )}
+              {includedInCase ? (
+                <span className="absolute top-2 left-2 text-xs text-muted">
+                  {t('addComponent.includedInCase')}
+                </span>
+              ) : (
+                !isOptional && (
+                  <span className="absolute top-2 left-2 text-danger text-lg leading-none">*</span>
+                )
               )}
               <span className="text-3xl font-semibold text-muted">{displayName}</span>
               <button
