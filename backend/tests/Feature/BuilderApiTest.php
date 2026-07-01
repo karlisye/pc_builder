@@ -276,3 +276,30 @@ it('incompatible components returns 400', function () {
   generate(basePayload(1000, ['type' => 'gaming'], ['ram' => $ram->product_code, 'motherboard' => $motherboard->product_code]))
     ->assertStatus(400);
 });
+
+// generation limits
+it('auto-generated psu wattage is capped near what the build needs, not maxed out', function () {
+  $cpu = Cpu::whereHas('listings')->whereNotNull('tdp')->orderBy('tdp')->first();
+  $gpu = Gpu::whereHas('listings')->whereNotNull('tdp')->whereNotNull('min_psu')->orderBy('tdp')->first();
+
+  if (!$cpu || !$gpu) {
+    test()->markTestSkipped('No low-power CPU/GPU found in DB');
+  }
+
+  $res = test()->postJson('/api/builder/psu', [
+    'selected' => ['cpu' => $cpu->product_code, 'gpu' => $gpu->product_code],
+    'budget' => 100000,
+  ])->assertStatus(200);
+
+  $wattage = $res->json('build.psu.wattage');
+  expect($wattage)->not->toBeNull();
+
+  // scoring also weighs efficiency/modularity, so this isn't pinned to the
+  // scorer's exact headroom multiplier - just asserts it stays in the
+  // ballpark of what the build needs instead of maxing out at the highest
+  // wattage available (which would be 1600W+ for this low-power build)
+  $requiredWattage = max(($cpu->tdp + $gpu->tdp) * 1.3, $gpu->min_psu ?? 0);
+  $generousCeiling = max($requiredWattage * 3, 900);
+
+  expect($wattage)->toBeLessThanOrEqual($generousCeiling);
+});

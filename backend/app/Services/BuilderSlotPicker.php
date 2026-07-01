@@ -64,7 +64,7 @@ class BuilderSlotPicker
       return null;
     }
 
-    return $candidates->sortByDesc(fn($item) => $this->scorer->score($slot, $item, $preferences))->first();
+    return $candidates->sortByDesc(fn($item) => $this->scorer->score($slot, $item, $preferences, $selected))->first();
   }
 
   // find cheapest to estimate cheapest build price

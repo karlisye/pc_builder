@@ -76,7 +76,7 @@ class BuilderController extends Controller
     }
 
     $selected = array_filter($selected);
-    $preferences = array_filter($validated['preferences']);
+    $preferences = array_filter($validated['preferences'] ?? []);
     $slotToFill = $type;
 
     $result = $this->builder->generate($selected, $budget, $preferences, $slotToFill);

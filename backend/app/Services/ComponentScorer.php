@@ -69,7 +69,14 @@ class ComponentScorer
     '80 PLUS Titanium'  => 1.0,
   ];
 
-  public function score(string $slot, Model $item, array $preferences = []): float
+  // PSU wattage would otherwise always score higher for more wattage, so the
+  // picker defaults to the biggest PSU it can afford even when the build
+  // needs a fraction of that. Reward wattage only up to a reasonable
+  // headroom above what the build actually requires.
+  private const PSU_MAX_HEADROOM_MULTIPLIER = 1.6;
+  private const PSU_MAX_WATTAGE_FLOOR = 450;
+
+  public function score(string $slot, Model $item, array $preferences = [], array $selected = []): float
   {
     $type = $preferences['type'] ?? 'gaming';
 
@@ -78,7 +85,7 @@ class ComponentScorer
       'gpu' => $this->scoreGpu($item, $type),
       'ram' => $this->scoreRam($item, $type, $preferences),
       'ssd' => $this->scoreSsd($item),
-      'psu' => $this->scorePsu($item),
+      'psu' => $this->scorePsu($item, $selected),
       default => (float) ($item->price ?? 0),
     };
   }
@@ -299,7 +306,7 @@ class ComponentScorer
     return round(min($raw, 10.0), 2);
   }
 
-  private function scorePsu(Model $item): float
+  private function scorePsu(Model $item, array $selected): float
   {
     $wattage  = (float)  ($item->wattage ?? 0);
     $modular  = (bool)   ($item->modular ?? false);
@@ -311,8 +318,16 @@ class ComponentScorer
 
     $r = self::PSU_RANGES;
 
-    // wattage: more is better
-    $wattageNorm = $this->normalize($wattage, $r['wattage']['min'], $r['wattage']['max']);
+    $requiredWattage = $this->requiredPsuWattage($selected);
+    $maxWattage = $requiredWattage > 0
+      ? max($requiredWattage * self::PSU_MAX_HEADROOM_MULTIPLIER, self::PSU_MAX_WATTAGE_FLOOR)
+      : $r['wattage']['max'];
+
+    // wattage: more is better up to the sensible max for this build, then
+    // going further over is a wasted (and often pricier) pick, not a better one
+    $wattageNorm = $wattage <= $maxWattage
+      ? $this->normalize($wattage, $r['wattage']['min'], $maxWattage)
+      : max(0.0, 1.0 - ($wattage - $maxWattage) / $maxWattage);
 
     // efficiency rating
     $efficiencyNorm = self::PSU_EFFICIENCY[$rating] ?? 0.0;
@@ -324,5 +339,31 @@ class ComponentScorer
     $raw = ($wattageNorm * 5.0) + ($efficiencyNorm * 3.0) + $modularBonus;
 
     return round(min($raw, 10.0), 2);
+  }
+
+  // mirrors the minimum-wattage requirement in App\Services\ComponentFilters::psu()
+  private function requiredPsuWattage(array $selected): float
+  {
+    $cpu = $selected['cpu'] ?? null;
+    $gpu = $selected['gpu'] ?? null;
+    $ram = $selected['ram'] ?? null;
+    $fan = $selected['fan'] ?? null;
+
+    $cpuTdp = $cpu?->tdp;
+    $gpuTdp = $gpu?->tdp;
+    $gpuMinPsu = $gpu?->min_psu;
+
+    if ($cpuTdp === null && $gpuMinPsu === null) {
+      return 0.0;
+    }
+
+    $ramWattage = ($ram?->modules_count ?? 0) * 5;
+    $fanWattage = ($fan?->units_in_package ?? 0) * 3;
+
+    $tdpRequired = ($cpuTdp !== null && $gpuTdp !== null)
+      ? ($cpuTdp + $gpuTdp + $ramWattage + $fanWattage) * 1.3
+      : 0;
+
+    return max($tdpRequired, $gpuMinPsu ?? 0);
   }
 }
