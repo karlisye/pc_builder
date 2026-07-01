@@ -124,10 +124,13 @@ class ComponentFilters
       });
     }
 
-    if (($psu = $selected['psu'] ?? null)?->wattage !== null) {
-      $query->where(function (Builder $q) use ($psu) {
+    $effectiveWattage = ($selected['psu'] ?? null)?->wattage
+      ?? (($selected['case'] ?? null)?->psu_included ? ($selected['case']->psu_wattage ?? null) : null);
+
+    if ($effectiveWattage !== null) {
+      $query->where(function (Builder $q) use ($effectiveWattage) {
         $q->whereNull('min_psu')
-          ->orWhere('min_psu', '<=', $psu->wattage);
+          ->orWhere('min_psu', '<=', $effectiveWattage);
       });
     }
 
@@ -163,10 +166,18 @@ class ComponentFilters
     }
 
     // if a separate PSU is selected, cases with a built-in PSU are incompatible
-    if ($selected['psu'] ?? null) {
+    if ($psuSelected = $selected['psu'] ?? null) {
       $query->where(function (Builder $q) {
         $q->whereNull('psu_included')->orWhere('psu_included', 0);
       });
+
+      // non-ATX PSUs (SFX, SFX-L, TFX, ...) don't fit in ATX-class cases
+      if ($psuSelected->psu_type && $psuSelected->psu_type !== 'ATX') {
+        $query->where(function (Builder $q) {
+          $q->whereNull('form_factor')
+            ->orWhereNotIn('form_factor', CompatibilityHelper::KNOWN_ATX_CASE_FORM_FACTORS);
+        });
+      }
     }
 
     // if HDD is selected, case must have at least one 3.5" bay
