@@ -76,24 +76,6 @@ class CompatibilityService
     // get all compatible ids from query into an array
     $compatibleIds = $compatibleQuery->pluck('id')->toArray();
 
-    // strict pass: same filters, but without the "missing data = let it through" leniency.
-    // anything compatible in the loose pass but excluded here has an unverifiable compatibility
-    // dimension (e.g. a case with no max_gpu_length) — flagged for the user to check manually
-    $strictQuery = $modelClass::query();
-    $strictQuery = match ($type) {
-      'cpu' => ComponentFilters::cpu($strictQuery, $selected, strict: true),
-      'motherboard' => ComponentFilters::motherboard($strictQuery, $selected, strict: true),
-      'ram' => ComponentFilters::ram($strictQuery, $selected, strict: true),
-      'gpu' => ComponentFilters::gpu($strictQuery, $selected, strict: true),
-      'case' => ComponentFilters::case($strictQuery, $selected, strict: true),
-      'cooler' => ComponentFilters::cooler($strictQuery, $selected, strict: true),
-      'psu' => ComponentFilters::psu($strictQuery, $selected, strict: true),
-      'ssd' => ComponentFilters::ssd($strictQuery, $selected),
-      'hdd' => ComponentFilters::hdd($strictQuery, $selected),
-      default => $strictQuery,
-    };
-    $strictCompatibleIds = $strictQuery->pluck('id')->toArray();
-
     $query = ComponentQueryFilter::apply($query, $type, $filters, $compatibleIds);
 
     // e.g. if user already has cpu selected, but still wants to see cpus, will return the cpu id
@@ -103,10 +85,14 @@ class CompatibilityService
     $paginator = $query->paginate(15);
 
     // add the selected boolean, compatible and out_of_stock flags to each component
-    $paginator->getCollection()->transform(function ($item) use ($selectedIdForType, $compatibleIds, $strictCompatibleIds, $caseHasPsu) {
+    $paginator->getCollection()->transform(function ($item) use ($type, $selectedIdForType, $compatibleIds, $caseHasPsu) {
       $item->selected = ($item->id === $selectedIdForType);
       $item->compatible = in_array($item->id, $compatibleIds);
-      $item->needs_manual_check = $item->compatible && ! in_array($item->id, $strictCompatibleIds);
+      // intrinsic to the item itself — missing spec data needed to verify fit against
+      // *any* counterpart, independent of what else is currently selected (a case with no
+      // max_gpu_length is unverifiable regardless of which GPU you're browsing, but that
+      // shouldn't taint every GPU in the list — see ComponentFilters::hasUnverifiableSpecs())
+      $item->needs_manual_check = ComponentFilters::hasUnverifiableSpecs($type, $item);
       $item->out_of_stock = $item->stock_status === 'out_of_stock';
       if ($caseHasPsu) {
         $item->case_includes_psu = true;

@@ -210,18 +210,42 @@ describe('Unverifiable compatibility (missing dimension data)', function () {
     expect($gpu)->toBeNull();
   });
 
-  it('the /api/components endpoint flags needs_manual_check for that GPU', function () {
-    $case = PcCase::whereNull('max_gpu_length')->first();
-    // find a GPU whose full name (as a set of "%term%" AND-matches) is unique in the table,
-    // so the search filter narrows results to a single row that's guaranteed within page 1
-    $gpu = Gpu::whereNotNull('length_mm')->whereNotNull('name')->get()->first(
-      fn($g) => Gpu::query()->tap(function ($q) use ($g) {
-        foreach (array_filter(explode(' ', $g->name)) as $term) {
+  // needs_manual_check must be intrinsic to the item itself, not the current selection pair —
+  // otherwise selecting one case with an unknown max_gpu_length would flag every GPU in the
+  // list, and nothing would ever get flagged while browsing with nothing selected yet
+  it('flags a case with no max_gpu_length via the /api/components endpoint even with nothing selected', function () {
+    $case = PcCase::whereNull('max_gpu_length')->whereNotNull('name')->get()->first(
+      fn($c) => PcCase::query()->tap(function ($q) use ($c) {
+        foreach (array_filter(explode(' ', $c->name)) as $term) {
           $q->where('name', 'like', '%' . $term . '%');
         }
       })->count() === 1
     );
-    if (!$case || !$gpu) test()->markTestSkipped('Need a case without max_gpu_length and a GPU with a unique name');
+    if (!$case) test()->markTestSkipped('Need a case without max_gpu_length and a unique name');
+
+    $response = test()->getJson('/api/components/case?' . http_build_query([
+      'per_page' => 100,
+      'search' => $case->name,
+    ]));
+    $response->assertStatus(200);
+
+    $match = collect($response->json('data'))->firstWhere('product_code', $case->product_code);
+    if (!$match) test()->markTestSkipped('Case not found via search');
+
+    expect($match['needs_manual_check'])->toBeTrue();
+  });
+
+  it('does not flag a GPU with known specs just because the selected case has no max_gpu_length', function () {
+    $case = PcCase::whereNull('max_gpu_length')->first();
+    $gpu = Gpu::whereNotNull('length_mm')->whereNotNull('tdp')->whereNotNull('min_psu')
+      ->whereNotNull('name')->get()->first(
+        fn($g) => Gpu::query()->tap(function ($q) use ($g) {
+          foreach (array_filter(explode(' ', $g->name)) as $term) {
+            $q->where('name', 'like', '%' . $term . '%');
+          }
+        })->count() === 1
+      );
+    if (!$case || !$gpu) test()->markTestSkipped('Need a case without max_gpu_length and a fully-specced, uniquely-named GPU');
 
     $response = test()->getJson('/api/components/gpu?' . http_build_query([
       'per_page' => 100,
@@ -234,7 +258,14 @@ describe('Unverifiable compatibility (missing dimension data)', function () {
     if (!$match) test()->markTestSkipped('GPU not found via search');
 
     expect($match['compatible'])->toBeTrue();
-    expect($match['needs_manual_check'])->toBeTrue();
+    expect($match['needs_manual_check'])->toBeFalse();
+  });
+
+  it('flags a GPU with its own missing specs regardless of what else is selected', function () {
+    $gpu = Gpu::whereNull('length_mm')->orWhereNull('tdp')->orWhereNull('min_psu')->first();
+    if (!$gpu) test()->markTestSkipped('No GPU with missing length_mm/tdp/min_psu in DB');
+
+    expect(App\Services\ComponentFilters::hasUnverifiableSpecs('gpu', $gpu))->toBeTrue();
   });
 });
 

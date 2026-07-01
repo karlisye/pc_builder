@@ -4,9 +4,37 @@ namespace App\Services;
 
 use App\Helpers\CompatibilityHelper;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class ComponentFilters
 {
+  // Whether $item is missing a spec field that a compatibility check relies on, independent of
+  // what else is currently selected — e.g. a case with no max_gpu_length can never have its GPU
+  // fit verified, no matter which GPU is being compared. This is intentionally intrinsic to the
+  // item itself (not the current selection pair), so it doesn't taint every candidate on the
+  // *other* side of a comparison — see CompatibilityService::getCompatible().
+  public static function hasUnverifiableSpecs(string $type, Model $item): bool
+  {
+    return match ($type) {
+      'cpu' => $item->tdp === null,
+      'motherboard' => $item->memory_slots === null
+        || $item->max_memory_capacity === null
+        || $item->memory_max_speed === null,
+      'ram' => $item->modules_count === null
+        || $item->capacity === null
+        || $item->frequency === null,
+      'gpu' => $item->length_mm === null
+        || $item->tdp === null
+        || $item->min_psu === null,
+      'case' => $item->max_gpu_length === null
+        || $item->max_cpu_cooler_height === null
+        || ($item->psu_included && $item->psu_wattage === null),
+      'cooler' => $item->tdp_support === null || $item->height_mm === null,
+      'psu' => $item->wattage === null || $item->psu_type === null || $item->pcie_5 === null,
+      default => false,
+    };
+  }
+
   public static function cpu(Builder $query, array $selected, bool $strict = false): Builder
   {
     if (($mb = $selected['motherboard'] ?? null)?->socket) {

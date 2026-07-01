@@ -162,10 +162,13 @@ const AddComponent = () => {
                       </span>
                       {component.compatible && component.needs_manual_check && (
                         <span
-                          className="text-alert shrink-0"
-                          title={t('componentCard.checkManually')}
+                          className="relative group/manual-check text-alert shrink-0"
+                          onClick={(e) => e.stopPropagation()}
                         >
                           <InfoIcon size={18} />
+                          <span className="absolute left-1/2 -translate-x-1/2 bottom-full mb-1 hidden group-hover/manual-check:block bg-primary text-white text-xs p-1 whitespace-nowrap z-10">
+                            {t('componentCard.checkManually')}
+                          </span>
                         </span>
                       )}
                     </div>

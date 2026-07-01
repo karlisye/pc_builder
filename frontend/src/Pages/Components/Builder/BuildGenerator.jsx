@@ -256,6 +256,14 @@ const BuildGenerator = () => {
           </div>
         )}
 
+        {!hasIncompatible && needsManualCheck && (
+          <div className="p-2 border bg-alert/10 border-alert/80">
+            <p className="text-alert text-sm">
+              {t("buildGenerator.manualCheckWarning")}
+            </p>
+          </div>
+        )}
+
         <button
           className="p-4 mt-4 w-full bg-secondary-light text-text cursor-pointer hover:bg-secondary-light/50 transition disabled:opacity-50"
           onClick={handleGenerate}
