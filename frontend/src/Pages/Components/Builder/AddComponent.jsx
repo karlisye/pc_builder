@@ -4,7 +4,7 @@ import { useBuilder } from '../../../Contexts/BuilderContext';
 import axios from 'axios';
 import AddComponentSkeleton from '../Skeletons/AddComponentSkeleton';
 import ComponentInfo from '../Common/ComponentInfo';
-import { AddIcon, CloseIcon } from '../Common/Icons';
+import { AddIcon, CloseIcon, InfoIcon } from '../Common/Icons';
 import PaginationControls from '../Common/PaginationControls';
 import { formatPrice } from '../../../lib/componentPrice';
 
@@ -160,6 +160,14 @@ const AddComponent = () => {
                       >
                         {component.name}
                       </span>
+                      {component.compatible && component.needs_manual_check && (
+                        <span
+                          className="text-alert shrink-0"
+                          title={t('componentCard.checkManually')}
+                        >
+                          <InfoIcon size={18} />
+                        </span>
+                      )}
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">

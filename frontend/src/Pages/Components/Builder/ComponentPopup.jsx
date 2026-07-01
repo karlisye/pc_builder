@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-const ComponentPopup = ({ component, x, y, isOptional }) => {
+const ComponentPopup = ({ component, x, y, isOptional, needsManualCheck }) => {
   const { t } = useTranslation('builder');
   const key = component?.toLowerCase();
   const fullName = t(`componentPopup.${key}.fullName`, '');
@@ -8,7 +8,7 @@ const ComponentPopup = ({ component, x, y, isOptional }) => {
 
   // popup visibility out of bounds
   const popupWidth = 256;
-  const popupHeight = 85;
+  const popupHeight = needsManualCheck ? 115 : 85;
   const offset = 12;
 
   const left = x + offset + popupWidth > window.innerWidth ? x - offset - popupWidth : x + offset;
@@ -34,6 +34,9 @@ const ComponentPopup = ({ component, x, y, isOptional }) => {
         </span>
       </div>
       <p className="text-sm text-muted">{description}</p>
+      {needsManualCheck && (
+        <p className="text-alert text-sm mt-1">{t('componentCard.checkManually')}</p>
+      )}
     </div>
   );
 };

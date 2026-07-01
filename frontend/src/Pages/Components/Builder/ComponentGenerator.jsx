@@ -68,6 +68,12 @@ const ComponentGenerator = () => {
     (component) => component !== null && component.compatible === false,
   );
 
+  // a selected component's compatibility with the rest of the build could not be fully
+  // verified (missing spec data) — the auto-builder can't assume it fits, so block generation
+  const needsManualCheck = Object.values(selectedComponents).some(
+    (component) => component !== null && component.needs_manual_check === true,
+  );
+
   if (!user) {
     return (
       <div className="pt-4 border-t mt-4 border-secondary">
@@ -190,7 +196,7 @@ const ComponentGenerator = () => {
           <button
             className="p-4 w-full bg-secondary-light text-text cursor-pointer hover:bg-secondary-light/50 transition disabled:opacity-50"
             onClick={handleGenerate}
-            disabled={loading || hasIncompatible}
+            disabled={loading || hasIncompatible || needsManualCheck}
           >
             {loading ? (
               <p>{t('componentGenerator.generating')}</p>

@@ -81,6 +81,7 @@ const ComponentInfo = ({ component }) => {
               'scraped_at',
               'selected',
               'compatible',
+              'needs_manual_check',
               'out_of_stock',
               'listings',
               'selected_source',

@@ -221,7 +221,8 @@ it('low ram on specific type triggers warning', function () {
 });
 
 it('low vram triggers warning', function () {
-  $gpu = Gpu::where('vram', '<', 8)->whereHas('listings')->first();
+  // tdp/length_mm must be known, or the auto-builder can't verify case/PSU fit for this GPU
+  $gpu = Gpu::where('vram', '<', 8)->whereNotNull('tdp')->whereNotNull('length_mm')->whereHas('listings')->first();
 
   if (!$gpu) {
     test()->markTestSkipped('No low vram GPU found in DB');

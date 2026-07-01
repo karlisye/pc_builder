@@ -54,6 +54,7 @@ const ComponentCard = ({ component, name }) => {
   const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
   const hasIssues = buildIssues[name.toLowerCase()]?.length > 0;
+  const needsManualCheck = !!component?.needs_manual_check;
   const displayName = t(`common:components.${name.toLowerCase()}`);
 
   const listings = component?.listings?.length
@@ -194,13 +195,17 @@ const ComponentCard = ({ component, name }) => {
         )}
 
         <div
-          className="absolute top-0 right-0 m-2 text-muted hover:text-text transition"
+          className={`absolute top-0 right-0 m-2 transition ${
+            needsManualCheck ? 'text-alert hover:text-alert' : 'text-muted hover:text-text'
+          }`}
           onMouseEnter={handlePopup}
           onMouseLeave={() => setPopup(null)}
         >
           <InfoIcon />
         </div>
-        {popup && <ComponentPopup {...popup} isOptional={isOptional} />}
+        {popup && (
+          <ComponentPopup {...popup} isOptional={isOptional} needsManualCheck={needsManualCheck} />
+        )}
       </>
     </div>
   );

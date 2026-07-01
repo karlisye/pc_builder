@@ -26,7 +26,8 @@
     "more": "More",
     "availabilityTitle": "Availability",
     "lastScraped": "Last checked: {{date}}",
-    "neverScraped": "Last checked: never"
+    "neverScraped": "Last checked: never",
+    "checkManually": "Missing spec data — please check this fits manually"
   },
   "componentPopup": {
     "required": "Required",

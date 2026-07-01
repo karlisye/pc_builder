@@ -26,7 +26,8 @@
     "more": "Vairāk",
     "availabilityTitle": "Pieejamība",
     "lastScraped": "Pēdējā pārbaude: {{date}}",
-    "neverScraped": "Pēdējā pārbaude: nekad"
+    "neverScraped": "Pēdējā pārbaude: nekad",
+    "checkManually": "Trūkst specifikāciju datu — lūdzu, pārbaudiet atbilstību manuāli"
   },
   "componentPopup": {
     "required": "Obligāts",
