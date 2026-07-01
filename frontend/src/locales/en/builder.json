@@ -29,6 +29,8 @@
     "neverScraped": "Last checked: never"
   },
   "componentPopup": {
+    "required": "Required",
+    "optional": "Optional",
     "ram": {
       "fullName": "Random Access Memory",
       "description": "Short-term working memory. Holds data the CPU is actively using."

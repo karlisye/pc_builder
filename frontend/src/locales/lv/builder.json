@@ -29,6 +29,8 @@
     "neverScraped": "Pēdējā pārbaude: nekad"
   },
   "componentPopup": {
+    "required": "Obligāts",
+    "optional": "Neobligāts",
     "ram": {
       "fullName": "Operatīvā atmiņa",
       "description": "Īslaicīga darba atmiņa. Glabā datus, ko procesors aktīvi izmanto."

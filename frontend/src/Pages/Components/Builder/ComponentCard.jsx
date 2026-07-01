@@ -13,9 +13,21 @@ const ComponentCard = ({ component, name }) => {
     setSearch,
     setSort,
     setSelectedComponents,
+    selectedComponents,
     buildIssues,
     setViewingComponent,
   } = useBuilder();
+
+  const resolveOptional = () => {
+    const key = name.toLowerCase();
+    if (['cpu', 'motherboard', 'ram', 'ssd', 'case'].includes(key)) return false;
+    if (['hdd', 'fan'].includes(key)) return true;
+    if (key === 'gpu') return !!selectedComponents.cpu?.integrated_graphics;
+    if (key === 'cooler') return !!selectedComponents.cpu?.cooler_included;
+    if (key === 'psu') return !!selectedComponents.case?.psu_included;
+    return false;
+  };
+  const isOptional = resolveOptional();
   const [popup, setPopup] = useState(null);
 
   const handleAddComponent = () => {
@@ -157,6 +169,9 @@ const ComponentCard = ({ component, name }) => {
         ) : (
           <>
             <div className="h-full flex flex-col items-center justify-center gap-4 relative">
+              {!isOptional && (
+                <span className="absolute top-2 left-2 text-danger text-lg leading-none">*</span>
+              )}
               <span className="text-3xl font-semibold text-muted">{displayName}</span>
               <button
                 className="bg-surface p-2 text-muted hover:bg-secondary-light transition cursor-pointer"
@@ -175,7 +190,7 @@ const ComponentCard = ({ component, name }) => {
         >
           <InfoIcon />
         </div>
-        {popup && <ComponentPopup {...popup} />}
+        {popup && <ComponentPopup {...popup} isOptional={isOptional} />}
       </>
     </div>
   );
