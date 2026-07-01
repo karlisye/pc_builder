@@ -45,4 +45,5 @@ return [
     'case_no_35_bays' => 'Case has no 3.5" bays — cannot mount the selected HDD',
     'psu_and_case_psu_conflict' => 'This case already includes a built-in PSU — a separate PSU is not needed',
     'case_psu_already_included' => 'Case includes a built-in PSU — a separate PSU is redundant',
+    'ram_no_motherboard_support' => 'No motherboards in stock support :ram_type memory — this build cannot be completed with this RAM',
 ];

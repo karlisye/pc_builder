@@ -45,4 +45,5 @@ return [
   'case_no_35_bays' => 'Korpusam nav 3.5" nodalījumu — nevar uzstādīt izvēlēto HDD',
   'psu_and_case_psu_conflict' => 'Šajā korpusā jau ir iebūvēts barošanas bloks — atsevišķs barošanas bloks nav nepieciešams',
   'case_psu_already_included' => 'Korpusā ir iekļauts iebūvēts barošanas bloks — atsevišķs barošanas bloks ir lieks',
+  'ram_no_motherboard_support' => 'Neviena pieejamā mātesplate neatbalsta :ram_type atmiņu — šo konfigurāciju ar šo RAM nevar pabeigt',
 ];

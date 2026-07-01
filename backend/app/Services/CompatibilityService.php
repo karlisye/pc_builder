@@ -147,6 +147,13 @@ class CompatibilityService
       ]);
     }
 
+    // ram memory type not supported by any motherboard in stock
+    if ($ram && ! $mb && $ram->memory_type && ! Motherboard::where('memory_type', $ram->memory_type)->exists()) {
+      $issues['ram'][] = __('compatibility.ram_no_motherboard_support', [
+        'ram_type' => $ram->memory_type,
+      ]);
+    }
+
     // ram modules vs motherboard memory slots
     if ($ram && $mb && $ram->modules_count !== null && $mb->memory_slots !== null) {
       if ($ram->modules_count > $mb->memory_slots) {

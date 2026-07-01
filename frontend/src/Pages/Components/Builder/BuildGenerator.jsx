@@ -110,9 +110,10 @@ const BuildGenerator = () => {
   };
 
   // check if one of the selected components is incompatible
-  const hasIncompatible = Object.values(selectedComponents).some(
-    (component) => component !== null && component.compatible === false,
-  );
+  const hasIncompatible =
+    Object.values(selectedComponents).some(
+      (component) => component !== null && component.compatible === false,
+    ) || Object.keys(buildIssues).length > 0;
 
   if (!user) {
     return (
