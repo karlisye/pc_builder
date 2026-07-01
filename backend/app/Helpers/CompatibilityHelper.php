@@ -38,6 +38,11 @@ class CompatibilityHelper
     'ITX',
   ];
 
+  // ATX-class case form factors — only accept ATX PSUs
+  public const KNOWN_ATX_CASE_FORM_FACTORS = [
+    'XL ATX', 'Extended ATX', 'E-ATX', 'EEB', 'SSI-EEB', 'SSI-CEB', 'CEB', 'ATX', 'mATX', 'Micro ATX',
+  ];
+
   // known case sizes
   public const KNOWN_CASE_FORM_FACTORS = [
     'XL ATX',
@@ -83,6 +88,52 @@ class CompatibilityHelper
   public static function isKnownCaseFormFactor(?string $ff): bool
   {
     return $ff && in_array($ff, self::KNOWN_CASE_FORM_FACTORS, true);
+  }
+
+  public static function isAtxCaseFormFactor(?string $ff): bool
+  {
+    return $ff !== null && in_array($ff, self::KNOWN_ATX_CASE_FORM_FACTORS, true);
+  }
+
+  // Returns ['requires_16pin' => bool, 'required_traditional' => int]
+  public static function parseGpuConnectors(?string $connectors): array
+  {
+    if (!$connectors) {
+      return ['requires_16pin' => false, 'required_traditional' => 0];
+    }
+    $requires16pin = (bool) preg_match('/16-?pin|12vhpwr/i', $connectors);
+    $traditional = 0;
+    preg_match_all('/(\d+)\s*[xX×]\s*(?:6\+2|6|8)-?pin/i', $connectors, $matches);
+    foreach ($matches[1] as $count) {
+      $traditional += (int) $count;
+    }
+    return ['requires_16pin' => $requires16pin, 'required_traditional' => $traditional];
+  }
+
+  // Sum of traditional PCIe connector slots a PSU provides (6-pin, 8-pin, 6+2-pin)
+  public static function parsePsuPcieConnectors(?string $connectors): int
+  {
+    if (!$connectors) {
+      return 0;
+    }
+    $total = 0;
+    preg_match_all('/(\d+)\s*[xX×]\s*(?:6\+2|6|8)-?pin/i', $connectors, $matches);
+    foreach ($matches[1] as $count) {
+      $total += (int) $count;
+    }
+    return $total;
+  }
+
+  // Whether a CPU memory_type supports a given RAM memory_type
+  public static function cpuSupportsRamType(?string $cpuMemType, string $ramMemType): bool
+  {
+    if (!$cpuMemType) {
+      return true;
+    }
+    if ($cpuMemType === 'DDR4/DDR5') {
+      return true;
+    }
+    return $cpuMemType === $ramMemType;
   }
 
   // if case or mobo has an exotic size, return a warning

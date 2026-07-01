@@ -3,15 +3,39 @@ import { useTranslation } from "react-i18next";
 import axios from "axios";
 import { useBuilder } from "../../../Contexts/BuilderContext";
 import { ArrowIcon } from "../Common/Icons";
+import RangeSlider from "./RangeSlider";
+
+const RANGE_FILTER_FIELDS = new Set([
+  'cores',
+  'capacity',
+  'frequency',
+  'vram',
+  'min_psu',
+  'wattage',
+  'size_mm',
+  'fan_size_mm',
+  'tdp_support',
+]);
+
+const BOOLEAN_FILTERS = new Set([
+  'integrated_graphics',
+  'cooler_included',
+  'wifi',
+  'xmp',
+  'pcie_5',
+  'psu_included',
+]);
 
 const FILTER_CONFIG = {
-  cpu: ["socket", "cores", "integrated_graphics", "cooler_included"],
+  cpu: ["socket", "memory_type", "cores", "integrated_graphics", "cooler_included"],
   motherboard: ["socket", "chipset", "form_factor", "memory_type", "wifi"],
-  ram: ["memory_type", "capacity", "frequency"],
-  gpu: ["vram", "min_psu"],
-  case: ["form_factor"],
-  cooler: ["tdp_support"],
-  psu: ["wattage", "efficiency_rating", "modular", "psu_type"],
+  ram: ["memory_type", "modules_count", "capacity", "frequency", "xmp"],
+  gpu: ["gpu_family", "vram", "min_psu"],
+  case: ["form_factor", "psu_included"],
+  cooler: ["tdp_support", "fan_size_mm"],
+  hdd: ["capacity", "interface"],
+  fan: ["size_mm", "units_in_package"],
+  psu: ["wattage", "efficiency_rating", "modular", "psu_type", "pcie_5"],
   ssd: ["capacity", "type", "form_factor", "interface"],
 };
 
@@ -79,6 +103,7 @@ const ComponentFilters = () => {
           onChange={(e) => setSort(e.target.value)}
           className="bg-secondary-light p-2 text-text outline-border focus:outline-1"
         >
+          <option value="">{t("componentFilters.sort.recommended")}</option>
           <option value="price_asc">{t("componentFilters.sort.priceAsc")}</option>
           <option value="price_desc">{t("componentFilters.sort.priceDesc")}</option>
           <option value="name_asc">{t("componentFilters.sort.nameAsc")}</option>
@@ -87,31 +112,44 @@ const ComponentFilters = () => {
       </div>
 
       <div className="grid grid-cols-2 gap-2">
-        <input
-          type="number"
-          id="minPrice"
-          className="bg-secondary p-2 text-white outline-border focus:outline-1"
-          placeholder={t("componentFilters.minPrice")}
-          value={filters["min_price"] ?? ""}
-          onChange={(e) =>
-            updateFilter("min_price", e.target.value || undefined)
-          }
-        />
+        {availableFilters.price_min != null && availableFilters.price_max != null && (
+          <RangeSlider
+            label={t("componentFilters.price")}
+            min={availableFilters.price_min}
+            max={availableFilters.price_max}
+            step={5}
+            minValue={Number(filters["min_price"] ?? availableFilters.price_min)}
+            maxValue={Number(filters["max_price"] ?? availableFilters.price_max)}
+            format={(v) => `€${v}`}
+            onChange={(newMin, newMax) => {
+              setFilters((prev) => {
+                const next = { ...prev };
+                if (newMin <= availableFilters.price_min) delete next["min_price"];
+                else next["min_price"] = newMin;
+                if (newMax >= availableFilters.price_max) delete next["max_price"];
+                else next["max_price"] = newMax;
+                return next;
+              });
+            }}
+          />
+        )}
 
-        <input
-          type="number"
-          id="maxPrice"
-          className="bg-secondary p-2 text-white outline-border focus:outline-1"
-          placeholder={t("componentFilters.maxPrice")}
-          value={filters["max_price"] ?? ""}
-          onChange={(e) =>
-            updateFilter("max_price", e.target.value || undefined)
-          }
-        />
+        {availableFilters['brand']?.length > 0 && (
+          <select
+            value={filters['brand'] ?? ''}
+            onChange={(e) => updateFilter('brand', e.target.value || undefined)}
+            className="bg-secondary-light p-2 text-text outline-border focus:outline-1"
+          >
+            <option value="">{t('componentFilters.labels.brand')}: {t('componentFilters.all')}</option>
+            {availableFilters['brand'].map((value) => (
+              <option key={value} value={value}>{value}</option>
+            ))}
+          </select>
+        )}
 
         {activeColumns.map((column) => {
           const values = availableFilters[column] ?? [];
-          if (values.length === 0) return null;
+          if (values.length === 0 || RANGE_FILTER_FIELDS.has(column)) return null;
 
           return (
             <select
@@ -128,14 +166,45 @@ const ComponentFilters = () => {
               </option>
               {values.map((value) => (
                 <option key={value} value={value}>
-                  {value === true || value === 1
-                    ? t("componentFilters.yes")
-                    : value === false || value === 0
-                      ? t("componentFilters.no")
+                  {BOOLEAN_FILTERS.has(column)
+                    ? (value === true || value === 1 || value === '1'
+                        ? t("componentFilters.yes")
+                        : t("componentFilters.no"))
+                    : column === 'gpu_family'
+                      ? String(value).toUpperCase()
                       : value}
                 </option>
               ))}
             </select>
+          );
+        })}
+
+        {activeColumns.map((column) => {
+          if (!RANGE_FILTER_FIELDS.has(column)) return null;
+          const values = availableFilters[column] ?? [];
+          if (values.length < 2) return null;
+          const boundsMin = Math.min(...values);
+          const boundsMax = Math.max(...values);
+          const curMin = Number(filters[`${column}_min`] ?? boundsMin);
+          const curMax = Number(filters[`${column}_max`] ?? boundsMax);
+          return (
+            <RangeSlider
+              key={column}
+              label={t(`componentFilters.labels.${column}`, column)}
+              values={values}
+              minValue={curMin}
+              maxValue={curMax}
+              onChange={(newMin, newMax) => {
+                setFilters((prev) => {
+                  const next = { ...prev };
+                  if (newMin <= boundsMin) delete next[`${column}_min`];
+                  else next[`${column}_min`] = newMin;
+                  if (newMax >= boundsMax) delete next[`${column}_max`];
+                  else next[`${column}_max`] = newMax;
+                  return next;
+                });
+              }}
+            />
           );
         })}
 

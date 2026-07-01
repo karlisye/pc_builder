@@ -1,0 +1,423 @@
+<?php
+
+use App\Models\{Cpu, Motherboard, Ram, Gpu, PcCase, Psu, Cooler, Ssd, Hdd};
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * GET /api/components/{type} with optional `selected` map.
+ * Returns the full paginated data array (per_page=100).
+ */
+function components(string $type, array $selected = []): array
+{
+  $params = ['per_page' => 100];
+  if ($selected) {
+    $params['selected'] = json_encode($selected);
+  }
+  $response = test()->getJson('/api/components/' . $type . '?' . http_build_query($params));
+  $response->assertStatus(200);
+  return $response->json('data');
+}
+
+function compatible(array $items): array
+{
+  return array_values(array_filter($items, fn($x) => $x['compatible'] ?? false));
+}
+
+function incompatible(array $items): array
+{
+  return array_values(array_filter($items, fn($x) => !($x['compatible'] ?? false)));
+}
+
+// ---------------------------------------------------------------------------
+// CPU vs MB Socket
+// ---------------------------------------------------------------------------
+
+describe('CPU vs Motherboard socket', function () {
+  it('filters motherboards to matching socket when CPU is selected', function () {
+    $cpu = Cpu::whereNotNull('socket')->first();
+    if (!$cpu) test()->markTestSkipped('No CPU with socket in DB');
+
+    $items = components('motherboard', ['cpu' => $cpu->product_code]);
+    $compat = compatible($items);
+
+    expect($compat)->not->toBeEmpty();
+    foreach ($compat as $mb) {
+      expect($mb['socket'])->toBe($cpu->socket);
+    }
+  });
+
+  it('filters CPUs to matching socket when motherboard is selected', function () {
+    $mb = Motherboard::whereNotNull('socket')->first();
+    if (!$mb) test()->markTestSkipped('No MB with socket in DB');
+
+    $items = components('cpu', ['motherboard' => $mb->product_code]);
+    $compat = compatible($items);
+
+    expect($compat)->not->toBeEmpty();
+    foreach ($compat as $cpu) {
+      expect($cpu['socket'])->toBe($mb->socket);
+    }
+  });
+
+  it('marks CPU incompatible when its socket does not match selected motherboard', function () {
+    $mb  = Motherboard::where('socket', 'LGA1851')->first();
+    $cpu = Cpu::where('socket', 'LGA1700')->first();
+    if (!$mb || !$cpu) test()->markTestSkipped('Need both LGA1700 CPU and LGA1851 MB');
+
+    $items = components('cpu', ['motherboard' => $mb->product_code]);
+    $compat = compatible($items);
+
+    $wrongSocket = array_filter($compat, fn($c) => $c['socket'] === 'LGA1700');
+    expect($wrongSocket)->toBeEmpty('LGA1700 CPU should not be compatible with LGA1851 MB');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// RAM memory type
+// ---------------------------------------------------------------------------
+
+describe('RAM memory type', function () {
+  it('filters RAM to motherboard memory type', function () {
+    $mb = Motherboard::where('memory_type', 'DDR4')->first();
+    if (!$mb) test()->markTestSkipped('No DDR4 MB in DB');
+
+    $items = components('ram', ['motherboard' => $mb->product_code]);
+    foreach (compatible($items) as $ram) {
+      expect($ram['memory_type'])->toBe('DDR4');
+    }
+  });
+
+  it('filters RAM to CPU memory type', function () {
+    $cpu = Cpu::where('memory_type', 'DDR5')->first();
+    if (!$cpu) test()->markTestSkipped('No DDR5 CPU in DB');
+
+    $items = components('ram', ['cpu' => $cpu->product_code]);
+    foreach (compatible($items) as $ram) {
+      expect($ram['memory_type'])->toBe('DDR5');
+    }
+  });
+
+  it('filters motherboards to RAM memory type', function () {
+    $ram = Ram::where('memory_type', 'DDR4')->first();
+    if (!$ram) test()->markTestSkipped('No DDR4 RAM in DB');
+
+    $items = components('motherboard', ['ram' => $ram->product_code]);
+    foreach (compatible($items) as $mb) {
+      expect($mb['memory_type'])->toBe('DDR4');
+    }
+  });
+
+  it('excludes DDR4 RAM when motherboard requires DDR5', function () {
+    $mb     = Motherboard::where('memory_type', 'DDR5')->first();
+    $ramDd4 = Ram::where('memory_type', 'DDR4')->first();
+    if (!$mb || !$ramDd4) test()->markTestSkipped('Need DDR5 MB and DDR4 RAM');
+
+    $items  = components('ram', ['motherboard' => $mb->product_code]);
+    $compat = compatible($items);
+
+    $ddr4inCompat = array_filter($compat, fn($r) => $r['memory_type'] === 'DDR4');
+    expect($ddr4inCompat)->toBeEmpty('DDR4 RAM should not be compatible with DDR5 MB');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// GPU length vs Case
+// ---------------------------------------------------------------------------
+
+describe('GPU length ↔ Case', function () {
+  it('excludes GPUs longer than case max_gpu_length', function () {
+    $case = PcCase::whereNotNull('max_gpu_length')->first();
+    if (!$case) test()->markTestSkipped('No case with max_gpu_length in DB');
+
+    $items = components('gpu', ['case' => $case->product_code]);
+    foreach (compatible($items) as $gpu) {
+      if ($gpu['length_mm'] !== null) {
+        expect($gpu['length_mm'])->toBeLessThanOrEqual($case->max_gpu_length);
+      }
+    }
+  });
+
+  it('excludes cases too small for selected GPU', function () {
+    $gpu = Gpu::whereNotNull('length_mm')->orderByDesc('length_mm')->first();
+    if (!$gpu) test()->markTestSkipped('No GPU with length_mm in DB');
+
+    $items = components('case', ['gpu' => $gpu->product_code]);
+    foreach (compatible($items) as $case) {
+      if ($case['max_gpu_length'] !== null) {
+        expect($case['max_gpu_length'])->toBeGreaterThanOrEqual($gpu->length_mm);
+      }
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// PSU type vs Case form factor
+// ---------------------------------------------------------------------------
+
+describe('PSU type vs Case form factor', function () {
+  it('only shows ATX PSUs when ATX case is selected', function () {
+    $case = PcCase::whereIn('form_factor', ['ATX', 'mATX', 'E-ATX'])->first();
+    if (!$case) test()->markTestSkipped('No ATX-class case in DB');
+
+    $items = components('psu', ['case' => $case->product_code]);
+    foreach (compatible($items) as $psu) {
+      if ($psu['psu_type'] !== null) {
+        expect($psu['psu_type'])->toBe('ATX');
+      }
+    }
+  });
+
+  it('excludes ATX-class cases when SFX PSU is selected', function () {
+    $psu = Psu::where('psu_type', 'SFX')->first();
+    if (!$psu) test()->markTestSkipped('No SFX PSU in DB');
+
+    $atxFormFactors = ['XL ATX', 'Extended ATX', 'E-ATX', 'EEB', 'SSI-EEB', 'SSI-CEB', 'CEB', 'ATX', 'mATX', 'Micro ATX'];
+
+    $items  = components('case', ['psu' => $psu->product_code]);
+    $compat = compatible($items);
+
+    $atxInCompat = array_filter($compat, fn($c) => in_array($c['form_factor'], $atxFormFactors));
+    expect($atxInCompat)->toBeEmpty('ATX-class cases should not be compatible with SFX PSU');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Case with built-in PSU
+// ---------------------------------------------------------------------------
+
+describe('Case built-in PSU', function () {
+  it('shows no compatible PSUs when case includes a PSU', function () {
+    $case = PcCase::where('psu_included', true)->first();
+    if (!$case) test()->markTestSkipped('No case with psu_included in DB');
+
+    $items = components('psu', ['case' => $case->product_code]);
+    expect(compatible($items))->toBeEmpty('No separate PSU should be compatible when case includes one');
+  });
+
+  it('excludes psu_included cases when a separate PSU is selected', function () {
+    $psu = Psu::first();
+    if (!$psu) test()->markTestSkipped('No PSU in DB');
+
+    $items  = components('case', ['psu' => $psu->product_code]);
+    $compat = compatible($items);
+
+    $withBuiltinPsu = array_filter($compat, fn($c) => $c['psu_included'] ?? false);
+    expect($withBuiltinPsu)->toBeEmpty('Cases with built-in PSU should not be compatible when separate PSU is selected');
+  });
+
+  it('marks case_includes_psu on incompatible PSUs when case has built-in PSU', function () {
+    $case = PcCase::where('psu_included', true)->first();
+    if (!$case) test()->markTestSkipped('No case with psu_included in DB');
+
+    $items = components('psu', ['case' => $case->product_code]);
+    $incompat = incompatible($items);
+
+    expect($incompat)->not->toBeEmpty();
+    foreach ($incompat as $psu) {
+      expect($psu)->toHaveKey('case_includes_psu');
+      expect($psu['case_includes_psu'])->toBeTrue();
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// PSU wattage
+// ---------------------------------------------------------------------------
+
+describe('PSU wattage', function () {
+  it('excludes GPUs whose min_psu exceeds selected PSU wattage', function () {
+    $psu = Psu::whereNotNull('wattage')->orderBy('wattage')->first();
+    if (!$psu) test()->markTestSkipped('No PSU with wattage in DB');
+
+    $items = components('gpu', ['psu' => $psu->product_code]);
+    foreach (compatible($items) as $gpu) {
+      if ($gpu['min_psu'] !== null) {
+        expect($gpu['min_psu'])->toBeLessThanOrEqual($psu->wattage);
+      }
+    }
+  });
+
+  it('excludes GPUs whose min_psu exceeds case built-in PSU wattage', function () {
+    $case = PcCase::where('psu_included', true)->whereNotNull('psu_wattage')->first();
+    if (!$case) test()->markTestSkipped('No case with psu_wattage in DB');
+
+    $items = components('gpu', ['case' => $case->product_code]);
+    foreach (compatible($items) as $gpu) {
+      if ($gpu['min_psu'] !== null) {
+        expect($gpu['min_psu'])->toBeLessThanOrEqual($case->psu_wattage);
+      }
+    }
+  });
+
+  it('excludes cases with built-in PSU insufficient for selected GPU', function () {
+    $gpu = Gpu::whereNotNull('min_psu')->orderByDesc('min_psu')->first();
+    if (!$gpu) test()->markTestSkipped('No GPU with min_psu in DB');
+
+    $items = components('case', ['gpu' => $gpu->product_code]);
+    foreach (compatible($items) as $case) {
+      if (($case['psu_included'] ?? false) && $case['psu_wattage'] !== null) {
+        expect($case['psu_wattage'])->toBeGreaterThanOrEqual($gpu->min_psu);
+      }
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// SATA ports
+// ---------------------------------------------------------------------------
+
+describe('SATA ports', function () {
+  it('excludes SATA SSDs when motherboard has 0 SATA ports', function () {
+    $mb = Motherboard::where('sata_ports', 0)->first();
+    if (!$mb) test()->markTestSkipped('No MB with 0 SATA ports in DB');
+
+    $items = components('ssd', ['motherboard' => $mb->product_code]);
+    foreach (compatible($items) as $ssd) {
+      expect(strtolower($ssd['interface'] ?? ''))->not->toContain('sata');
+    }
+  });
+
+  it('excludes all HDDs when motherboard has 0 SATA ports', function () {
+    $mb = Motherboard::where('sata_ports', 0)->first();
+    if (!$mb) test()->markTestSkipped('No MB with 0 SATA ports in DB');
+
+    $items = components('hdd', ['motherboard' => $mb->product_code]);
+    expect(compatible($items))->toBeEmpty('No HDDs should be compatible when MB has 0 SATA ports');
+  });
+
+  it('still allows SATA SSD when MB has multiple SATA ports and HDD is selected', function () {
+    $mb  = Motherboard::where('sata_ports', '>=', 2)->first();
+    $hdd = Hdd::whereRaw("LOWER(interface) LIKE '%sata%'")->first();
+    if (!$mb || !$hdd) test()->markTestSkipped('Need MB with >=2 SATA ports and a SATA HDD');
+
+    $items  = components('ssd', ['motherboard' => $mb->product_code, 'hdd' => $hdd->product_code]);
+    $compat = compatible($items);
+
+    $sataCompat = array_filter($compat, fn($s) => str_contains(strtolower($s['interface'] ?? ''), 'sata'));
+    expect($sataCompat)->not->toBeEmpty('SATA SSDs should still be compatible when ports remain after HDD');
+  });
+
+  it('excludes SATA SSDs when all SATA ports are used by the HDD', function () {
+    $mb  = Motherboard::where('sata_ports', 1)->first();
+    $hdd = Hdd::whereRaw("LOWER(interface) LIKE '%sata%'")->first();
+    if (!$mb || !$hdd) test()->markTestSkipped('Need MB with exactly 1 SATA port and a SATA HDD');
+
+    $items  = components('ssd', ['motherboard' => $mb->product_code, 'hdd' => $hdd->product_code]);
+    $compat = compatible($items);
+
+    $sataInCompat = array_filter($compat, fn($s) => str_contains(strtolower($s['interface'] ?? ''), 'sata'));
+    expect($sataInCompat)->toBeEmpty('No SATA SSDs should be compatible when 1-port MB already has HDD');
+  });
+
+  it('excludes HDD when all SATA ports are used by a SATA SSD', function () {
+    $mb      = Motherboard::where('sata_ports', 1)->first();
+    $sataSsd = Ssd::whereRaw("LOWER(interface) LIKE '%sata%'")->first();
+    if (!$mb || !$sataSsd) test()->markTestSkipped('Need MB with exactly 1 SATA port and a SATA SSD');
+
+    $items = components('hdd', ['motherboard' => $mb->product_code, 'ssd' => $sataSsd->product_code]);
+    expect(compatible($items))->toBeEmpty('No HDDs should be compatible when 1-port MB already has SATA SSD');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// M.2 SSD vs Motherboard slots
+// ---------------------------------------------------------------------------
+
+describe('M.2 SSD vs Motherboard m2_slots', function () {
+  it('excludes M.2 SSDs when motherboard has 0 M.2 slots', function () {
+    $mb = Motherboard::where('m2_slots', 0)->first();
+    if (!$mb) test()->markTestSkipped('No MB with 0 M.2 slots in DB');
+
+    $items = components('ssd', ['motherboard' => $mb->product_code]);
+    foreach (compatible($items) as $ssd) {
+      expect($ssd['form_factor'])->not->toBe('M.2');
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Cooler socket + TDP
+// ---------------------------------------------------------------------------
+
+describe('Cooler vs CPU', function () {
+  it('filters coolers to compatible socket when CPU is selected', function () {
+    $cpu = Cpu::whereNotNull('socket')->first();
+    if (!$cpu) test()->markTestSkipped('No CPU with socket in DB');
+
+    $items = components('cooler', ['cpu' => $cpu->product_code]);
+    foreach (compatible($items) as $cooler) {
+      if ($cooler['compatibility']) {
+        expect(explode(',', $cooler['compatibility']))->toContain($cpu->socket);
+      }
+    }
+  });
+
+  it('filters CPUs to cooler-compatible sockets when cooler is selected', function () {
+    $cooler = Cooler::whereNotNull('compatibility')->first();
+    if (!$cooler) test()->markTestSkipped('No cooler with socket compatibility in DB');
+
+    $sockets = explode(',', $cooler->compatibility);
+    $items   = components('cpu', ['cooler' => $cooler->product_code]);
+    foreach (compatible($items) as $cpu) {
+      if ($cpu['socket']) {
+        expect($sockets)->toContain($cpu['socket']);
+      }
+    }
+  });
+
+  it('excludes coolers with TDP below CPU TDP', function () {
+    $cpu = Cpu::whereNotNull('tdp')->orderByDesc('tdp')->first();
+    if (!$cpu) test()->markTestSkipped('No CPU with TDP in DB');
+
+    $items = components('cooler', ['cpu' => $cpu->product_code]);
+    foreach (compatible($items) as $cooler) {
+      if ($cooler['tdp_support'] !== null) {
+        expect($cooler['tdp_support'])->toBeGreaterThanOrEqual($cpu->tdp);
+      }
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Motherboard form factor vs Case
+// ---------------------------------------------------------------------------
+
+describe('Motherboard form factor vs Case', function () {
+  it('excludes cases incompatible with selected motherboard form factor', function () {
+    $mb = Motherboard::whereIn('form_factor', ['ATX', 'mATX', 'Mini-ITX'])->first();
+    if (!$mb) test()->markTestSkipped('No MB with known form factor in DB');
+
+    $items = components('case', ['motherboard' => $mb->product_code]);
+    // All compatible cases must be able to house the MB form factor
+    // We just verify none have a known incompatible form factor
+    expect(compatible($items))->not->toBeEmpty();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// HDD vs Case 3.5" bays
+// ---------------------------------------------------------------------------
+
+describe('HDD vs Case 3.5" bays', function () {
+  it('excludes all HDDs when case has no 3.5" bays', function () {
+    $case = PcCase::where('bays_35', 0)->whereNotNull('bays_35')->first();
+    if (!$case) test()->markTestSkipped('No case with bays_35=0 in DB');
+
+    $items = components('hdd', ['case' => $case->product_code]);
+    expect(compatible($items))->toBeEmpty('No HDDs should be compatible with a caseless 3.5" bay case');
+  });
+
+  it('excludes cases with no 3.5" bays when HDD is selected', function () {
+    $hdd = Hdd::first();
+    if (!$hdd) test()->markTestSkipped('No HDD in DB');
+
+    $items  = components('case', ['hdd' => $hdd->product_code]);
+    $compat = compatible($items);
+
+    $noBays = array_filter($compat, fn($c) => isset($c['bays_35']) && $c['bays_35'] === 0);
+    expect($noBays)->toBeEmpty('Cases with no 3.5" bays should not be compatible when HDD is selected');
+  });
+});

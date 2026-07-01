@@ -118,7 +118,8 @@ class BuilderController extends Controller
     $preferences = array_filter($validated['preferences']);
 
     // validate pre-selected components are compatible with each other
-    $issues = $this->compatibility->validateBuild($selected);
+    $validation = $this->compatibility->validateBuild($selected);
+    $issues = $validation['issues'];
     if (!empty($issues)) {
       return response()->json([
         'success' => false,
@@ -154,8 +155,8 @@ class BuilderController extends Controller
       return response()->json(['error' => $e->getMessage()], 400);
     }
 
-    $issues = $this->compatibility->validateBuild($selected);
+    $result = $this->compatibility->validateBuild($selected);
 
-    return response()->json(['issues' => $issues]);
+    return response()->json($result);
   }
 }

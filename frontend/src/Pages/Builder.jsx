@@ -40,8 +40,9 @@ const Builder = () => {
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [buildIssues, setBuildIssues] = useState({});
+  const [buildWarnings, setBuildWarnings] = useState({});
   const [filters, setFilters] = useState({});
-  const [sort, setSort] = useState('price_asc');
+  const [sort, setSort] = useState('');
   const [buildType, setBuildType] = useState('');
   const [restoredDraft, setRestoredDraft] = useState(false);
   const [viewingComponent, setViewingComponent] = useState(null);
@@ -140,14 +141,17 @@ const Builder = () => {
 
     if (Object.keys(selected).length === 0) {
       setBuildIssues({});
+      setBuildWarnings({});
       return;
     }
 
     try {
       const res = await axios.post('/api/builder/validate', { selected });
       setBuildIssues(res.data.issues);
+      setBuildWarnings(res.data.warnings ?? {});
     } catch (err) {
       setBuildIssues({});
+      setBuildWarnings({});
       console.error(err);
     }
   };
@@ -212,6 +216,8 @@ const Builder = () => {
         setNotes,
         buildIssues,
         setBuildIssues,
+        buildWarnings,
+        setBuildWarnings,
         viewingComponent,
         setViewingComponent,
       }}
@@ -262,7 +268,7 @@ const Builder = () => {
                       setCurrentCompToAdd(viewingComponent.name);
                       setFilters({});
                       setSearch('');
-                      setSort('price_asc');
+                      setSort('');
                       setViewingComponent(null);
                     }}
                   >
@@ -291,10 +297,10 @@ const Builder = () => {
               <ComponentCard name="GPU" component={selectedComponents.gpu} />
               <ComponentCard name="PSU" component={selectedComponents.psu} />
               <ComponentCard name="SSD" component={selectedComponents.ssd} />
-              <ComponentCard name="HDD" component={selectedComponents.hdd} />
               <ComponentCard name="Case" component={selectedComponents.case} />
-              <ComponentCard name="Fan" component={selectedComponents.fan} />
               <ComponentCard name="Cooler" component={selectedComponents.cooler} />
+              <ComponentCard name="HDD" component={selectedComponents.hdd} />
+              <ComponentCard name="Fan" component={selectedComponents.fan} />
             </div>
           )}
         </div>

@@ -1,22 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { useBuilder } from "../../../Contexts/BuilderContext";
-import { ArrowIcon } from "../Common/Icons";
 import ClosedSection from "../Common/ClosedSection";
 import { getCheapestPrice } from "../../../lib/componentPrice";
 
 const BuildDesc = () => {
   const { t } = useTranslation(["builder", "common"]);
-  const { selectedComponents, warnings, notes, buildIssues, buildId, buildName } =
+  const { selectedComponents, warnings, notes, buildIssues, buildWarnings, buildId, buildName } =
     useBuilder();
 
   const filled = Object.values(selectedComponents).filter((v) => v !== null);
   const total = filled.reduce((sum, c) => sum + getCheapestPrice(c), 0);
   const count = filled.length;
   const totalSlots = Object.keys(selectedComponents).length;
-
-  const [warningActive, setWarningActive] = useState(false);
-  const [compatibilityActive, setCompatibilityActive] = useState(false);
 
   return (
     <div className="space-y-4">
@@ -43,74 +39,55 @@ const BuildDesc = () => {
         </div>
       </div>
 
-      {Object.keys(buildIssues).length > 0 && (
-        <div>
-          <ClosedSection title={t("buildDesc.compatibility")}>
-            {Object.keys(buildIssues).length > 0 && (
-              <div className="space-y-2">
-                {Object.entries(buildIssues).map(([slot, issues]) =>
-                  issues.map((issue, i) => (
-                    <div
-                      key={`${slot}-${i}`}
-                      className="border border-danger/80 bg-danger/10 p-4 space-y-2"
-                    >
-                      <p className="text-danger text-sm">
-                        <span className="font-medium">
-                          {t(`common:components.${slot}`, { defaultValue: slot })}:{" "}
-                        </span>
-                        {issue}
-                      </p>
-                    </div>
-                  )),
-                )}
-              </div>
+      {(Object.keys(buildIssues).length > 0 || Object.keys(buildWarnings).length > 0) && (
+        <ClosedSection title={t("buildDesc.compatibility")}>
+          <div className="space-y-2">
+            {Object.entries(buildIssues).map(([slot, issues]) =>
+              issues.map((issue, i) => (
+                <div key={`issue-${slot}-${i}`} className="border border-danger/80 bg-danger/10 p-4">
+                  <p className="text-danger text-sm">
+                    <span className="font-medium">
+                      {t(`common:components.${slot}`, { defaultValue: slot })}:{" "}
+                    </span>
+                    {issue}
+                  </p>
+                </div>
+              )),
             )}
-          </ClosedSection>
-        </div>
+            {Object.entries(buildWarnings).map(([slot, warningList]) =>
+              warningList.map((warning, i) => (
+                <div key={`warn-${slot}-${i}`} className="border border-alert/80 bg-alert/10 p-4">
+                  <p className="text-alert text-sm">
+                    <span className="font-medium">
+                      {t(`common:components.${slot}`, { defaultValue: slot })}:{" "}
+                    </span>
+                    {warning}
+                  </p>
+                </div>
+              )),
+            )}
+          </div>
+        </ClosedSection>
       )}
 
       {(warnings?.length > 0 || notes?.length > 0) && (
-        <div>
-          <ClosedSection title={t("buildDesc.aboutThisBuild")}>
-            <div className="space-y-2">
-              {notes.map((note, i) => (
-                <div key={i} className="border border-info/80 bg-info/10 p-4">
-                  <p className="text-info text-sm">{note}</p>
-                </div>
-              ))}
-            </div>
-
-            {Object.keys(buildIssues).length > 0 && (
-              <div className="space-y-2">
-                {Object.entries(buildIssues).map(([slot, issues]) =>
-                  issues.map((issue, i) => (
-                    <div
-                      key={`${slot}-${i}`}
-                      className="border border-danger/80 bg-danger/10 p-4"
-                    >
-                      <p className="text-danger text-sm">
-                        <span className="font-medium">
-                          {t(`common:components.${slot}`, { defaultValue: slot })}:{" "}
-                        </span>
-                        {issue}
-                      </p>
-                    </div>
-                  )),
-                )}
-              </div>
-            )}
-
-            {warnings.map((warning, i) => (
-              <div key={i} className="border border-danger/80 bg-danger/10 p-4">
-                <p className="text-danger text-sm">{warning}</p>
+        <ClosedSection title={t("buildDesc.aboutThisBuild")}>
+          <div className="space-y-2">
+            {notes.map((note, i) => (
+              <div key={i} className="border border-info/80 bg-info/10 p-4">
+                <p className="text-info text-sm">{note}</p>
               </div>
             ))}
-
-            <p className="text-sm text-muted border-l pl-4">
-              {t("buildDesc.fullyFunctionalNote")}
-            </p>
-          </ClosedSection>
-        </div>
+            {warnings.map((warning, i) => (
+              <div key={i} className="border border-alert/80 bg-alert/10 p-4">
+                <p className="text-alert text-sm">{warning}</p>
+              </div>
+            ))}
+          </div>
+          <p className="text-sm text-muted border-l pl-4 mt-2">
+            {t("buildDesc.fullyFunctionalNote")}
+          </p>
+        </ClosedSection>
       )}
     </div>
   );

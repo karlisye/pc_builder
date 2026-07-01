@@ -1,11 +1,41 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
+/* Dual-handle range slider */
+.range-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  pointer-events: none;
+}
+
+.range-thumb::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 14px;
+  width: 14px;
+  border-radius: 50%;
+  background-color: var(--color-secondary-light);
+  border: none;
+  pointer-events: all;
+  cursor: pointer;
+}
+
+.range-thumb::-moz-range-thumb {
+  height: 14px;
+  width: 14px;
+  border-radius: 50%;
+  background-color: var(--color-secondary-light);
+  border: none;
+  pointer-events: all;
+  cursor: pointer;
+}
 
 @source './**/*.{jsx,js}';
 
 @theme {
   --font-sans:
-    "Instrument Sans", ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
 
   --color-primary: #374151;
   --color-primary-light: #4b5563;

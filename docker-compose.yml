@@ -18,6 +18,12 @@ services:
       - ./backend/.env
     ports:
       - "8000:8000"
+    volumes:
+      - ./backend/app:/var/www/app
+      - ./backend/lang:/var/www/lang
+      - ./backend/config:/var/www/config
+      - ./backend/routes:/var/www/routes
+      - ./backend/tests:/var/www/tests
     depends_on:
       mysql:
         condition: service_healthy

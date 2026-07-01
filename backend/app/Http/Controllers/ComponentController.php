@@ -14,13 +14,15 @@ class ComponentController extends Controller
   private const VALID_SORTS = ['price_asc', 'price_desc', 'name_asc', 'name_desc'];
 
   private const FILTER_COLUMNS = [
-    'cpu' => ['socket', 'cores', 'integrated_graphics', 'cooler_included'],
+    'cpu' => ['socket', 'memory_type', 'cores', 'integrated_graphics', 'cooler_included'],
     'motherboard' => ['socket', 'chipset', 'form_factor', 'memory_type', 'wifi'],
-    'ram' => ['memory_type', 'capacity', 'frequency'],
-    'gpu' => ['vram', 'min_psu'],
-    'case' => ['form_factor'],
-    'cooler' => ['tdp_support'],
-    'psu' => ['wattage', 'efficiency_rating', 'modular', 'psu_type'],
+    'ram' => ['memory_type', 'modules_count', 'capacity', 'frequency', 'xmp'],
+    'gpu' => ['gpu_family', 'vram', 'min_psu'],
+    'case' => ['form_factor', 'psu_included'],
+    'cooler' => ['tdp_support', 'fan_size_mm'],
+    'hdd' => ['capacity', 'interface'],
+    'fan' => ['size_mm', 'units_in_package'],
+    'psu' => ['wattage', 'efficiency_rating', 'modular', 'psu_type', 'pcie_5'],
     'ssd' => ['capacity', 'type', 'form_factor', 'interface'],
   ];
 
@@ -83,6 +85,7 @@ class ComponentController extends Controller
       // global
       'sort',
       'search',
+      'brand',
       'min_price',
       'max_price',
       'show_in_stock',
@@ -90,30 +93,50 @@ class ComponentController extends Controller
       'show_compatible_only',
       // cpu
       'socket',
-      'cores',
+      'memory_type',
+      'cores_min',
+      'cores_max',
       'integrated_graphics',
       'cooler_included',
       // motherboard
       'chipset',
       'form_factor',
-      'memory_type',
       'wifi',
       // ram
-      'capacity',
-      'frequency',
+      'modules_count',
+      'capacity_min',
+      'capacity_max',
+      'frequency_min',
+      'frequency_max',
+      'xmp',
       // gpu
-      'vram',
-      'min_psu',
+      'gpu_family',
+      'vram_min',
+      'vram_max',
+      'min_psu_min',
+      'min_psu_max',
       // cooler
-      'tdp_support',
+      'tdp_support_min',
+      'tdp_support_max',
+      'fan_size_mm_min',
+      'fan_size_mm_max',
       // psu
-      'wattage',
+      'wattage_min',
+      'wattage_max',
       'efficiency_rating',
       'modular',
       'psu_type',
+      'pcie_5',
       // ssd
       'type',
       'interface',
+      // hdd (interface shared with ssd)
+      // fan
+      'size_mm_min',
+      'size_mm_max',
+      'units_in_package',
+      // case
+      'psu_included',
     ]);
 
     $cacheKey = "components:{$type}:list:" . md5(json_encode([$selected, $filters, $request->query('page', 1)]));
@@ -162,16 +185,48 @@ class ComponentController extends Controller
       $columns = self::FILTER_COLUMNS[$type] ?? [];
       $result = [];
 
+      // DDR4/DDR5 compound value is excluded from filter options (it's an internal
+      // value meaning the CPU supports both; the filter handles it inclusively)
+      $excludeValues = ['cpu' => ['memory_type' => ['DDR4/DDR5']]];
+
       foreach ($columns as $column) {
-        $result[$column] = ComponentListingJoin::apply($modelClass::query())
+        $values = ComponentListingJoin::apply($modelClass::query())
           ->whereNotNull($column)
           ->whereIn('listing_agg.listing_stock_status', ['in_stock', 'orderable'])
           ->whereNotNull('listing_agg.listing_price')
           ->select($column)
           ->distinct()
           ->orderBy($column)
+          ->toBase()
           ->pluck($column);
+
+        $exclude = $excludeValues[$type][$column] ?? [];
+        $result[$column] = $exclude
+          ? $values->filter(fn($v) => !in_array($v, $exclude, true))->values()
+          : $values;
       }
+
+      // brand is global across all types
+      $result['brand'] = ComponentListingJoin::apply($modelClass::query())
+        ->whereNotNull('brand')
+        ->whereIn('listing_agg.listing_stock_status', ['in_stock', 'orderable'])
+        ->whereNotNull('listing_agg.listing_price')
+        ->select('brand')
+        ->distinct()
+        ->orderBy('brand')
+        ->toBase()
+        ->pluck('brand');
+
+      // price bounds for the range slider
+      $priceAgg = ComponentListingJoin::apply($modelClass::query())
+        ->whereIn('listing_agg.listing_stock_status', ['in_stock', 'orderable'])
+        ->whereNotNull('listing_agg.listing_price')
+        ->select(\Illuminate\Support\Facades\DB::raw('FLOOR(MIN(listing_agg.listing_price)) as price_min, CEIL(MAX(listing_agg.listing_price)) as price_max'))
+        ->toBase()
+        ->first();
+
+      $result['price_min'] = (int) ($priceAgg->price_min ?? 0);
+      $result['price_max'] = (int) ($priceAgg->price_max ?? 9999);
 
       return $result;
     });

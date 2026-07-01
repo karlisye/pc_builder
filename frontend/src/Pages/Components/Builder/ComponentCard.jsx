@@ -13,16 +13,29 @@ const ComponentCard = ({ component, name }) => {
     setSearch,
     setSort,
     setSelectedComponents,
+    selectedComponents,
     buildIssues,
     setViewingComponent,
   } = useBuilder();
+
+  const resolveOptional = () => {
+    const key = name.toLowerCase();
+    if (['cpu', 'motherboard', 'ram', 'ssd', 'case'].includes(key)) return false;
+    if (['hdd', 'fan'].includes(key)) return true;
+    if (key === 'gpu') return !!selectedComponents.cpu?.integrated_graphics;
+    if (key === 'cooler') return !!selectedComponents.cpu?.cooler_included;
+    if (key === 'psu') return !!selectedComponents.case?.psu_included;
+    return false;
+  };
+  const isOptional = resolveOptional();
+  const includedInCase = name.toLowerCase() === 'psu' && !!selectedComponents.case?.psu_included;
   const [popup, setPopup] = useState(null);
 
   const handleAddComponent = () => {
     setCurrentCompToAdd(name);
     setFilters({});
     setSearch('');
-    setSort('price_asc');
+    setSort('');
   };
 
   const handleRemove = () => {
@@ -157,6 +170,18 @@ const ComponentCard = ({ component, name }) => {
         ) : (
           <>
             <div className="h-full flex flex-col items-center justify-center gap-4 relative">
+              {includedInCase && (
+                <div className="bg-muted/10 absolute w-full h-full pointer-events-none border border-muted/20"></div>
+              )}
+              {includedInCase ? (
+                <span className="absolute top-2 left-2 text-xs text-muted">
+                  {t('addComponent.includedInCase')}
+                </span>
+              ) : (
+                !isOptional && (
+                  <span className="absolute top-2 left-2 text-danger text-lg leading-none">*</span>
+                )
+              )}
               <span className="text-3xl font-semibold text-muted">{displayName}</span>
               <button
                 className="bg-surface p-2 text-muted hover:bg-secondary-light transition cursor-pointer"
@@ -175,7 +200,7 @@ const ComponentCard = ({ component, name }) => {
         >
           <InfoIcon />
         </div>
-        {popup && <ComponentPopup {...popup} />}
+        {popup && <ComponentPopup {...popup} isOptional={isOptional} />}
       </>
     </div>
   );

@@ -68,9 +68,8 @@ class CompatibilityService
       'case' => ComponentFilters::case($compatibleQuery, $selected),
       'cooler' => ComponentFilters::cooler($compatibleQuery, $selected),
       'psu' => ComponentFilters::psu($compatibleQuery, $selected),
-
-      // TODO: ssd, hdd, fan - no compatibility rules yet. Add later
-
+      'ssd' => ComponentFilters::ssd($compatibleQuery, $selected),
+      'hdd' => ComponentFilters::hdd($compatibleQuery, $selected),
       default => $compatibleQuery,
     };
 
@@ -82,16 +81,20 @@ class CompatibilityService
     // e.g. if user already has cpu selected, but still wants to see cpus, will return the cpu id
     $selectedIdForType = isset($selected[$type]) ? $selected[$type]->id : null;
     $warning  = CompatibilityHelper::exoticFormFactorWarning($selected);
+    $caseHasPsu = $type === 'psu' && ($selected['case'] ?? null)?->psu_included;
 
     $paginator = $query->paginate(15);
 
     // add the selected boolean and manual check warning to each component
     // add compatible and out_of_stock flags to each component
-    $paginator->getCollection()->transform(function ($item) use ($selectedIdForType, $warning, $compatibleIds) {
+    $paginator->getCollection()->transform(function ($item) use ($selectedIdForType, $warning, $compatibleIds, $caseHasPsu) {
       $item->selected = ($item->id === $selectedIdForType);
       $item->compatibility_warning = $warning;
       $item->compatible = in_array($item->id, $compatibleIds);
       $item->out_of_stock = $item->stock_status === 'out_of_stock';
+      if ($caseHasPsu) {
+        $item->case_includes_psu = true;
+      }
       return $item;
     });
 
@@ -101,6 +104,7 @@ class CompatibilityService
   public function validateBuild(array $selected): array
   {
     $issues = [];
+    $warnings = [];
 
     $cpu = $selected['cpu'] ?? null;
     $mb = $selected['motherboard'] ?? null;
@@ -109,6 +113,9 @@ class CompatibilityService
     $case = $selected['case'] ?? null;
     $cooler = $selected['cooler'] ?? null;
     $psu = $selected['psu'] ?? null;
+    $ssd = $selected['ssd'] ?? null;
+    $hdd = $selected['hdd'] ?? null;
+    $fan = $selected['fan'] ?? null;
 
     // cpu / motherboard socket
     if ($cpu && $mb && $cpu->socket !== $mb->socket) {
@@ -128,6 +135,52 @@ class CompatibilityService
       $issues['ram'][] = __('compatibility.ram_memory_mismatch', [
         'ram_type' => $ram->memory_type, 'mb_type' => $mb->memory_type,
       ]);
+    }
+
+    // cpu / ram memory type
+    if ($cpu && $ram && $cpu->memory_type && !CompatibilityHelper::cpuSupportsRamType($cpu->memory_type, $ram->memory_type)) {
+      $issues['cpu'][] = __('compatibility.cpu_ram_memory_mismatch', [
+        'cpu_type' => $cpu->memory_type, 'ram_type' => $ram->memory_type,
+      ]);
+      $issues['ram'][] = __('compatibility.ram_cpu_memory_mismatch', [
+        'ram_type' => $ram->memory_type, 'cpu_type' => $cpu->memory_type,
+      ]);
+    }
+
+    // ram modules vs motherboard memory slots
+    if ($ram && $mb && $ram->modules_count !== null && $mb->memory_slots !== null) {
+      if ($ram->modules_count > $mb->memory_slots) {
+        $issues['ram'][] = __('compatibility.ram_too_many_modules', [
+          'modules' => $ram->modules_count, 'slots' => $mb->memory_slots,
+        ]);
+        $issues['motherboard'][] = __('compatibility.motherboard_not_enough_slots', [
+          'slots' => $mb->memory_slots, 'modules' => $ram->modules_count,
+        ]);
+      }
+    }
+
+    // ram capacity vs motherboard max memory
+    if ($ram && $mb && $ram->capacity !== null && $mb->max_memory_capacity !== null) {
+      if ($ram->capacity > $mb->max_memory_capacity) {
+        $issues['ram'][] = __('compatibility.ram_exceeds_max_capacity', [
+          'ram_capacity' => $ram->capacity, 'mb_max' => $mb->max_memory_capacity,
+        ]);
+        $issues['motherboard'][] = __('compatibility.motherboard_max_capacity_exceeded', [
+          'mb_max' => $mb->max_memory_capacity, 'ram_capacity' => $ram->capacity,
+        ]);
+      }
+    }
+
+    // ram speed vs motherboard max
+    if ($ram && $mb && $ram->frequency !== null && $mb->memory_max_speed !== null) {
+      if ($ram->frequency > $mb->memory_max_speed) {
+        $issues['ram'][] = __('compatibility.ram_speed_exceeds_mb_max', [
+          'ram_freq' => $ram->frequency, 'mb_max' => $mb->memory_max_speed,
+        ]);
+        $issues['motherboard'][] = __('compatibility.mb_max_speed_exceeded', [
+          'mb_max' => $mb->memory_max_speed, 'ram_freq' => $ram->frequency,
+        ]);
+      }
     }
 
     // gpu / case length
@@ -189,33 +242,111 @@ class CompatibilityService
       }
     }
 
-    // psu wattage
-    if ($psu && $cpu && $gpu) {
-      $tdpRequired = ($cpu->tdp + $gpu->tdp) * 1.3;
+    // psu / case form factor (ATX cases require ATX PSU)
+    if ($psu && $case && $psu->psu_type && $case->form_factor) {
+      if (CompatibilityHelper::isAtxCaseFormFactor($case->form_factor) && $psu->psu_type !== 'ATX') {
+        $issues['psu'][] = __('compatibility.psu_form_factor_atx_case', [
+          'psu_type' => $psu->psu_type, 'case_form' => $case->form_factor,
+        ]);
+        $issues['case'][] = __('compatibility.case_psu_form_factor_mismatch', [
+          'case_form' => $case->form_factor, 'psu_type' => $psu->psu_type,
+        ]);
+      }
+    }
+
+    // gpu / psu power connectors
+    if ($gpu && $psu && $gpu->power_connectors) {
+      $gpuConn = CompatibilityHelper::parseGpuConnectors($gpu->power_connectors);
+
+      if ($gpuConn['requires_16pin'] && !$psu->pcie_5) {
+        $issues['gpu'][] = __('compatibility.gpu_needs_pcie5_connector');
+        $issues['psu'][] = __('compatibility.psu_missing_pcie5_connector');
+      }
+
+      if ($gpuConn['required_traditional'] > 0 && $psu->pcie_connectors) {
+        $psuConn = CompatibilityHelper::parsePsuPcieConnectors($psu->pcie_connectors);
+        if ($psuConn < $gpuConn['required_traditional']) {
+          $issues['gpu'][] = __('compatibility.gpu_insufficient_pcie_connectors', [
+            'required' => $gpuConn['required_traditional'], 'available' => $psuConn,
+          ]);
+          $issues['psu'][] = __('compatibility.psu_insufficient_pcie_connectors', [
+            'available' => $psuConn, 'required' => $gpuConn['required_traditional'],
+          ]);
+        }
+      }
+    }
+
+    // m.2 ssd / motherboard slots
+    if ($ssd && $mb && $ssd->form_factor === 'M.2' && $mb->m2_slots === 0) {
+      $issues['ssd'][] = __('compatibility.ssd_no_m2_slots');
+      $issues['motherboard'][] = __('compatibility.motherboard_no_m2_slots');
+    }
+
+    // sata ssd / motherboard sata ports
+    if ($ssd && $mb && str_contains(strtolower($ssd->interface ?? ''), 'sata') && $mb->sata_ports === 0) {
+      $issues['ssd'][] = __('compatibility.ssd_no_sata_ports');
+      $issues['motherboard'][] = __('compatibility.motherboard_no_sata_ports_ssd');
+    }
+
+    // sata device count / motherboard sata ports
+    if ($mb && $mb->sata_ports !== null) {
+      $sataCount = 0;
+      if ($hdd && str_contains(strtolower($hdd->interface ?? ''), 'sata')) {
+        $sataCount++;
+      }
+      if ($ssd && str_contains(strtolower($ssd->interface ?? ''), 'sata')) {
+        $sataCount++;
+      }
+      if ($sataCount > $mb->sata_ports) {
+        $issues['motherboard'][] = __('compatibility.motherboard_sata_ports_exceeded', [
+          'count' => $sataCount, 'ports' => $mb->sata_ports,
+        ]);
+      }
+    }
+
+    // hdd / motherboard sata ports
+    if ($hdd && $mb && str_contains(strtolower($hdd->interface ?? ''), 'sata') && $mb->sata_ports === 0) {
+      $issues['hdd'][] = __('compatibility.hdd_no_sata_ports');
+      $issues['motherboard'][] = __('compatibility.motherboard_no_sata_ports_hdd');
+    }
+
+    // hdd / case 3.5" bays
+    if ($hdd && $case && $case->bays_35 === 0) {
+      $issues['hdd'][] = __('compatibility.hdd_no_35_bays');
+      $issues['case'][] = __('compatibility.case_no_35_bays');
+    }
+
+    // case with built-in PSU and a separate PSU are both selected
+    if ($psu && $case?->psu_included) {
+      $issues['psu'][] = __('compatibility.psu_and_case_psu_conflict');
+      $issues['case'][] = __('compatibility.case_psu_already_included');
+    }
+
+    // psu wattage (unified: cpu+gpu, or gpu-only)
+    // use case psu_wattage when no separate PSU is selected but case includes one
+    $effectivePsuWattage = $psu?->wattage ?? ($case?->psu_included ? $case->psu_wattage : null);
+    if ($effectivePsuWattage !== null && $gpu) {
+      $ramWattage = ($ram?->modules_count ?? 0) * 5;
+      $fanWattage = ($fan?->units_in_package ?? 0) * 3;
+
+      $tdpRequired = ($cpu && $cpu->tdp !== null && $gpu->tdp !== null)
+        ? ($cpu->tdp + $gpu->tdp + $ramWattage + $fanWattage) * 1.3
+        : 0;
       $minPsuRequired = $gpu->min_psu ?? 0;
       $requiredWattage = max($tdpRequired, $minPsuRequired);
 
-      if ($psu->wattage !== null && $psu->wattage < $requiredWattage) {
-        $issues['psu'][] = __('compatibility.psu_insufficient_wattage', [
-          'psu_wattage' => $psu->wattage, 'required' => ceil($requiredWattage),
+      if ($requiredWattage > 0 && $effectivePsuWattage < $requiredWattage) {
+        $targetKey = $psu ? 'psu' : 'case';
+        $issues[$targetKey][] = __('compatibility.psu_insufficient_wattage', [
+          'psu_wattage' => $effectivePsuWattage, 'required' => ceil($requiredWattage),
         ]);
-        $issues['cpu'][] = __('compatibility.cpu_psu_wattage_too_low');
+        if ($cpu) {
+          $issues['cpu'][] = __('compatibility.cpu_psu_wattage_too_low');
+        }
         $issues['gpu'][] = __('compatibility.gpu_psu_wattage_too_low');
       }
     }
 
-    // gpu min_psu check without cpu
-    if ($psu && $gpu && !$cpu && $gpu->min_psu !== null) {
-      if ($psu->wattage !== null && $psu->wattage < $gpu->min_psu) {
-        $issues['psu'][] = __('compatibility.psu_insufficient_wattage_gpu_only', [
-          'psu_wattage' => $psu->wattage, 'gpu_min_psu' => $gpu->min_psu,
-        ]);
-        $issues['gpu'][] = __('compatibility.gpu_psu_wattage_too_low_specific', [
-          'psu_wattage' => $psu->wattage, 'gpu_min_psu' => $gpu->min_psu,
-        ]);
-      }
-    }
-
-    return $issues;
+    return ['issues' => $issues, 'warnings' => $warnings];
   }
 }

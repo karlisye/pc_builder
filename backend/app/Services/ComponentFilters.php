@@ -23,14 +23,12 @@ class ComponentFilters
     }
 
     if (($ram = $selected['ram'] ?? null)?->memory_type) {
-      $compatibleSockets = match ($ram->memory_type) {
-        'DDR4' => ['AM4', 'LGA1200', 'LGA1700', 'LGA2066'],
-        'DDR5' => ['AM5', 'LGA1700', 'LGA1851', 'sTR5'],
-        default => [],
-      };
-      if (!empty($compatibleSockets)) {
-        $query->whereIn('socket', $compatibleSockets);
-      }
+      $ramType = $ram->memory_type;
+      $query->where(function (Builder $q) use ($ramType) {
+        $q->whereNull('memory_type')
+          ->orWhere('memory_type', $ramType)
+          ->orWhere('memory_type', 'DDR4/DDR5');
+      });
     }
 
     return $query;
@@ -46,6 +44,30 @@ class ComponentFilters
       $query->where('memory_type', $ram->memory_type);
     }
 
+    // motherboard must have enough slots for the RAM kit
+    if (($ram = $selected['ram'] ?? null)?->modules_count !== null) {
+      $query->where(function (Builder $q) use ($ram) {
+        $q->whereNull('memory_slots')
+          ->orWhere('memory_slots', '>=', $ram->modules_count);
+      });
+    }
+
+    // motherboard max memory must accommodate the RAM kit capacity
+    if (($ram = $selected['ram'] ?? null)?->capacity !== null) {
+      $query->where(function (Builder $q) use ($ram) {
+        $q->whereNull('max_memory_capacity')
+          ->orWhere('max_memory_capacity', '>=', $ram->capacity);
+      });
+    }
+
+    // motherboard max speed must support the RAM frequency
+    if (($ram = $selected['ram'] ?? null)?->frequency !== null) {
+      $query->where(function (Builder $q) use ($ram) {
+        $q->whereNull('memory_max_speed')
+          ->orWhere('memory_max_speed', '>=', $ram->frequency);
+      });
+    }
+
     if ($case = $selected['case'] ?? null) {
       self::applyFormFactorFilter($query, $case->form_factor, side: 'motherboard');
     }
@@ -57,6 +79,37 @@ class ComponentFilters
   {
     if (($mb = $selected['motherboard'] ?? null)?->memory_type) {
       $query->where('memory_type', $mb->memory_type);
+    }
+
+    if (($cpu = $selected['cpu'] ?? null)?->memory_type) {
+      $cpuMemType = $cpu->memory_type;
+      if ($cpuMemType !== 'DDR4/DDR5') {
+        $query->where('memory_type', $cpuMemType);
+      }
+    }
+
+    // kit must fit in available slots
+    if (($mb = $selected['motherboard'] ?? null)?->memory_slots !== null) {
+      $query->where(function (Builder $q) use ($mb) {
+        $q->whereNull('modules_count')
+          ->orWhere('modules_count', '<=', $mb->memory_slots);
+      });
+    }
+
+    // kit capacity must not exceed motherboard max memory
+    if (($mb = $selected['motherboard'] ?? null)?->max_memory_capacity !== null) {
+      $query->where(function (Builder $q) use ($mb) {
+        $q->whereNull('capacity')
+          ->orWhere('capacity', '<=', $mb->max_memory_capacity);
+      });
+    }
+
+    // ram frequency must not exceed motherboard max speed
+    if (($mb = $selected['motherboard'] ?? null)?->memory_max_speed !== null) {
+      $query->where(function (Builder $q) use ($mb) {
+        $q->whereNull('frequency')
+          ->orWhere('frequency', '<=', $mb->memory_max_speed);
+      });
     }
 
     return $query;
@@ -71,10 +124,21 @@ class ComponentFilters
       });
     }
 
-    if (($psu = $selected['psu'] ?? null)?->wattage !== null) {
-      $query->where(function (Builder $q) use ($psu) {
+    $effectiveWattage = ($selected['psu'] ?? null)?->wattage
+      ?? (($selected['case'] ?? null)?->psu_included ? ($selected['case']->psu_wattage ?? null) : null);
+
+    if ($effectiveWattage !== null) {
+      $query->where(function (Builder $q) use ($effectiveWattage) {
         $q->whereNull('min_psu')
-          ->orWhere('min_psu', '<=', $psu->wattage);
+          ->orWhere('min_psu', '<=', $effectiveWattage);
+      });
+    }
+
+    // if PSU lacks 16-pin connector, filter out GPUs that require it
+    if (($psu = $selected['psu'] ?? null) && !$psu->pcie_5) {
+      $query->where(function (Builder $q) {
+        $q->whereNull('power_connectors')
+          ->orWhereRaw("power_connectors NOT REGEXP '16.?pin|12vhpwr'");
       });
     }
 
@@ -99,6 +163,65 @@ class ComponentFilters
 
     if ($mb = $selected['motherboard'] ?? null) {
       self::applyFormFactorFilter($query, $mb->form_factor, side: 'case');
+    }
+
+    // if a separate PSU is selected, cases with a built-in PSU are incompatible
+    if ($psuSelected = $selected['psu'] ?? null) {
+      $query->where(function (Builder $q) {
+        $q->whereNull('psu_included')->orWhere('psu_included', 0);
+      });
+
+      // non-ATX PSUs (SFX, SFX-L, TFX, ...) don't fit in ATX-class cases
+      if ($psuSelected->psu_type && $psuSelected->psu_type !== 'ATX') {
+        $query->where(function (Builder $q) {
+          $q->whereNull('form_factor')
+            ->orWhereNotIn('form_factor', CompatibilityHelper::KNOWN_ATX_CASE_FORM_FACTORS);
+        });
+      }
+    }
+
+    // if HDD is selected, case must have at least one 3.5" bay
+    if ($selected['hdd'] ?? null) {
+      $query->where(function (Builder $q) {
+        $q->whereNull('bays_35')
+          ->orWhere('bays_35', '>', 0);
+      });
+    }
+
+    // cases with a built-in PSU must have enough wattage for the selected GPU/CPU
+    $gpu = $selected['gpu'] ?? null;
+    $cpu = $selected['cpu'] ?? null;
+    $ram = $selected['ram'] ?? null;
+    $fan = $selected['fan'] ?? null;
+    $gpuMinPsu = $gpu?->min_psu;
+    $cpuTdp = $cpu?->tdp;
+    $gpuTdp = $gpu?->tdp;
+
+    if ($gpu !== null && ($gpuMinPsu !== null || ($cpuTdp !== null && $gpuTdp !== null))) {
+      $ramWattage = ($ram?->modules_count ?? 0) * 5;
+      $fanWattage = ($fan?->units_in_package ?? 0) * 3;
+
+      $tdpRequired = ($cpuTdp !== null && $gpuTdp !== null)
+        ? ($cpuTdp + $gpuTdp + $ramWattage + $fanWattage) * 1.3
+        : 0;
+
+      $requiredWattage = max($tdpRequired, $gpuMinPsu ?? 0);
+
+      if ($requiredWattage > 0) {
+        $query->where(function (Builder $q) use ($requiredWattage) {
+          // cases without built-in PSU are always fine (separate PSU handles power)
+          $q->where(function (Builder $inner) {
+            $inner->whereNull('psu_included')->orWhere('psu_included', 0);
+          })->orWhere(function (Builder $inner) use ($requiredWattage) {
+            // cases with built-in PSU must have sufficient wattage (null = unknown, allow through)
+            $inner->where('psu_included', 1)
+              ->where(function (Builder $i2) use ($requiredWattage) {
+                $i2->whereNull('psu_wattage')
+                  ->orWhere('psu_wattage', '>=', $requiredWattage);
+              });
+          });
+        });
+      }
     }
 
     return $query;
@@ -133,18 +256,48 @@ class ComponentFilters
 
   public static function psu(Builder $query, array $selected): Builder
   {
-    $cpuTdp = ($selected['cpu'] ?? null)?->tdp;
-    $gpuTdp = ($selected['gpu'] ?? null)?->tdp;
-    $gpuMinPsu = ($selected['gpu'] ?? null)?->min_psu;
+    $cpu = $selected['cpu'] ?? null;
+    $gpu = $selected['gpu'] ?? null;
+    $ram = $selected['ram'] ?? null;
+    $fan = $selected['fan'] ?? null;
     $case = $selected['case'] ?? null;
 
-    // need at least gpu min_psu or both tdps to filter
+    // if selected case includes a built-in PSU, no separate PSU is compatible
+    if ($case?->psu_included) {
+      return $query->whereRaw('1 = 0');
+    }
+
+    $cpuTdp = $cpu?->tdp;
+    $gpuTdp = $gpu?->tdp;
+    $gpuMinPsu = $gpu?->min_psu;
+
+    // case form factor: ATX cases only accept ATX PSUs
+    if ($case?->form_factor && CompatibilityHelper::isAtxCaseFormFactor($case->form_factor)) {
+      $query->where(function (Builder $q) {
+        $q->whereNull('psu_type')->orWhere('psu_type', 'ATX');
+      });
+    }
+
+    // GPU 16-pin connector: only show PSUs with pcie_5 if GPU requires it
+    if ($gpu?->power_connectors) {
+      $gpuConn = CompatibilityHelper::parseGpuConnectors($gpu->power_connectors);
+      if ($gpuConn['requires_16pin']) {
+        $query->where(function (Builder $q) {
+          $q->whereNull('pcie_5')->orWhere('pcie_5', 1);
+        });
+      }
+    }
+
+    // need at least gpu min_psu or both tdps to filter wattage
     if ($cpuTdp === null && $gpuMinPsu === null) {
       return $query;
     }
 
+    $ramWattage = ($ram?->modules_count ?? 0) * 5;
+    $fanWattage = ($fan?->units_in_package ?? 0) * 3;
+
     $tdpRequired = ($cpuTdp !== null && $gpuTdp !== null)
-      ? ($cpuTdp + $gpuTdp) * 1.3
+      ? ($cpuTdp + $gpuTdp + $ramWattage + $fanWattage) * 1.3
       : 0;
 
     $requiredWattage = max($tdpRequired, $gpuMinPsu ?? 0);
@@ -161,8 +314,51 @@ class ComponentFilters
       $q->whereNull('wattage')
         ->orWhere('wattage', '>=', $requiredWattage);
     });
+  }
 
-    // TODO: add connectors compatibility check
+  public static function ssd(Builder $query, array $selected): Builder
+  {
+    if (($mb = $selected['motherboard'] ?? null) && $mb->m2_slots === 0) {
+      $query->where(function (Builder $q) {
+        $q->whereNull('form_factor')
+          ->orWhere('form_factor', '!=', 'M.2');
+      });
+    }
+
+    if ($mb = $selected['motherboard'] ?? null) {
+      $hdd = $selected['hdd'] ?? null;
+      $usedSata = ($hdd && str_contains(strtolower($hdd->interface ?? ''), 'sata')) ? 1 : 0;
+      $remainingSata = ($mb->sata_ports ?? PHP_INT_MAX) - $usedSata;
+
+      if ($remainingSata <= 0) {
+        $query->where(function (Builder $q) {
+          $q->whereNull('interface')
+            ->orWhereRaw("LOWER(interface) NOT LIKE '%sata%'");
+        });
+      }
+    }
+
+    return $query;
+  }
+
+  public static function hdd(Builder $query, array $selected): Builder
+  {
+    if ($mb = $selected['motherboard'] ?? null) {
+      $ssd = $selected['ssd'] ?? null;
+      $usedSata = ($ssd && str_contains(strtolower($ssd->interface ?? ''), 'sata')) ? 1 : 0;
+      $remainingSata = ($mb->sata_ports ?? PHP_INT_MAX) - $usedSata;
+
+      if ($remainingSata <= 0) {
+        $query->whereRaw('1 = 0');
+      }
+    }
+
+    // if case has no 3.5" bays, standard HDDs can't be mounted
+    if (($case = $selected['case'] ?? null) && $case->bays_35 === 0) {
+      $query->whereRaw('1 = 0');
+    }
+
+    return $query;
   }
 
   private static function applyFormFactorFilter(Builder $query, ?string $formFactor, string $side): void

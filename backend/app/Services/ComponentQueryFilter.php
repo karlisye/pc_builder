@@ -12,7 +12,7 @@ class ComponentQueryFilter
     $query = ComponentListingJoin::apply($query);
     $query = self::applyGlobal($query, $filters, $compatibleIds);
     $query = self::applyPerType($query, $type, $filters);
-    $query = self::applySort($query, $filters['sort'] ?? null, $compatibleIds);
+    $query = self::applySort($query, $type, $filters['sort'] ?? null, $compatibleIds);
 
     return $query;
   }
@@ -45,6 +45,11 @@ class ComponentQueryFilter
       } else {
         $query->whereRaw('1 = 0');
       }
+    }
+
+    // brand filter
+    if (! empty($filters['brand'])) {
+      $query->where('brand', $filters['brand']);
     }
 
     // search by name
@@ -81,6 +86,8 @@ class ComponentQueryFilter
       'cooler' => self::cooler($query, $filters),
       'psu' => self::psu($query, $filters),
       'ssd' => self::ssd($query, $filters),
+      'hdd' => self::hdd($query, $filters),
+      'fan' => self::fan($query, $filters),
       default => $query,
     };
   }
@@ -90,8 +97,16 @@ class ComponentQueryFilter
     if (! empty($f['socket']))
       $query->where('socket', $f['socket']);
 
-    if (isset($f['cores']) && is_numeric($f['cores']))
-      $query->where('cores', (int) $f['cores']);
+    if (! empty($f['memory_type']))
+      $query->where(function (Builder $q) use ($f) {
+        $q->where('memory_type', $f['memory_type'])
+          ->orWhere('memory_type', 'DDR4/DDR5');
+      });
+
+    if (isset($f['cores_min']) && is_numeric($f['cores_min']))
+      $query->where('cores', '>=', (int) $f['cores_min']);
+    if (isset($f['cores_max']) && is_numeric($f['cores_max']))
+      $query->where('cores', '<=', (int) $f['cores_max']);
 
     if (isset($f['integrated_graphics']) && $f['integrated_graphics'] !== '')
       $query->where('integrated_graphics', filter_var($f['integrated_graphics'], FILTER_VALIDATE_BOOLEAN));
@@ -127,22 +142,39 @@ class ComponentQueryFilter
     if (! empty($f['memory_type']))
       $query->where('memory_type', $f['memory_type']);
 
-    if (isset($f['capacity']) && is_numeric($f['capacity']))
-      $query->where('capacity', (int) $f['capacity']);
+    if (isset($f['modules_count']) && is_numeric($f['modules_count']))
+      $query->where('modules_count', (int) $f['modules_count']);
 
-    if (isset($f['frequency']) && is_numeric($f['frequency']))
-      $query->where('frequency', (int) $f['frequency']);
+    if (isset($f['capacity_min']) && is_numeric($f['capacity_min']))
+      $query->where('capacity', '>=', (int) $f['capacity_min']);
+    if (isset($f['capacity_max']) && is_numeric($f['capacity_max']))
+      $query->where('capacity', '<=', (int) $f['capacity_max']);
+
+    if (isset($f['frequency_min']) && is_numeric($f['frequency_min']))
+      $query->where('frequency', '>=', (int) $f['frequency_min']);
+    if (isset($f['frequency_max']) && is_numeric($f['frequency_max']))
+      $query->where('frequency', '<=', (int) $f['frequency_max']);
+
+    if (isset($f['xmp']) && $f['xmp'] !== '')
+      $query->where('xmp', filter_var($f['xmp'], FILTER_VALIDATE_BOOLEAN));
 
     return $query;
   }
 
   private static function gpu(Builder $query, array $f): Builder
   {
-    if (isset($f['vram']) && is_numeric($f['vram']))
-      $query->where('vram', (int) $f['vram']);
+    if (! empty($f['gpu_family']))
+      $query->where('gpu_family', $f['gpu_family']);
 
-    if (isset($f['min_psu']) && is_numeric($f['min_psu']))
-      $query->where('min_psu', '<=', (int) $f['min_psu']);
+    if (isset($f['vram_min']) && is_numeric($f['vram_min']))
+      $query->where('vram', '>=', (int) $f['vram_min']);
+    if (isset($f['vram_max']) && is_numeric($f['vram_max']))
+      $query->where('vram', '<=', (int) $f['vram_max']);
+
+    if (isset($f['min_psu_min']) && is_numeric($f['min_psu_min']))
+      $query->where('min_psu', '>=', (int) $f['min_psu_min']);
+    if (isset($f['min_psu_max']) && is_numeric($f['min_psu_max']))
+      $query->where('min_psu', '<=', (int) $f['min_psu_max']);
 
     return $query;
   }
@@ -152,21 +184,59 @@ class ComponentQueryFilter
     if (! empty($f['form_factor']))
       $query->where('form_factor', $f['form_factor']);
 
+    if (isset($f['psu_included']) && $f['psu_included'] !== '')
+      $query->where('psu_included', filter_var($f['psu_included'], FILTER_VALIDATE_BOOLEAN));
+
     return $query;
   }
 
   private static function cooler(Builder $query, array $f): Builder
   {
-    if (isset($f['tdp_support']) && is_numeric($f['tdp_support']))
-      $query->where('tdp_support', '>=', (int) $f['tdp_support']);
+    if (isset($f['tdp_support_min']) && is_numeric($f['tdp_support_min']))
+      $query->where('tdp_support', '>=', (int) $f['tdp_support_min']);
+    if (isset($f['tdp_support_max']) && is_numeric($f['tdp_support_max']))
+      $query->where('tdp_support', '<=', (int) $f['tdp_support_max']);
+
+    if (isset($f['fan_size_mm_min']) && is_numeric($f['fan_size_mm_min']))
+      $query->where('fan_size_mm', '>=', (int) $f['fan_size_mm_min']);
+    if (isset($f['fan_size_mm_max']) && is_numeric($f['fan_size_mm_max']))
+      $query->where('fan_size_mm', '<=', (int) $f['fan_size_mm_max']);
+
+    return $query;
+  }
+
+  private static function hdd(Builder $query, array $f): Builder
+  {
+    if (isset($f['capacity_min']) && is_numeric($f['capacity_min']))
+      $query->where('capacity', '>=', (int) $f['capacity_min']);
+    if (isset($f['capacity_max']) && is_numeric($f['capacity_max']))
+      $query->where('capacity', '<=', (int) $f['capacity_max']);
+
+    if (! empty($f['interface']))
+      $query->where('interface', $f['interface']);
+
+    return $query;
+  }
+
+  private static function fan(Builder $query, array $f): Builder
+  {
+    if (isset($f['size_mm_min']) && is_numeric($f['size_mm_min']))
+      $query->where('size_mm', '>=', (int) $f['size_mm_min']);
+    if (isset($f['size_mm_max']) && is_numeric($f['size_mm_max']))
+      $query->where('size_mm', '<=', (int) $f['size_mm_max']);
+
+    if (isset($f['units_in_package']) && is_numeric($f['units_in_package']))
+      $query->where('units_in_package', (int) $f['units_in_package']);
 
     return $query;
   }
 
   private static function psu(Builder $query, array $f): Builder
   {
-    if (isset($f['wattage']) && is_numeric($f['wattage']))
-      $query->where('wattage', '>=', (int) $f['wattage']);
+    if (isset($f['wattage_min']) && is_numeric($f['wattage_min']))
+      $query->where('wattage', '>=', (int) $f['wattage_min']);
+    if (isset($f['wattage_max']) && is_numeric($f['wattage_max']))
+      $query->where('wattage', '<=', (int) $f['wattage_max']);
 
     if (! empty($f['efficiency_rating']))
       $query->where('efficiency_rating', $f['efficiency_rating']);
@@ -177,13 +247,18 @@ class ComponentQueryFilter
     if (! empty($f['psu_type']))
       $query->where('psu_type', $f['psu_type']);
 
+    if (isset($f['pcie_5']) && $f['pcie_5'] !== '')
+      $query->where('pcie_5', filter_var($f['pcie_5'], FILTER_VALIDATE_BOOLEAN));
+
     return $query;
   }
 
   private static function ssd(Builder $query, array $f): Builder
   {
-    if (isset($f['capacity']) && is_numeric($f['capacity']))
-      $query->where('capacity', (int) $f['capacity']);
+    if (isset($f['capacity_min']) && is_numeric($f['capacity_min']))
+      $query->where('capacity', '>=', (int) $f['capacity_min']);
+    if (isset($f['capacity_max']) && is_numeric($f['capacity_max']))
+      $query->where('capacity', '<=', (int) $f['capacity_max']);
 
     if (! empty($f['type']))
       $query->where('type', $f['type']);
@@ -197,7 +272,7 @@ class ComponentQueryFilter
     return $query;
   }
 
-  private static function applySort(Builder $query, ?string $sort, array $compatibleIds = []): Builder
+  private static function applySort(Builder $query, string $type, ?string $sort, array $compatibleIds = []): Builder
   {
     // display compatible first
     if (!empty($compatibleIds)) {
@@ -214,7 +289,12 @@ class ComponentQueryFilter
       'price_desc' => $query->orderByDesc('listing_agg.listing_price'),
       'name_asc' => $query->orderBy('name'),
       'name_desc' => $query->orderByDesc('name'),
-      default => $query->orderBy('listing_agg.listing_price'),
+      default => self::defaultSort($query, $type),
     };
+  }
+
+  private static function defaultSort(Builder $query, string $type): Builder
+  {
+    return $query->orderBy('ean');
   }
 }

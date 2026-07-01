@@ -29,6 +29,8 @@
     "neverScraped": "Last checked: never"
   },
   "componentPopup": {
+    "required": "Required",
+    "optional": "Optional",
     "ram": {
       "fullName": "Random Access Memory",
       "description": "Short-term working memory. Holds data the CPU is actively using."
@@ -75,19 +77,23 @@
     "failedToFetch": "Failed to fetch components",
     "noComponentsFound": "No Components Found",
     "tryAdjustingFilters": "Try adjusting your filters",
+    "includedInCase": "Included in case",
     "outOfStock": "Out Of Stock",
     "notCompatible": "Not Compatible",
+    "caseIncludesPsu": "Case includes PSU",
     "select": "Select",
     "startingFrom": "Starting from €{{price}}"
   },
   "componentFilters": {
     "searchPlaceholder": "Search {{component}}...",
     "sort": {
+      "recommended": "Recommended",
       "priceAsc": "Price: Low to High",
       "priceDesc": "Price: High to Low",
       "nameAsc": "Name: A to Z",
       "nameDesc": "Name: Z to A"
     },
+    "price": "Price (€)",
     "minPrice": "Min price (€)",
     "maxPrice": "Max price (€)",
     "failedToFetchFilters": "Failed to fetch filters",
@@ -100,6 +106,7 @@
     "compatibleOnly": "Compatible Only",
     "clearFilters": "Clear Filters",
     "labels": {
+      "brand": "Brand",
       "socket": "Socket",
       "cores": "Cores",
       "integrated_graphics": "Integrated Graphics",
@@ -117,8 +124,16 @@
       "efficiency_rating": "Efficiency Rating",
       "modular": "Modular",
       "psu_type": "PSU Type",
+      "pcie_5": "PCIe 5.0 Connector",
+      "modules_count": "Kit Size",
+      "xmp": "XMP/EXPO",
+      "gpu_family": "GPU Brand",
       "type": "Type",
-      "interface": "Interface"
+      "interface": "Interface",
+      "fan_size_mm": "Fan Size (mm)",
+      "size_mm": "Size (mm)",
+      "units_in_package": "Pack Size",
+      "psu_included": "PSU Included"
     }
   },
   "buildDesc": {
