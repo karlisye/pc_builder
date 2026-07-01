@@ -46,4 +46,4 @@ http {\n\
 
 EXPOSE 8000
 
-CMD php-fpm -D && nginx -g "daemon off;"
+CMD php artisan cache:clear && php artisan config:clear && php-fpm -D && nginx -g "daemon off;"

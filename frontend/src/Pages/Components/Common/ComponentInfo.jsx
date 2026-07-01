@@ -30,6 +30,8 @@ const UNITS = {
   amps_12v: 'A',
   cache_mb: 'MB',
   height_mm: 'mm',
+  max_psu_length: 'mm',
+  max_radiator_size: 'mm',
 };
 
 const BOOLEAN_FIELDS = new Set([

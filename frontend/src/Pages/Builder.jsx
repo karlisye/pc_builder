@@ -40,6 +40,7 @@ const Builder = () => {
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [buildIssues, setBuildIssues] = useState({});
+  const [buildWarnings, setBuildWarnings] = useState({});
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState('');
   const [buildType, setBuildType] = useState('');
@@ -140,14 +141,17 @@ const Builder = () => {
 
     if (Object.keys(selected).length === 0) {
       setBuildIssues({});
+      setBuildWarnings({});
       return;
     }
 
     try {
       const res = await axios.post('/api/builder/validate', { selected });
       setBuildIssues(res.data.issues);
+      setBuildWarnings(res.data.warnings ?? {});
     } catch (err) {
       setBuildIssues({});
+      setBuildWarnings({});
       console.error(err);
     }
   };
@@ -212,6 +216,8 @@ const Builder = () => {
         setNotes,
         buildIssues,
         setBuildIssues,
+        buildWarnings,
+        setBuildWarnings,
         viewingComponent,
         setViewingComponent,
       }}
