@@ -325,12 +325,17 @@ class ComponentFilters
       });
     }
 
-    // if MB has no SATA ports, SATA SSDs can't connect
-    if (($mb = $selected['motherboard'] ?? null) && $mb->sata_ports === 0) {
-      $query->where(function (Builder $q) {
-        $q->whereNull('interface')
-          ->orWhereRaw("LOWER(interface) NOT LIKE '%sata%'");
-      });
+    if ($mb = $selected['motherboard'] ?? null) {
+      $hdd = $selected['hdd'] ?? null;
+      $usedSata = ($hdd && str_contains(strtolower($hdd->interface ?? ''), 'sata')) ? 1 : 0;
+      $remainingSata = ($mb->sata_ports ?? PHP_INT_MAX) - $usedSata;
+
+      if ($remainingSata <= 0) {
+        $query->where(function (Builder $q) {
+          $q->whereNull('interface')
+            ->orWhereRaw("LOWER(interface) NOT LIKE '%sata%'");
+        });
+      }
     }
 
     return $query;
@@ -338,9 +343,14 @@ class ComponentFilters
 
   public static function hdd(Builder $query, array $selected): Builder
   {
-    // if MB has no SATA ports, SATA HDDs can't connect
-    if (($mb = $selected['motherboard'] ?? null) && $mb->sata_ports === 0) {
-      $query->whereRaw("LOWER(interface) NOT LIKE '%sata%'");
+    if ($mb = $selected['motherboard'] ?? null) {
+      $ssd = $selected['ssd'] ?? null;
+      $usedSata = ($ssd && str_contains(strtolower($ssd->interface ?? ''), 'sata')) ? 1 : 0;
+      $remainingSata = ($mb->sata_ports ?? PHP_INT_MAX) - $usedSata;
+
+      if ($remainingSata <= 0) {
+        $query->whereRaw('1 = 0');
+      }
     }
 
     // if case has no 3.5" bays, standard HDDs can't be mounted
