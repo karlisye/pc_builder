@@ -177,6 +177,42 @@ class ComponentFilters
       });
     }
 
+    // cases with a built-in PSU must have enough wattage for the selected GPU/CPU
+    $gpu = $selected['gpu'] ?? null;
+    $cpu = $selected['cpu'] ?? null;
+    $ram = $selected['ram'] ?? null;
+    $fan = $selected['fan'] ?? null;
+    $gpuMinPsu = $gpu?->min_psu;
+    $cpuTdp = $cpu?->tdp;
+    $gpuTdp = $gpu?->tdp;
+
+    if ($gpu !== null && ($gpuMinPsu !== null || ($cpuTdp !== null && $gpuTdp !== null))) {
+      $ramWattage = ($ram?->modules_count ?? 0) * 5;
+      $fanWattage = ($fan?->units_in_package ?? 0) * 3;
+
+      $tdpRequired = ($cpuTdp !== null && $gpuTdp !== null)
+        ? ($cpuTdp + $gpuTdp + $ramWattage + $fanWattage) * 1.3
+        : 0;
+
+      $requiredWattage = max($tdpRequired, $gpuMinPsu ?? 0);
+
+      if ($requiredWattage > 0) {
+        $query->where(function (Builder $q) use ($requiredWattage) {
+          // cases without built-in PSU are always fine (separate PSU handles power)
+          $q->where(function (Builder $inner) {
+            $inner->whereNull('psu_included')->orWhere('psu_included', 0);
+          })->orWhere(function (Builder $inner) use ($requiredWattage) {
+            // cases with built-in PSU must have sufficient wattage (null = unknown, allow through)
+            $inner->where('psu_included', 1)
+              ->where(function (Builder $i2) use ($requiredWattage) {
+                $i2->whereNull('psu_wattage')
+                  ->orWhere('psu_wattage', '>=', $requiredWattage);
+              });
+          });
+        });
+      }
+    }
+
     return $query;
   }
 

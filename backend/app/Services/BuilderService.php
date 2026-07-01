@@ -384,7 +384,8 @@ class BuilderService
       };
       if ($ram->capacity < $recommendedCapacity) {
         $warnings[] = __('builder.ram_below_recommended', [
-          'capacity' => $recommendedCapacity, 'type' => $typeLabel,
+          'capacity' => $recommendedCapacity,
+          'type' => $typeLabel,
         ]);
       }
     }
@@ -417,7 +418,9 @@ class BuilderService
 
       if ($recommendedVram > 0 && $gpu->vram < $recommendedVram) {
         $warnings[] = __('builder.gpu_vram_below_recommended', [
-          'vram' => $gpu->vram, 'recommended' => $recommendedVram, 'type' => $typeLabel,
+          'vram' => $gpu->vram,
+          'recommended' => $recommendedVram,
+          'type' => $typeLabel,
         ]);
       }
     }
