@@ -249,6 +249,26 @@ class CompatibilityService
       }
     }
 
+    // motherboard form factor with no compatible case in stock
+    if ($mb && ! $case && $mb->form_factor) {
+      $compatibleCases = CompatibilityHelper::compatibleCasesFor($mb->form_factor);
+      if (! empty($compatibleCases) && ! PcCase::whereIn('form_factor', $compatibleCases)->exists()) {
+        $issues['motherboard'][] = __('compatibility.motherboard_no_case_support', [
+          'mb_form' => $mb->form_factor,
+        ]);
+      }
+    }
+
+    // case form factor with no compatible motherboard in stock
+    if ($case && ! $mb && $case->form_factor) {
+      $compatibleMbs = CompatibilityHelper::compatibleMotherboardsFor($case->form_factor);
+      if (! empty($compatibleMbs) && ! Motherboard::whereIn('form_factor', $compatibleMbs)->exists()) {
+        $issues['case'][] = __('compatibility.case_no_motherboard_support', [
+          'case_form' => $case->form_factor,
+        ]);
+      }
+    }
+
     // psu / case form factor (ATX cases require ATX PSU)
     if ($psu && $case && $psu->psu_type && $case->form_factor) {
       if (CompatibilityHelper::isAtxCaseFormFactor($case->form_factor) && $psu->psu_type !== 'ATX') {

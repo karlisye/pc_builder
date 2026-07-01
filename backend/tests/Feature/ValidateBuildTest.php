@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\{Cpu, Motherboard, Ram, Gpu, PcCase, Psu, Cooler, Ssd, Hdd};
+use App\Helpers\CompatibilityHelper;
 
 // ---------------------------------------------------------------------------
 // Helper
@@ -97,6 +98,43 @@ describe('RAM memory type mismatch', function () {
 });
 
 // ---------------------------------------------------------------------------
+// RAM memory type with no supporting motherboard in stock
+// ---------------------------------------------------------------------------
+
+describe('RAM memory type with no motherboard support', function () {
+  it('flags ram when its memory type has no matching motherboard in stock', function () {
+    $mbTypes = Motherboard::whereNotNull('memory_type')->distinct()->pluck('memory_type');
+    $ram = Ram::whereNotNull('memory_type')->whereNotIn('memory_type', $mbTypes)->first();
+    if (!$ram) test()->markTestSkipped('No RAM memory type without a matching motherboard in DB');
+
+    $res = validate(['ram' => $ram->product_code]);
+    expect(hasIssue($res, 'ram'))->toBeTrue();
+  });
+
+  it('does not flag ram when a matching motherboard exists in stock, even if none is selected', function () {
+    $mbTypes = Motherboard::whereNotNull('memory_type')->distinct()->pluck('memory_type');
+    $ram = Ram::whereNotNull('memory_type')->whereIn('memory_type', $mbTypes)->first();
+    if (!$ram) test()->markTestSkipped('No RAM memory type with a matching motherboard in DB');
+
+    $res = validate(['ram' => $ram->product_code]);
+    expect(hasIssue($res, 'ram'))->toBeFalse();
+  });
+
+  it('does not duplicate the no-stock issue once a mismatched motherboard is actually selected', function () {
+    $mbTypes = Motherboard::whereNotNull('memory_type')->distinct()->pluck('memory_type');
+    $ram = Ram::whereNotNull('memory_type')->whereNotIn('memory_type', $mbTypes)->first();
+    $mb = Motherboard::whereNotNull('memory_type')->first();
+    if (!$ram || !$mb) test()->markTestSkipped('Need unsupported RAM type and any motherboard in DB');
+
+    $res = validate(['ram' => $ram->product_code, 'motherboard' => $mb->product_code]);
+    // the direct mismatch issue should fire instead of the no-stock issue
+    expect($res->json('issues.ram'))->not->toContain(
+      __('compatibility.ram_no_motherboard_support', ['ram_type' => $ram->memory_type])
+    );
+  });
+});
+
+// ---------------------------------------------------------------------------
 // RAM modules vs motherboard slots
 // ---------------------------------------------------------------------------
 
@@ -175,6 +213,60 @@ describe('Motherboard form factor vs Case', function () {
     $res = validate(['motherboard' => $mb->product_code, 'case' => $case->product_code]);
     expect(hasIssue($res, 'motherboard'))->toBeTrue();
     expect(hasIssue($res, 'case'))->toBeTrue();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Motherboard/Case form factor with no supporting stock
+// ---------------------------------------------------------------------------
+
+describe('Motherboard form factor with no case support', function () {
+  it('flags motherboard when no case in stock fits its form factor', function () {
+    $caseFFs = PcCase::whereNotNull('form_factor')->distinct()->pluck('form_factor');
+    $mb = Motherboard::whereNotNull('form_factor')
+      ->get()
+      ->first(function ($mb) use ($caseFFs) {
+        $compatible = CompatibilityHelper::compatibleCasesFor($mb->form_factor);
+        return !empty($compatible) && $caseFFs->intersect($compatible)->isEmpty();
+      });
+    if (!$mb) test()->markTestSkipped('No motherboard form factor without a fitting case in DB');
+
+    $res = validate(['motherboard' => $mb->product_code]);
+    expect(hasIssue($res, 'motherboard'))->toBeTrue();
+  });
+
+  it('does not flag motherboard when a fitting case exists in stock, even if none is selected', function () {
+    $mb = Motherboard::where('form_factor', 'ATX')->first();
+    $case = PcCase::whereIn('form_factor', CompatibilityHelper::compatibleCasesFor('ATX'))->first();
+    if (!$mb || !$case) test()->markTestSkipped('Need ATX motherboard and a fitting case in DB');
+
+    $res = validate(['motherboard' => $mb->product_code]);
+    expect(hasIssue($res, 'motherboard'))->toBeFalse();
+  });
+});
+
+describe('Case form factor with no motherboard support', function () {
+  it('flags case when no motherboard in stock fits it', function () {
+    $mbFFs = Motherboard::whereNotNull('form_factor')->distinct()->pluck('form_factor');
+    $case = PcCase::whereNotNull('form_factor')
+      ->get()
+      ->first(function ($case) use ($mbFFs) {
+        $compatible = CompatibilityHelper::compatibleMotherboardsFor($case->form_factor);
+        return !empty($compatible) && $mbFFs->intersect($compatible)->isEmpty();
+      });
+    if (!$case) test()->markTestSkipped('No case form factor without a fitting motherboard in DB');
+
+    $res = validate(['case' => $case->product_code]);
+    expect(hasIssue($res, 'case'))->toBeTrue();
+  });
+
+  it('does not flag case when a fitting motherboard exists in stock, even if none is selected', function () {
+    $case = PcCase::where('form_factor', 'ATX')->first();
+    $mb = Motherboard::whereIn('form_factor', CompatibilityHelper::compatibleMotherboardsFor('ATX'))->first();
+    if (!$case || !$mb) test()->markTestSkipped('Need ATX case and a fitting motherboard in DB');
+
+    $res = validate(['case' => $case->product_code]);
+    expect(hasIssue($res, 'case'))->toBeFalse();
   });
 });
 
