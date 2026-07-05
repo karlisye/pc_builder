@@ -3,6 +3,7 @@ import "./app.css";
 import "./i18n";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider, useAuth } from "./Contexts/AuthContext";
 import { ToastProvider } from "./Contexts/ToastContext";
 import ToastContainer from "./Pages/Components/Common/ToastContainer";
@@ -48,43 +49,45 @@ const AdminRoute = ({ children }) => {
 };
 
 const App = () => (
-  <AuthProvider>
-    <ToastProvider>
-      <ToastContainer />
-      <BrowserRouter>
-        <Routes>
-          {/* Public */}
-          <Route element={<Layout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/guide" element={<Guide />} />
-            <Route path="/email-verified" element={<EmailVerified />} />
+  <HelmetProvider>
+    <AuthProvider>
+      <ToastProvider>
+        <ToastContainer />
+        <BrowserRouter>
+          <Routes>
+            {/* Public */}
+            <Route element={<Layout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/guide" element={<Guide />} />
+              <Route path="/email-verified" element={<EmailVerified />} />
 
-            {/* Guest-only */}
-            <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
-            <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
+              {/* Guest-only */}
+              <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
+              <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
 
-            {/* Manual builder available to guests; auto-generate features are auth-gated inline */}
-            <Route path="/builder" element={<Builder />} />
+              {/* Manual builder available to guests; auto-generate features are auth-gated inline */}
+              <Route path="/builder" element={<Builder />} />
 
-            {/* Auth-required */}
-            <Route path="/builds" element={<AuthRoute><SavedBuilds /></AuthRoute>} />
+              {/* Auth-required */}
+              <Route path="/builds" element={<AuthRoute><SavedBuilds /></AuthRoute>} />
 
-            <Route path="/profile" element={<AuthRoute><AccountSettings /></AuthRoute>} />
-          </Route>
+              <Route path="/profile" element={<AuthRoute><AccountSettings /></AuthRoute>} />
+            </Route>
 
-          {/* Admin */}
-          <Route element={<AdminRoute><AdminLayout /></AdminRoute>}>
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/scrape" element={<AdminScraper />} />
-            <Route path="/admin/history" element={<AdminHistory />} />
-            <Route path="/admin/test" element={<AdminTest />} />
-          </Route>
+            {/* Admin */}
+            <Route element={<AdminRoute><AdminLayout /></AdminRoute>}>
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/scrape" element={<AdminScraper />} />
+              <Route path="/admin/history" element={<AdminHistory />} />
+              <Route path="/admin/test" element={<AdminTest />} />
+            </Route>
 
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </ToastProvider>
-  </AuthProvider>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </ToastProvider>
+    </AuthProvider>
+  </HelmetProvider>
 );
 
 createRoot(document.getElementById("app")).render(<App />);

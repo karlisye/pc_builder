@@ -14,9 +14,10 @@ import SidePanel from './Components/Common/SidePanel';
 import axios from 'axios';
 import { loadDraft, saveDraft, clearDraft } from '../lib/builderDraft';
 import { useToast } from '../Contexts/ToastContext';
+import Seo from './Components/Common/Seo';
 
 const Builder = () => {
-  const { t } = useTranslation(['builder', 'common']);
+  const { t } = useTranslation(['builder', 'common', 'pages']);
   const { addToast } = useToast();
   const [searchParams] = useSearchParams();
   const [currentCompToAdd, setCurrentCompToAdd] = useState(null);
@@ -257,6 +258,7 @@ const Builder = () => {
         setViewingComponent,
       }}
     >
+      <Seo title={t('pages:seo.builder.title')} description={t('pages:seo.builder.description')} />
       <div className="h-full flex min-w-0">
         <SidePanel
           title={t('sidePanel.title')}

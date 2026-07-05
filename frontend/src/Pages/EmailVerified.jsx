@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import Seo from "./Components/Common/Seo";
 
 const EmailVerified = () => {
   const { t } = useTranslation("common");
   return (
     <div className="bg-primary h-full flex justify-center">
+      <Seo title={t("verifyEmail.verifiedTitle")} noindex />
       <div className="text-center px-6 flex flex-col gap-4">
         <h1 className="text-2xl font-semibold text-white mt-4">
           {t("verifyEmail.verifiedTitle")}

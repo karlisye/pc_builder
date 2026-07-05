@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../Contexts/AuthContext';
+import Seo from '../Components/Common/Seo';
 
 const Login = () => {
-  const { t } = useTranslation('auth');
+  const { t } = useTranslation(['auth', 'pages']);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -45,6 +46,7 @@ const Login = () => {
 
   return (
     <div className="h-full flex flex-col items-center justify-center">
+      <Seo title={t('pages:seo.login.title')} description={t('pages:seo.login.description')} />
       <div className="w-full md:w-200 px-8 py-6">
         <h1 className="text-3xl font-semibold mb-1">{t('login.title')}</h1>
         <div className="flex w-full shadow">

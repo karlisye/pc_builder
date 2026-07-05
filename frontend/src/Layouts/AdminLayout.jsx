@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { MenuIcon } from "../Pages/Components/Common/Icons";
 import LanguageSwitcher from "../Pages/Components/Common/LanguageSwitcher";
+import Seo from "../Pages/Components/Common/Seo";
 
 const AdminLayout = () => {
   const { t } = useTranslation("layout");
@@ -48,6 +49,7 @@ const AdminLayout = () => {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
+      <Seo title={t("admin.dashboardTitle")} noindex />
       <header>
         <nav className="flex items-center bg-background shadow">
           <Link

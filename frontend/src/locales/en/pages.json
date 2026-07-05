@@ -1,4 +1,32 @@
 {
+  "seo": {
+    "home": {
+      "title": "PC Builder — Build Your PC Online | Latvia",
+      "description": "Build and compare PCs using real components from the Latvian market, with live pricing and automatic compatibility checks."
+    },
+    "builder": {
+      "title": "PC Builder — Build Your PC",
+      "description": "Pick components or generate a build automatically within your budget, with real-time compatibility checks and live Latvian store pricing."
+    },
+    "guide": {
+      "title": "Guide — PC Builder",
+      "description": "Learn how to build a PC, use the automatic builder, and manage your saved builds."
+    },
+    "login": {
+      "title": "Sign In — PC Builder",
+      "description": "Sign in to your PC Builder account to save and manage your builds."
+    },
+    "register": {
+      "title": "Sign Up — PC Builder",
+      "description": "Create a free PC Builder account to save your builds and access the automatic builder."
+    },
+    "savedBuilds": {
+      "title": "Saved Builds — PC Builder"
+    },
+    "notFound": {
+      "title": "Page Not Found — PC Builder"
+    }
+  },
   "home": {
     "build": {
       "title": "BUILD YOUR PC",
