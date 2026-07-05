@@ -5,4 +5,6 @@ return [
     'current_password_incorrect' => 'The current password is incorrect.',
     'build_deleted' => 'Build deleted successfully.',
     'not_found' => 'Not found.',
+    'already_verified' => 'Your email address is already verified.',
+    'verification_sent' => 'Verification link sent.',
 ];

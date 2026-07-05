@@ -21,7 +21,8 @@ return Application::configure(basePath: dirname(__DIR__))
       SetLocaleFromHeader::class,
     ]);
     $middleware->alias([
-      'role' => EnsureUserHasRole::class
+      'role' => EnsureUserHasRole::class,
+      'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
     ]);
   })
   ->withExceptions(function (Exceptions $exceptions): void {

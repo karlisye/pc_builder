@@ -2,8 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, Outlet } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../Contexts/AuthContext';
-import { ArrowIcon, MenuIcon } from '../Pages/Components/Common/Icons';
+import { AlertIcon, ArrowIcon, MenuIcon } from '../Pages/Components/Common/Icons';
 import LanguageSwitcher from '../Pages/Components/Common/LanguageSwitcher';
+import VerifyEmailBanner from '../Pages/Components/Common/VerifyEmailBanner';
 
 const Layout = () => {
   const { t } = useTranslation('layout');
@@ -141,6 +142,7 @@ const Layout = () => {
                     <span className="w-6 h-6 rounded-full bg-secondary-light flex items-center justify-center text-xs font-bold">
                       {user.name?.charAt(0).toUpperCase()}
                     </span>
+                    {!user.email_verified_at && <AlertIcon size={18} className="text-alert" />}
                     <ArrowIcon active={profileActive} />
                   </button>
                 </div>
@@ -163,6 +165,7 @@ const Layout = () => {
                       className="flex items-center gap-2 px-4 py-2 text-text hover:bg-secondary-light transition"
                     >
                       {t('nav.profile')}
+                      {!user.email_verified_at && <AlertIcon size={18} className="text-alert" />}
                     </Link>
                     <Link
                       to="/guide"
@@ -227,6 +230,7 @@ const Layout = () => {
             </>
           )}
         </nav>
+        {user && !user.email_verified_at && <VerifyEmailBanner />}
       </header>
 
       <div id="page-scroll" className="flex flex-col flex-1 overflow-y-auto">

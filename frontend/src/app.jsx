@@ -15,6 +15,7 @@ import Guide from "./Pages/Guide";
 import Builder from "./Pages/Builder";
 import SavedBuilds from "./Pages/SavedBuilds";
 import NotFound from "./Pages/NotFound";
+import EmailVerified from "./Pages/EmailVerified";
 
 import Login from "./Pages/Auth/Login";
 import Register from "./Pages/Auth/Register";
@@ -56,6 +57,7 @@ const App = () => (
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
             <Route path="/guide" element={<Guide />} />
+            <Route path="/email-verified" element={<EmailVerified />} />
 
             {/* Guest-only */}
             <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />

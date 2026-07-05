@@ -14,7 +14,7 @@ let nudgeShownThisLoad = false;
 
 const BuildInfo = () => {
   const { t } = useTranslation(["builder", "common"]);
-  const { user } = useAuth();
+  const { user, showVerifyBanner } = useAuth();
   const { addToast } = useToast();
   const {
     selectedComponents,
@@ -94,9 +94,14 @@ const BuildInfo = () => {
         { type: "success" },
       );
     } catch (err) {
-      addToast(err.response?.data?.error ?? t("buildInfo.failedToSave"), {
-        type: "danger",
-      });
+      if (err.response?.status === 403) {
+        showVerifyBanner();
+        addToast(t("common:verifyEmail.gatedAction"), { type: "danger" });
+      } else {
+        addToast(err.response?.data?.error ?? t("buildInfo.failedToSave"), {
+          type: "danger",
+        });
+      }
     } finally {
       setSaving(false);
     }

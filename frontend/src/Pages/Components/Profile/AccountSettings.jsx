@@ -4,11 +4,13 @@ import { useTranslation } from 'react-i18next';
 import Modal from '../Common/Modal';
 import { useAuth } from '../../../Contexts/AuthContext';
 import { useToast } from '../../../Contexts/ToastContext';
+import { AlertIcon } from '../Common/Icons';
 
 const AccountSettings = () => {
-  const { t } = useTranslation('profile');
-  const { user, setUser } = useAuth();
+  const { t } = useTranslation(['profile', 'common']);
+  const { user, setUser, resendVerification } = useAuth();
   const { addToast } = useToast();
+  const [resending, setResending] = useState(false);
   const [editActive, setEditActive] = useState(false);
   const [name, setName] = useState(user?.name ?? '');
   const [email, setEmail] = useState(user?.email ?? '');
@@ -90,6 +92,20 @@ const AccountSettings = () => {
     }
   };
 
+  const handleResendVerification = async () => {
+    setResending(true);
+    try {
+      await resendVerification();
+      addToast(t('common:verifyEmail.resendSuccess'), { type: 'success' });
+    } catch (err) {
+      addToast(err.response?.data?.message ?? t('common:verifyEmail.resendError'), {
+        type: 'danger',
+      });
+    } finally {
+      setResending(false);
+    }
+  };
+
   const handleDeleteAccount = async () => {
     if (deleteConfirm !== t('accountSettings.deleteConfirmKeyword')) {
       setDeleteError(t('accountSettings.deleteConfirmIncorrect'));
@@ -108,6 +124,22 @@ const AccountSettings = () => {
 
   return (
     <div className="py-6 px-4">
+      {!user.email_verified_at && (
+        <div className="bg-alert/10 border border-alert/80 px-4 py-2 mb-4 flex gap-4 items-center">
+          <span className="text-alert">
+            <AlertIcon />
+          </span>
+          <p className="text-alert text-sm flex-1">{t('common:verifyEmail.banner')}</p>
+          <button
+            onClick={handleResendVerification}
+            disabled={resending}
+            className="text-alert text-sm underline hover:no-underline cursor-pointer disabled:opacity-50 whitespace-nowrap"
+          >
+            {t('common:verifyEmail.resend')}
+          </button>
+        </div>
+      )}
+
       <h1 className="text-4xl text-text font-semibold mb-4">{t('accountSettings.heading')}</h1>
 
       <h2 className="text-2xl text-text font-semibold mb-4">
