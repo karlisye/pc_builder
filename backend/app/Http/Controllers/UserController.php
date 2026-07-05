@@ -15,7 +15,6 @@ class UserController extends Controller
   {
     $validated = $request->validate([
       'name' => ['sometimes', 'string', 'min:3', 'max:255'],
-      'email' => ['sometimes', 'email', 'unique:users,email,' . $user->id],
       'description' => ['sometimes', 'nullable', 'string'],
       'password' => ['sometimes', 'required_with:new_password', 'string'],
       'new_password' => ['sometimes', 'string', 'confirmed', Password::min(3)->symbols()->letters()->numbers()->mixedCase()],

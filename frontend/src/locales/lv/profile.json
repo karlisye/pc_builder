@@ -4,6 +4,8 @@
     "personalInfoHeading": "Personas informācija",
     "nameLabel": "Vārds",
     "emailLabel": "E-pasts",
+    "emailVerified": "Apstiprināts",
+    "emailNotVerified": "Nav apstiprināts",
     "nameTooShort": "Vārdam jābūt vismaz 3 burtu garam",
     "infoUpdated": "Informācija atjaunināta",
     "infoUpdateError": "Neizdevās saglabāt personas informāciju",

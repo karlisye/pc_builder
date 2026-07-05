@@ -2,18 +2,14 @@
 
 namespace App\Notifications;
 
+use App\Mail\VerifyEmailMail;
 use Illuminate\Auth\Notifications\VerifyEmail;
-use Illuminate\Notifications\Messages\MailMessage;
 
 class VerifyEmailNotification extends VerifyEmail
 {
-    protected function buildMailMessage($url): MailMessage
+    public function toMail($notifiable): VerifyEmailMail
     {
-        return (new MailMessage)
-            ->subject(__('mail.verify_subject'))
-            ->greeting(__('mail.verify_greeting'))
-            ->line(__('mail.verify_line'))
-            ->action(__('mail.verify_action'), $url)
-            ->line(__('mail.verify_footer'));
+        return (new VerifyEmailMail($this->verificationUrl($notifiable)))
+            ->to($notifiable->getEmailForVerification());
     }
 }

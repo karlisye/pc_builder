@@ -4,6 +4,8 @@
     "personalInfoHeading": "Personal Information",
     "nameLabel": "Name",
     "emailLabel": "Email",
+    "emailVerified": "Verified",
+    "emailNotVerified": "Not verified",
     "nameTooShort": "Name field must contain at least 3 letters",
     "infoUpdated": "Information updated",
     "infoUpdateError": "Failed to save personal information",

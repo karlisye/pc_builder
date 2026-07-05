@@ -13,7 +13,6 @@ const AccountSettings = () => {
   const [resending, setResending] = useState(false);
   const [editActive, setEditActive] = useState(false);
   const [name, setName] = useState(user?.name ?? '');
-  const [email, setEmail] = useState(user?.email ?? '');
 
   const [error, setError] = useState('');
 
@@ -43,7 +42,6 @@ const AccountSettings = () => {
     try {
       const res = await axios.patch(`/api/users/${user.id}`, {
         name,
-        email,
       });
       if (res.status === 200) {
         setUser(res.data);
@@ -145,6 +143,30 @@ const AccountSettings = () => {
       <h2 className="text-2xl text-text font-semibold mb-4">
         {t('accountSettings.personalInfoHeading')}
       </h2>
+
+      <p className="text-muted mb-4">
+        {user.email}
+        {' · '}
+        <span className={user.email_verified_at ? 'text-success' : 'text-alert'}>
+          {user.email_verified_at
+            ? t('accountSettings.emailVerified')
+            : t('accountSettings.emailNotVerified')}
+        </span>
+        {!user.email_verified_at && (
+          <>
+            {' · '}
+            <button
+              type="button"
+              onClick={handleResendVerification}
+              disabled={resending}
+              className="text-alert underline hover:no-underline cursor-pointer disabled:opacity-50"
+            >
+              {t('common:verifyEmail.resend')}
+            </button>
+          </>
+        )}
+      </p>
+
       <form>
         <div className="grid xl:grid-cols-2 gap-4">
           <div className="">
@@ -157,20 +179,6 @@ const AccountSettings = () => {
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              disabled={!editActive}
-            />
-          </div>
-
-          <div className="">
-            <label className="block text-muted" htmlFor="email">
-              {t('accountSettings.emailLabel')}
-            </label>
-            <input
-              className="p-2 bg-surface w-full disabled:text-muted focus:outline outline-border transition"
-              type="text"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
               disabled={!editActive}
             />
           </div>
@@ -192,7 +200,6 @@ const AccountSettings = () => {
               onClick={(e) => {
                 setEditActive(false);
                 setName(user.name);
-                setEmail(user.email);
                 setError('');
               }}
             >
