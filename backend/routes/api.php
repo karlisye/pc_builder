@@ -13,15 +13,15 @@ Route::post('/login', [AuthController::class, 'login'])->middleware('guest');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 Route::get('/user', [AuthController::class, 'user'])->middleware('auth:sanctum');
 
-Route::get('/components/{type}', [ComponentController::class, 'index']);
-Route::get('/components/{type}/filters', [ComponentController::class, 'filters']);
+Route::get('/components/{type}', [ComponentController::class, 'index'])->middleware('throttle:component-browse');
+Route::get('/components/{type}/filters', [ComponentController::class, 'filters'])->middleware('throttle:component-browse');
 Route::get('/components/{type}/{id}', [ComponentController::class, 'show']);
 Route::post('/builder/validate', [BuilderController::class, 'validate']);
 Route::get('/builder', [BuilderController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
-  Route::post('/builder', [BuilderController::class, 'generate']);
-  Route::post('/builder/{type}', [BuilderController::class, 'generateComp']);
+  Route::post('/builder', [BuilderController::class, 'generate'])->middleware('throttle:builder-generate');
+  Route::post('/builder/{type}', [BuilderController::class, 'generateComp'])->middleware('throttle:builder-generate');
 
   Route::get('/builds', [BuildController::class, 'index']);
   Route::post('/builds', [BuildController::class, 'store']);
