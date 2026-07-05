@@ -3,6 +3,8 @@
 use App\Models\Cpu;
 use App\Models\Gpu;
 use App\Models\Motherboard;
+use App\Models\PcCase;
+use App\Models\Psu;
 use App\Models\Ram;
 use App\Models\Ssd;
 
@@ -92,13 +94,13 @@ it('high budget rendering build succeeds', function () {
 
 // budget constraints
 it('selected components exceeding budget returns error', function () {
-  $cpu = Cpu::where('price', '>', 400)->whereNotNull('price')->first();
+  $cpu = Cpu::whereHas('listings', fn($q) => $q->where('price', '>', 400))->first();
 
   if (!$cpu) {
     test()->markTestSkipped('No CPU over €400 found in DB');
   }
 
-  generate(basePayload(300, ['type' => 'office'], ['cpu' => $cpu->dateks_id]))
+  generate(basePayload(350, ['type' => 'office'], ['cpu' => $cpu->product_code]))
     ->assertStatus(400)
     ->assertJsonPath('success', false);
 });
@@ -109,7 +111,7 @@ it('nvidia preference returns nvidia gpu', function () {
     ->assertStatus(200)
     ->assertJsonPath('success', true);
 
-  expect($res->json('build.gpu.type'))->toBe('nvidia');
+  expect($res->json('build.gpu.gpu_family'))->toBe('nvidia');
 });
 
 it('amd preference returns amd gpu', function () {
@@ -117,7 +119,7 @@ it('amd preference returns amd gpu', function () {
     ->assertStatus(200)
     ->assertJsonPath('success', true);
 
-  expect($res->json('build.gpu.type'))->toBe('amd');
+  expect($res->json('build.gpu.gpu_family'))->toBe('amd');
 });
 
 it('amd cpu preference returns amd cpu', function () {
@@ -125,7 +127,7 @@ it('amd cpu preference returns amd cpu', function () {
     ->assertStatus(200)
     ->assertJsonPath('success', true);
 
-  expect($res->json('build.cpu.type'))->toBe('amd');
+  expect(strtolower($res->json('build.cpu.brand')))->toBe('amd');
 });
 
 it('intel cpu preference returns intel cpu', function () {
@@ -133,7 +135,7 @@ it('intel cpu preference returns intel cpu', function () {
     ->assertStatus(200)
     ->assertJsonPath('success', true);
 
-  expect($res->json('build.cpu.type'))->toBe('intel');
+  expect(strtolower($res->json('build.cpu.brand')))->toBe('intel');
 });
 
 
@@ -169,6 +171,17 @@ it('build always has ssd', function () {
   }
 });
 
+it('keeps a pre-selected cooler instead of replacing it when a cpu is auto-picked', function () {
+  $cooler = \App\Models\Cooler::whereHas('listings')->first();
+  if (!$cooler) test()->markTestSkipped('No cooler with listings in DB');
+
+  $res = generate(basePayload(1000, ['type' => 'gaming'], ['cooler' => $cooler->product_code]))
+    ->assertStatus(200)
+    ->assertJsonPath('success', true);
+
+  expect($res->json('build.cooler.product_code'))->toBe($cooler->product_code);
+});
+
 it('cpu and motherboard have matching sockets', function () {
   $res = generate(basePayload(1000, ['type' => 'gaming']))
     ->assertStatus(200)
@@ -187,13 +200,13 @@ it('motherboard and ram have matching memory type', function () {
 
 // warnings
 it('low ram triggers warning', function () {
-  $ram = Ram::where('capacity', '<', 8)->where('memory_type', 'DDR4')->whereNotNull('price')->first();
+  $ram = Ram::where('capacity', '<', 8)->where('memory_type', 'DDR4')->whereHas('listings')->first();
 
   if (!$ram) {
     test()->markTestSkipped('No low capacity RAM found in DB');
   }
 
-  $res = generate(basePayload(2000, ['type' => 'gaming'], ['ram' => $ram->dateks_id]))
+  $res = generate(basePayload(2000, ['type' => 'gaming'], ['ram' => $ram->product_code]))
     ->assertStatus(200);
 
   $hasRamWarning = collect($res->json('warnings'))
@@ -203,13 +216,13 @@ it('low ram triggers warning', function () {
 });
 
 it('low ram on specific type triggers warning', function () {
-  $ram = Ram::where('capacity', '<', 32)->where('memory_type', 'DDR5')->whereNotNull('price')->first();
+  $ram = Ram::where('capacity', '<', 32)->where('memory_type', 'DDR5')->whereHas('listings')->first();
 
   if (!$ram) {
     test()->markTestSkipped('No 32GB RAM found in DB');
   }
 
-  $res = generate(basePayload(2000, ['type' => 'rendering'], ['ram' => $ram->dateks_id]))
+  $res = generate(basePayload(2000, ['type' => 'rendering'], ['ram' => $ram->product_code]))
     ->assertStatus(200);
 
   $hasRamWarning = collect($res->json('warnings'))
@@ -219,13 +232,14 @@ it('low ram on specific type triggers warning', function () {
 });
 
 it('low vram triggers warning', function () {
-  $gpu = Gpu::where('vram', '<', 8)->whereNotNull('price')->first();
+  // tdp/length_mm must be known, or the auto-builder can't verify case/PSU fit for this GPU
+  $gpu = Gpu::where('vram', '<', 8)->whereNotNull('tdp')->whereNotNull('length_mm')->whereHas('listings')->first();
 
   if (!$gpu) {
     test()->markTestSkipped('No low vram GPU found in DB');
   }
 
-  $res = generate(basePayload(1200, ['type' => 'gaming'], ['gpu' => $gpu->dateks_id]))
+  $res = generate(basePayload(1200, ['type' => 'gaming'], ['gpu' => $gpu->product_code]))
     ->assertStatus(200);
 
   $hasRamWarning = collect($res->json('warnings'))
@@ -235,13 +249,13 @@ it('low vram triggers warning', function () {
 });
 
 it('low storage triggers warning', function () {
-  $ssd = Ssd::where('capacity', '<', 256)->whereNotNull('price')->where('price', '<', '200')->first();
+  $ssd = Ssd::where('capacity', '<', 256)->whereHas('listings', fn($q) => $q->where('price', '<', 200))->first();
 
   if (!$ssd) {
     test()->markTestSkipped('No low capacity SSD found in DB');
   }
 
-  $res = generate(basePayload(1200, ['type' => 'gaming'], ['ssd' => $ssd->dateks_id]))
+  $res = generate(basePayload(1200, ['type' => 'gaming'], ['ssd' => $ssd->product_code]))
     ->assertStatus(200);
 
   $hasRamWarning = collect($res->json('warnings'))
@@ -260,15 +274,143 @@ it('zero budget returns 422', function () {
     ->assertStatus(422);
 });
 
+it('budget below the frontend minimum (350) returns 422', function () {
+  generate(basePayload(349, ['type' => 'gaming']))
+    ->assertStatus(422)
+    ->assertJsonValidationErrors('budget');
+});
+
+it('budget exactly at the minimum (350) is accepted', function () {
+  generate(basePayload(350, ['type' => 'gaming']))
+    ->assertStatus(200);
+});
+
+it('null budget (unlimited) is not affected by the minimum', function () {
+  generate([
+    'budget'      => null,
+    'preferences' => ['type' => 'gaming'],
+    'selected'    => [],
+  ])
+    ->assertStatus(200)
+    ->assertJsonPath('success', true);
+});
+
 it('invalid selected component id returns 400', function () {
-  generate(basePayload(1000, ['type' => 'gaming'], ['cpu' => 999999]))
+  generate(basePayload(1000, ['type' => 'gaming'], ['cpu' => 'nonexistent-product-code']))
     ->assertStatus(400);
 });
 
 it('incompatible components returns 400', function () {
-  $ram = Ram::where('memory_type', 'DDR5')->whereNotNull('price')->first();
-  $motherboard = Motherboard::where('memory_type', 'DDR4')->whereNotNull('price')->first();
+  $ram = Ram::where('memory_type', 'DDR5')->whereHas('listings')->first();
+  $motherboard = Motherboard::where('memory_type', 'DDR4')->whereHas('listings')->first();
 
-  generate(basePayload(1000, ['type' => 'gaming'], ['ram' => $ram->id, 'motherboard' => $motherboard->id]))
+  if (!$ram || !$motherboard) {
+    test()->markTestSkipped('No DDR5 RAM / DDR4 motherboard pair found in DB');
+  }
+
+  generate(basePayload(1000, ['type' => 'gaming'], ['ram' => $ram->product_code, 'motherboard' => $motherboard->product_code]))
     ->assertStatus(400);
+});
+
+// generation limits
+it('auto-generated psu wattage is capped near what the build needs, not maxed out', function () {
+  $cpu = Cpu::whereHas('listings')->whereNotNull('tdp')->orderBy('tdp')->first();
+  $gpu = Gpu::whereHas('listings')->whereNotNull('tdp')->whereNotNull('min_psu')->orderBy('tdp')->first();
+
+  if (!$cpu || !$gpu) {
+    test()->markTestSkipped('No low-power CPU/GPU found in DB');
+  }
+
+  $res = test()->postJson('/api/builder/psu', [
+    'selected' => ['cpu' => $cpu->product_code, 'gpu' => $gpu->product_code],
+    'budget' => 100000,
+  ])->assertStatus(200);
+
+  $wattage = $res->json('build.psu.wattage');
+  expect($wattage)->not->toBeNull();
+
+  // scoring also weighs efficiency/modularity, so this isn't pinned to the
+  // scorer's exact headroom multiplier - just asserts it stays in the
+  // ballpark of what the build needs instead of maxing out at the highest
+  // wattage available (which would be 1600W+ for this low-power build)
+  $requiredWattage = max(($cpu->tdp + $gpu->tdp) * 1.3, $gpu->min_psu ?? 0);
+  $generousCeiling = max($requiredWattage * 3, 900);
+
+  expect($wattage)->toBeLessThanOrEqual($generousCeiling);
+});
+
+it('auto-generated cpu+gpu combo does not exceed a preselected weak psu', function () {
+  $psu = Psu::whereHas('listings')->whereNotNull('wattage')->where('wattage', '<=', 450)->orderByDesc('wattage')->first();
+
+  if (!$psu) {
+    test()->markTestSkipped('No weak PSU found in DB');
+  }
+
+  $res = generate(basePayload(5000, ['type' => 'gaming'], ['psu' => $psu->product_code]))
+    ->assertStatus(200)
+    ->assertJsonPath('success', true);
+
+  $cpuTdp = $res->json('build.cpu.tdp');
+  $gpuTdp = $res->json('build.gpu.tdp');
+  $gpuMinPsu = $res->json('build.gpu.min_psu');
+  $ramModules = $res->json('build.ram.modules_count') ?? 0;
+
+  expect($cpuTdp)->not->toBeNull();
+  expect($gpuTdp)->not->toBeNull();
+
+  // fan is picked after psu/gpu so its few watts aren't known at filter
+  // time - allow a small tolerance for that instead of pinning to the exact
+  // formula (see design-decisions.md for why this residual gap is accepted)
+  $required = max(($cpuTdp + $gpuTdp + $ramModules * 5) * 1.3, $gpuMinPsu ?? 0);
+
+  expect($required)->toBeLessThanOrEqual($psu->wattage * 1.15);
+});
+
+it('auto-generated cpu does not exceed psu capacity when a power-hungry gpu is preselected', function () {
+  $gpu = Gpu::whereHas('listings')->whereNotNull('tdp')->whereNotNull('min_psu')->orderByDesc('tdp')->first();
+  $psu = Psu::whereHas('listings')->whereNotNull('wattage')->where('wattage', '>=', $gpu?->min_psu ?? 0)->orderBy('wattage')->first();
+
+  if (!$gpu || !$psu) {
+    test()->markTestSkipped('No high-tdp GPU / matching PSU pair found in DB');
+  }
+
+  $res = generate(basePayload(20000, ['type' => 'gaming'], ['gpu' => $gpu->product_code, 'psu' => $psu->product_code]))
+    ->assertStatus(200)
+    ->assertJsonPath('success', true);
+
+  $cpuTdp = $res->json('build.cpu.tdp');
+  $ramModules = $res->json('build.ram.modules_count') ?? 0;
+
+  expect($cpuTdp)->not->toBeNull();
+
+  $required = max(($cpuTdp + $gpu->tdp + $ramModules * 5) * 1.3, $gpu->min_psu ?? 0);
+
+  expect($required)->toBeLessThanOrEqual($psu->wattage * 1.15);
+});
+
+it('auto-generated cpu+gpu combo does not exceed a case with a weak built-in psu', function () {
+  $case = PcCase::whereHas('listings')->where('psu_included', 1)->whereNotNull('psu_wattage')->where('psu_wattage', '<=', 550)->orderByDesc('psu_wattage')->first();
+
+  if (!$case) {
+    test()->markTestSkipped('No case with a weak built-in PSU found in DB');
+  }
+
+  $res = generate(basePayload(5000, ['type' => 'gaming'], ['case' => $case->product_code]))
+    ->assertStatus(200)
+    ->assertJsonPath('success', true);
+
+  $cpuTdp = $res->json('build.cpu.tdp');
+  $gpuTdp = $res->json('build.gpu.tdp');
+  $gpuMinPsu = $res->json('build.gpu.min_psu');
+  $ramModules = $res->json('build.ram.modules_count') ?? 0;
+
+  if ($gpuTdp === null) {
+    // integrated-graphics build - no wattage constraint to check
+    expect(true)->toBeTrue();
+    return;
+  }
+
+  $required = max(($cpuTdp + $gpuTdp + $ramModules * 5) * 1.3, $gpuMinPsu ?? 0);
+
+  expect($required)->toBeLessThanOrEqual($case->psu_wattage * 1.15);
 });

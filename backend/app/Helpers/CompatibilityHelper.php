@@ -90,6 +90,24 @@ class CompatibilityHelper
     return $ff && in_array($ff, self::KNOWN_CASE_FORM_FACTORS, true);
   }
 
+  // scraped case form factors are sometimes unrecognized labels that still mention a known
+  // size (e.g. "Rack 1U mITX") — pull that known size back out so it isn't treated as fully exotic
+  public static function inferKnownCaseFormFactor(string $formFactor): ?string
+  {
+    $matches = array_filter(
+      self::KNOWN_CASE_FORM_FACTORS,
+      fn(string $known) => stripos($formFactor, $known) !== false
+    );
+
+    if (empty($matches)) {
+      return null;
+    }
+
+    usort($matches, fn($a, $b) => strlen($b) <=> strlen($a));
+
+    return $matches[0];
+  }
+
   public static function isAtxCaseFormFactor(?string $ff): bool
   {
     return $ff !== null && in_array($ff, self::KNOWN_ATX_CASE_FORM_FACTORS, true);
@@ -136,22 +154,4 @@ class CompatibilityHelper
     return $cpuMemType === $ramMemType;
   }
 
-  // if case or mobo has an exotic size, return a warning
-  public static function exoticFormFactorWarning(array $selected): ?string
-  {
-    $mb = $selected['motherboard'] ?? null;
-    $case = $selected['case'] ?? null;
-
-    if ($mb?->form_factor && ! self::isKnownMotherboardFormFactor($mb->form_factor)) {
-      return "selected motherboard has a non-standard form factor ({$mb->form_factor})"
-        . ' - case compatibility could not be automatically verified. check manually.';
-    }
-
-    if ($case?->form_factor && ! self::isKnownCaseFormFactor($case->form_factor)) {
-      return "selected case has a non-standard form factor ({$case->form_factor})"
-        . ' - motherboard compatibility could not be automatically verified. check manually.';
-    }
-
-    return null;
-  }
 }

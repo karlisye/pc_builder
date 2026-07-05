@@ -1,14 +1,9 @@
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { ArrowIcon, CloseIcon } from "./Icons";
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ArrowIcon, CloseIcon } from './Icons';
 
-const SidePanel = ({
-  children,
-  title = null,
-  width = "lg:w-120.5",
-  headerRight = null,
-}) => {
-  const { t } = useTranslation("pages");
+const SidePanel = ({ children, title = null, width = 'lg:w-120.5', headerRight = null }) => {
+  const { t } = useTranslation('pages');
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -25,20 +20,15 @@ const SidePanel = ({
       </div>
 
       <div
+        id="side-panel-scroll"
         className={`bg-primary flex flex-col fixed left-0 right-0 bottom-0 top-14 transition-transform lg:static ${width} lg:translate-x-0 overflow-y-auto z-10 pb-6
-          ${expanded ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
+          ${expanded ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
       >
         {(title || headerRight) && (
           <div className="flex justify-between items-center pt-6 px-4">
-            {title && (
-              <h1 className="text-4xl font-semibold text-white">{title}</h1>
-            )}
+            {title && <h1 className="text-4xl font-semibold text-white">{title}</h1>}
 
-            {headerRight && (
-              <div className="ml-auto flex items-center gap-2">
-                {headerRight}
-              </div>
-            )}
+            {headerRight && <div className="ml-auto flex items-center gap-2">{headerRight}</div>}
 
             <button
               className="w-10 h-10 lg:hidden text-secondary-light hover:cursor-pointer bg-primary hover:bg-primary-light transition p-2 ml-4"
@@ -54,7 +44,7 @@ const SidePanel = ({
         <div className="mt-auto pt-6 lg:hidden">
           <div className="p-4 border-t border-primary-light flex">
             <h2 className="text-6xl p-2 font-bold text-surface border border-secondary-light">
-              {t("components.sidePanel.brand")}
+              {t('components.sidePanel.brand')}
             </h2>
           </div>
         </div>

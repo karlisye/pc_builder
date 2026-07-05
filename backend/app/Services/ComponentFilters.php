@@ -4,10 +4,38 @@ namespace App\Services;
 
 use App\Helpers\CompatibilityHelper;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class ComponentFilters
 {
-  public static function cpu(Builder $query, array $selected): Builder
+  // Whether $item is missing a spec field that a compatibility check relies on, independent of
+  // what else is currently selected — e.g. a case with no max_gpu_length can never have its GPU
+  // fit verified, no matter which GPU is being compared. This is intentionally intrinsic to the
+  // item itself (not the current selection pair), so it doesn't taint every candidate on the
+  // *other* side of a comparison — see CompatibilityService::getCompatible().
+  public static function hasUnverifiableSpecs(string $type, Model $item): bool
+  {
+    return match ($type) {
+      'cpu' => $item->tdp === null,
+      'motherboard' => $item->memory_slots === null
+        || $item->max_memory_capacity === null
+        || $item->memory_max_speed === null,
+      'ram' => $item->modules_count === null
+        || $item->capacity === null
+        || $item->frequency === null,
+      'gpu' => $item->length_mm === null
+        || $item->tdp === null
+        || $item->min_psu === null,
+      'case' => $item->max_gpu_length === null
+        || $item->max_cpu_cooler_height === null
+        || ($item->psu_included && $item->psu_wattage === null),
+      'cooler' => $item->tdp_support === null || $item->height_mm === null,
+      'psu' => $item->wattage === null || $item->psu_type === null || $item->pcie_5 === null,
+      default => false,
+    };
+  }
+
+  public static function cpu(Builder $query, array $selected, bool $strict = false): Builder
   {
     if (($mb = $selected['motherboard'] ?? null)?->socket) {
       $query->where('socket', $mb->socket);
@@ -16,25 +44,48 @@ class ComponentFilters
     // check cooler comaptibilit
     if (($cooler = $selected['cooler'] ?? null)?->compatibility) {
       $sockets = explode(',', $cooler->compatibility);
-      $query->where(function (Builder $q) use ($sockets) {
-        $q->whereNull('socket')
-          ->orWhereIn('socket', $sockets);
-      });
+      self::whereInOrNull($query, 'socket', $sockets, $strict);
     }
 
     if (($ram = $selected['ram'] ?? null)?->memory_type) {
       $ramType = $ram->memory_type;
-      $query->where(function (Builder $q) use ($ramType) {
-        $q->whereNull('memory_type')
-          ->orWhere('memory_type', $ramType)
-          ->orWhere('memory_type', 'DDR4/DDR5');
-      });
+      if ($strict) {
+        $query->whereIn('memory_type', [$ramType, 'DDR4/DDR5']);
+      } else {
+        $query->where(function (Builder $q) use ($ramType) {
+          $q->whereNull('memory_type')
+            ->orWhere('memory_type', $ramType)
+            ->orWhere('memory_type', 'DDR4/DDR5');
+        });
+      }
+    }
+
+    // combined cpu+gpu draw must fit within the selected/case-included PSU
+    // (mirrors the formula in psu(), case(), and validateBuild())
+    $gpu = $selected['gpu'] ?? null;
+    $effectiveWattage = ($selected['psu'] ?? null)?->wattage
+      ?? (($selected['case'] ?? null)?->psu_included ? ($selected['case']->psu_wattage ?? null) : null);
+
+    if ($effectiveWattage !== null && $gpu !== null) {
+      if ($gpu->tdp !== null) {
+        $ram = $selected['ram'] ?? null;
+        $fan = $selected['fan'] ?? null;
+        $ramWattage = ($ram?->modules_count ?? 0) * 5;
+        $fanWattage = ($fan?->units_in_package ?? 0) * 3;
+
+        $maxCpuTdp = ($effectiveWattage / 1.3) - $gpu->tdp - $ramWattage - $fanWattage;
+
+        self::limitBy($query, 'tdp', $maxCpuTdp, '<=', $strict);
+      } elseif ($strict) {
+        // GPU is selected but its TDP is unknown — can't verify the combined draw fits
+        $query->whereRaw('1 = 0');
+      }
     }
 
     return $query;
   }
 
-  public static function motherboard(Builder $query, array $selected): Builder
+  public static function motherboard(Builder $query, array $selected, bool $strict = false): Builder
   {
     if (($cpu = $selected['cpu'] ?? null)?->socket) {
       $query->where('socket', $cpu->socket);
@@ -45,27 +96,18 @@ class ComponentFilters
     }
 
     // motherboard must have enough slots for the RAM kit
-    if (($ram = $selected['ram'] ?? null)?->modules_count !== null) {
-      $query->where(function (Builder $q) use ($ram) {
-        $q->whereNull('memory_slots')
-          ->orWhere('memory_slots', '>=', $ram->modules_count);
-      });
+    if ($ram = $selected['ram'] ?? null) {
+      self::limitBy($query, 'memory_slots', $ram->modules_count, '>=', $strict);
     }
 
     // motherboard max memory must accommodate the RAM kit capacity
-    if (($ram = $selected['ram'] ?? null)?->capacity !== null) {
-      $query->where(function (Builder $q) use ($ram) {
-        $q->whereNull('max_memory_capacity')
-          ->orWhere('max_memory_capacity', '>=', $ram->capacity);
-      });
+    if ($ram = $selected['ram'] ?? null) {
+      self::limitBy($query, 'max_memory_capacity', $ram->capacity, '>=', $strict);
     }
 
     // motherboard max speed must support the RAM frequency
-    if (($ram = $selected['ram'] ?? null)?->frequency !== null) {
-      $query->where(function (Builder $q) use ($ram) {
-        $q->whereNull('memory_max_speed')
-          ->orWhere('memory_max_speed', '>=', $ram->frequency);
-      });
+    if ($ram = $selected['ram'] ?? null) {
+      self::limitBy($query, 'memory_max_speed', $ram->frequency, '>=', $strict);
     }
 
     if ($case = $selected['case'] ?? null) {
@@ -75,7 +117,7 @@ class ComponentFilters
     return $query;
   }
 
-  public static function ram(Builder $query, array $selected): Builder
+  public static function ram(Builder $query, array $selected, bool $strict = false): Builder
   {
     if (($mb = $selected['motherboard'] ?? null)?->memory_type) {
       $query->where('memory_type', $mb->memory_type);
@@ -89,49 +131,54 @@ class ComponentFilters
     }
 
     // kit must fit in available slots
-    if (($mb = $selected['motherboard'] ?? null)?->memory_slots !== null) {
-      $query->where(function (Builder $q) use ($mb) {
-        $q->whereNull('modules_count')
-          ->orWhere('modules_count', '<=', $mb->memory_slots);
-      });
+    if ($mb = $selected['motherboard'] ?? null) {
+      self::limitBy($query, 'modules_count', $mb->memory_slots, '<=', $strict);
     }
 
     // kit capacity must not exceed motherboard max memory
-    if (($mb = $selected['motherboard'] ?? null)?->max_memory_capacity !== null) {
-      $query->where(function (Builder $q) use ($mb) {
-        $q->whereNull('capacity')
-          ->orWhere('capacity', '<=', $mb->max_memory_capacity);
-      });
+    if ($mb = $selected['motherboard'] ?? null) {
+      self::limitBy($query, 'capacity', $mb->max_memory_capacity, '<=', $strict);
     }
 
     // ram frequency must not exceed motherboard max speed
-    if (($mb = $selected['motherboard'] ?? null)?->memory_max_speed !== null) {
-      $query->where(function (Builder $q) use ($mb) {
-        $q->whereNull('frequency')
-          ->orWhere('frequency', '<=', $mb->memory_max_speed);
-      });
+    if ($mb = $selected['motherboard'] ?? null) {
+      self::limitBy($query, 'frequency', $mb->memory_max_speed, '<=', $strict);
     }
 
     return $query;
   }
 
-  public static function gpu(Builder $query, array $selected): Builder
+  public static function gpu(Builder $query, array $selected, bool $strict = false): Builder
   {
-    if (($case = $selected['case'] ?? null)?->max_gpu_length !== null) {
-      $query->where(function (Builder $q) use ($case) {
-        $q->whereNull('length_mm')
-          ->orWhere('length_mm', '<=', $case->max_gpu_length);
-      });
+    if ($case = $selected['case'] ?? null) {
+      self::limitBy($query, 'length_mm', $case->max_gpu_length, '<=', $strict);
     }
 
     $effectiveWattage = ($selected['psu'] ?? null)?->wattage
       ?? (($selected['case'] ?? null)?->psu_included ? ($selected['case']->psu_wattage ?? null) : null);
 
     if ($effectiveWattage !== null) {
-      $query->where(function (Builder $q) use ($effectiveWattage) {
-        $q->whereNull('min_psu')
-          ->orWhere('min_psu', '<=', $effectiveWattage);
-      });
+      self::limitBy($query, 'min_psu', $effectiveWattage, '<=', $strict);
+
+      // combined cpu+gpu draw must also fit within the selected/case-included
+      // PSU, not just the GPU's own min_psu recommendation (mirrors the
+      // formula in cpu(), psu(), case(), and validateBuild())
+      $cpu = $selected['cpu'] ?? null;
+      if ($cpu !== null) {
+        if ($cpu->tdp !== null) {
+          $ram = $selected['ram'] ?? null;
+          $fan = $selected['fan'] ?? null;
+          $ramWattage = ($ram?->modules_count ?? 0) * 5;
+          $fanWattage = ($fan?->units_in_package ?? 0) * 3;
+
+          $maxGpuTdp = ($effectiveWattage / 1.3) - $cpu->tdp - $ramWattage - $fanWattage;
+
+          self::limitBy($query, 'tdp', $maxGpuTdp, '<=', $strict);
+        } elseif ($strict) {
+          // CPU is selected but its TDP is unknown — can't verify the combined draw fits
+          $query->whereRaw('1 = 0');
+        }
+      }
     }
 
     // if PSU lacks 16-pin connector, filter out GPUs that require it
@@ -145,20 +192,14 @@ class ComponentFilters
     return $query;
   }
 
-  public static function case(Builder $query, array $selected): Builder
+  public static function case(Builder $query, array $selected, bool $strict = false): Builder
   {
-    if (($gpu = $selected['gpu'] ?? null)?->length_mm !== null) {
-      $query->where(function (Builder $q) use ($gpu) {
-        $q->whereNull('max_gpu_length')
-          ->orWhere('max_gpu_length', '>=', $gpu->length_mm);
-      });
+    if ($gpu = $selected['gpu'] ?? null) {
+      self::limitBy($query, 'max_gpu_length', $gpu->length_mm, '>=', $strict);
     }
 
-    if (($cooler = $selected['cooler'] ?? null)?->height_mm !== null) {
-      $query->where(function (Builder $q) use ($cooler) {
-        $q->whereNull('max_cpu_cooler_height')
-          ->orWhere('max_cpu_cooler_height', '>=', $cooler->height_mm);
-      });
+    if ($cooler = $selected['cooler'] ?? null) {
+      self::limitBy($query, 'max_cpu_cooler_height', $cooler->height_mm, '>=', $strict);
     }
 
     if ($mb = $selected['motherboard'] ?? null) {
@@ -208,16 +249,21 @@ class ComponentFilters
       $requiredWattage = max($tdpRequired, $gpuMinPsu ?? 0);
 
       if ($requiredWattage > 0) {
-        $query->where(function (Builder $q) use ($requiredWattage) {
+        $query->where(function (Builder $q) use ($requiredWattage, $strict) {
           // cases without built-in PSU are always fine (separate PSU handles power)
           $q->where(function (Builder $inner) {
             $inner->whereNull('psu_included')->orWhere('psu_included', 0);
-          })->orWhere(function (Builder $inner) use ($requiredWattage) {
-            // cases with built-in PSU must have sufficient wattage (null = unknown, allow through)
+          })->orWhere(function (Builder $inner) use ($requiredWattage, $strict) {
+            // cases with built-in PSU must have sufficient wattage
             $inner->where('psu_included', 1)
-              ->where(function (Builder $i2) use ($requiredWattage) {
-                $i2->whereNull('psu_wattage')
-                  ->orWhere('psu_wattage', '>=', $requiredWattage);
+              ->where(function (Builder $i2) use ($requiredWattage, $strict) {
+                if ($strict) {
+                  $i2->where('psu_wattage', '>=', $requiredWattage);
+                } else {
+                  // null = unknown, allow through
+                  $i2->whereNull('psu_wattage')
+                    ->orWhere('psu_wattage', '>=', $requiredWattage);
+                }
               });
           });
         });
@@ -227,34 +273,32 @@ class ComponentFilters
     return $query;
   }
 
-  public static function cooler(Builder $query, array $selected): Builder
+  public static function cooler(Builder $query, array $selected, bool $strict = false): Builder
   {
     if (($cpu = $selected['cpu'] ?? null)?->socket) {
       $socket = $cpu->socket;
-      $query->where(function (Builder $q) use ($socket) {
-        $q->whereNull('compatibility')
-          ->orWhereRaw('FIND_IN_SET(?, compatibility)', [$socket]);
-      });
+      if ($strict) {
+        $query->whereRaw('FIND_IN_SET(?, compatibility)', [$socket]);
+      } else {
+        $query->where(function (Builder $q) use ($socket) {
+          $q->whereNull('compatibility')
+            ->orWhereRaw('FIND_IN_SET(?, compatibility)', [$socket]);
+        });
+      }
     }
 
-    if (($cpu = $selected['cpu'] ?? null)?->tdp !== null) {
-      $query->where(function (Builder $q) use ($cpu) {
-        $q->whereNull('tdp_support')
-          ->orWhere('tdp_support', '>=', $cpu->tdp);
-      });
+    if ($cpu = $selected['cpu'] ?? null) {
+      self::limitBy($query, 'tdp_support', $cpu->tdp, '>=', $strict);
     }
 
-    if (($case = $selected['case'] ?? null)?->max_cpu_cooler_height !== null) {
-      $query->where(function (Builder $q) use ($case) {
-        $q->whereNull('height_mm')
-          ->orWhere('height_mm', '<=', $case->max_cpu_cooler_height);
-      });
+    if ($case = $selected['case'] ?? null) {
+      self::limitBy($query, 'height_mm', $case->max_cpu_cooler_height, '<=', $strict);
     }
 
     return $query;
   }
 
-  public static function psu(Builder $query, array $selected): Builder
+  public static function psu(Builder $query, array $selected, bool $strict = false): Builder
   {
     $cpu = $selected['cpu'] ?? null;
     $gpu = $selected['gpu'] ?? null;
@@ -273,18 +317,26 @@ class ComponentFilters
 
     // case form factor: ATX cases only accept ATX PSUs
     if ($case?->form_factor && CompatibilityHelper::isAtxCaseFormFactor($case->form_factor)) {
-      $query->where(function (Builder $q) {
-        $q->whereNull('psu_type')->orWhere('psu_type', 'ATX');
-      });
+      if ($strict) {
+        $query->where('psu_type', 'ATX');
+      } else {
+        $query->where(function (Builder $q) {
+          $q->whereNull('psu_type')->orWhere('psu_type', 'ATX');
+        });
+      }
     }
 
     // GPU 16-pin connector: only show PSUs with pcie_5 if GPU requires it
     if ($gpu?->power_connectors) {
       $gpuConn = CompatibilityHelper::parseGpuConnectors($gpu->power_connectors);
       if ($gpuConn['requires_16pin']) {
-        $query->where(function (Builder $q) {
-          $q->whereNull('pcie_5')->orWhere('pcie_5', 1);
-        });
+        if ($strict) {
+          $query->where('pcie_5', 1);
+        } else {
+          $query->where(function (Builder $q) {
+            $q->whereNull('pcie_5')->orWhere('pcie_5', 1);
+          });
+        }
       }
     }
 
@@ -310,10 +362,9 @@ class ComponentFilters
       return $query->whereRaw('1 = 0');
     }
 
-    return $query->where(function (Builder $q) use ($requiredWattage) {
-      $q->whereNull('wattage')
-        ->orWhere('wattage', '>=', $requiredWattage);
-    });
+    self::limitBy($query, 'wattage', $requiredWattage, '>=', $strict);
+
+    return $query;
   }
 
   public static function ssd(Builder $query, array $selected): Builder
@@ -368,7 +419,8 @@ class ComponentFilters
     }
 
     if ($side === 'case') {
-      // if mb form factor unknown, just skip and show warning
+      // if mb form factor unknown, skip restricting (motherboard form factors in stock are
+      // consistently standard, unlike case form factors — see the 'motherboard' branch below)
       if (! CompatibilityHelper::isKnownMotherboardFormFactor($formFactor)) {
         return;
       }
@@ -381,9 +433,11 @@ class ComponentFilters
           ->orWhereIn('form_factor', $compatibleCases);
       });
     } elseif ($side === 'motherboard') {
-      // if case form factor unknown, just skip and show warning
+      // unrecognized case form factor (e.g. "Raspberry Pi", "UCFF 4\" x 4\"") — try to pull a known
+      // size out of the label, otherwise fall back to the smallest known size. Never leave the
+      // motherboard query unrestricted here, or a full-size board could get matched to a tiny case
       if (! CompatibilityHelper::isKnownCaseFormFactor($formFactor)) {
-        return;
+        $formFactor = CompatibilityHelper::inferKnownCaseFormFactor($formFactor) ?? 'mITX';
       }
 
       $compatibleMotherboards = CompatibilityHelper::compatibleMotherboardsFor($formFactor);
@@ -392,6 +446,40 @@ class ComponentFilters
         // known mobos must match
         $q->whereNotIn('form_factor', CompatibilityHelper::KNOWN_MOTHERBOARD_FORM_FACTORS)
           ->orWhereIn('form_factor', $compatibleMotherboards);
+      });
+    }
+  }
+
+  // Applies a numeric limit against $column. In loose mode (manual browsing) a null value
+  // on either side is treated as "can't rule it out" and let through — the frontend flags
+  // these as needing a manual check. In strict mode (auto-builder) null on either side means
+  // the fit can't be verified, so the candidate is excluded outright rather than guessed at.
+  private static function limitBy(Builder $query, string $column, ?float $limit, string $operator, bool $strict): void
+  {
+    if ($limit === null) {
+      if ($strict) {
+        $query->whereRaw('1 = 0');
+      }
+      return;
+    }
+
+    if ($strict) {
+      $query->where($column, $operator, $limit);
+    } else {
+      $query->where(function (Builder $q) use ($column, $operator, $limit) {
+        $q->whereNull($column)->orWhere($column, $operator, $limit);
+      });
+    }
+  }
+
+  // Same idea as limitBy(), but for an IN-list match instead of a numeric comparison.
+  private static function whereInOrNull(Builder $query, string $column, array $values, bool $strict): void
+  {
+    if ($strict) {
+      $query->whereIn($column, $values);
+    } else {
+      $query->where(function (Builder $q) use ($column, $values) {
+        $q->whereNull($column)->orWhereIn($column, $values);
       });
     }
   }

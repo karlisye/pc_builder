@@ -14,6 +14,10 @@ const BuildDesc = () => {
   const count = filled.length;
   const totalSlots = Object.keys(selectedComponents).length;
 
+  const manualCheckSlots = Object.entries(selectedComponents).filter(
+    ([, component]) => component?.needs_manual_check === true,
+  );
+
   return (
     <div className="space-y-4">
       {buildId && (
@@ -39,7 +43,9 @@ const BuildDesc = () => {
         </div>
       </div>
 
-      {(Object.keys(buildIssues).length > 0 || Object.keys(buildWarnings).length > 0) && (
+      {(Object.keys(buildIssues).length > 0 ||
+        Object.keys(buildWarnings).length > 0 ||
+        manualCheckSlots.length > 0) && (
         <ClosedSection title={t("buildDesc.compatibility")}>
           <div className="space-y-2">
             {Object.entries(buildIssues).map(([slot, issues]) =>
@@ -66,6 +72,16 @@ const BuildDesc = () => {
                 </div>
               )),
             )}
+            {manualCheckSlots.map(([slot]) => (
+              <div key={`manual-check-${slot}`} className="border border-alert/80 bg-alert/10 p-4">
+                <p className="text-alert text-sm">
+                  <span className="font-medium">
+                    {t(`common:components.${slot}`, { defaultValue: slot })}:{" "}
+                  </span>
+                  {t("componentCard.checkManually")}
+                </p>
+              </div>
+            ))}
           </div>
         </ClosedSection>
       )}

@@ -23,7 +23,7 @@ RUN mkdir -p \
     && chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache \
     && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+RUN composer install --optimize-autoloader --no-interaction
 
 RUN printf 'user www-data;\n\
 worker_processes auto;\n\

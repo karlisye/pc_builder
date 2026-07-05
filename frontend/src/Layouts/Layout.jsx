@@ -229,7 +229,7 @@ const Layout = () => {
         </nav>
       </header>
 
-      <div className="flex flex-col flex-1 overflow-y-auto">
+      <div id="page-scroll" className="flex flex-col flex-1 overflow-y-auto">
         <main className="flex-1">
           <Outlet />
         </main>

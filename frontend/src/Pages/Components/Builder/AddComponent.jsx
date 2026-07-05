@@ -4,7 +4,7 @@ import { useBuilder } from '../../../Contexts/BuilderContext';
 import axios from 'axios';
 import AddComponentSkeleton from '../Skeletons/AddComponentSkeleton';
 import ComponentInfo from '../Common/ComponentInfo';
-import { AddIcon, CloseIcon } from '../Common/Icons';
+import { AddIcon, CloseIcon, InfoIcon } from '../Common/Icons';
 import PaginationControls from '../Common/PaginationControls';
 import { formatPrice } from '../../../lib/componentPrice';
 
@@ -159,7 +159,30 @@ const AddComponent = () => {
                         className={`font-medium truncate min-w-0 ${component.compatible && !component.out_of_stock ? 'text-text' : 'text-text/50'}`}
                       >
                         {component.name}
+                        {currentCompToAdd === 'Motherboard' &&
+                          (component.socket || component.memory_type) && (
+                            <span className="text-text font-normal">
+                              {' '}
+                              (
+                              {[component.socket, component.memory_type].filter(Boolean).join(', ')}
+                              )
+                            </span>
+                          )}
+                        {currentCompToAdd === 'Case' && component.form_factor && (
+                          <span className="text-text font-normal"> ({component.form_factor})</span>
+                        )}
                       </span>
+                      {component.compatible && component.needs_manual_check && (
+                        <span
+                          className="relative group/manual-check text-alert shrink-0"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <InfoIcon size={18} />
+                          <span className="absolute left-1/2 -translate-x-1/2 bottom-full mb-1 hidden group-hover/manual-check:block bg-primary text-white text-xs p-1 whitespace-nowrap z-10">
+                            {t('componentCard.checkManually')}
+                          </span>
+                        </span>
+                      )}
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
@@ -229,11 +252,15 @@ const AddComponent = () => {
                                   <span className="text-muted">
                                     {listing.stock_status === 'in_stock'
                                       ? listing.stock_quantity != null
-                                        ? t('componentCard.inStockWithQty', { count: listing.stock_quantity })
+                                        ? t('componentCard.inStockWithQty', {
+                                            count: listing.stock_quantity,
+                                          })
                                         : t('componentCard.inStock')
                                       : listing.stock_status === 'orderable'
                                         ? listing.stock_quantity != null
-                                          ? t('componentCard.orderableWithQty', { count: listing.stock_quantity })
+                                          ? t('componentCard.orderableWithQty', {
+                                              count: listing.stock_quantity,
+                                            })
                                           : t('componentCard.orderable')
                                         : t('componentCard.outOfStock')}
                                   </span>

@@ -26,7 +26,8 @@
     "more": "More",
     "availabilityTitle": "Availability",
     "lastScraped": "Last checked: {{date}}",
-    "neverScraped": "Last checked: never"
+    "neverScraped": "Last checked: never",
+    "checkManually": "Missing spec data — please check this fits manually"
   },
   "componentPopup": {
     "required": "Required",
@@ -165,6 +166,7 @@
     "includeOnlyOrderable": "Include Only Orderable Items",
     "somethingWentWrong": "Something went wrong",
     "incompatibleWarning": "One or more components in your current build are incompatible. Please change or remove them to generate.",
+    "manualCheckWarning": "One or more selected components are missing spec data needed to verify fit. Please replace or remove them to generate.",
     "generating": "Generating...",
     "generate": "Generate",
     "generateSuccess": "Build generated successfully",
@@ -186,6 +188,7 @@
     "includeOnlyOrderable": "Include Only Orderable Items",
     "somethingWentWrong": "Something went wrong",
     "incompatibleWarning": "One or more components in your current build are incompatible. Please change or remove them to generate.",
+    "manualCheckWarning": "One or more selected components are missing spec data needed to verify fit. Please replace or remove them to generate.",
     "generating": "Generating...",
     "generate": "Generate",
     "generateSuccess": "Component generated successfully",

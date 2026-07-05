@@ -33,14 +33,16 @@ class BuilderSlotPicker
       $query->where('listing_agg.listing_price', '<=', $budget);
     }
 
+    // strict: null values on either side of a compatibility check can't be verified, so the
+    // auto-builder must never guess "probably fine" the way manual browsing does
     $query = match ($slot) {
-      'cpu' => ComponentFilters::cpu($query, $selected),
-      'motherboard' => ComponentFilters::motherboard($query, $selected),
-      'ram' => ComponentFilters::ram($query, $selected),
-      'gpu' => ComponentFilters::gpu($query, $selected),
-      'case' => ComponentFilters::case($query, $selected),
-      'cooler' => ComponentFilters::cooler($query, $selected),
-      'psu' => ComponentFilters::psu($query, $selected),
+      'cpu' => ComponentFilters::cpu($query, $selected, strict: true),
+      'motherboard' => ComponentFilters::motherboard($query, $selected, strict: true),
+      'ram' => ComponentFilters::ram($query, $selected, strict: true),
+      'gpu' => ComponentFilters::gpu($query, $selected, strict: true),
+      'case' => ComponentFilters::case($query, $selected, strict: true),
+      'cooler' => ComponentFilters::cooler($query, $selected, strict: true),
+      'psu' => ComponentFilters::psu($query, $selected, strict: true),
       default => $query,
     };
 
@@ -64,7 +66,7 @@ class BuilderSlotPicker
       return null;
     }
 
-    return $candidates->sortByDesc(fn($item) => $this->scorer->score($slot, $item, $preferences))->first();
+    return $candidates->sortByDesc(fn($item) => $this->scorer->score($slot, $item, $preferences, $selected))->first();
   }
 
   // find cheapest to estimate cheapest build price
@@ -84,14 +86,16 @@ class BuilderSlotPicker
       $query->where('listing_agg.listing_stock_status', 'in_stock');
     }
 
+    // strict: null values on either side of a compatibility check can't be verified, so the
+    // auto-builder must never guess "probably fine" the way manual browsing does
     $query = match ($slot) {
-      'cpu' => ComponentFilters::cpu($query, $selected),
-      'motherboard' => ComponentFilters::motherboard($query, $selected),
-      'ram' => ComponentFilters::ram($query, $selected),
-      'gpu' => ComponentFilters::gpu($query, $selected),
-      'case' => ComponentFilters::case($query, $selected),
-      'cooler' => ComponentFilters::cooler($query, $selected),
-      'psu' => ComponentFilters::psu($query, $selected),
+      'cpu' => ComponentFilters::cpu($query, $selected, strict: true),
+      'motherboard' => ComponentFilters::motherboard($query, $selected, strict: true),
+      'ram' => ComponentFilters::ram($query, $selected, strict: true),
+      'gpu' => ComponentFilters::gpu($query, $selected, strict: true),
+      'case' => ComponentFilters::case($query, $selected, strict: true),
+      'cooler' => ComponentFilters::cooler($query, $selected, strict: true),
+      'psu' => ComponentFilters::psu($query, $selected, strict: true),
       default => $query,
     };
 

@@ -11,6 +11,7 @@ return [
     'larger_ssd_recommended' => 'A larger SSD is recommended for storing modern games and applications.',
     'cpu_included_cooler' => 'CPU comes with an included cooler to save costs at this budget tier.',
     'cpu_integrated_graphics' => 'CPU comes with integrated graphics to save costs at this budget tier.',
+    'case_includes_fans' => 'Case already includes :count fans, so no additional fans were added.',
 
     'types' => [
         'gaming' => 'gaming',

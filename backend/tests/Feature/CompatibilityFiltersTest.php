@@ -154,6 +154,122 @@ describe('GPU length ↔ Case', function () {
 });
 
 // ---------------------------------------------------------------------------
+// Missing dimension data — flagged for manual check, never silently trusted
+// ---------------------------------------------------------------------------
+
+describe('Unverifiable compatibility (missing dimension data)', function () {
+  // exercises ComponentFilters::gpu() directly (loose vs strict pass) rather than the paginated
+  // HTTP endpoint, since the specific fixture row isn't guaranteed to land on page 1
+
+  it('a GPU is loosely compatible but fails the strict pass when the case has no max_gpu_length', function () {
+    $case = PcCase::whereNull('max_gpu_length')->first();
+    $gpu = Gpu::whereNotNull('length_mm')->first();
+    if (!$case || !$gpu) test()->markTestSkipped('Need a case without max_gpu_length and a GPU with length_mm');
+
+    $selected = ['case' => $case];
+    $looseIds = App\Services\ComponentFilters::gpu(Gpu::query(), $selected)->pluck('id')->toArray();
+    $strictIds = App\Services\ComponentFilters::gpu(Gpu::query(), $selected, strict: true)->pluck('id')->toArray();
+
+    expect(in_array($gpu->id, $looseIds))->toBeTrue();
+    expect(in_array($gpu->id, $strictIds))->toBeFalse();
+  });
+
+  it('a case is loosely compatible but fails the strict pass when it has no max_gpu_length and a GPU is selected', function () {
+    $case = PcCase::whereNull('max_gpu_length')->first();
+    $gpu = Gpu::whereNotNull('length_mm')->first();
+    if (!$case || !$gpu) test()->markTestSkipped('Need a case without max_gpu_length and a GPU with length_mm');
+
+    $selected = ['gpu' => $gpu];
+    $looseIds = App\Services\ComponentFilters::case(PcCase::query(), $selected)->pluck('id')->toArray();
+    $strictIds = App\Services\ComponentFilters::case(PcCase::query(), $selected, strict: true)->pluck('id')->toArray();
+
+    expect(in_array($case->id, $looseIds))->toBeTrue();
+    expect(in_array($case->id, $strictIds))->toBeFalse();
+  });
+
+  it('stays compatible in both the loose and strict pass when both sides have known dimensions', function () {
+    $case = PcCase::whereNotNull('max_gpu_length')->orderByDesc('max_gpu_length')->first();
+    $gpu = Gpu::where('length_mm', '<=', $case?->max_gpu_length ?? 0)->whereNotNull('length_mm')->first();
+    if (!$case || !$gpu) test()->markTestSkipped('Need a case/GPU pair with known, compatible dimensions');
+
+    $selected = ['case' => $case];
+    $looseIds = App\Services\ComponentFilters::gpu(Gpu::query(), $selected)->pluck('id')->toArray();
+    $strictIds = App\Services\ComponentFilters::gpu(Gpu::query(), $selected, strict: true)->pluck('id')->toArray();
+
+    expect(in_array($gpu->id, $looseIds))->toBeTrue();
+    expect(in_array($gpu->id, $strictIds))->toBeTrue();
+  });
+
+  it('auto-builder never picks a GPU for a case with unknown max_gpu_length', function () {
+    $case = PcCase::whereNull('max_gpu_length')->first();
+    if (!$case) test()->markTestSkipped('No case without max_gpu_length in DB');
+
+    $picker = app(\App\Services\BuilderSlotPicker::class);
+    $gpu = $picker->pick('gpu', ['case' => $case], []);
+
+    expect($gpu)->toBeNull();
+  });
+
+  // needs_manual_check must be intrinsic to the item itself, not the current selection pair —
+  // otherwise selecting one case with an unknown max_gpu_length would flag every GPU in the
+  // list, and nothing would ever get flagged while browsing with nothing selected yet
+  it('flags a case with no max_gpu_length via the /api/components endpoint even with nothing selected', function () {
+    $case = PcCase::whereNull('max_gpu_length')->whereNotNull('name')->get()->first(
+      fn($c) => PcCase::query()->tap(function ($q) use ($c) {
+        foreach (array_filter(explode(' ', $c->name)) as $term) {
+          $q->where('name', 'like', '%' . $term . '%');
+        }
+      })->count() === 1
+    );
+    if (!$case) test()->markTestSkipped('Need a case without max_gpu_length and a unique name');
+
+    $response = test()->getJson('/api/components/case?' . http_build_query([
+      'per_page' => 100,
+      'search' => $case->name,
+    ]));
+    $response->assertStatus(200);
+
+    $match = collect($response->json('data'))->firstWhere('product_code', $case->product_code);
+    if (!$match) test()->markTestSkipped('Case not found via search');
+
+    expect($match['needs_manual_check'])->toBeTrue();
+  });
+
+  it('does not flag a GPU with known specs just because the selected case has no max_gpu_length', function () {
+    $case = PcCase::whereNull('max_gpu_length')->first();
+    $gpu = Gpu::whereNotNull('length_mm')->whereNotNull('tdp')->whereNotNull('min_psu')
+      ->whereNotNull('name')->get()->first(
+        fn($g) => Gpu::query()->tap(function ($q) use ($g) {
+          foreach (array_filter(explode(' ', $g->name)) as $term) {
+            $q->where('name', 'like', '%' . $term . '%');
+          }
+        })->count() === 1
+      );
+    if (!$case || !$gpu) test()->markTestSkipped('Need a case without max_gpu_length and a fully-specced, uniquely-named GPU');
+
+    $response = test()->getJson('/api/components/gpu?' . http_build_query([
+      'per_page' => 100,
+      'search' => $gpu->name,
+      'selected' => json_encode(['case' => $case->product_code]),
+    ]));
+    $response->assertStatus(200);
+
+    $match = collect($response->json('data'))->firstWhere('product_code', $gpu->product_code);
+    if (!$match) test()->markTestSkipped('GPU not found via search');
+
+    expect($match['compatible'])->toBeTrue();
+    expect($match['needs_manual_check'])->toBeFalse();
+  });
+
+  it('flags a GPU with its own missing specs regardless of what else is selected', function () {
+    $gpu = Gpu::whereNull('length_mm')->orWhereNull('tdp')->orWhereNull('min_psu')->first();
+    if (!$gpu) test()->markTestSkipped('No GPU with missing length_mm/tdp/min_psu in DB');
+
+    expect(App\Services\ComponentFilters::hasUnverifiableSpecs('gpu', $gpu))->toBeTrue();
+  });
+});
+
+// ---------------------------------------------------------------------------
 // PSU type vs Case form factor
 // ---------------------------------------------------------------------------
 

@@ -26,7 +26,8 @@
     "more": "Vairāk",
     "availabilityTitle": "Pieejamība",
     "lastScraped": "Pēdējā pārbaude: {{date}}",
-    "neverScraped": "Pēdējā pārbaude: nekad"
+    "neverScraped": "Pēdējā pārbaude: nekad",
+    "checkManually": "Trūkst specifikāciju datu — lūdzu, pārbaudiet atbilstību manuāli"
   },
   "componentPopup": {
     "required": "Obligāts",
@@ -165,6 +166,7 @@
     "includeOnlyOrderable": "Iekļaut tikai pasūtāmās preces",
     "somethingWentWrong": "Kaut kas nogāja greizi",
     "incompatibleWarning": "Viena vai vairākas komponentes jūsu konfigurācijā nav saderīgas. Lai generētu, nomainiet vai noņemiet tās.",
+    "manualCheckWarning": "Vienai vai vairākām izvēlētajām komponentēm trūkst specifikācijas datu, lai pārbaudītu atbilstību. Lūdzu, samainiet vai noņemiet to pirms ģenerēšanas.",
     "generating": "Generē...",
     "generate": "Generēt",
     "generateSuccess": "Konfigurācija veiksmīgi generēta",
@@ -186,6 +188,7 @@
     "includeOnlyOrderable": "Iekļaut tikai pasūtāmās preces",
     "somethingWentWrong": "Kaut kas nogāja greizi",
     "incompatibleWarning": "Viena vai vairākas komponentes jūsu konfigurācijā nav saderīgas. Lai generētu, nomainiet vai noņemiet tās.",
+    "manualCheckWarning": "Vienai vai vairākām izvēlētajām komponentēm trūkst specifikācijas datu, lai pārbaudītu atbilstību. Lūdzu, samainiet vai noņemiet to pirms ģenerēšanas.",
     "generating": "Ģenerē...",
     "generate": "Ģenerēt",
     "generateSuccess": "Komponente veiksmīgi generēta",

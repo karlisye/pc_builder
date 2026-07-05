@@ -80,17 +80,19 @@ class CompatibilityService
 
     // e.g. if user already has cpu selected, but still wants to see cpus, will return the cpu id
     $selectedIdForType = isset($selected[$type]) ? $selected[$type]->id : null;
-    $warning  = CompatibilityHelper::exoticFormFactorWarning($selected);
     $caseHasPsu = $type === 'psu' && ($selected['case'] ?? null)?->psu_included;
 
     $paginator = $query->paginate(15);
 
-    // add the selected boolean and manual check warning to each component
-    // add compatible and out_of_stock flags to each component
-    $paginator->getCollection()->transform(function ($item) use ($selectedIdForType, $warning, $compatibleIds, $caseHasPsu) {
+    // add the selected boolean, compatible and out_of_stock flags to each component
+    $paginator->getCollection()->transform(function ($item) use ($type, $selectedIdForType, $compatibleIds, $caseHasPsu) {
       $item->selected = ($item->id === $selectedIdForType);
-      $item->compatibility_warning = $warning;
       $item->compatible = in_array($item->id, $compatibleIds);
+      // intrinsic to the item itself — missing spec data needed to verify fit against
+      // *any* counterpart, independent of what else is currently selected (a case with no
+      // max_gpu_length is unverifiable regardless of which GPU you're browsing, but that
+      // shouldn't taint every GPU in the list — see ComponentFilters::hasUnverifiableSpecs())
+      $item->needs_manual_check = ComponentFilters::hasUnverifiableSpecs($type, $item);
       $item->out_of_stock = $item->stock_status === 'out_of_stock';
       if ($caseHasPsu) {
         $item->case_includes_psu = true;
@@ -144,6 +146,13 @@ class CompatibilityService
       ]);
       $issues['ram'][] = __('compatibility.ram_cpu_memory_mismatch', [
         'ram_type' => $ram->memory_type, 'cpu_type' => $cpu->memory_type,
+      ]);
+    }
+
+    // ram memory type not supported by any motherboard in stock
+    if ($ram && ! $mb && $ram->memory_type && ! Motherboard::where('memory_type', $ram->memory_type)->exists()) {
+      $issues['ram'][] = __('compatibility.ram_no_motherboard_support', [
+        'ram_type' => $ram->memory_type,
       ]);
     }
 
@@ -230,14 +239,40 @@ class CompatibilityService
     }
 
     // motherboard / case form factor
-    if ($mb && $case) {
-      $compatibleCases = CompatibilityHelper::compatibleCasesFor($mb->form_factor);
-      if (!empty($compatibleCases) && !in_array($case->form_factor, $compatibleCases)) {
+    if ($mb && $case && $mb->form_factor && $case->form_factor) {
+      // unrecognized case labels (e.g. "Raspberry Pi") are treated the same way the auto-builder's
+      // filters treat them: pull a known size out of the label, or assume the smallest known size
+      $effectiveCaseFormFactor = CompatibilityHelper::isKnownCaseFormFactor($case->form_factor)
+        ? $case->form_factor
+        : (CompatibilityHelper::inferKnownCaseFormFactor($case->form_factor) ?? 'mITX');
+
+      $compatibleMotherboards = CompatibilityHelper::compatibleMotherboardsFor($effectiveCaseFormFactor);
+      if (!empty($compatibleMotherboards) && !in_array($mb->form_factor, $compatibleMotherboards)) {
         $issues['motherboard'][] = __('compatibility.motherboard_form_factor_incompatible', [
           'mb_form' => $mb->form_factor, 'case_form' => $case->form_factor,
         ]);
         $issues['case'][] = __('compatibility.case_form_factor_incompatible', [
           'case_form' => $case->form_factor, 'mb_form' => $mb->form_factor,
+        ]);
+      }
+    }
+
+    // motherboard form factor with no compatible case in stock
+    if ($mb && ! $case && $mb->form_factor) {
+      $compatibleCases = CompatibilityHelper::compatibleCasesFor($mb->form_factor);
+      if (! empty($compatibleCases) && ! PcCase::whereIn('form_factor', $compatibleCases)->exists()) {
+        $issues['motherboard'][] = __('compatibility.motherboard_no_case_support', [
+          'mb_form' => $mb->form_factor,
+        ]);
+      }
+    }
+
+    // case form factor with no compatible motherboard in stock
+    if ($case && ! $mb && $case->form_factor) {
+      $compatibleMbs = CompatibilityHelper::compatibleMotherboardsFor($case->form_factor);
+      if (! empty($compatibleMbs) && ! Motherboard::whereIn('form_factor', $compatibleMbs)->exists()) {
+        $issues['case'][] = __('compatibility.case_no_motherboard_support', [
+          'case_form' => $case->form_factor,
         ]);
       }
     }

@@ -52,6 +52,8 @@ const ComponentGenerator = () => {
         setPreferences((prev) => Object.fromEntries(Object.keys(prev).map((k) => [k, null])));
         setCurrentCompToAdd(null);
         addToast(t('componentGenerator.generateSuccess'), { type: 'success' });
+        document.getElementById('side-panel-scroll')?.scrollTo({ top: 0, behavior: 'smooth' });
+        document.getElementById('page-scroll')?.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
         addToast(res.data.error, { type: 'danger' });
       }
@@ -66,6 +68,12 @@ const ComponentGenerator = () => {
 
   const hasIncompatible = Object.values(selectedComponents).some(
     (component) => component !== null && component.compatible === false,
+  );
+
+  // a selected component's compatibility with the rest of the build could not be fully
+  // verified (missing spec data) — the auto-builder can't assume it fits, so block generation
+  const needsManualCheck = Object.values(selectedComponents).some(
+    (component) => component !== null && component.needs_manual_check === true,
   );
 
   if (!user) {
@@ -187,10 +195,16 @@ const ComponentGenerator = () => {
             </div>
           )}
 
+          {!hasIncompatible && needsManualCheck && (
+            <div className="p-2 border bg-alert/10 border-alert/80">
+              <p className="text-alert text-sm">{t('componentGenerator.manualCheckWarning')}</p>
+            </div>
+          )}
+
           <button
             className="p-4 w-full bg-secondary-light text-text cursor-pointer hover:bg-secondary-light/50 transition disabled:opacity-50"
             onClick={handleGenerate}
-            disabled={loading || hasIncompatible}
+            disabled={loading || hasIncompatible || needsManualCheck}
           >
             {loading ? (
               <p>{t('componentGenerator.generating')}</p>
