@@ -52,6 +52,8 @@ const ComponentGenerator = () => {
         setPreferences((prev) => Object.fromEntries(Object.keys(prev).map((k) => [k, null])));
         setCurrentCompToAdd(null);
         addToast(t('componentGenerator.generateSuccess'), { type: 'success' });
+        document.getElementById('side-panel-scroll')?.scrollTo({ top: 0, behavior: 'smooth' });
+        document.getElementById('page-scroll')?.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
         addToast(res.data.error, { type: 'danger' });
       }

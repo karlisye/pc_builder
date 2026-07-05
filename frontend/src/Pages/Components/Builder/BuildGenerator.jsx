@@ -87,6 +87,12 @@ const BuildGenerator = () => {
         setWarnings(res.data.warnings);
         setNotes(res.data.notes);
         addToast(t("buildGenerator.generateSuccess"), { type: "success" });
+        document
+          .getElementById("side-panel-scroll")
+          ?.scrollTo({ top: 0, behavior: "smooth" });
+        document
+          .getElementById("page-scroll")
+          ?.scrollTo({ top: 0, behavior: "smooth" });
       } else {
         addToast(res.data.error, { type: "danger" });
       }

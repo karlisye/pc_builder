@@ -159,6 +159,18 @@ const AddComponent = () => {
                         className={`font-medium truncate min-w-0 ${component.compatible && !component.out_of_stock ? 'text-text' : 'text-text/50'}`}
                       >
                         {component.name}
+                        {currentCompToAdd === 'Motherboard' &&
+                          (component.socket || component.memory_type) && (
+                            <span className="text-text font-normal">
+                              {' '}
+                              (
+                              {[component.socket, component.memory_type].filter(Boolean).join(', ')}
+                              )
+                            </span>
+                          )}
+                        {currentCompToAdd === 'Case' && component.form_factor && (
+                          <span className="text-text font-normal"> ({component.form_factor})</span>
+                        )}
                       </span>
                       {component.compatible && component.needs_manual_check && (
                         <span
@@ -240,11 +252,15 @@ const AddComponent = () => {
                                   <span className="text-muted">
                                     {listing.stock_status === 'in_stock'
                                       ? listing.stock_quantity != null
-                                        ? t('componentCard.inStockWithQty', { count: listing.stock_quantity })
+                                        ? t('componentCard.inStockWithQty', {
+                                            count: listing.stock_quantity,
+                                          })
                                         : t('componentCard.inStock')
                                       : listing.stock_status === 'orderable'
                                         ? listing.stock_quantity != null
-                                          ? t('componentCard.orderableWithQty', { count: listing.stock_quantity })
+                                          ? t('componentCard.orderableWithQty', {
+                                              count: listing.stock_quantity,
+                                            })
                                           : t('componentCard.orderable')
                                         : t('componentCard.outOfStock')}
                                   </span>
