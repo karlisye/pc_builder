@@ -182,6 +182,37 @@ export function InfoIcon({ size = 24, color = 'currentColor', className }) {
   );
 }
 
+export function CopyIcon({ size = 24, color = 'currentColor', className }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      <rect
+        x="9"
+        y="9"
+        width="12"
+        height="12"
+        rx="0"
+        stroke={color}
+        strokeWidth="1.8"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M6 15H4.5C3.67 15 3 14.33 3 13.5V4.5C3 3.67 3.67 3 4.5 3H13.5C14.33 3 15 3.67 15 4.5V6"
+        stroke={color}
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export function DotsIcon({ size = 24, color = 'currentColor', className }) {
   return (
     <svg

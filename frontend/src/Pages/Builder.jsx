@@ -49,6 +49,41 @@ const Builder = () => {
 
   useEffect(() => {
     const buildParam = searchParams.get('build');
+    const sharedParam = searchParams.get('shared');
+
+    if (sharedParam) {
+      axios
+        .get('/api/builder', { params: { shared: sharedParam } })
+        .then((res) => {
+          const build = res.data.build;
+          if (!build) {
+            addToast(t('sidePanel.loadBuildError'), { type: 'danger' });
+            return;
+          }
+
+          setRestoredDraft(false);
+          setSelectedComponents({
+            cpu: build.cpu ?? null,
+            motherboard: build.motherboard ?? null,
+            ram: build.ram ?? null,
+            gpu: build.gpu ?? null,
+            psu: build.psu ?? null,
+            ssd: build.ssd ?? null,
+            hdd: build.hdd ?? null,
+            case: build.pc_case ?? null,
+            fan: build.fan ?? null,
+            cooler: build.cooler ?? null,
+          });
+          setBuildId(undefined);
+          setBuildName(build.name ?? '');
+          setBuildNotes(build.notes ?? '');
+          setBuildType(build.type ?? '');
+        })
+        .catch(() => {
+          addToast(t('sidePanel.loadBuildError'), { type: 'danger' });
+        });
+      return;
+    }
 
     if (!buildParam) {
       const draft = loadDraft();

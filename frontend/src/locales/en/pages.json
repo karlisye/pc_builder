@@ -106,6 +106,12 @@
     "buy": "Buy",
     "deleteConfirmTitle": "Are you sure you want to delete this build?",
     "deleteError": "Failed to delete build",
+    "share": "Share",
+    "unshare": "Disable sharing",
+    "copyLink": "Copy link",
+    "shareLinkCopied": "Share link copied to clipboard",
+    "unshared": "Build is no longer shared",
+    "shareError": "Failed to update sharing settings",
     "slotLabels": {
       "cpu": "CPU",
       "motherboard": "Motherboard",
