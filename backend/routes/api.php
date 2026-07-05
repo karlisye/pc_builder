@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BuildController;
 use App\Http\Controllers\BuilderController;
@@ -38,12 +37,4 @@ Route::middleware('auth:sanctum')->group(function () {
 
   Route::patch('/users/{user}', [UserController::class, 'update']);
   Route::delete('/users/{user}', [UserController::class, 'destroy']);
-});
-
-Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
-  Route::post('/scrape', [AdminController::class, 'store']);
-  Route::get('/scrape/history', [AdminController::class, 'fetchHistory']);
-  Route::post('/admin/scrape', [AdminController::class, 'scrape']);
-  Route::post('/admin/populate', [AdminController::class, 'populate']);
-  Route::get('/admin', [AdminController::class, 'index']);
 });

@@ -7,7 +7,6 @@ import enLayout from './locales/en/layout.json';
 import enAuth from './locales/en/auth.json';
 import enBuilder from './locales/en/builder.json';
 import enProfile from './locales/en/profile.json';
-import enAdmin from './locales/en/admin.json';
 import enPages from './locales/en/pages.json';
 
 import lvCommon from './locales/lv/common.json';
@@ -15,7 +14,6 @@ import lvLayout from './locales/lv/layout.json';
 import lvAuth from './locales/lv/auth.json';
 import lvBuilder from './locales/lv/builder.json';
 import lvProfile from './locales/lv/profile.json';
-import lvAdmin from './locales/lv/admin.json';
 import lvPages from './locales/lv/pages.json';
 
 i18n
@@ -29,7 +27,6 @@ i18n
         auth: enAuth,
         builder: enBuilder,
         profile: enProfile,
-        admin: enAdmin,
         pages: enPages,
       },
       lv: {
@@ -38,14 +35,13 @@ i18n
         auth: lvAuth,
         builder: lvBuilder,
         profile: lvProfile,
-        admin: lvAdmin,
         pages: lvPages,
       },
     },
     fallbackLng: 'lv',
     supportedLngs: ['en', 'lv'],
     defaultNS: 'common',
-    ns: ['common', 'layout', 'auth', 'builder', 'profile', 'admin', 'pages'],
+    ns: ['common', 'layout', 'auth', 'builder', 'profile', 'pages'],
     interpolation: {
       escapeValue: false,
     },

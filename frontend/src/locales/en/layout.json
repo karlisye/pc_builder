@@ -3,7 +3,6 @@
     "build": "Build",
     "saved": "Saved",
     "guide": "Guide",
-    "dashboard": "Dashboard",
     "profile": "Profile",
     "signIn": "Sign In",
     "signOut": "Sign Out",
@@ -11,13 +10,5 @@
   },
   "footer": {
     "tagline": "Build and share your PC."
-  },
-  "admin": {
-    "dashboardTitle": "DASHBOARD",
-    "scraper": "Scraper",
-    "history": "History",
-    "test": "Test",
-    "exit": "Exit",
-    "footerTitle": "BUILDER ADMIN DASHBOARD"
   }
 }

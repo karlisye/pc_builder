@@ -3,7 +3,6 @@
     "build": "Veidot",
     "saved": "Saglabātie",
     "guide": "Pamācība",
-    "dashboard": "Panelis",
     "profile": "Profils",
     "signIn": "Pieslēgties",
     "signOut": "Iziet",
@@ -11,13 +10,5 @@
   },
   "footer": {
     "tagline": "Veido un kopīgo savu datoru."
-  },
-  "admin": {
-    "dashboardTitle": "PANELIS",
-    "scraper": "Skrāpis",
-    "history": "Vēsture",
-    "test": "Testi",
-    "exit": "Iziet",
-    "footerTitle": "BUILDER ADMIN PANELIS"
   }
 }

@@ -123,15 +123,6 @@ const Layout = () => {
 
               <div className="ml-auto relative flex items-center">
                 <div className="flex">
-                  {user?.role === 'admin' && (
-                    <Link
-                      className="hover:bg-surface text-text py-3 px-4 transition flex items-center"
-                      to="/admin"
-                    >
-                      {t('nav.dashboard')}
-                    </Link>
-                  )}
-
                   <button
                     ref={buttonRef}
                     className={`py-4 px-6 transition flex items-center gap-2 font-medium ${

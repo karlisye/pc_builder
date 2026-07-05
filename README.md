@@ -1,6 +1,6 @@
 # PC Builder
 
-PC Builder is a full-stack web app for creating and saving compatible custom PC builds. It combines a Laravel JSON API backend, a standalone React frontend, and a Python scraper that imports live component data from Dateks into MySQL.
+PC Builder is a full-stack web app for creating and saving compatible custom PC builds. It combines a Laravel JSON API backend and a standalone React frontend.
 
 ## Features
 
@@ -8,9 +8,7 @@ PC Builder is a full-stack web app for creating and saving compatible custom PC 
 - Manual component selection with compatibility-aware filtering, available to guests.
 - Compatibility validation for CPU sockets, motherboard RAM type, GPU/case clearance, cooler/case clearance, cooler sockets, cooler TDP, motherboard/case form factor, and PSU wattage.
 - Saved builds with notes, names, total price, and component relationships.
-- User registration, login, and account settings.
-- Admin dashboard for running scraper jobs, viewing scrape history, and generating sample builds.
-- Python scraper for CPUs, motherboards, RAM, GPUs, SSDs, HDDs, cases, fans, PSUs, and coolers.
+- User registration, login, email verification, and account settings.
 - English and Latvian localization (i18next).
 
 ## Screenshots
@@ -30,7 +28,7 @@ _Automatic Builder Section_
 ![Saved](screenshots/saved.png)
 _Saved Page_
 
-![Admin](screenshots/avail.png)
+![Availability](screenshots/avail.png)
 _Component Availability_
 
 ## Tech Stack
@@ -50,15 +48,6 @@ _Component Availability_
 - Vite 7
 - Tailwind CSS 4
 - Axios
-
-### Scraper
-
-- Python 3
-- Flask
-- Requests
-- BeautifulSoup
-- mysql-connector-python
-- python-dotenv
 
 ## Repository Structure
 
@@ -88,13 +77,6 @@ _Component Availability_
 │   ├── Dockerfile
 │   ├── index.html
 │   └── package.json
-└── scraper/
-    ├── main.py
-    ├── server.py
-    ├── config.py
-    ├── database.py
-    ├── parsers/
-    └── scrapers/
 ```
 
 ## Running With Docker
@@ -142,8 +124,6 @@ docker compose exec backend php artisan migrate
 | App        | http://localhost      |
 | phpMyAdmin | http://localhost:8080 |
 
-To create an admin account, register normally then update your user's role to `admin` via phpMyAdmin or the MySQL CLI.
-
 ## Running Without Docker
 
 ### Backend
@@ -169,45 +149,6 @@ The Vite dev server proxies `/api` and `/sanctum` to `http://localhost:8000`, so
 
 The app is available at `http://localhost:5173`.
 
-## Scraper Usage
-
-The scraper can be run from the Admin Dashboard in the app (when Docker is running), or directly from the command line.
-
-### Through the Admin Dashboard
-
-Once you have an account with role `admin`, head to the Scraper page and select which categories to scrape.
-
-### From the Command Line
-
-MySQL must be reachable on `127.0.0.1:3306`. If using Docker Compose, the port is exposed by default.
-
-```bash
-cd scraper
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-Run all categories:
-
-```bash
-DB_HOST=127.0.0.1 python3 main.py all
-```
-
-Run specific categories:
-
-```bash
-DB_HOST=127.0.0.1 python3 main.py cpu,gpu,ram
-```
-
-Supported categories:
-
-```text
-cpu, motherboard, ram, gpu, ssd, hdd, case, fan, psu, cooler
-```
-
-Each category maps to one or more Dateks listing URLs, a parser module, and a database table in `scraper/config.py`.
-
 ## Main Application Areas
 
 ### Builder
@@ -223,10 +164,6 @@ The builder lets users generate a complete build or fill individual component sl
 ### Saved Builds
 
 Users can save generated or manually assembled builds. A build stores a name, notes, type, total price, and references to selected component records.
-
-### Admin Scraper
-
-Admin users can start scraper runs from the app. The Laravel backend streams logs from the Python scraper service, then stores scrape session metadata and category-level results. Admins can also generate a batch of sample builds for the current user via the Populate feature.
 
 ## API Routes
 
@@ -264,14 +201,6 @@ Admin users can start scraper runs from the app. The Laravel backend streams log
 - `PATCH /api/users/{user}` - update user
 - `DELETE /api/users/{user}` - delete user
 
-### Admin
-
-- `GET /api/admin` - dashboard stats
-- `POST /api/scrape` - queue a scrape job
-- `GET /api/scrape/history` - paginated scrape history
-- `POST /api/admin/scrape` - run scraper and stream logs
-- `POST /api/admin/populate` - generate sample builds for the current user
-
 ## Compatibility Rules (In Progress)
 
 Compatibility checks are handled in Laravel. Current checks include:
@@ -289,20 +218,15 @@ Compatibility checks are handled in Laravel. Current checks include:
 
 Tests live in `backend/tests/Feature/BuilderApiTest.php` and cover build generation response structure, budget tiers, build-type rules, CPU/GPU preferences, compatibility expectations, and warnings.
 
-Tests require a database with scraped component data. Run with:
+Tests require a database with component data. Run with:
 
 ```bash
 cd backend
 ./vendor/bin/pest
 ```
 
-Alternatively, use the Populate feature in the Admin Dashboard to generate sample builds across different budgets and preferences for the logged-in user.
-
 ## Development Notes
 
-- The scraper extracts only fields needed for display or compatibility matching.
 - Component prices, stock status, and stock quantity come from Dateks listing pages.
 - Detailed specs come from Dateks product pages.
-- Admin scraper logs are streamed from the Python Flask service through Laravel to the browser.
-- The project uses admin role middleware for scraper and dashboard pages.
 - The frontend is localized in English and Latvian via i18next, with translation files under `frontend/src/locales/`.

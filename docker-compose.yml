@@ -39,6 +39,7 @@ services:
     env_file:
       - ./backend/.env
     command: php artisan queue:work --tries=3
+    restart: unless-stopped
     volumes:
       - ./backend/app:/var/www/app
       - ./backend/lang:/var/www/lang
@@ -70,19 +71,6 @@ services:
       retries: 5
       interval: 5s
       timeout: 5s
-    networks:
-      - app
-
-  scraper:
-    build:
-      context: ./scraper
-      dockerfile: Dockerfile
-    volumes:
-      - ./backend/.env:/app/.env
-    command: python3 server.py
-    depends_on:
-      mysql:
-        condition: service_healthy
     networks:
       - app
 
