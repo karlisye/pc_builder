@@ -11,6 +11,11 @@ use Illuminate\Http\Request;
 
 class BuilderController extends Controller
 {
+  // mirrors the frontend's BudgetSlider default minimum for full-build generation
+  // (frontend/src/Pages/Components/Builder/BudgetSlider.jsx) — anything below this
+  // is never reachable through the UI, so reject it before running the generator
+  private const MIN_BUILD_BUDGET = 350;
+
   public function __construct(
     private readonly BuilderService $builder,
     private readonly CompatibilityService $compatibility,
@@ -90,7 +95,7 @@ class BuilderController extends Controller
     $validated = $request->validate([
       'selected' => ['sometimes', 'array'],
       'selected.*' => ['string', 'min:1'],
-      'budget' => ['sometimes', 'nullable', 'numeric', 'min:1'],
+      'budget' => ['sometimes', 'nullable', 'numeric', 'min:' . self::MIN_BUILD_BUDGET],
       'preferences' => ['sometimes', 'array'],
     ]);
 

@@ -100,7 +100,7 @@ it('selected components exceeding budget returns error', function () {
     test()->markTestSkipped('No CPU over €400 found in DB');
   }
 
-  generate(basePayload(300, ['type' => 'office'], ['cpu' => $cpu->product_code]))
+  generate(basePayload(350, ['type' => 'office'], ['cpu' => $cpu->product_code]))
     ->assertStatus(400)
     ->assertJsonPath('success', false);
 });
@@ -272,6 +272,27 @@ it('zero budget returns 422', function () {
     'selected'    => [],
   ])
     ->assertStatus(422);
+});
+
+it('budget below the frontend minimum (350) returns 422', function () {
+  generate(basePayload(349, ['type' => 'gaming']))
+    ->assertStatus(422)
+    ->assertJsonValidationErrors('budget');
+});
+
+it('budget exactly at the minimum (350) is accepted', function () {
+  generate(basePayload(350, ['type' => 'gaming']))
+    ->assertStatus(200);
+});
+
+it('null budget (unlimited) is not affected by the minimum', function () {
+  generate([
+    'budget'      => null,
+    'preferences' => ['type' => 'gaming'],
+    'selected'    => [],
+  ])
+    ->assertStatus(200)
+    ->assertJsonPath('success', true);
 });
 
 it('invalid selected component id returns 400', function () {
