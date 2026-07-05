@@ -2,21 +2,25 @@
 
 namespace App\Models;
 
+use App\Notifications\VerifyEmailNotification;
+use Illuminate\Auth\MustVerifyEmail as MustVerifyEmailTrait;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
-  use HasFactory, Notifiable;
+  use HasFactory, Notifiable, MustVerifyEmailTrait;
 
   protected $fillable = [
     'name',
     'email',
     'password',
     'description',
-    'role'
+    'role',
+    'email_verified_at',
   ];
 
   protected $hidden = [
@@ -28,6 +32,7 @@ class User extends Authenticatable
   {
     return [
       'password' => 'hashed',
+      'email_verified_at' => 'datetime',
     ];
   }
 
@@ -39,5 +44,10 @@ class User extends Authenticatable
   public function hasRole(string $role): bool
   {
     return $this->role === $role;
+  }
+
+  public function sendEmailVerificationNotification(): void
+  {
+    $this->notify(new VerifyEmailNotification());
   }
 }

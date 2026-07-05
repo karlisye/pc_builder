@@ -3,30 +3,27 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import Seo from "./Components/Common/Seo";
 
-const NotFound = () => {
-  const { t } = useTranslation("pages");
+const EmailVerified = () => {
+  const { t } = useTranslation("common");
   return (
     <div className="bg-primary h-full flex justify-center">
-      <Seo title={t("seo.notFound.title")} noindex />
+      <Seo title={t("verifyEmail.verifiedTitle")} noindex />
       <div className="text-center px-6 flex flex-col gap-4">
-        <p className="text-9xl font-bold text-muted opacity-30 select-none mt-4">
-          404
-        </p>
-        <h1 className="text-2xl font-semibold text-white mt-2">
-          {t("notFound.heading")}
+        <h1 className="text-2xl font-semibold text-white mt-4">
+          {t("verifyEmail.verifiedTitle")}
         </h1>
         <p className="text-muted mt-2 text-sm">
-          {t("notFound.description")}
+          {t("verifyEmail.verifiedText")}
         </p>
         <Link
           to="/"
           className="px-8 py-4 text-sm font-medium bg-secondary-light text-text hover:bg-secondary-light/50 transition"
         >
-          {t("notFound.goHome")}
+          {t("verifyEmail.backHome")}
         </Link>
       </div>
     </div>
   );
 };
 
-export default NotFound;
+export default EmailVerified;

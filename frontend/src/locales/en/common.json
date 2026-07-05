@@ -12,6 +12,16 @@
   "next": "Next",
   "previous": "Previous",
   "page": "Page {{current}} of {{total}}",
+  "verifyEmail": {
+    "banner": "Verify your email to unlock build generation and saving.",
+    "resend": "Resend email",
+    "resendSuccess": "Verification email sent.",
+    "resendError": "Could not resend verification email.",
+    "gatedAction": "Please verify your email before doing this.",
+    "verifiedTitle": "Email verified",
+    "verifiedText": "Your email address has been verified.",
+    "backHome": "Back to home"
+  },
   "components": {
     "cpu": "CPU",
     "motherboard": "Motherboard",

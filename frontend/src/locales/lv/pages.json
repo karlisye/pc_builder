@@ -1,4 +1,32 @@
 {
+  "seo": {
+    "home": {
+      "title": "PC Builder — Izveido Savu Datoru Tiešsaistē | Latvija",
+      "description": "Izveido un salīdzini datorus, izmantojot reālas Latvijas tirgus komponentes ar aktuālām cenām un automātisku saderības pārbaudi."
+    },
+    "builder": {
+      "title": "PC Builder — Izveido Savu Datoru",
+      "description": "Izvēlies komponentes vai automātiski izveido konfigurāciju sava budžeta ietvaros ar reāllaika saderības pārbaudi un aktuālām Latvijas veikalu cenām."
+    },
+    "guide": {
+      "title": "Pamācība — PC Builder",
+      "description": "Uzzini, kā izveidot datoru, izmantot automātisko konstruktoru un pārvaldīt saglabātās konfigurācijas."
+    },
+    "login": {
+      "title": "Pieslēgties — PC Builder",
+      "description": "Pieslēdzies savam PC Builder kontam, lai saglabātu un pārvaldītu savas konfigurācijas."
+    },
+    "register": {
+      "title": "Reģistrēties — PC Builder",
+      "description": "Izveido bezmaksas PC Builder kontu, lai saglabātu konfigurācijas un izmantotu automātisko konstruktoru."
+    },
+    "savedBuilds": {
+      "title": "Saglabātās Konfigurācijas — PC Builder"
+    },
+    "notFound": {
+      "title": "Lapa Nav Atrasta — PC Builder"
+    }
+  },
   "home": {
     "build": {
       "title": "IZVEIDO SAVU DATORU",

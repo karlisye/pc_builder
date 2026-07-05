@@ -28,8 +28,35 @@ class AuthController extends Controller
 
     Auth::login($user);
     $request->session()->regenerate();
+    $user->sendEmailVerificationNotification();
 
     return response()->json($user, 201);
+  }
+
+  public function verify(Request $request)
+  {
+    $user = User::findOrFail($request->route('id'));
+
+    if (! hash_equals(sha1($user->getEmailForVerification()), (string) $request->route('hash'))) {
+      abort(403);
+    }
+
+    if (! $user->hasVerifiedEmail()) {
+      $user->markEmailAsVerified();
+    }
+
+    return redirect(config('app.frontend_url') . '/email-verified');
+  }
+
+  public function resendVerification(Request $request)
+  {
+    if ($request->user()->hasVerifiedEmail()) {
+      return response()->json(['message' => __('messages.already_verified')], 400);
+    }
+
+    $request->user()->sendEmailVerificationNotification();
+
+    return response()->json(['message' => __('messages.verification_sent')]);
   }
 
   public function login(Request $request)

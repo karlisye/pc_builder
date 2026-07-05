@@ -17,6 +17,7 @@ import BuildIssuesPopup from './Components/Common/BuildIssuesPopup';
 import { formatDate } from '../lib/formatDate';
 import { formatPrice } from '../lib/componentPrice';
 import { useToast } from '../Contexts/ToastContext';
+import Seo from './Components/Common/Seo';
 
 const SLOT_KEYS = [
   'cpu',
@@ -196,6 +197,7 @@ const SavedBuilds = () => {
 
   return (
     <>
+      <Seo title={t('seo.savedBuilds.title')} noindex />
       <div className="h-full flex">
         <SidePanel title={t('savedBuilds.sidePanelTitle')}>
           <div className="max-h-100">

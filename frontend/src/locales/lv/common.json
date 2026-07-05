@@ -12,6 +12,16 @@
   "next": "Tālāk",
   "previous": "Atpakaļ",
   "page": "{{current}}. lapa no {{total}}",
+  "verifyEmail": {
+    "banner": "Apstipriniet savu e-pastu, lai atbloķētu konfigurācijas ģenerēšanu un saglabāšanu.",
+    "resend": "Nosūtīt vēlreiz",
+    "resendSuccess": "Apstiprināšanas e-pasts nosūtīts.",
+    "resendError": "Neizdevās nosūtīt apstiprināšanas e-pastu.",
+    "gatedAction": "Lūdzu, apstipriniet savu e-pastu, pirms darbības.",
+    "verifiedTitle": "E-pasts apstiprināts",
+    "verifiedText": "Jūsu e-pasta adrese ir apstiprināta.",
+    "backHome": "Atpakaļ uz sākumu"
+  },
   "components": {
     "cpu": "Procesors",
     "motherboard": "Sistēmplate",

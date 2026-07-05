@@ -10,8 +10,8 @@ import { useAuth } from "../../../Contexts/AuthContext";
 import { useToast } from "../../../Contexts/ToastContext";
 
 const BuildGenerator = () => {
-  const { t } = useTranslation("builder");
-  const { user } = useAuth();
+  const { t } = useTranslation(["builder", "common"]);
+  const { user, showVerifyBanner } = useAuth();
   const { addToast } = useToast();
   const {
     selectedComponents,
@@ -97,10 +97,15 @@ const BuildGenerator = () => {
         addToast(res.data.error, { type: "danger" });
       }
     } catch (err) {
-      addToast(
-        err.response?.data?.error ?? t("buildGenerator.somethingWentWrong"),
-        { type: "danger" },
-      );
+      if (err.response?.status === 403) {
+        showVerifyBanner();
+        addToast(t("common:verifyEmail.gatedAction"), { type: "danger" });
+      } else {
+        addToast(
+          err.response?.data?.error ?? t("buildGenerator.somethingWentWrong"),
+          { type: "danger" },
+        );
+      }
     } finally {
       setLoading(false);
     }

@@ -8,6 +8,7 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(undefined);
+  const [verifyBannerVisible, setVerifyBannerVisible] = useState(true);
 
   useEffect(() => {
     axios
@@ -40,8 +41,24 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const resendVerification = () => {
+    return axios.post("/api/email/verification-notification");
+  };
+
   return (
-    <AuthContext.Provider value={{ user, setUser, login, register, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        setUser,
+        login,
+        register,
+        logout,
+        resendVerification,
+        verifyBannerVisible,
+        dismissVerifyBanner: () => setVerifyBannerVisible(false),
+        showVerifyBanner: () => setVerifyBannerVisible(true),
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

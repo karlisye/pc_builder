@@ -5,4 +5,6 @@ return [
     'current_password_incorrect' => 'Pašreizējā parole nav pareiza.',
     'build_deleted' => 'Konfigurācija veiksmīgi izdzēsta.',
     'not_found' => 'Nav atrasts.',
+    'already_verified' => 'Jūsu e-pasta adrese jau ir apstiprināta.',
+    'verification_sent' => 'Apstiprināšanas saite nosūtīta.',
 ];

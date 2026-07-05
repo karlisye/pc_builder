@@ -18,4 +18,4 @@ docker exec "$CONTAINER" sh -c '
   touch /var/www/.env
 '
 
-docker exec -w /var/www "$CONTAINER" ./vendor/bin/pest "$@"
+docker exec -w /var/www -e APP_ENV=testing "$CONTAINER" ./vendor/bin/pest "$@"
