@@ -114,6 +114,30 @@ class BuildController extends Controller
     return response()->json($build->loadComponents());
   }
 
+  public function share(Request $request, Build $build): JsonResponse
+  {
+    if ($request->user() && $build->user_id !== $request->user()->id) {
+      return response()->json(['error' => __('messages.not_found')], 404);
+    }
+
+    $validated = $request->validate([
+      'enabled' => ['sometimes', 'boolean'],
+    ]);
+
+    $enabled = $validated['enabled'] ?? true;
+
+    if ($enabled) {
+      $build->enableSharing();
+    } else {
+      $build->disableSharing();
+    }
+
+    return response()->json([
+      'is_public' => $build->is_public,
+      'share_token' => $build->share_token,
+    ]);
+  }
+
   public function destroy(Request $request, Build $build): JsonResponse
   {
     if ($request->user() && $build->user_id !== $request->user()->id) {

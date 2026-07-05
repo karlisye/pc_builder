@@ -4,7 +4,14 @@ import axios from 'axios';
 import { Link, useSearchParams } from 'react-router-dom';
 import ComponentDetail from './Components/Common/ComponentDetail';
 import Modal from './Components/Common/Modal';
-import { ArrowIcon, CloseIcon, DotsIcon, InfoIcon, TrashIcon } from './Components/Common/Icons';
+import {
+  ArrowIcon,
+  CloseIcon,
+  CopyIcon,
+  DotsIcon,
+  InfoIcon,
+  TrashIcon,
+} from './Components/Common/Icons';
 import SidePanel from './Components/Common/SidePanel';
 import BuildIssuesPopup from './Components/Common/BuildIssuesPopup';
 import { formatDate } from '../lib/formatDate';
@@ -155,6 +162,36 @@ const SavedBuilds = () => {
     }
   };
 
+  const copyShareLink = async (token) => {
+    const url = `${window.location.origin}/builder?shared=${token}`;
+    await navigator.clipboard.writeText(url);
+    addToast(t('savedBuilds.shareLinkCopied'), { type: 'success' });
+  };
+
+  const handleShare = async () => {
+    setMenuOpen(false);
+    try {
+      const res = await axios.post(`/api/builds/${selectedBuild.id}/share`, { enabled: true });
+      setSelectedBuild((prev) => ({ ...prev, ...res.data }));
+      refreshBuilds();
+      await copyShareLink(res.data.share_token);
+    } catch (err) {
+      addToast(err.response?.data?.error ?? t('savedBuilds.shareError'), { type: 'danger' });
+    }
+  };
+
+  const handleUnshare = async () => {
+    setMenuOpen(false);
+    try {
+      const res = await axios.post(`/api/builds/${selectedBuild.id}/share`, { enabled: false });
+      setSelectedBuild((prev) => ({ ...prev, ...res.data }));
+      refreshBuilds();
+      addToast(t('savedBuilds.unshared'), { type: 'success' });
+    } catch (err) {
+      addToast(err.response?.data?.error ?? t('savedBuilds.shareError'), { type: 'danger' });
+    }
+  };
+
   const expandedComponent = expandedSlot ? selectedBuild?.[expandedSlot] : null;
 
   return (
@@ -238,84 +275,127 @@ const SavedBuilds = () => {
                   </div>
                 </div>
               ) : (
-                <div className="flex flex-col sm:flex-row sm:flex-wrap sm:justify-between gap-2">
-                  <div>
-                    <div className="flex gap-4 items-center">
-                      <h2 className="text-text font-semibold text-3xl uppercase">
-                        {selectedBuild.name}
-                      </h2>
-                      {selectedBuild.type && (
-                        <span className="py-0.5 px-3 text-text border border-border bg-secondary-light">
-                          {t(`builder:buildInfo.${selectedBuild.type}`, {
-                            defaultValue: selectedBuild.type,
-                          })}
-                        </span>
-                      )}
-                      {Object.keys(buildIssues).length > 0 && (
+                <div className="flex flex-col gap-2">
+                  <div className="flex justify-between items-start gap-2">
+                    <div>
+                      <div className="flex gap-4 items-center">
+                        <h2 className="text-text font-semibold text-3xl uppercase">
+                          {selectedBuild.name}
+                        </h2>
+                        {selectedBuild.type && (
+                          <span className="py-0.5 px-3 text-text border border-border bg-secondary-light">
+                            {t(`builder:buildInfo.${selectedBuild.type}`, {
+                              defaultValue: selectedBuild.type,
+                            })}
+                          </span>
+                        )}
+                        {Object.keys(buildIssues).length > 0 && (
+                          <div
+                            className="text-danger/80 hover:text-danger/60 transition flex gap-2"
+                            onMouseEnter={handleIssuesPopup}
+                            onMouseLeave={() => setIssuesPopup(null)}
+                          >
+                            <InfoIcon />
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-muted text-sm">{formatDate(selectedBuild.created_at)}</p>
+                    </div>
+
+                    <div className="relative shrink-0">
+                      <button
+                        ref={menuButtonRef}
+                        onClick={() => setMenuOpen((prev) => !prev)}
+                        className={`p-2 transition cursor-pointer ${menuOpen ? 'text-text' : 'text-muted hover:text-text'}`}
+                      >
+                        <DotsIcon size={20} />
+                      </button>
+
+                      {menuOpen && (
                         <div
-                          className="text-danger/80 hover:text-danger/60 transition flex gap-2"
-                          onMouseEnter={handleIssuesPopup}
-                          onMouseLeave={() => setIssuesPopup(null)}
+                          ref={menuRef}
+                          className="absolute right-0 top-10 w-72 bg-background border border-border shadow z-10"
                         >
-                          <InfoIcon />
+                          <button
+                            onClick={() => {
+                              setEditing(true);
+                              setMenuOpen(false);
+                            }}
+                            className="w-full px-4 py-2 text-left text-text hover:bg-secondary-light transition cursor-pointer"
+                          >
+                            {t('savedBuilds.edit')}
+                          </button>
+                          <button
+                            onClick={() => {
+                              setDeleting(selectedBuild.id);
+                              setMenuOpen(false);
+                            }}
+                            className="w-full px-4 py-2 text-left text-danger hover:bg-danger/20 transition cursor-pointer"
+                          >
+                            {t('savedBuilds.delete')}
+                          </button>
                         </div>
                       )}
                     </div>
-                    <p className="text-muted text-sm">{formatDate(selectedBuild.created_at)}</p>
                   </div>
 
-                  <div className="relative sm:ml-auto">
-                    <button
-                      ref={menuButtonRef}
-                      onClick={() => setMenuOpen((prev) => !prev)}
-                      className={`p-2 transition cursor-pointer ${menuOpen ? 'text-text' : 'text-muted hover:text-text'}`}
-                    >
-                      <DotsIcon size={20} />
-                    </button>
-
-                    {menuOpen && (
-                      <div
-                        ref={menuRef}
-                        className="absolute right-0 top-10 w-72 bg-background border border-border shadow z-10"
-                      >
-                        <button
-                          onClick={() => {
-                            setEditing(true);
-                            setMenuOpen(false);
-                          }}
-                          className="w-full px-4 py-2 text-left text-text hover:bg-secondary-light transition cursor-pointer"
-                        >
-                          {t('savedBuilds.edit')}
-                        </button>
-                        <button
-                          onClick={() => {
-                            setDeleting(selectedBuild.id);
-                            setMenuOpen(false);
-                          }}
-                          className="w-full px-4 py-2 text-left text-danger hover:bg-danger/20 transition cursor-pointer"
-                        >
-                          {t('savedBuilds.delete')}
-                        </button>
-                      </div>
-                    )}
-                  </div>
-
-                  {selectedBuild.notes && (
-                    <p className="text-muted mt-1 sm:w-full">{selectedBuild.notes}</p>
-                  )}
+                  {selectedBuild.notes && <p className="text-muted mt-1">{selectedBuild.notes}</p>}
                 </div>
               )}
 
-              <div className="flex justify-between items-center">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-3">
                 <p className="text-text font-semibold text-2xl">
                   €{formatPrice(selectedBuild.total_price)}
                 </p>
-                <Link
-                  className="py-4 px-8 bg-primary text-white cursor-pointer hover:bg-primary-light transition"
-                  to={`/builder?build=${selectedBuild.id}`}
-                >
-                  {t('savedBuilds.continueBuild')}
-                </Link>
+
+                <div className="flex flex-col-reverse xl:flex-row items-stretch gap-2">
+                  <div className="relative xl:w-64 my-auto">
+                    <div className="flex border border-border">
+                      <input
+                        type="text"
+                        readOnly
+                        disabled={!selectedBuild.is_public}
+                        value={
+                          selectedBuild.share_token
+                            ? `${window.location.origin}/builder?shared=${selectedBuild.share_token}`
+                            : ''
+                        }
+                        className="flex-1 min-w-0 bg-surface text-text px-3 truncate outline-none py-1 disabled:text-muted disabled:cursor-not-allowed"
+                      />
+                      {selectedBuild.is_public ? (
+                        <button
+                          onClick={() => copyShareLink(selectedBuild.share_token)}
+                          className="px-3 text-background hover:text-white bg-primary hover:bg-primary-light transition cursor-pointer"
+                        >
+                          <CopyIcon size={18} />
+                        </button>
+                      ) : (
+                        <button
+                          onClick={handleShare}
+                          className="px-4 text-background hover:text-white bg-primary hover:bg-primary-light transition cursor-pointer"
+                        >
+                          {t('savedBuilds.share')}
+                        </button>
+                      )}
+                    </div>
+
+                    {selectedBuild.is_public && (
+                      <button
+                        onClick={handleUnshare}
+                        className="absolute -bottom-5 left-0 text-muted hover:text-danger text-sm transition cursor-pointer"
+                      >
+                        {t('savedBuilds.unshare')}
+                      </button>
+                    )}
+                  </div>
+
+                  <Link
+                    className="py-4 px-8 bg-primary text-white text-center cursor-pointer hover:bg-primary-light transition"
+                    to={`/builder?build=${selectedBuild.id}`}
+                  >
+                    {t('savedBuilds.continueBuild')}
+                  </Link>
+                </div>
               </div>
 
               <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-4">

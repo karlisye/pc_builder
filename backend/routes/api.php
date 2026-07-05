@@ -20,15 +20,15 @@ Route::post('/builder/validate', [BuilderController::class, 'validate']);
 Route::get('/builder', [BuilderController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
-  Route::get('/builds', [BuildController::class, 'index']);
-
   Route::post('/builder', [BuilderController::class, 'generate']);
   Route::post('/builder/{type}', [BuilderController::class, 'generateComp']);
 
+  Route::get('/builds', [BuildController::class, 'index']);
   Route::post('/builds', [BuildController::class, 'store']);
   Route::get('/builds/{build}', [BuildController::class, 'show']);
   Route::patch('/builds/{build}', [BuildController::class, 'update']);
   Route::delete('/builds/{build}', [BuildController::class, 'destroy']);
+  Route::post('/builds/{build}/share', [BuildController::class, 'share']);
 
   Route::patch('/users/{user}', [UserController::class, 'update']);
   Route::delete('/users/{user}', [UserController::class, 'destroy']);

@@ -24,23 +24,31 @@ class BuilderController extends Controller
   public function index(Request $request): JsonResponse
   {
     $build = null;
+    $withListings = fn($q) => $q->with(['listings' => fn($q2) => $q2->orderBy('price')]);
+    $eagerLoads = [
+      'cpu' => $withListings,
+      'motherboard' => $withListings,
+      'ram' => $withListings,
+      'gpu' => $withListings,
+      'ssd' => $withListings,
+      'hdd' => $withListings,
+      'pcCase' => $withListings,
+      'cooler' => $withListings,
+      'psu' => $withListings,
+      'fan' => $withListings,
+    ];
+
+    if ($request->has('shared')) {
+      $build = Build::where('share_token', $request->query('shared'))
+        ->where('is_public', true)
+        ->with($eagerLoads)
+        ->first();
+
+      return response()->json(['build' => $build]);
+    }
 
     if ($request->has('build')) {
-      $withListings = fn($q) => $q->with(['listings' => fn($q2) => $q2->orderBy('price')]);
-
-      $query = Build::where('id', $request->query('build'))
-        ->with([
-          'cpu' => $withListings,
-          'motherboard' => $withListings,
-          'ram' => $withListings,
-          'gpu' => $withListings,
-          'ssd' => $withListings,
-          'hdd' => $withListings,
-          'pcCase' => $withListings,
-          'cooler' => $withListings,
-          'psu' => $withListings,
-          'fan' => $withListings,
-        ]);
+      $query = Build::where('id', $request->query('build'))->with($eagerLoads);
 
       if ($request->user()) {
         $query->where('user_id', $request->user()->id);

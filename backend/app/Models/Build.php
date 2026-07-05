@@ -27,6 +27,7 @@ class Build extends Model
 
   protected $casts = [
     'total_price' => 'decimal:2',
+    'is_public' => 'boolean',
   ];
 
   // to show "components" in json
@@ -35,6 +36,26 @@ class Build extends Model
   public function user(): BelongsTo
   {
     return $this->belongsTo(User::class);
+  }
+
+  public function enableSharing(): self
+  {
+    if (empty($this->share_token)) {
+      $this->share_token = (string) \Illuminate\Support\Str::uuid();
+    }
+
+    $this->is_public = true;
+    $this->save();
+
+    return $this;
+  }
+
+  public function disableSharing(): self
+  {
+    $this->is_public = false;
+    $this->save();
+
+    return $this;
   }
 
   public function cpu(): BelongsTo

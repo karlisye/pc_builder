@@ -106,6 +106,12 @@
     "buy": "Pirkt",
     "deleteConfirmTitle": "Vai tiešām vēlies dzēst šo konfigurāciju?",
     "deleteError": "Neizdevās izdzēst konfigurāciju",
+    "share": "Kopīgot",
+    "unshare": "Pārtraukt kopīgošanu",
+    "copyLink": "Kopēt saiti",
+    "shareLinkCopied": "Saite nokopēta",
+    "unshared": "Konfigurācijas kopīgošana pārtraukta",
+    "shareError": "Neizdevās atjaunināt kopīgošanas iestatījumus",
     "slotLabels": {
       "cpu": "Procesors",
       "motherboard": "Mātesplate",
