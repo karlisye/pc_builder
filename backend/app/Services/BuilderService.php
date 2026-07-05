@@ -165,8 +165,15 @@ class BuilderService
 
         $remainingSlots = $this->reEvaluateSkips($remainingSlots, $build);
 
-        // if picked cpu has no bundled cooler and cooler isn't already queued or filled
-        if ($slot === 'cpu' && !$picked->cooler_included && !in_array('cooler', $remainingSlots) && !isset($filled['cooler'])) {
+        // if picked cpu has no bundled cooler and cooler isn't already queued, filled, or
+        // pre-selected by the user
+        if (
+          $slot === 'cpu'
+          && !$picked->cooler_included
+          && !in_array('cooler', $remainingSlots)
+          && !isset($filled['cooler'])
+          && !isset($selected['cooler'])
+        ) {
           $remainingSlots[] = 'cooler';
         }
 

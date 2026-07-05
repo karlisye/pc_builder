@@ -171,6 +171,17 @@ it('build always has ssd', function () {
   }
 });
 
+it('keeps a pre-selected cooler instead of replacing it when a cpu is auto-picked', function () {
+  $cooler = \App\Models\Cooler::whereHas('listings')->first();
+  if (!$cooler) test()->markTestSkipped('No cooler with listings in DB');
+
+  $res = generate(basePayload(1000, ['type' => 'gaming'], ['cooler' => $cooler->product_code]))
+    ->assertStatus(200)
+    ->assertJsonPath('success', true);
+
+  expect($res->json('build.cooler.product_code'))->toBe($cooler->product_code);
+});
+
 it('cpu and motherboard have matching sockets', function () {
   $res = generate(basePayload(1000, ['type' => 'gaming']))
     ->assertStatus(200)
