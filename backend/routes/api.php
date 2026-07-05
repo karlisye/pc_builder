@@ -8,8 +8,8 @@ use App\Http\Controllers\ComponentController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/register', [AuthController::class, 'register'])->middleware('guest');
-Route::post('/login', [AuthController::class, 'login'])->middleware('guest');
+Route::post('/register', [AuthController::class, 'register'])->middleware(['guest', 'throttle:auth']);
+Route::post('/login', [AuthController::class, 'login'])->middleware(['guest', 'throttle:auth']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 Route::get('/user', [AuthController::class, 'user'])->middleware('auth:sanctum');
 
