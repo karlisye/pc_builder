@@ -114,6 +114,7 @@ const ComponentFilters = () => {
       <div className="grid grid-cols-2 gap-2">
         {availableFilters.price_min != null && availableFilters.price_max != null && (
           <RangeSlider
+            fullWidth
             label={t("componentFilters.price")}
             min={availableFilters.price_min}
             max={availableFilters.price_max}
