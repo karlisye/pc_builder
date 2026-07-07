@@ -60,9 +60,9 @@ const RangeSlider = ({ label, values, min: minProp, max: maxProp, step = 1, minV
 
   return (
     <div className={`space-y-2 ${fullWidth ? 'col-span-2' : ''}`}>
-      <div className="flex justify-between items-center">
-        <span className="text-sm text-secondary-light">{label}</span>
-        <span className={`text-sm tabular-nums ${atBounds ? 'text-secondary-light' : 'text-white'}`}>
+      <div className="flex justify-between items-center gap-2">
+        <span className="text-sm text-secondary-light truncate min-w-0" title={label}>{label}</span>
+        <span className={`text-sm tabular-nums whitespace-nowrap shrink-0 ${atBounds ? 'text-secondary-light' : 'text-white'}`}>
           {displayMin === displayMax ? fmt(displayMin) : `${fmt(displayMin)} – ${fmt(displayMax)}`}
         </span>
       </div>

@@ -119,7 +119,7 @@
       "capacity": "Capacity (GB)",
       "frequency": "Frequency (MHz)",
       "vram": "VRAM (GB)",
-      "min_psu": "Max PSU Req (W)",
+      "min_psu": "Min PSU Req (W)",
       "tdp_support": "Min TDP Support (W)",
       "wattage": "Min Wattage (W)",
       "efficiency_rating": "Efficiency Rating",
