@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 // Accepts either:
 //   values={[...]}           — snaps to distinct available values (discrete)
 //   min={n} max={n} step={n} — generates evenly spaced steps (continuous)
-const RangeSlider = ({ label, values, min: minProp, max: maxProp, step = 1, minValue, maxValue, onChange, format, fullWidth = false }) => {
+const RangeSlider = ({ label, values, min: minProp, max: maxProp, step = 1, minValue, maxValue, onChange, format, fullWidth = false, className = '' }) => {
   const sorted = useMemo(() => {
     if (values?.length) return [...values].sort((a, b) => a - b);
     const arr = [];
@@ -59,7 +59,7 @@ const RangeSlider = ({ label, values, min: minProp, max: maxProp, step = 1, minV
   const displayMax = sorted[maxIdx];
 
   return (
-    <div className={`space-y-2 ${fullWidth ? 'col-span-2' : ''}`}>
+    <div className={`space-y-2 ${fullWidth ? 'col-span-2' : ''} ${className}`}>
       <div className="flex justify-between items-center gap-2">
         <span className="text-sm text-secondary-light truncate min-w-0" title={label}>{label}</span>
         <span className={`text-sm tabular-nums whitespace-nowrap shrink-0 ${atBounds ? 'text-secondary-light' : 'text-white'}`}>
