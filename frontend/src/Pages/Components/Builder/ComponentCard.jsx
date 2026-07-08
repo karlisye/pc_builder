@@ -9,9 +9,6 @@ const ComponentCard = ({ component, name }) => {
   const { t } = useTranslation(['builder', 'common']);
   const {
     setCurrentCompToAdd,
-    setFilters,
-    setSearch,
-    setSort,
     setSelectedComponents,
     selectedComponents,
     buildIssues,
@@ -33,9 +30,6 @@ const ComponentCard = ({ component, name }) => {
 
   const handleAddComponent = () => {
     setCurrentCompToAdd(name);
-    setFilters({});
-    setSearch('');
-    setSort('');
   };
 
   const handleRemove = () => {
@@ -82,6 +76,7 @@ const ComponentCard = ({ component, name }) => {
                   <img
                     src={component.image_url}
                     alt={component.name}
+                    loading="lazy"
                     className="w-full h-full object-contain"
                   />
                 )}
@@ -121,6 +116,7 @@ const ComponentCard = ({ component, name }) => {
                     <a
                       href={cheapest.url}
                       target="_blank"
+                      rel="noopener noreferrer"
                       className="grid grid-cols-3 gap-1 text-sm border border-border bg-surface p-1 hover:bg-secondary-light transition cursor-pointer"
                     >
                       <span className="text-text font-medium truncate">
@@ -159,6 +155,7 @@ const ComponentCard = ({ component, name }) => {
               <button
                 className="text-white p-4 hover:bg-danger/50 cursor-pointer transition"
                 onClick={handleRemove}
+                aria-label={t('componentCard.remove')}
               >
                 <CloseIcon size={20} />
               </button>
@@ -187,6 +184,7 @@ const ComponentCard = ({ component, name }) => {
               <button
                 className="bg-surface p-2 text-muted hover:bg-secondary-light transition cursor-pointer"
                 onClick={handleAddComponent}
+                aria-label={t('addComponent.title', { component: displayName })}
               >
                 <AddIcon />
               </button>
@@ -198,8 +196,11 @@ const ComponentCard = ({ component, name }) => {
           className={`absolute top-0 right-0 m-2 transition ${
             needsManualCheck ? 'text-alert hover:text-alert' : 'text-muted hover:text-text'
           }`}
+          tabIndex={0}
           onMouseEnter={handlePopup}
           onMouseLeave={() => setPopup(null)}
+          onFocus={handlePopup}
+          onBlur={() => setPopup(null)}
         >
           <InfoIcon />
         </div>
@@ -211,4 +212,4 @@ const ComponentCard = ({ component, name }) => {
   );
 };
 
-export default ComponentCard;
+export default React.memo(ComponentCard);

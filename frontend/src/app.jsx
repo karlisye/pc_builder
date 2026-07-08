@@ -3,6 +3,7 @@ import "./app.css";
 import "./i18n";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider, useAuth } from "./Contexts/AuthContext";
 import { ToastProvider } from "./Contexts/ToastContext";
@@ -34,7 +35,17 @@ const AuthRoute = ({ children }) => {
   return user ? children : <Navigate to="/login" replace />;
 };
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
 const App = () => (
+  <QueryClientProvider client={queryClient}>
   <HelmetProvider>
     <AuthProvider>
       <ToastProvider>
@@ -66,6 +77,7 @@ const App = () => (
       </ToastProvider>
     </AuthProvider>
   </HelmetProvider>
+  </QueryClientProvider>
 );
 
 createRoot(document.getElementById("app")).render(<App />);

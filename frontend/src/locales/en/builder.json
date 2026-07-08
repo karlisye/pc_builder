@@ -142,6 +142,7 @@
     "total": "Total",
     "components": "Components",
     "compatibility": "Compatibility",
+    "validateFailed": "Couldn't verify compatibility right now — the results shown may be outdated.",
     "aboutThisBuild": "About This Build",
     "fullyFunctionalNote": "Your build is fully functional. These are just recommendations to get the best experience."
   },

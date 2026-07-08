@@ -82,6 +82,7 @@ const BudgetSlider = ({
             onBlur={handleBlur}
             onKeyDown={(e) => e.key === "Enter" && e.target.blur()}
             disabled={isUnlimited}
+            aria-label={t("budgetSlider.totalBudget")}
             className="text-secondary-light font-semibold w-13 text-right focus:outline-none"
           />
         </div>
@@ -125,6 +126,7 @@ const BudgetSlider = ({
           value={isUnlimited ? min : value}
           onChange={handleSlider}
           disabled={isUnlimited}
+          aria-label={t("budgetSlider.totalBudget")}
           className={`relative z-20 w-full h-2 appearance-none bg-transparent transition-opacity 
             ${isUnlimited ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}
             ${value <= recommended ? "accent-danger/80" : "accent-secondary-light"}

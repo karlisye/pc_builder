@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { useBuilder } from '../../../Contexts/BuilderContext';
+import { useBuilder, usePicker } from '../../../Contexts/BuilderContext';
 import { ArrowIcon } from '../Common/Icons';
 import RangeSlider from './RangeSlider';
 
@@ -41,27 +42,31 @@ const FILTER_CONFIG = {
 
 const ComponentFilters = () => {
   const { t } = useTranslation(['builder', 'common']);
-  const { search, setSearch, sort, setSort, filters, setFilters, currentCompToAdd } = useBuilder();
-  const [availableFilters, setAvailableFilters] = useState({});
-  const [error, setError] = useState('');
+  const { currentCompToAdd } = useBuilder();
+  const { sort, setSort, filters, setFilters, setDebouncedSearch } = usePicker();
+  const [search, setSearch] = useState('');
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    if (!currentCompToAdd) return;
-    setError('');
-    setAvailableFilters({});
-    fetchFilters();
-  }, [currentCompToAdd]);
+  const [prevComp, setPrevComp] = useState(currentCompToAdd);
+  if (prevComp !== currentCompToAdd) {
+    setPrevComp(currentCompToAdd);
+    setSearch('');
+  }
 
-  const fetchFilters = async () => {
-    try {
-      const res = await axios.get(`/api/components/${currentCompToAdd.toLowerCase()}/filters`);
-      setAvailableFilters(res.data);
-    } catch (err) {
-      console.error('Failed to fetch filters', err);
-      setError(t('componentFilters.failedToFetchFilters'));
-    }
-  };
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search), 300);
+    return () => clearTimeout(timer);
+  }, [search, setDebouncedSearch]);
+
+  const type = currentCompToAdd?.toLowerCase();
+
+  const { data: availableFilters = {}, isError } = useQuery({
+    queryKey: ['component-filters', type],
+    queryFn: ({ signal }) =>
+      axios.get(`/api/components/${type}/filters`, { signal }).then((res) => res.data),
+    enabled: Boolean(type),
+    staleTime: 5 * 60_000,
+  });
 
   const updateFilter = (key, value) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
@@ -69,11 +74,12 @@ const ComponentFilters = () => {
 
   const clearFilters = () => {
     setSearch('');
+    setDebouncedSearch('');
     setSort('');
     setFilters({});
   };
 
-  const activeColumns = FILTER_CONFIG[currentCompToAdd.toLowerCase()] ?? [];
+  const activeColumns = FILTER_CONFIG[type] ?? [];
 
   return (
     <div className="space-y-4">
@@ -83,7 +89,10 @@ const ComponentFilters = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder={t('componentFilters.searchPlaceholder', {
-            component: t(`common:components.${currentCompToAdd?.toLowerCase()}`),
+            component: t(`common:components.${type}`),
+          })}
+          aria-label={t('componentFilters.searchPlaceholder', {
+            component: t(`common:components.${type}`),
           })}
           className="bg-secondary text-white p-2 flex-1 outline-border focus:outline-1"
         />
@@ -91,6 +100,7 @@ const ComponentFilters = () => {
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value)}
+          aria-label={t('componentFilters.sort.recommended')}
           className="bg-secondary-light p-2 text-text outline-border focus:outline-1"
         >
           <option value="">{t('componentFilters.sort.recommended')}</option>
@@ -208,7 +218,9 @@ const ComponentFilters = () => {
           );
         })}
 
-        {error && <p className="text-danger text-sm">{error}</p>}
+        {isError && (
+          <p className="text-danger text-sm">{t('componentFilters.failedToFetchFilters')}</p>
+        )}
       </div>
 
       <div>
@@ -274,4 +286,4 @@ const ComponentFilters = () => {
   );
 };
 
-export default ComponentFilters;
+export default React.memo(ComponentFilters);

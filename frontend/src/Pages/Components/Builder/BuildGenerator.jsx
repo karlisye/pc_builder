@@ -1,13 +1,33 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useBuilder } from "../../../Contexts/BuilderContext";
+import { useBuilder, useBuildMeta } from "../../../Contexts/BuilderContext";
 import BudgetSlider from "./BudgetSlider";
 import { Link } from "react-router-dom";
-import { ArrowIcon } from "../Common/Icons";
 import ClosedSection from "../Common/ClosedSection";
 import { useAuth } from "../../../Contexts/AuthContext";
 import { useToast } from "../../../Contexts/ToastContext";
+import {
+  selectedProductCodes,
+  hasIncompatibleSelection,
+  needsManualCheckSelection,
+} from "../../../lib/buildSlots";
+
+const RECOMMENDED_BUDGETS = {
+  gaming: 1000,
+  office: 600,
+  streaming: 1200,
+  rendering: 1500,
+};
+
+const MIN_TYPE_BUDGETS = {
+  gaming: 500,
+  streaming: 500,
+  rendering: 1500,
+};
+
+const typeAvailableFor = (type, budget) =>
+  !budget || !MIN_TYPE_BUDGETS[type] || budget >= MIN_TYPE_BUDGETS[type];
 
 const BuildGenerator = () => {
   const { t } = useTranslation(["builder", "common"]);
@@ -17,12 +37,11 @@ const BuildGenerator = () => {
     selectedComponents,
     setSelectedComponents,
     setCurrentCompToAdd,
-    setBuildType,
     setWarnings,
     setNotes,
     buildIssues,
   } = useBuilder();
-  const [open, setOpen] = useState(false);
+  const { setBuildType } = useBuildMeta();
   const [loading, setLoading] = useState(false);
   const [budget, setBudget] = useState(1500);
   const [preferences, setPreferences] = useState({
@@ -33,31 +52,31 @@ const BuildGenerator = () => {
   });
   const [info, setInfo] = useState("");
 
-  const recommendedBudget =
-    {
-      gaming: 1000,
-      office: 600,
-      streaming: 1200,
-      rendering: 1500,
-    }[preferences.type] ?? 600;
+  const recommendedBudget = RECOMMENDED_BUDGETS[preferences.type] ?? 600;
 
-  const updatePref = (key, value) => {
-    const newPrefs = { ...preferences, [key]: value };
-    setPreferences(newPrefs);
-
-    const newRecommended =
-      {
-        gaming: 1000,
-        office: 600,
-        streaming: 1200,
-        rendering: 1500,
-      }[newPrefs.type] ?? 600;
-
-    if (budget && budget < newRecommended) {
+  const updateInfo = (newBudget, newType) => {
+    const recommended = RECOMMENDED_BUDGETS[newType] ?? 600;
+    if (newBudget && newBudget < recommended) {
       setInfo(t("buildGenerator.recommendBudgetIncrease"));
     } else {
       setInfo("");
     }
+  };
+
+  const updatePref = (key, value) => {
+    const newPrefs = { ...preferences, [key]: value };
+    setPreferences(newPrefs);
+    updateInfo(budget, newPrefs.type);
+  };
+
+  const updateBudget = (value) => {
+    setBudget(value);
+    const newType =
+      preferences.type && !typeAvailableFor(preferences.type, value) ? null : preferences.type;
+    if (newType !== preferences.type) {
+      setPreferences((prev) => ({ ...prev, type: newType }));
+    }
+    updateInfo(value, newType);
   };
 
   const handleGenerate = async () => {
@@ -65,11 +84,7 @@ const BuildGenerator = () => {
     setWarnings([]);
     setNotes([]);
     try {
-      const selected = Object.fromEntries(
-        Object.entries(selectedComponents)
-          .filter(([_, component]) => component !== null)
-          .map(([type, component]) => [type, component.product_code]),
-      );
+      const selected = selectedProductCodes(selectedComponents);
 
       const res = await axios.post("/api/builder", {
         selected,
@@ -111,26 +126,11 @@ const BuildGenerator = () => {
     }
   };
 
-  const updateBudget = (value) => {
-    setBudget(value);
-    if (value && recommendedBudget > value) {
-      setInfo(t("buildGenerator.recommendBudgetIncrease"));
-    } else {
-      setInfo("");
-    }
-  };
-
-  // check if one of the selected components is incompatible
-  const hasIncompatible =
-    Object.values(selectedComponents).some(
-      (component) => component !== null && component.compatible === false,
-    ) || Object.keys(buildIssues).length > 0;
+  const hasIncompatible = hasIncompatibleSelection(selectedComponents, buildIssues);
 
   // a selected component's compatibility with the rest of the build could not be fully
   // verified (missing spec data) — the auto-builder can't assume it fits, so block generation
-  const needsManualCheck = Object.values(selectedComponents).some(
-    (component) => component !== null && component.needs_manual_check === true,
-  );
+  const needsManualCheck = needsManualCheckSelection(selectedComponents);
 
   if (!user) {
     return (
@@ -185,10 +185,11 @@ const BuildGenerator = () => {
           <div
             className={`flex flex-col transition-all p-px overflow-hidden ${budget >= 500 || !budget ? "flex-1" : "w-0"}`}
           >
-            <label className="text-sm text-secondary-light" htmlFor="gpu">
+            <label className="text-sm text-secondary-light" htmlFor="build_gpu_pref">
               {t("buildGenerator.gpu")}
             </label>
             <select
+              id="build_gpu_pref"
               onChange={(e) => updatePref("gpu", e.target.value)}
               className="p-1 text-secondary-light text-sm border border-muted hover:outline focus:outline outline-secondary-light"
               value={preferences.gpu ?? ""}
@@ -201,10 +202,11 @@ const BuildGenerator = () => {
           </div>
 
           <div className="flex flex-col flex-1">
-            <label className="text-sm text-secondary-light" htmlFor="gpu">
+            <label className="text-sm text-secondary-light" htmlFor="build_cpu_pref">
               {t("buildGenerator.cpu")}
             </label>
             <select
+              id="build_cpu_pref"
               onChange={(e) => updatePref("cpu", e.target.value)}
               className="p-1 text-secondary-light text-sm border border-muted hover:outline focus:outline outline-secondary-light"
               value={preferences.cpu ?? ""}
@@ -217,25 +219,26 @@ const BuildGenerator = () => {
         </div>
 
         <div className="flex flex-col flex-1">
-          <label className="text-sm text-secondary-light" htmlFor="gpu">
+          <label className="text-sm text-secondary-light" htmlFor="build_usage_pref">
             {t("buildGenerator.usage")}
           </label>
           <select
+            id="build_usage_pref"
             onChange={(e) => updatePref("type", e.target.value)}
             className="p-1 text-secondary-light text-sm border border-muted hover:outline focus:outline outline-secondary-light"
             value={preferences.type ?? ""}
           >
             <option value="">{t("buildGenerator.any")}</option>
-            {(budget > 500 || !budget) && (
+            {typeAvailableFor("gaming", budget) && (
               <option value="gaming">{t("buildGenerator.gaming")}</option>
             )}
             <option value="office">{t("buildGenerator.office")}</option>
-            {(budget > 1500 || !budget) && (
+            {typeAvailableFor("rendering", budget) && (
               <option value="rendering">
                 {t("buildGenerator.rendering")}
               </option>
             )}
-            {(budget > 500 || !budget) && (
+            {typeAvailableFor("streaming", budget) && (
               <option value="streaming">
                 {t("buildGenerator.streaming")}
               </option>
@@ -291,4 +294,4 @@ const BuildGenerator = () => {
   );
 };
 
-export default BuildGenerator;
+export default React.memo(BuildGenerator);

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useBuilder } from "../../../Contexts/BuilderContext";
+import { useBuilder, useBuildMeta } from "../../../Contexts/BuilderContext";
 import { useAuth } from "../../../Contexts/AuthContext";
 import axios from "axios";
 import { CloseIcon } from "../Common/Icons";
 import { Link, useSearchParams } from "react-router-dom";
 import { clearDraft } from "../../../lib/builderDraft";
+import { selectedProductCodes } from "../../../lib/buildSlots";
 import { useToast } from "../../../Contexts/ToastContext";
 
 // Tracks whether the restore nudge has already been shown this page load,
@@ -20,6 +21,12 @@ const BuildInfo = () => {
     selectedComponents,
     setSelectedComponents,
     setCurrentCompToAdd,
+    setWarnings,
+    setBuildIssues,
+    setNotes,
+    buildIssues,
+  } = useBuilder();
+  const {
     buildId,
     setBuildId,
     buildName,
@@ -30,11 +37,7 @@ const BuildInfo = () => {
     setBuildType,
     restoredDraft,
     setRestoredDraft,
-    setWarnings,
-    setBuildIssues,
-    setNotes,
-    buildIssues,
-  } = useBuilder();
+  } = useBuildMeta();
   const [, setSearchParams] = useSearchParams();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -64,11 +67,7 @@ const BuildInfo = () => {
       return;
     }
 
-    const components = Object.fromEntries(
-      Object.entries(selectedComponents)
-        .filter(([_, component]) => component !== null)
-        .map(([type, component]) => [type, component.product_code]),
-    );
+    const components = selectedProductCodes(selectedComponents);
 
     if (Object.keys(components).length === 0) {
       setError(t("buildInfo.selectAtLeastOne"));
@@ -140,6 +139,7 @@ const BuildInfo = () => {
               <button
                 className="p-2 bg-secondary text-muted hover:bg-danger/50 hover:text-danger/70 cursor-pointer transition border-l border-muted ml-auto"
                 onClick={() => handleRemove(key)}
+                aria-label={t("componentCard.remove")}
               >
                 <CloseIcon />
               </button>

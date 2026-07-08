@@ -102,6 +102,7 @@ const RangeSlider = ({
           }}
           onMouseUp={commit}
           onTouchEnd={commit}
+          aria-label={`${label} min`}
           className="range-thumb absolute w-full"
           style={{ zIndex: minIdx >= lastIdx - 1 ? 5 : 3 }}
         />
@@ -117,6 +118,7 @@ const RangeSlider = ({
           }}
           onMouseUp={commit}
           onTouchEnd={commit}
+          aria-label={`${label} max`}
           className="range-thumb absolute w-full"
           style={{ zIndex: 4 }}
         />

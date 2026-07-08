@@ -12,6 +12,7 @@
         "vite": "^7.0.7"
     },
     "dependencies": {
+        "@tanstack/react-query": "^5.101.2",
         "@vitejs/plugin-react": "^5.1.4",
         "axios": "^1.11.0",
         "i18next": "^26.3.1",

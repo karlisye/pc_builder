@@ -142,6 +142,7 @@
     "total": "Kopā",
     "components": "Komponentes",
     "compatibility": "Saderība",
+    "validateFailed": "Pašlaik neizdevās pārbaudīt saderību — redzamie rezultāti var būt novecojuši.",
     "aboutThisBuild": "Par šo konfigurāciju",
     "fullyFunctionalNote": "Jūsu konfigurācija ir pilnībā funkcionāla. Šie ir tikai ieteikumi labākai pieredzei."
   },

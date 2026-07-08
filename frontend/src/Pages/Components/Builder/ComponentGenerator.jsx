@@ -7,22 +7,34 @@ import { useBuilder } from '../../../Contexts/BuilderContext';
 import { useAuth } from '../../../Contexts/AuthContext';
 import { useToast } from '../../../Contexts/ToastContext';
 import axios from 'axios';
+import {
+  selectedProductCodes,
+  hasIncompatibleSelection,
+  needsManualCheckSelection,
+} from '../../../lib/buildSlots';
+
+const DEFAULT_PREFERENCES = {
+  gpu: null,
+  cpu: null,
+  include_orderable: true,
+};
 
 const ComponentGenerator = () => {
   const { t } = useTranslation(['builder', 'common']);
   const { user, showVerifyBanner } = useAuth();
   const { addToast } = useToast();
-  const { currentCompToAdd, selectedComponents, setSelectedComponents, setCurrentCompToAdd } =
-    useBuilder();
+  const {
+    currentCompToAdd,
+    selectedComponents,
+    setSelectedComponents,
+    setCurrentCompToAdd,
+    buildIssues,
+  } = useBuilder();
 
   const [open, setOpen] = useState(false);
   const [budget, setBudget] = useState(150);
   const [loading, setLoading] = useState(false);
-  const [preferences, setPreferences] = useState({
-    gpu: null,
-    cpu: null,
-    include_orderable: true,
-  });
+  const [preferences, setPreferences] = useState(DEFAULT_PREFERENCES);
 
   const updatePref = (key, value) => {
     setPreferences((prev) => ({ ...prev, [key]: value }));
@@ -31,11 +43,7 @@ const ComponentGenerator = () => {
   const handleGenerate = async () => {
     setLoading(true);
     try {
-      const selected = Object.fromEntries(
-        Object.entries(selectedComponents)
-          .filter(([_, component]) => component !== null)
-          .map(([type, component]) => [type, component.product_code]),
-      );
+      const selected = selectedProductCodes(selectedComponents);
 
       const res = await axios.post(`/api/builder/${currentCompToAdd.toLowerCase()}`, {
         budget,
@@ -49,7 +57,7 @@ const ComponentGenerator = () => {
           ...res.data.build,
         }));
         setOpen(false);
-        setPreferences((prev) => Object.fromEntries(Object.keys(prev).map((k) => [k, null])));
+        setPreferences(DEFAULT_PREFERENCES);
         setCurrentCompToAdd(null);
         addToast(t('componentGenerator.generateSuccess'), { type: 'success' });
         document.getElementById('side-panel-scroll')?.scrollTo({ top: 0, behavior: 'smooth' });
@@ -71,15 +79,11 @@ const ComponentGenerator = () => {
     }
   };
 
-  const hasIncompatible = Object.values(selectedComponents).some(
-    (component) => component !== null && component.compatible === false,
-  );
+  const hasIncompatible = hasIncompatibleSelection(selectedComponents, buildIssues);
 
   // a selected component's compatibility with the rest of the build could not be fully
   // verified (missing spec data) — the auto-builder can't assume it fits, so block generation
-  const needsManualCheck = Object.values(selectedComponents).some(
-    (component) => component !== null && component.needs_manual_check === true,
-  );
+  const needsManualCheck = needsManualCheckSelection(selectedComponents);
 
   if (!user) {
     return (
@@ -144,10 +148,11 @@ const ComponentGenerator = () => {
             <>
               <p className="text-muted text-sm mb-1">{t('componentGenerator.preferences')}</p>
               <div className="flex flex-col flex-1">
-                <label className="text-sm text-muted" htmlFor="cpu">
+                <label className="text-sm text-muted" htmlFor="comp_cpu_pref">
                   {t('componentGenerator.cpu')}
                 </label>
                 <select
+                  id="comp_cpu_pref"
                   onChange={(e) => updatePref('cpu', e.target.value)}
                   className="p-1 text-muted text-sm border hover:outline focus:outline outline-secondary-light"
                   value={preferences.cpu ?? ''}
@@ -164,10 +169,11 @@ const ComponentGenerator = () => {
             <>
               <p className="text-muted text-sm mb-1">{t('componentGenerator.preferences')}</p>
               <div className="flex flex-col flex-1">
-                <label className="text-sm text-muted" htmlFor="gpu">
+                <label className="text-sm text-muted" htmlFor="comp_gpu_pref">
                   {t('componentGenerator.gpu')}
                 </label>
                 <select
+                  id="comp_gpu_pref"
                   onChange={(e) => updatePref('gpu', e.target.value)}
                   className="p-1 text-muted text-sm border hover:outline focus:outline outline-secondary-light"
                   value={preferences.gpu ?? ''}
@@ -223,4 +229,4 @@ const ComponentGenerator = () => {
   );
 };
 
-export default ComponentGenerator;
+export default React.memo(ComponentGenerator);
