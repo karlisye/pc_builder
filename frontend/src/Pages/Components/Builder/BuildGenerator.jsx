@@ -3,10 +3,11 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useBuilder, useBuildMeta } from "../../../Contexts/BuilderContext";
 import BudgetSlider from "./BudgetSlider";
-import { Link } from "react-router-dom";
+import { Link } from 'react-router';
 import ClosedSection from "../Common/ClosedSection";
 import { useAuth } from "../../../Contexts/AuthContext";
 import { useToast } from "../../../Contexts/ToastContext";
+import { useLocalePath } from "../../../lib/localePath";
 import {
   selectedProductCodes,
   hasIncompatibleSelection,
@@ -36,12 +37,13 @@ const BuildGenerator = () => {
   const {
     selectedComponents,
     setSelectedComponents,
-    setCurrentCompToAdd,
+    closePicker,
     setWarnings,
     setNotes,
     buildIssues,
   } = useBuilder();
   const { setBuildType } = useBuildMeta();
+  const lp = useLocalePath();
   const [loading, setLoading] = useState(false);
   const [budget, setBudget] = useState(1500);
   const [preferences, setPreferences] = useState({
@@ -98,7 +100,7 @@ const BuildGenerator = () => {
           ...res.data.build,
         }));
         setBuildType(res.data.type);
-        setCurrentCompToAdd(null);
+        closePicker();
         setWarnings(res.data.warnings);
         setNotes(res.data.notes);
         addToast(t("buildGenerator.generateSuccess"), { type: "success" });
@@ -140,7 +142,7 @@ const BuildGenerator = () => {
             {t("buildGenerator.loginRequired")}{" "}
             <Link
               className="text-info/80 cursor-pointer hover:underline"
-              to="/login"
+              to={lp("/login")}
             >
               {t("buildGenerator.loginLink")}
             </Link>
@@ -158,7 +160,7 @@ const BuildGenerator = () => {
           {t("buildGenerator.intro")}{" "}
           <Link
             className="text-info/80 cursor-pointer hover:underline"
-            to="/guide"
+            to={lp("/guide")}
           >
             {t("buildGenerator.guideLink")}
           </Link>{" "}

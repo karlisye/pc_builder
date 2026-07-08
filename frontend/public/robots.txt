@@ -4,5 +4,13 @@ Disallow: /admin
 Disallow: /profile
 Disallow: /builds
 Disallow: /email-verified
+Disallow: /login
+Disallow: /register
+Disallow: /en/admin
+Disallow: /en/profile
+Disallow: /en/builds
+Disallow: /en/email-verified
+Disallow: /en/login
+Disallow: /en/register
 
 Sitemap: https://pcbuilder.lv/sitemap.xml

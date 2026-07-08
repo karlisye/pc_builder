@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { useBuilder, usePicker } from '../../../Contexts/BuilderContext';
+import { Link, useParams, useRouteLoaderData, useSearchParams } from 'react-router';
+import { useBuilder } from '../../../Contexts/BuilderContext';
 import axios from 'axios';
 import AddComponentSkeleton from '../Skeletons/AddComponentSkeleton';
 import ComponentInfo from '../Common/ComponentInfo';
@@ -11,35 +12,59 @@ import PaginationControls from '../Common/PaginationControls';
 import { formatPrice } from '../../../lib/componentPrice';
 import { selectedProductCodes } from '../../../lib/buildSlots';
 
+const RESERVED_PARAMS = new Set(['page', 'sort', 'search', 'build', 'shared']);
+
 const AddComponent = () => {
   const { t } = useTranslation(['builder', 'common']);
-  const { currentCompToAdd, setCurrentCompToAdd, selectedComponents, setSelectedComponents } =
-    useBuilder();
-  const { filters, sort, debouncedSearch } = usePicker();
-  const [page, setPage] = useState(1);
+  const { selectedComponents, setSelectedComponents, closePicker, detailHref } = useBuilder();
+  const { type } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [expandedId, setExpandedId] = useState(null);
   const [chosenSources, setChosenSources] = useState({});
 
-  const type = currentCompToAdd?.toLowerCase();
-  const selected = selectedProductCodes(selectedComponents);
-
-  const queryKeyBase = JSON.stringify({ type, selected, debouncedSearch, sort, filters });
-  const [prevKeyBase, setPrevKeyBase] = useState(queryKeyBase);
-  if (queryKeyBase !== prevKeyBase) {
-    setPrevKeyBase(queryKeyBase);
-    setPage(1);
+  const page = Number(searchParams.get('page') ?? 1);
+  const sort = searchParams.get('sort') ?? '';
+  const search = searchParams.get('search') ?? '';
+  const filters = {};
+  for (const [key, value] of searchParams.entries()) {
+    if (!RESERVED_PARAMS.has(key)) filters[key] = value;
   }
 
+  const selected = selectedProductCodes(selectedComponents);
+  const selectedKey = JSON.stringify(selected);
+  const filtersKey = JSON.stringify(filters);
+
+  // The selection isn't in the URL, so reset pagination ourselves when it changes.
+  useEffect(() => {
+    if (Number(searchParams.get('page') ?? 1) > 1) {
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          next.delete('page');
+          return next;
+        },
+        { replace: true, preventScrollReset: true },
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedKey]);
+
+  const loaderData = useRouteLoaderData('routes/builder-picker');
+  const queryKey = ['components', type, selectedKey, search, sort, filtersKey, page];
+  const seed =
+    loaderData?.seedKey === JSON.stringify(queryKey) ? loaderData.list : undefined;
+
   const { data, error, isPending, isPlaceholderData } = useQuery({
-    queryKey: ['components', queryKeyBase, page],
+    queryKey,
+    initialData: seed,
     queryFn: ({ signal }) =>
       axios
         .get(`/api/components/${type}`, {
           signal,
           params: {
-            selected: JSON.stringify(selected),
+            selected: selectedKey,
             page,
-            search: debouncedSearch || undefined,
+            search: search || undefined,
             sort: sort || undefined,
             ...filters,
           },
@@ -58,8 +83,14 @@ const AddComponent = () => {
     ? (error.response?.data?.error ?? t('addComponent.failedToFetch'))
     : '';
 
-  const handleLeave = () => {
-    setCurrentCompToAdd(null);
+  const setPage = (next) => {
+    const value = typeof next === 'function' ? next(page) : next;
+    setSearchParams((prev) => {
+      const nextParams = new URLSearchParams(prev);
+      if (value <= 1) nextParams.delete('page');
+      else nextParams.set('page', String(value));
+      return nextParams;
+    });
   };
 
   const handleExpand = (id) => {
@@ -73,22 +104,22 @@ const AddComponent = () => {
   const handleSelect = (component) => {
     setSelectedComponents((prev) => ({
       ...prev,
-      [currentCompToAdd.toLowerCase()]: component,
+      [type]: component,
     }));
-    setCurrentCompToAdd(null);
+    closePicker();
   };
 
   return (
     <div className="border border-border w-full min-w-0 hover:bg-background transition p-4 mb-auto">
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-semibold text-text">
+        <h1 className="text-3xl font-semibold text-text">
           {t('addComponent.title', {
-            component: t(`common:components.${currentCompToAdd?.toLowerCase()}`),
+            component: t(`common:components.${type}`),
           })}
-        </h2>
+        </h1>
         <button
           className="w-10 h-10 text-muted hover:cursor-pointer bg-surface hover:bg-secondary-light transition p-2"
-          onClick={handleLeave}
+          onClick={closePicker}
           aria-label={t('common:close')}
         >
           <CloseIcon />
@@ -153,7 +184,7 @@ const AddComponent = () => {
                         className={`font-medium truncate min-w-0 ${component.compatible && !component.out_of_stock ? 'text-text' : 'text-text/50'}`}
                       >
                         {component.name}
-                        {currentCompToAdd === 'Motherboard' &&
+                        {type === 'motherboard' &&
                           (component.socket || component.memory_type) && (
                             <span className="text-text font-normal">
                               {' '}
@@ -162,7 +193,7 @@ const AddComponent = () => {
                               )
                             </span>
                           )}
-                        {currentCompToAdd === 'Case' && component.form_factor && (
+                        {type === 'case' && component.form_factor && (
                           <span className="text-text font-normal"> ({component.form_factor})</span>
                         )}
                       </span>
@@ -253,6 +284,12 @@ const AddComponent = () => {
                           >
                             {t('addComponent.select')}
                           </button>
+                          <Link
+                            to={detailHref(type, component.product_code)}
+                            className="p-4 bg-surface text-text hover:bg-secondary-light transition cursor-pointer text-center"
+                          >
+                            {t('addComponent.viewDetails')}
+                          </Link>
                         </div>
                       </div>
                     </div>

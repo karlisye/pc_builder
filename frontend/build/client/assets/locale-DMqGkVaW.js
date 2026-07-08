@@ -1,0 +1,1 @@
+import{w as o,y as n,A as e,a as r,v as u,O as c}from"./localePath-DxHjtI_D.js";import{u as m}from"./useTranslation-BRWYrc9o.js";const f=o(function(){const t=n(),a=e(t),{i18n:s}=m();return r.useEffect(()=>{s.language!==a&&s.changeLanguage(a)},[a,s]),u.jsx(c,{})});export{f as default};

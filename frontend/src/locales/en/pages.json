@@ -25,6 +25,52 @@
     },
     "notFound": {
       "title": "Page Not Found — PC Builder"
+    },
+    "picker": {
+      "cpu": {
+        "title": "CPU Prices in Latvia — Pick a Processor | PC Builder",
+        "description": "Browse processors with live prices from Latvian stores. Filter by socket, cores and price, with automatic compatibility checks for your build."
+      },
+      "motherboard": {
+        "title": "Motherboard Prices in Latvia | PC Builder",
+        "description": "Browse motherboards with live prices from Latvian stores. Filter by socket, chipset and form factor, with automatic compatibility checks."
+      },
+      "ram": {
+        "title": "RAM Prices in Latvia — DDR4 & DDR5 | PC Builder",
+        "description": "Browse memory kits with live prices from Latvian stores. Filter by type, capacity and speed, with automatic compatibility checks."
+      },
+      "gpu": {
+        "title": "Graphics Card (GPU) Prices in Latvia | PC Builder",
+        "description": "Browse graphics cards with live prices from Latvian stores. Filter by brand, VRAM and price, with automatic compatibility checks."
+      },
+      "psu": {
+        "title": "Power Supply (PSU) Prices in Latvia | PC Builder",
+        "description": "Browse power supplies with live prices from Latvian stores. Filter by wattage, efficiency and modularity, with automatic compatibility checks."
+      },
+      "ssd": {
+        "title": "SSD Prices in Latvia | PC Builder",
+        "description": "Browse solid state drives with live prices from Latvian stores. Filter by capacity, type and interface, with automatic compatibility checks."
+      },
+      "hdd": {
+        "title": "Hard Drive (HDD) Prices in Latvia | PC Builder",
+        "description": "Browse hard drives with live prices from Latvian stores. Filter by capacity and interface, with automatic compatibility checks."
+      },
+      "case": {
+        "title": "PC Case Prices in Latvia | PC Builder",
+        "description": "Browse PC cases with live prices from Latvian stores. Filter by form factor, with automatic compatibility checks for your components."
+      },
+      "cooler": {
+        "title": "CPU Cooler Prices in Latvia | PC Builder",
+        "description": "Browse CPU coolers with live prices from Latvian stores. Filter by TDP support and fan size, with automatic compatibility checks."
+      },
+      "fan": {
+        "title": "Case Fan Prices in Latvia | PC Builder",
+        "description": "Browse case fans with live prices from Latvian stores. Filter by size and pack count, with automatic compatibility checks."
+      }
+    },
+    "componentDetail": {
+      "title": "{{name}} — Price in Latvia | PC Builder",
+      "description": "Compare prices and availability for {{name}} across Latvian stores and check compatibility with your PC build."
     }
   },
   "home": {

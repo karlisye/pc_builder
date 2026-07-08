@@ -1,13 +1,13 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router';
 import React from "react";
 import { useTranslation } from "react-i18next";
-import Seo from "./Components/Common/Seo";
+import { useLocalePath } from '../lib/localePath';
 
 const EmailVerified = () => {
+  const lp = useLocalePath();
   const { t } = useTranslation("common");
   return (
     <div className="bg-primary h-full flex justify-center">
-      <Seo title={t("verifyEmail.verifiedTitle")} noindex />
       <div className="text-center px-6 flex flex-col gap-4">
         <h1 className="text-2xl font-semibold text-white mt-4">
           {t("verifyEmail.verifiedTitle")}
@@ -16,7 +16,7 @@ const EmailVerified = () => {
           {t("verifyEmail.verifiedText")}
         </p>
         <Link
-          to="/"
+          to={lp('/')}
           className="px-8 py-4 text-sm font-medium bg-secondary-light text-text hover:bg-secondary-light/50 transition"
         >
           {t("verifyEmail.backHome")}

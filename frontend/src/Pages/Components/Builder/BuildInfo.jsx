@@ -4,9 +4,10 @@ import { useBuilder, useBuildMeta } from "../../../Contexts/BuilderContext";
 import { useAuth } from "../../../Contexts/AuthContext";
 import axios from "axios";
 import { CloseIcon } from "../Common/Icons";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from 'react-router';
 import { clearDraft } from "../../../lib/builderDraft";
 import { selectedProductCodes } from "../../../lib/buildSlots";
+import { useLocalePath } from "../../../lib/localePath";
 import { useToast } from "../../../Contexts/ToastContext";
 
 // Tracks whether the restore nudge has already been shown this page load,
@@ -20,12 +21,13 @@ const BuildInfo = () => {
   const {
     selectedComponents,
     setSelectedComponents,
-    setCurrentCompToAdd,
+    closePicker,
     setWarnings,
     setBuildIssues,
     setNotes,
     buildIssues,
   } = useBuilder();
+  const lp = useLocalePath();
   const {
     buildId,
     setBuildId,
@@ -58,7 +60,7 @@ const BuildInfo = () => {
       ...prev,
       [name.toLowerCase()]: null,
     }));
-    setCurrentCompToAdd(null);
+    closePicker();
   };
 
   const handleSave = async (asNew = false) => {
@@ -86,7 +88,14 @@ const BuildInfo = () => {
         components,
       });
       setBuildId(res.data.id);
-      setSearchParams({ build: res.data.id });
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          next.set("build", res.data.id);
+          return next;
+        },
+        { replace: true },
+      );
       clearDraft();
       addToast(
         asNew ? t("buildInfo.savedAsNew") : t("buildInfo.savedSuccessfully"),
@@ -161,7 +170,7 @@ const BuildInfo = () => {
             {t("buildInfo.loginToSave")}{" "}
             <Link
               className="text-info/80 cursor-pointer hover:underline"
-              to="/login"
+              to={lp("/login")}
             >
               {t("buildInfo.loginLink")}
             </Link>

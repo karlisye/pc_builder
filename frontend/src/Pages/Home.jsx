@@ -1,12 +1,10 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import Seo from './Components/Common/Seo';
 
 const Home = () => {
   const { t } = useTranslation('pages');
   return (
     <div className="overflow-y-auto">
-      <Seo title={t('seo.home.title')} description={t('seo.home.description')} />
       <div className="flex xl:flex-row flex-col">
         <div className="xl:w-1/2 bg-primary px-6 py-10 text-text">
           <div className="xl:max-w-2xl xl:h-220 ml-auto border-4 border-secondary p-2 overflow-hidden flex xl:flex-col flex-col lg:flex-row gap-8">

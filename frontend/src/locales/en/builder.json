@@ -83,7 +83,8 @@
     "notCompatible": "Not Compatible",
     "caseIncludesPsu": "Case includes PSU",
     "select": "Select",
-    "startingFrom": "Starting from €{{price}}"
+    "startingFrom": "Starting from €{{price}}",
+    "viewDetails": "Full details"
   },
   "componentFilters": {
     "searchPlaceholder": "Search {{component}}...",

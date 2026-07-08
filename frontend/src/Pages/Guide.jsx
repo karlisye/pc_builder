@@ -5,7 +5,6 @@ import AutoSection from "./Components/Guides/AutoSection";
 import SavedSection from "./Components/Guides/SavedSection";
 import { ArrowIcon, CloseIcon } from "./Components/Common/Icons";
 import SidePanel from "./Components/Common/SidePanel";
-import Seo from "./Components/Common/Seo";
 
 const sectionIds = ["builder", "auto", "saved"];
 
@@ -33,7 +32,6 @@ const Guide = () => {
 
   return (
     <div className="h-full flex">
-      <Seo title={t("seo.guide.title")} description={t("seo.guide.description")} />
       <SidePanel title={t("guide.sidePanelTitle")}>
         {sectionIds.map((id) => (
           <button

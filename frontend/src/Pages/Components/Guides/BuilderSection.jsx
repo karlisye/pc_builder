@@ -1,8 +1,9 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from 'react-router';
 import { Trans, useTranslation } from "react-i18next";
 import Note from "./Note";
 import { AddIcon, CloseIcon } from "../Common/Icons";
+import { useLocalePath } from '../../../lib/localePath';
 
 const AddButton = () => (
   <button className="bg-surface border border-secondary-light p-1 text-muted hover:bg-secondary-light transition cursor-pointer">
@@ -17,6 +18,7 @@ const CloseButton = () => (
 );
 
 const BuilderSection = () => {
+  const lp = useLocalePath();
   const { t } = useTranslation("pages");
   return (
     <div className="max-w-4xl mx-auto px-6 pb-10">
@@ -37,7 +39,7 @@ const BuilderSection = () => {
               buildLink: (
                 <Link
                   className="text-info hover:underline font-medium"
-                  to="/builder"
+                  to={lp('/builder')}
                 />
               ),
               buildButton: <span className="font-medium" />,

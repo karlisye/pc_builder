@@ -6,6 +6,7 @@ window.axios.defaults.withCredentials = true;
 window.axios.defaults.withXSRFToken = true;
 
 axios.interceptors.request.use((config) => {
-  config.headers["X-Locale"] = localStorage.getItem("language") || "en";
+  // <html lang> is set from the URL locale by root.jsx
+  config.headers["X-Locale"] = document.documentElement.lang || "lv";
   return config;
 });

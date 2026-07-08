@@ -1,0 +1,1 @@
+import{v as t}from"./localePath-DxHjtI_D.js";const i=({children:e,close:o})=>t.jsx("div",{className:"fixed backdrop-blur-xs top-0 bottom-0 left-0 right-0 flex items-center justify-center z-10",onClick:o,children:t.jsx("div",{className:"relative bg-background p-1 m-4",onClick:r=>r.stopPropagation(),children:e})});export{i as M};

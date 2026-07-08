@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
+import { useParams, useRouteLoaderData, useSearchParams } from 'react-router';
 import axios from 'axios';
-import { useBuilder, usePicker } from '../../../Contexts/BuilderContext';
 import { ArrowIcon } from '../Common/Icons';
 import RangeSlider from './RangeSlider';
 
@@ -42,41 +42,97 @@ const FILTER_CONFIG = {
 
 const ComponentFilters = () => {
   const { t } = useTranslation(['builder', 'common']);
-  const { currentCompToAdd } = useBuilder();
-  const { sort, setSort, filters, setFilters, setDebouncedSearch } = usePicker();
-  const [search, setSearch] = useState('');
+  const { type } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [search, setSearch] = useState(searchParams.get('search') ?? '');
   const [open, setOpen] = useState(false);
 
-  const [prevComp, setPrevComp] = useState(currentCompToAdd);
-  if (prevComp !== currentCompToAdd) {
-    setPrevComp(currentCompToAdd);
-    setSearch('');
+  const [prevType, setPrevType] = useState(type);
+  if (prevType !== type) {
+    setPrevType(type);
+    setSearch(searchParams.get('search') ?? '');
   }
 
-  useEffect(() => {
-    const timer = setTimeout(() => setDebouncedSearch(search), 300);
-    return () => clearTimeout(timer);
-  }, [search, setDebouncedSearch]);
+  // Distinguishes our own debounced URL writes from external ones (back/forward,
+  // links) so the input follows history navigation without fighting typing.
+  const lastWrittenSearchRef = useRef(search);
 
-  const type = currentCompToAdd?.toLowerCase();
+  useEffect(() => {
+    const urlSearch = searchParams.get('search') ?? '';
+    if (urlSearch !== lastWrittenSearchRef.current) {
+      lastWrittenSearchRef.current = urlSearch;
+      setSearch(urlSearch);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if ((searchParams.get('search') ?? '') === search) return;
+      lastWrittenSearchRef.current = search;
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          if (search) next.set('search', search);
+          else next.delete('search');
+          next.delete('page');
+          return next;
+        },
+        { replace: true, preventScrollReset: true },
+      );
+    }, 300);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search]);
+
+  const loaderData = useRouteLoaderData('routes/builder-picker');
 
   const { data: availableFilters = {}, isError } = useQuery({
     queryKey: ['component-filters', type],
+    initialData: loaderData?.type === type ? loaderData.filterOptions : undefined,
     queryFn: ({ signal }) =>
       axios.get(`/api/components/${type}/filters`, { signal }).then((res) => res.data),
     enabled: Boolean(type),
     staleTime: 5 * 60_000,
   });
 
+  const sort = searchParams.get('sort') ?? '';
+  const filterValue = (key) => searchParams.get(key);
+  const boolFilter = (key, fallback) => {
+    const raw = searchParams.get(key);
+    return raw === null ? fallback : raw === 'true';
+  };
+
+  const updateParams = (mutate, opts) => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        mutate(next);
+        next.delete('page');
+        return next;
+      },
+      { preventScrollReset: true, ...opts },
+    );
+  };
+
   const updateFilter = (key, value) => {
-    setFilters((prev) => ({ ...prev, [key]: value }));
+    updateParams((next) => {
+      if (value === undefined || value === null || value === '') next.delete(key);
+      else next.set(key, String(value));
+    });
   };
 
   const clearFilters = () => {
     setSearch('');
-    setDebouncedSearch('');
-    setSort('');
-    setFilters({});
+    lastWrittenSearchRef.current = '';
+    setSearchParams((prev) => {
+      const next = new URLSearchParams();
+      const build = prev.get('build');
+      const shared = prev.get('shared');
+      if (build) next.set('build', build);
+      if (shared) next.set('shared', shared);
+      return next;
+    });
   };
 
   const activeColumns = FILTER_CONFIG[type] ?? [];
@@ -99,7 +155,7 @@ const ComponentFilters = () => {
 
         <select
           value={sort}
-          onChange={(e) => setSort(e.target.value)}
+          onChange={(e) => updateFilter('sort', e.target.value)}
           aria-label={t('componentFilters.sort.recommended')}
           className="bg-secondary-light p-2 text-text outline-border focus:outline-1"
         >
@@ -120,17 +176,15 @@ const ComponentFilters = () => {
             min={availableFilters.price_min}
             max={availableFilters.price_max}
             step={5}
-            minValue={Number(filters['min_price'] ?? availableFilters.price_min)}
-            maxValue={Number(filters['max_price'] ?? availableFilters.price_max)}
+            minValue={Number(filterValue('min_price') ?? availableFilters.price_min)}
+            maxValue={Number(filterValue('max_price') ?? availableFilters.price_max)}
             format={(v) => `€${v}`}
             onChange={(newMin, newMax) => {
-              setFilters((prev) => {
-                const next = { ...prev };
-                if (newMin <= availableFilters.price_min) delete next['min_price'];
-                else next['min_price'] = newMin;
-                if (newMax >= availableFilters.price_max) delete next['max_price'];
-                else next['max_price'] = newMax;
-                return next;
+              updateParams((next) => {
+                if (newMin <= availableFilters.price_min) next.delete('min_price');
+                else next.set('min_price', String(newMin));
+                if (newMax >= availableFilters.price_max) next.delete('max_price');
+                else next.set('max_price', String(newMax));
               });
             }}
           />
@@ -143,7 +197,7 @@ const ComponentFilters = () => {
             </label>
             <select
               id="filter_brand"
-              value={filters['brand'] ?? ''}
+              value={filterValue('brand') ?? ''}
               onChange={(e) => updateFilter('brand', e.target.value || undefined)}
               className="w-full bg-secondary-light p-2 text-text outline-border focus:outline-1"
             >
@@ -168,7 +222,7 @@ const ComponentFilters = () => {
               </label>
               <select
                 id={`filter_${column}`}
-                value={filters[column] ?? ''}
+                value={filterValue(column) ?? ''}
                 onChange={(e) => updateFilter(column, e.target.value || undefined)}
                 className="w-full bg-secondary-light p-2 text-text outline-border focus:outline-1"
               >
@@ -195,8 +249,8 @@ const ComponentFilters = () => {
           if (values.length < 2) return null;
           const boundsMin = Math.min(...values);
           const boundsMax = Math.max(...values);
-          const curMin = Number(filters[`${column}_min`] ?? boundsMin);
-          const curMax = Number(filters[`${column}_max`] ?? boundsMax);
+          const curMin = Number(filterValue(`${column}_min`) ?? boundsMin);
+          const curMax = Number(filterValue(`${column}_max`) ?? boundsMax);
           return (
             <RangeSlider
               key={column}
@@ -205,13 +259,11 @@ const ComponentFilters = () => {
               minValue={curMin}
               maxValue={curMax}
               onChange={(newMin, newMax) => {
-                setFilters((prev) => {
-                  const next = { ...prev };
-                  if (newMin <= boundsMin) delete next[`${column}_min`];
-                  else next[`${column}_min`] = newMin;
-                  if (newMax >= boundsMax) delete next[`${column}_max`];
-                  else next[`${column}_max`] = newMax;
-                  return next;
+                updateParams((next) => {
+                  if (newMin <= boundsMin) next.delete(`${column}_min`);
+                  else next.set(`${column}_min`, String(newMin));
+                  if (newMax >= boundsMax) next.delete(`${column}_max`);
+                  else next.set(`${column}_max`, String(newMax));
                 });
               }}
             />
@@ -239,7 +291,7 @@ const ComponentFilters = () => {
                 className="accent-secondary-light"
                 id="show_in_stock"
                 type="checkbox"
-                checked={filters['show_in_stock'] ?? true}
+                checked={boolFilter('show_in_stock', true)}
                 onChange={(e) => updateFilter('show_in_stock', e.target.checked)}
               />
               <label className="text-secondary-light text-sm" htmlFor="show_in_stock">
@@ -252,7 +304,7 @@ const ComponentFilters = () => {
                 className="accent-secondary-light"
                 id="show_orderable"
                 type="checkbox"
-                checked={filters['show_orderable'] ?? true}
+                checked={boolFilter('show_orderable', true)}
                 onChange={(e) => updateFilter('show_orderable', e.target.checked)}
               />
               <label className="text-secondary-light text-sm" htmlFor="show_orderable">
@@ -265,7 +317,7 @@ const ComponentFilters = () => {
                 className="accent-secondary-light"
                 id="show_compatible_only"
                 type="checkbox"
-                checked={filters['show_compatible_only'] ?? false}
+                checked={boolFilter('show_compatible_only', false)}
                 onChange={(e) => updateFilter('show_compatible_only', e.target.checked)}
               />
               <label className="text-secondary-light text-sm" htmlFor="show_compatible_only">

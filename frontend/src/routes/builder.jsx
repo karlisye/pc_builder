@@ -1,21 +1,18 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ComponentCard from './Components/Builder/ComponentCard';
-import ComponentDetail from './Components/Common/ComponentDetail';
-import BuildDesc from './Components/Builder/BuildDesc';
-import { BuilderContext, BuildMetaContext, PickerProvider } from '../Contexts/BuilderContext';
-import AddComponent from './Components/Builder/AddComponent';
-import ComponentFilters from './Components/Builder/ComponentFilters';
-import BuildInfo from './Components/Builder/BuildInfo';
-import { Link, useSearchParams } from 'react-router-dom';
-import BuildGenerator from './Components/Builder/BuildGenerator';
-import ComponentGenerator from './Components/Builder/ComponentGenerator';
-import SidePanel from './Components/Common/SidePanel';
+import { Link, Outlet, useNavigate, useParams, useSearchParams } from 'react-router';
 import axios from 'axios';
+import BuildDesc from '../Pages/Components/Builder/BuildDesc';
+import BuildInfo from '../Pages/Components/Builder/BuildInfo';
+import BuildGenerator from '../Pages/Components/Builder/BuildGenerator';
+import ComponentFilters from '../Pages/Components/Builder/ComponentFilters';
+import ComponentGenerator from '../Pages/Components/Builder/ComponentGenerator';
+import SidePanel from '../Pages/Components/Common/SidePanel';
+import { BuilderContext, BuildMetaContext } from '../Contexts/BuilderContext';
+import { useToast } from '../Contexts/ToastContext';
 import { loadDraft, saveDraft, clearDraft } from '../lib/builderDraft';
 import { EMPTY_SLOTS, selectedProductCodes } from '../lib/buildSlots';
-import { useToast } from '../Contexts/ToastContext';
-import Seo from './Components/Common/Seo';
+import { langFromParams, localePath } from '../lib/localePath';
 
 const slotsFromBuild = (build) =>
   Object.fromEntries(
@@ -25,11 +22,12 @@ const slotsFromBuild = (build) =>
     ]),
   );
 
-const Builder = () => {
+export default function BuilderLayout() {
   const { t } = useTranslation(['builder', 'common', 'pages']);
   const { addToast } = useToast();
-  const [searchParams] = useSearchParams();
-  const [currentCompToAdd, setCurrentCompToAdd] = useState(null);
+  const params = useParams();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [selectedComponents, setSelectedComponents] = useState({ ...EMPTY_SLOTS });
   const [buildId, setBuildId] = useState(undefined);
   const [buildName, setBuildName] = useState('');
@@ -41,7 +39,41 @@ const Builder = () => {
   const [validateFailed, setValidateFailed] = useState(false);
   const [buildType, setBuildType] = useState('');
   const [restoredDraft, setRestoredDraft] = useState(false);
-  const [viewingComponent, setViewingComponent] = useState(null);
+
+  const lang = langFromParams(params);
+  const pickerType = params.type ?? null;
+  const pickerOpen = Boolean(params.type) && !params.code;
+
+  const buildParam = searchParams.get('build');
+  const sharedParam = searchParams.get('shared');
+
+  // Only ?build/?shared belong on intra-builder navigation; picker params
+  // (page/sort/search/filters) must not leak onto other builder URLs.
+  const buildSearch = useMemo(() => {
+    const kept = new URLSearchParams();
+    if (buildParam) kept.set('build', buildParam);
+    if (sharedParam) kept.set('shared', sharedParam);
+    const s = kept.toString();
+    return s ? `?${s}` : '';
+  }, [buildParam, sharedParam]);
+
+  const builderIndexHref = useCallback(
+    () => localePath(lang, '/builder') + buildSearch,
+    [lang, buildSearch],
+  );
+  const pickerHref = useCallback(
+    (slot) => localePath(lang, `/builder/components/${slot}`) + buildSearch,
+    [lang, buildSearch],
+  );
+  const detailHref = useCallback(
+    (slot, productCode) =>
+      localePath(lang, `/builder/components/${slot}/${encodeURIComponent(productCode)}`) +
+      buildSearch,
+    [lang, buildSearch],
+  );
+  const closePicker = useCallback(() => {
+    if (params.type) navigate(builderIndexHref());
+  }, [params.type, navigate, builderIndexHref]);
 
   // Gates the draft autosave: 'blocked' until the URL/draft hydration has applied,
   // 'skip-once' swallows the save triggered by the hydration itself. Without this,
@@ -50,9 +82,6 @@ const Builder = () => {
   const dirtyRef = useRef(false);
 
   useEffect(() => {
-    const buildParam = searchParams.get('build');
-    const sharedParam = searchParams.get('shared');
-
     draftGateRef.current = 'blocked';
 
     if (sharedParam) {
@@ -118,7 +147,9 @@ const Builder = () => {
         draftGateRef.current = 'open';
         addToast(t('sidePanel.loadBuildError'), { type: 'danger' });
       });
-  }, [searchParams]);
+    // Deps are the two extracted params, not searchParams itself — picker
+    // query churn (page/sort/filters) must not re-run hydration.
+  }, [buildParam, sharedParam]);
 
   useEffect(() => {
     validateCompatibility();
@@ -188,13 +219,15 @@ const Builder = () => {
     setBuildType('');
     setWarnings([]);
     setNotes([]);
-    setViewingComponent(null);
   };
 
   const builderValue = useMemo(
     () => ({
-      currentCompToAdd,
-      setCurrentCompToAdd,
+      pickerType,
+      builderIndexHref,
+      pickerHref,
+      detailHref,
+      closePicker,
       selectedComponents,
       setSelectedComponents,
       warnings,
@@ -206,18 +239,19 @@ const Builder = () => {
       buildWarnings,
       setBuildWarnings,
       validateFailed,
-      viewingComponent,
-      setViewingComponent,
     }),
     [
-      currentCompToAdd,
+      pickerType,
+      builderIndexHref,
+      pickerHref,
+      detailHref,
+      closePicker,
       selectedComponents,
       warnings,
       notes,
       buildIssues,
       buildWarnings,
       validateFailed,
-      viewingComponent,
     ],
   );
 
@@ -240,95 +274,44 @@ const Builder = () => {
   return (
     <BuilderContext value={builderValue}>
       <BuildMetaContext value={metaValue}>
-        <PickerProvider>
-          <Seo
-            title={t('pages:seo.builder.title')}
-            description={t('pages:seo.builder.description')}
-          />
-          <div className="h-full flex min-w-0">
-            <SidePanel
-              title={t('sidePanel.title')}
-              headerRight={
-                (buildId || Object.values(selectedComponents).some((c) => c !== null)) && (
-                  <Link
-                    className="px-6 py-2 border text-secondary-light cursor-pointer hover:text-muted transition text-sm"
-                    to="/builder"
-                    onClick={handleNewBuild}
-                  >
-                    {t('sidePanel.newBuild')}
-                  </Link>
-                )
-              }
-            >
-              {currentCompToAdd ? <ComponentFilters /> : <BuildDesc />}
-
-              <BuildInfo />
-
-              {currentCompToAdd ? <ComponentGenerator /> : <BuildGenerator />}
-
-              <p className="text-muted text-sm pt-4 border-t mt-4 border-secondary">
-                {t('sidePanel.guideHint')}{' '}
-                <Link className="text-info/80 cursor-pointer hover:underline" to="/guide">
-                  {t('sidePanel.guideLink')}
+        <div className="h-full flex min-w-0">
+          <SidePanel
+            title={t('sidePanel.title')}
+            headerRight={
+              (buildId || Object.values(selectedComponents).some((c) => c !== null)) && (
+                <Link
+                  className="px-6 py-2 border text-secondary-light cursor-pointer hover:text-muted transition text-sm"
+                  to={localePath(lang, '/builder')}
+                  onClick={handleNewBuild}
+                >
+                  {t('sidePanel.newBuild')}
                 </Link>
-                .
-              </p>
-            </SidePanel>
+              )
+            }
+          >
+            {pickerOpen ? <ComponentFilters /> : <BuildDesc />}
 
-            <div className="flex-1 flex px-4 py-6 min-w-0">
-              {currentCompToAdd ? (
-                <AddComponent />
-              ) : viewingComponent ? (
-                <ComponentDetail
-                  component={viewingComponent.component}
-                  title={t(`common:components.${viewingComponent.name.toLowerCase()}`)}
-                  onClose={() => setViewingComponent(null)}
-                  actions={
-                    <>
-                      <button
-                        className="px-8 py-4 bg-primary text-white hover:bg-primary-light transition cursor-pointer flex-1 sm:flex-none"
-                        onClick={() => {
-                          setCurrentCompToAdd(viewingComponent.name);
-                          setViewingComponent(null);
-                        }}
-                      >
-                        {t('componentCard.replace')}
-                      </button>
-                      <button
-                        className="px-8 py-4 bg-surface text-text hover:bg-danger/50 transition cursor-pointer flex-1 sm:flex-none"
-                        onClick={() => {
-                          setSelectedComponents((prev) => ({
-                            ...prev,
-                            [viewingComponent.name.toLowerCase()]: null,
-                          }));
-                          setViewingComponent(null);
-                        }}
-                      >
-                        {t('componentCard.remove')}
-                      </button>
-                    </>
-                  }
-                />
-              ) : (
-                <div className="flex flex-wrap mb-auto gap-8 justify-center">
-                  <ComponentCard name="CPU" component={selectedComponents.cpu} />
-                  <ComponentCard name="Motherboard" component={selectedComponents.motherboard} />
-                  <ComponentCard name="RAM" component={selectedComponents.ram} />
-                  <ComponentCard name="GPU" component={selectedComponents.gpu} />
-                  <ComponentCard name="PSU" component={selectedComponents.psu} />
-                  <ComponentCard name="SSD" component={selectedComponents.ssd} />
-                  <ComponentCard name="Case" component={selectedComponents.case} />
-                  <ComponentCard name="Cooler" component={selectedComponents.cooler} />
-                  <ComponentCard name="HDD" component={selectedComponents.hdd} />
-                  <ComponentCard name="Fan" component={selectedComponents.fan} />
-                </div>
-              )}
-            </div>
+            <BuildInfo />
+
+            {pickerOpen ? <ComponentGenerator /> : <BuildGenerator />}
+
+            <p className="text-muted text-sm pt-4 border-t mt-4 border-secondary">
+              {t('sidePanel.guideHint')}{' '}
+              <Link
+                className="text-info/80 cursor-pointer hover:underline"
+                to={localePath(lang, '/guide')}
+              >
+                {t('sidePanel.guideLink')}
+              </Link>
+              .
+            </p>
+          </SidePanel>
+
+          <div className="flex-1 flex px-4 py-6 min-w-0">
+            <Outlet />
           </div>
-        </PickerProvider>
+        </div>
       </BuildMetaContext>
     </BuilderContext>
   );
-};
-
-export default Builder;
+}

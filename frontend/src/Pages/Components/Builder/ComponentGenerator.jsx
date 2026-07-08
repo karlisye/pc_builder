@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ArrowIcon } from '../Common/Icons';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import BudgetSlider from './BudgetSlider';
 import { useBuilder } from '../../../Contexts/BuilderContext';
 import { useAuth } from '../../../Contexts/AuthContext';
 import { useToast } from '../../../Contexts/ToastContext';
 import axios from 'axios';
+import { useLocalePath } from '../../../lib/localePath';
 import {
   selectedProductCodes,
   hasIncompatibleSelection,
@@ -23,13 +24,9 @@ const ComponentGenerator = () => {
   const { t } = useTranslation(['builder', 'common']);
   const { user, showVerifyBanner } = useAuth();
   const { addToast } = useToast();
-  const {
-    currentCompToAdd,
-    selectedComponents,
-    setSelectedComponents,
-    setCurrentCompToAdd,
-    buildIssues,
-  } = useBuilder();
+  const { pickerType, selectedComponents, setSelectedComponents, closePicker, buildIssues } =
+    useBuilder();
+  const lp = useLocalePath();
 
   const [open, setOpen] = useState(false);
   const [budget, setBudget] = useState(150);
@@ -45,7 +42,7 @@ const ComponentGenerator = () => {
     try {
       const selected = selectedProductCodes(selectedComponents);
 
-      const res = await axios.post(`/api/builder/${currentCompToAdd.toLowerCase()}`, {
+      const res = await axios.post(`/api/builder/${pickerType}`, {
         budget,
         selected,
         preferences,
@@ -58,7 +55,7 @@ const ComponentGenerator = () => {
         }));
         setOpen(false);
         setPreferences(DEFAULT_PREFERENCES);
-        setCurrentCompToAdd(null);
+        closePicker();
         addToast(t('componentGenerator.generateSuccess'), { type: 'success' });
         document.getElementById('side-panel-scroll')?.scrollTo({ top: 0, behavior: 'smooth' });
         document.getElementById('page-scroll')?.scrollTo({ top: 0, behavior: 'smooth' });
@@ -102,7 +99,7 @@ const ComponentGenerator = () => {
           <div className="overflow-hidden">
             <p className="text-muted text-sm">
               {t('componentGenerator.loginRequired')}{' '}
-              <Link className="text-info/80 cursor-pointer hover:underline" to="/login">
+              <Link className="text-info/80 cursor-pointer hover:underline" to={lp('/login')}>
                 {t('componentGenerator.loginLink')}
               </Link>
               .
@@ -129,7 +126,7 @@ const ComponentGenerator = () => {
         <div className="overflow-hidden space-y-4">
           <p className="text-muted text-sm">
             {t('componentGenerator.intro')}{' '}
-            <Link className="text-info/80 cursor-pointer hover:underline" to="/guide">
+            <Link className="text-info/80 cursor-pointer hover:underline" to={lp('/guide')}>
               {t('componentGenerator.guideLink')}
             </Link>{' '}
             {t('componentGenerator.guideSuffix')}
@@ -144,7 +141,7 @@ const ComponentGenerator = () => {
             onChange={setBudget}
           />
 
-          {currentCompToAdd === 'CPU' && (
+          {pickerType === 'cpu' && (
             <>
               <p className="text-muted text-sm mb-1">{t('componentGenerator.preferences')}</p>
               <div className="flex flex-col flex-1">
@@ -165,7 +162,7 @@ const ComponentGenerator = () => {
             </>
           )}
 
-          {currentCompToAdd === 'GPU' && (
+          {pickerType === 'gpu' && (
             <>
               <p className="text-muted text-sm mb-1">{t('componentGenerator.preferences')}</p>
               <div className="flex flex-col flex-1">
