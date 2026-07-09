@@ -48,6 +48,12 @@ export function createI18n(lng) {
     interpolation: {
       escapeValue: false,
     },
+    // Without this, init() defers its "ready" event via setTimeout(0) — on the
+    // client that races hydrateRoot (called synchronously right after this),
+    // so the first hydration pass can render fallback/key text against the
+    // server's fully-translated markup. This forces init() to finish
+    // synchronously, matching server and client on the very first render.
+    initImmediate: false,
   });
   return i18n;
 }

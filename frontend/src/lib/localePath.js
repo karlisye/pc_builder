@@ -20,3 +20,10 @@ export function useLocalePath() {
   const lang = langFromParams(params);
   return (path) => localePath(lang, path);
 }
+
+// Identical on server and client (derived from the URL, not `document`), so
+// it's safe to use for anything rendered during SSR — unlike reading
+// document.documentElement.lang, which doesn't exist on the server.
+export function useLang() {
+  return langFromParams(useParams());
+}

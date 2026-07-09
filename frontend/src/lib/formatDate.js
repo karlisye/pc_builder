@@ -1,7 +1,8 @@
-const currentLang = () =>
-  typeof document !== "undefined" ? document.documentElement.lang || "lv" : "lv";
-
-export const formatDate = (date, options = { year: "numeric", month: "short", day: "numeric" }) => {
+export const formatDate = (
+  date,
+  lang = "lv",
+  options = { year: "numeric", month: "short", day: "numeric" },
+) => {
   if (!date) return "";
-  return new Date(date).toLocaleDateString(currentLang(), options);
+  return new Date(date).toLocaleDateString(lang, options);
 };

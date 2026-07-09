@@ -5,6 +5,8 @@ export default [
     layout('routes/layout.jsx', [
       index('routes/home.jsx'),
       route('guide', 'routes/guide.jsx'),
+      route('guide/auto', 'routes/guide-auto.jsx'),
+      route('guide/saved', 'routes/guide-saved.jsx'),
       route('email-verified', 'routes/email-verified.jsx'),
       route('login', 'routes/login.jsx'),
       route('register', 'routes/register.jsx'),

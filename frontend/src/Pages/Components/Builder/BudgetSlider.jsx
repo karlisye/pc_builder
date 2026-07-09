@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useBuilder } from "../../../Contexts/BuilderContext";
 import { getCheapestPrice } from "../../../lib/componentPrice";
+import { useLang } from "../../../lib/localePath";
 
 const BudgetSlider = ({
   value,
@@ -13,6 +14,7 @@ const BudgetSlider = ({
   showRemaining = true,
 }) => {
   const { t } = useTranslation("builder");
+  const lang = useLang();
   const { selectedComponents } = useBuilder();
   const [inputValue, setInputValue] = useState(value);
   const [isUnlimited, setIsUnlimited] = useState(false);
@@ -135,8 +137,8 @@ const BudgetSlider = ({
       </div>
 
       <div className="flex justify-between">
-        <span className="text-muted text-xs">€{min.toLocaleString()}</span>
-        <span className="text-muted text-xs">€{max.toLocaleString()}</span>
+        <span className="text-muted text-xs">€{min.toLocaleString(lang)}</span>
+        <span className="text-muted text-xs">€{max.toLocaleString(lang)}</span>
       </div>
     </div>
   );

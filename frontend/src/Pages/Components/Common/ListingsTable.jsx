@@ -1,6 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatPrice } from '../../../lib/componentPrice';
+import { formatDate } from '../../../lib/formatDate';
+import { useLang } from '../../../lib/localePath';
 
 const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -16,6 +18,7 @@ const LINK_CLASSES = {
 
 const ListingsTable = ({ listings, breakpoint = 'sm', onVisit }) => {
   const { t } = useTranslation('builder');
+  const lang = useLang();
 
   const stockLabel = (listing) => {
     if (listing.stock_status === 'in_stock')
@@ -42,7 +45,7 @@ const ListingsTable = ({ listings, breakpoint = 'sm', onVisit }) => {
           <span className="text-muted text-sm">
             {listing.scraped_at
               ? t('componentCard.lastScraped', {
-                  date: new Date(listing.scraped_at).toLocaleDateString(),
+                  date: formatDate(listing.scraped_at, lang),
                 })
               : t('componentCard.neverScraped')}
           </span>

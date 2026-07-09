@@ -7,7 +7,7 @@ const SITE_URL = import.meta.env.VITE_SITE_URL ?? 'https://pcbuilder.lv';
 export const pagesSeo = (lang, key) => (lang === 'en' ? enPages : lvPages).seo[key] ?? {};
 
 // Standard meta descriptor set for a route. `path` is the locale-less pathname
-// ('/builder/components/cpu'); canonical/hreflang URLs are derived from it.
+// ('/builder/components/cpu'); canonical/hrefLang URLs are derived from it.
 export function seoMeta({ lang, path, title, description, noindex = false, image }) {
   const url = `${SITE_URL}${localePath(lang, path)}`;
 
@@ -25,14 +25,14 @@ export function seoMeta({ lang, path, title, description, noindex = false, image
 
   tags.push(
     { tagName: 'link', rel: 'canonical', href: url },
-    { tagName: 'link', rel: 'alternate', hreflang: 'lv', href: `${SITE_URL}${path}` },
+    { tagName: 'link', rel: 'alternate', hrefLang: 'lv', href: `${SITE_URL}${path}` },
     {
       tagName: 'link',
       rel: 'alternate',
-      hreflang: 'en',
+      hrefLang: 'en',
       href: `${SITE_URL}${localePath('en', path)}`,
     },
-    { tagName: 'link', rel: 'alternate', hreflang: 'x-default', href: `${SITE_URL}${path}` },
+    { tagName: 'link', rel: 'alternate', hrefLang: 'x-default', href: `${SITE_URL}${path}` },
     { property: 'og:url', content: url },
   );
 

@@ -16,6 +16,7 @@ import SidePanel from './Components/Common/SidePanel';
 import BuildIssuesPopup from './Components/Common/BuildIssuesPopup';
 import { formatDate } from '../lib/formatDate';
 import { formatPrice } from '../lib/componentPrice';
+import { useLang } from '../lib/localePath';
 import { useToast } from '../Contexts/ToastContext';
 
 const SLOT_KEYS = [
@@ -33,6 +34,7 @@ const SLOT_KEYS = [
 
 const SavedBuilds = () => {
   const { t } = useTranslation(['pages', 'builder']);
+  const lang = useLang();
   const { addToast } = useToast();
   const [searchParams] = useSearchParams();
   const [builds, setBuilds] = useState([]);
@@ -299,7 +301,7 @@ const SavedBuilds = () => {
                           </div>
                         )}
                       </div>
-                      <p className="text-muted text-sm">{formatDate(selectedBuild.created_at)}</p>
+                      <p className="text-muted text-sm">{formatDate(selectedBuild.created_at, lang)}</p>
                     </div>
 
                     <div className="relative shrink-0">

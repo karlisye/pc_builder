@@ -14,6 +14,8 @@ class SitemapController extends Controller
     '' => '1.0',
     '/builder' => '0.9',
     '/guide' => '0.5',
+    '/guide/auto' => '0.5',
+    '/guide/saved' => '0.5',
   ];
 
   public function __invoke(): Response
