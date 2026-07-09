@@ -3,4 +3,6 @@
 .env.*
 /node_modules
 /dist
-.vite
+/build
+/.vite
+/.react-router

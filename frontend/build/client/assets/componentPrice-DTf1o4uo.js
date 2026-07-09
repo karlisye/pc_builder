@@ -1,1 +1,0 @@
-const r=i=>parseFloat(i??0).toFixed(2),s=i=>{if(!i)return 0;if(i.listings?.length){const t=Math.min(...i.listings.map(e=>parseFloat(e.price??1/0)));if(Number.isFinite(t))return t}return parseFloat(i.price??0)};export{r as f,s as g};

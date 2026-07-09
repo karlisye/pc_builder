@@ -15,7 +15,7 @@ export default [
         route('components/:type', 'routes/builder-picker.jsx'),
         route('components/:type/:code', 'routes/builder-detail.jsx'),
       ]),
+      route('*', 'routes/not-found.jsx'),
     ]),
   ]),
-  route('*', 'routes/not-found.jsx'),
 ];

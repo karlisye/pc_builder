@@ -1,8 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /admin
-Disallow: /profile
-Disallow: /builds
-Disallow: /email-verified
-
-Sitemap: https://pcbuilder.lv/sitemap.xml

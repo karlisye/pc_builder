@@ -7,7 +7,9 @@ import LanguageSwitcher from '../Pages/Components/Common/LanguageSwitcher';
 import VerifyEmailBanner from '../Pages/Components/Common/VerifyEmailBanner';
 import { stripLocale, useLocalePath } from '../lib/localePath';
 
-const Layout = () => {
+// `children` is only passed when rendered from an ErrorBoundary, where
+// <Outlet /> has nothing to render.
+const Layout = ({ children }) => {
   const { t } = useTranslation('layout');
   const { user, logout } = useAuth();
   const { pathname } = useLocation();
@@ -229,7 +231,7 @@ const Layout = () => {
 
       <div id="page-scroll" className="flex flex-col flex-1 overflow-y-auto">
         <main className="flex-1">
-          <Outlet />
+          {children ?? <Outlet />}
         </main>
 
         <footer className="bg-primary border-t border-primary-light">

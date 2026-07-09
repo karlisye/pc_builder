@@ -3,13 +3,10 @@ import NotFound from '../Pages/NotFound';
 import { langFromPathname } from '../lib/localePath';
 import { pagesSeo, seoMeta } from '../lib/seoMeta';
 
-// Throwing gives crawlers a real 404 status instead of a soft 200.
+// Throwing gives crawlers a real 404 status instead of a soft 200; the
+// locale route's ErrorBoundary renders NotFound inside the Layout chrome.
 export function loader() {
   throw data(null, { status: 404 });
-}
-
-export function ErrorBoundary() {
-  return <NotFound />;
 }
 
 export default NotFound;

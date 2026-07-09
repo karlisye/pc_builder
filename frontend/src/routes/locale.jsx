@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
-import { data, Outlet, redirect, useParams } from 'react-router';
+import { data, isRouteErrorResponse, Outlet, redirect, useParams, useRouteError } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import Layout from '../Layouts/Layout';
+import NotFound from '../Pages/NotFound';
 import { langFromParams } from '../lib/localePath';
 
 // LV is the unprefixed default; /lv/* permanently redirects to it and any
@@ -25,4 +27,22 @@ export default function Locale() {
   }, [lang, i18n]);
 
   return <Outlet />;
+}
+
+// Catches 404s thrown anywhere below (unknown locale prefix, the splat route,
+// bad picker types, missing product codes) and keeps the nav/footer around them.
+export function ErrorBoundary() {
+  const error = useRouteError();
+
+  return (
+    <Layout>
+      {isRouteErrorResponse(error) && error.status === 404 ? (
+        <NotFound />
+      ) : (
+        <div className="bg-primary h-full flex items-center justify-center">
+          <p className="text-white text-xl">Something went wrong.</p>
+        </div>
+      )}
+    </Layout>
+  );
 }
