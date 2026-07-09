@@ -7,11 +7,16 @@ import { langFromParams } from '../lib/localePath';
 
 // LV is the unprefixed default; /lv/* permanently redirects to it and any
 // other prefix that isn't a known child route 404s here.
-export function loader({ params, request }) {
+// `url` (not request.url) because with pass-through requests the raw URL
+// carries .data suffixes and internal params on client navigations.
+export function loader({ params, request, url }) {
   const { lang } = params;
   if (lang === 'lv') {
-    const url = new URL(request.url);
-    throw redirect((url.pathname.replace(/^\/lv(?=\/|$)/, '') || '/') + url.search, 301);
+    const normalized = url ?? new URL(request.url);
+    throw redirect(
+      (normalized.pathname.replace(/^\/lv(?=\/|$)/, '') || '/') + normalized.search,
+      301,
+    );
   }
   if (lang !== undefined && lang !== 'en') throw data(null, { status: 404 });
   return null;

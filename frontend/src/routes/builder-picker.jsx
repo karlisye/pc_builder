@@ -10,16 +10,18 @@ const RESERVED_PARAMS = new Set(['page', 'sort', 'search', 'build', 'shared']);
 // SSR-only data: the list (with nothing selected) and the filter metadata.
 // After hydration TanStack Query owns all fetching, so client-side
 // navigations skip the loader entirely.
-export async function loader({ params, request }) {
+// `url` (not request.url) because with pass-through requests the raw URL
+// carries .data suffixes and internal params — those must not reach the API.
+export async function loader({ params, request, url }) {
   if (!(params.type in EMPTY_SLOTS)) throw data(null, { status: 404 });
 
   const lang = langFromParams(params);
-  const url = new URL(request.url);
+  const normalized = url ?? new URL(request.url);
 
   const query = new URLSearchParams();
   query.set('selected', '{}');
   const filters = {};
-  for (const [key, value] of url.searchParams.entries()) {
+  for (const [key, value] of normalized.searchParams.entries()) {
     if (key === 'build' || key === 'shared') continue;
     query.set(key, value);
     if (!RESERVED_PARAMS.has(key)) filters[key] = value;
@@ -40,10 +42,10 @@ export async function loader({ params, request }) {
       'components',
       params.type,
       '{}',
-      url.searchParams.get('search') ?? '',
-      url.searchParams.get('sort') ?? '',
+      normalized.searchParams.get('search') ?? '',
+      normalized.searchParams.get('sort') ?? '',
       JSON.stringify(filters),
-      Number(url.searchParams.get('page') ?? 1),
+      Number(normalized.searchParams.get('page') ?? 1),
     ]),
   };
 }

@@ -73,7 +73,7 @@ export default function BuilderDetail() {
   );
 }
 
-export const meta = ({ data: loaderData, params }) => {
+export const meta = ({ loaderData, params }) => {
   const lang = langFromParams(params);
   if (!loaderData?.component) {
     return seoMeta({ lang, path: '/builder', ...pagesSeo(lang, 'notFound'), noindex: true });
