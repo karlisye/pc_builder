@@ -15,9 +15,8 @@ import { ToastProvider } from './Contexts/ToastContext';
 import ToastContainer from './Pages/Components/Common/ToastContainer';
 import NotFound from './Pages/NotFound';
 import { langFromParams } from './lib/localePath';
-import appCss from './app.css?url';
 
-export const links = () => [{ rel: 'stylesheet', href: appCss }];
+export const links = () => [];
 
 export function Layout({ children }) {
   const params = useParams();

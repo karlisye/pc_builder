@@ -230,9 +230,7 @@ const Layout = ({ children }) => {
       </header>
 
       <div id="page-scroll" className="flex flex-col flex-1 overflow-y-auto">
-        <main className="flex-1">
-          {children ?? <Outlet />}
-        </main>
+        <main className="flex-1">{children ?? <Outlet />}</main>
 
         <footer className="bg-primary border-t border-primary-light">
           <div className="max-w-348 mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">

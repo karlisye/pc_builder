@@ -6,6 +6,8 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
+
+RUN rm -rf /app/build /app/.react-router /app/node_modules/.vite /tmp/*
 RUN npm run build
 
 FROM node:24-alpine AS ssr

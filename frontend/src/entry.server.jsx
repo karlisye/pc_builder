@@ -6,6 +6,7 @@ import { I18nextProvider } from 'react-i18next';
 import { isbot } from 'isbot';
 import { createI18n } from './i18n';
 import { langFromPathname } from './lib/localePath';
+import './app.css';
 
 export const streamTimeout = 5_000;
 

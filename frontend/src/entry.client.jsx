@@ -5,6 +5,7 @@ import { HydratedRouter } from 'react-router/dom';
 import { I18nextProvider } from 'react-i18next';
 import { createI18n } from './i18n';
 import { langFromPathname } from './lib/localePath';
+import './app.css';
 
 const i18n = createI18n(langFromPathname(window.location.pathname));
 
