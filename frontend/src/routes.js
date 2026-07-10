@@ -10,6 +10,7 @@ export default [
       route('email-verified', 'routes/email-verified.jsx'),
       route('account-deleted', 'routes/account-deleted.jsx'),
       route('privacy', 'routes/privacy.jsx'),
+      route('terms', 'routes/terms.jsx'),
       route('login', 'routes/login.jsx'),
       route('register', 'routes/register.jsx'),
       route('builds/:id?', 'routes/builds.jsx'),

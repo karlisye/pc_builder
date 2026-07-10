@@ -252,6 +252,9 @@ const Layout = ({ children }) => {
               <Link to={lp('/guide')} className="hover:text-white transition">
                 {t('nav.guide')}
               </Link>
+              <Link to={lp('/terms')} className="hover:text-white transition">
+                {t('footer.terms')}
+              </Link>
               <Link to={lp('/privacy')} className="hover:text-white transition">
                 {t('footer.privacy')}
               </Link>

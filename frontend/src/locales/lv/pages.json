@@ -30,6 +30,10 @@
       "title": "Privātuma Politika — DatorBuve",
       "description": "Kā DatorBuve apkopo, izmanto un aizsargā jūsu personas datus, tostarp sīkdatnes un jūsu tiesības saskaņā ar VDAR."
     },
+    "terms": {
+      "title": "Lietošanas Noteikumi — DatorBuve",
+      "description": "Noteikumi, kas attiecas uz DatorBuve izmantošanu, tostarp konta noteikumi, cenu un saderības atrunas, un saites uz trešo pušu veikaliem."
+    },
     "picker": {
       "cpu": {
         "title": "Procesoru (CPU) cenas Latvijā | DatorBuve",

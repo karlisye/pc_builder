@@ -1,16 +1,16 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-const Privacy = () => {
+const LegalDocument = ({ docKey }) => {
   const { t } = useTranslation('legal');
-  const sections = t('privacy.sections', { returnObjects: true });
+  const sections = t(`${docKey}.sections`, { returnObjects: true });
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-10">
-      <h1 className="text-4xl font-semibold mb-1 text-text">{t('privacy.title')}</h1>
-      <p className="text-muted text-sm mb-8">{t('privacy.lastUpdated')}</p>
+      <h1 className="text-4xl font-semibold mb-1 text-text">{t(`${docKey}.title`)}</h1>
+      <p className="text-muted text-sm mb-8">{t(`${docKey}.lastUpdated`)}</p>
 
-      <p className="text-text mb-8">{t('privacy.intro')}</p>
+      <p className="text-text mb-8">{t(`${docKey}.intro`)}</p>
 
       <div className="space-y-8">
         {sections.map((section, i) => (
@@ -31,4 +31,4 @@ const Privacy = () => {
   );
 };
 
-export default Privacy;
+export default LegalDocument;

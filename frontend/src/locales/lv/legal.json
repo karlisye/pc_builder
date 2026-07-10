@@ -1,4 +1,5 @@
 {
+  "sidePanelTitle": "JURIDISKĀ INFORMĀCIJA",
   "privacy": {
     "title": "Privātuma Politika",
     "lastUpdated": "Pēdējoreiz atjaunināts: 2026. gada 10. jūlijs",
@@ -64,6 +65,81 @@
       {
         "heading": "Kontakti",
         "body": "Jautājumi par šo politiku vai jūsu datiem? Sazinieties ar mums: privacy@datorbuve.lv."
+      }
+    ]
+  },
+  "terms": {
+    "title": "Lietošanas Noteikumi",
+    "lastUpdated": "Pēdējoreiz atjaunināts: 2026. gada 10. jūlijs",
+    "intro": "Šie noteikumi regulē DatorBuve (\"mēs\") — rīka datora komponenšu pārlūkošanai, saderības pārbaudei, kā arī datoru konfigurāciju veidošanai un saglabāšanai Latvijas tirgum — izmantošanu. Izmantojot lapu, jūs piekrītat šiem noteikumiem.",
+    "sections": [
+      {
+        "heading": "Pakalpojums",
+        "body": "DatorBuve ļauj pārlūkot datora komponentes, pārbaudīt to savstarpējo saderību, automātiski ģenerēt konfigurācijas budžeta ietvaros, kā arī saglabāt vai koplietot konfigurācijas. Mēs neesam mazumtirgotājs — mēs nepārdodam komponentes, neapstrādājam maksājumus un neizpildām pasūtījumus. Pirkumi notiek trešo pušu veikalu mājaslapās, uz kurām mēs norādām saites."
+      },
+      {
+        "heading": "Atbilstība Vecuma Prasībām",
+        "body": "Lai izveidotu kontu un izmantotu pakalpojumu, jums jābūt sasniegušam vismaz 16 gadu vecumu."
+      },
+      {
+        "heading": "Konti",
+        "list": [
+          "Jūs esat atbildīgs par savas paroles konfidencialitāti un visām darbībām, kas veiktas jūsu kontā.",
+          "Jūs piekrītat sniegt precīzu informāciju, reģistrējoties.",
+          "Jūs varat dzēst savu kontu jebkurā laikā konta iestatījumos — tas neatgriezeniski dzēš jūsu kontu un saglabātās konfigurācijas."
+        ]
+      },
+      {
+        "heading": "Cenu un Pieejamības Atruna",
+        "body": "Cenas un pieejamības informācija tiek apkopota no trešo pušu mazumtirgotāju mājaslapām un var būt novecojusi, neprecīza vai vairs nepieejama brīdī, kad to skatāt. Vienmēr pārbaudiet aktuālo cenu un pieejamību mazumtirgotāja mājaslapā pirms pirkuma veikšanas. Mēs neesam atbildīgi par cenu kļūdām vai neatbilstībām."
+      },
+      {
+        "heading": "Saderības Atruna",
+        "body": "Saderības pārbaudes, brīdinājumi un automātiski ģenerētas konfigurācijas tiek nodrošinātas kā ērtība, balstoties uz mūsu rīcībā esošajām specifikācijām, un nav garantija par atbilstību vai funkcionalitāti. Dažas pārbaudes tiek izlaistas, ja komponentes specifikācijas nav zināmas (atzīmētas kā \"jāpārbauda manuāli\"). Vienmēr pats pārbaudiet svarīgākās specifikācijas — izmērus, jaudas prasības, ligzdas tipu — pirms pirkuma veikšanas."
+      },
+      {
+        "heading": "Saglabātās un Koplietotās Konfigurācijas",
+        "body": "Konfigurāciju nosaukumi, piezīmes un komponenšu izvēle ir jūsu izveidots saturs. Ja atzīmējat konfigurāciju kā publisku, tās nosaukums, komponentes un piezīmes kļūst redzamas ikvienam ar koplietošanas saiti. Neiekļaujiet konfigurāciju nosaukumos vai piezīmēs nelikumīgu, aizskarošu vai personisku informāciju."
+      },
+      {
+        "heading": "Pieņemamā Izmantošana",
+        "list": [
+          "Neveiciet lapas satura izgūšanu (scraping), automatizāciju vai pārmērīgu automatizētu pieprasījumu sūtīšanu.",
+          "Nemēģiniet apiet drošības pasākumus, tostarp botu aizsardzību pieslēgšanās un reģistrācijas formās.",
+          "Neizmantojiet pakalpojumu nekādiem nelikumīgiem mērķiem."
+        ]
+      },
+      {
+        "heading": "Trešo Pušu Saites un Afilācijas Atklāsme",
+        "body": "Saites uz mazumtirgotāju veikaliem tiek nodrošinātas jūsu ērtībai. Mēs nekontrolējam un neesam atbildīgi par saturu, cenām vai darījumiem trešo pušu mājaslapās. Dažas no šīm saitēm var būt afilācijas saites — ja veicat pirkumu, izmantojot tās, mēs varam saņemt komisijas maksu bez papildu izmaksām jums."
+      },
+      {
+        "heading": "Intelektuālais Īpašums",
+        "body": "DatorBuve nosaukums, dizains un kods pieder mums. Komponenšu nosaukumi, attēli un specifikācijas pieder attiecīgajiem ražotājiem un mazumtirgotājiem, un tiek izmantoti, lai palīdzētu jums salīdzināt produktus."
+      },
+      {
+        "heading": "Atbildības Ierobežojums",
+        "body": "Pakalpojums tiek nodrošināts \"tāds, kāds ir\", bez jebkādām garantijām. Mēs neesam atbildīgi par pirkuma lēmumiem, kas pieņemti, pamatojoties uz lapā sniegto informāciju, par kļūdām trešo pušu cenu vai saderības datos, vai par problēmām, kas rodas trešo pušu mazumtirgotāju mājaslapās. Ciktāl to pieļauj likums, mēs nekādā gadījumā neesam atbildīgi par netiešiem, nejaušiem vai izrietošiem zaudējumiem, kas radušies pakalpojuma izmantošanas rezultātā."
+      },
+      {
+        "heading": "Konta Apturēšana un Pakalpojuma Izmaiņas",
+        "body": "Mēs varam apturēt vai izbeigt kontus, kas pārkāpj šos noteikumus. Jūs varat jebkurā laikā pārtraukt pakalpojuma izmantošanu un dzēst savu kontu. Mēs paturam tiesības jebkurā laikā pārtraukt, mainīt vai noņemt jebkuru pakalpojuma daļu, tostarp bez iepriekšēja brīdinājuma."
+      },
+      {
+        "heading": "Nodalāmība",
+        "body": "Ja kāds no šo noteikumu punktiem tiek atzīts par neizpildāmu, pārējie punkti paliek spēkā pilnā apmērā."
+      },
+      {
+        "heading": "Piemērojamie Tiesību Akti un Vienošanās Kopums",
+        "body": "Šos noteikumus regulē Latvijas Republikas tiesību akti. Kopā ar mūsu Privātuma Politiku šie noteikumi veido pilnu vienošanos starp jums un mums attiecībā uz pakalpojumu."
+      },
+      {
+        "heading": "Šo Noteikumu Izmaiņas",
+        "body": "Mēs varam laiku pa laikam atjaunināt šos noteikumus. Nelielas redakcionālas izmaiņas tiks atspoguļotas, vienkārši atjauninot datumu šīs lapas augšpusē. Par būtiskām izmaiņām mēs jūs informēsim tieši, izmantojot e-pastu, papildus šīs lapas atjaunināšanai."
+      },
+      {
+        "heading": "Kontakti",
+        "body": "Jautājumi par šiem noteikumiem? Sazinieties ar mums: legal@datorbuve.lv."
       }
     ]
   }

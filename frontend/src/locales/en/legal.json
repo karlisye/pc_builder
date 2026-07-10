@@ -1,4 +1,5 @@
 {
+  "sidePanelTitle": "LEGAL",
   "privacy": {
     "title": "Privacy Policy",
     "lastUpdated": "Last updated: July 10, 2026",
@@ -64,6 +65,81 @@
       {
         "heading": "Contact",
         "body": "Questions about this policy or your data? Contact us at privacy@datorbuve.lv."
+      }
+    ]
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "lastUpdated": "Last updated: July 10, 2026",
+    "intro": "These terms govern your use of DatorBuve (\"we\", \"us\"), a tool for browsing PC components, checking compatibility, and building and saving PC configurations for the Latvian market. By using the site, you agree to these terms.",
+    "sections": [
+      {
+        "heading": "The Service",
+        "body": "DatorBuve lets you browse PC components, check compatibility between them, generate builds automatically within a budget, and save or share configurations. We are not a retailer — we don't sell components, process payments, or fulfill orders. Purchases happen on third-party store websites we link to."
+      },
+      {
+        "heading": "Eligibility",
+        "body": "You must be at least 16 years old to create an account and use the service."
+      },
+      {
+        "heading": "Accounts",
+        "list": [
+          "You're responsible for keeping your password confidential and for all activity under your account.",
+          "You agree to provide accurate information when registering.",
+          "You may delete your account at any time from Account Settings — this permanently removes your account and saved builds."
+        ]
+      },
+      {
+        "heading": "Pricing & Availability Disclaimer",
+        "body": "Prices and stock information are collected from third-party retailer websites and may be outdated, inaccurate, or no longer available by the time you view them. Always verify the current price and availability on the retailer's own site before purchasing. We are not responsible for pricing errors or discrepancies."
+      },
+      {
+        "heading": "Compatibility Disclaimer",
+        "body": "Compatibility checks, warnings, and auto-generated builds are provided as a best-effort convenience based on the specifications we have on file, and are not a guarantee of fit or function. Some checks are skipped when a component's specs are unknown (flagged as \"needs manual check\"). Always verify critical specifications yourself — dimensions, power requirements, socket type — before purchasing."
+      },
+      {
+        "heading": "Saved & Shared Builds",
+        "body": "Build names, notes, and component selections are content you create. If you mark a build as public, that name, its components, and notes become visible to anyone with the share link. Don't include unlawful, offensive, or personal information in build names or notes."
+      },
+      {
+        "heading": "Acceptable Use",
+        "list": [
+          "Don't scrape, automate, or send excessive automated requests against the site.",
+          "Don't attempt to bypass security measures, including bot-protection on sign-in and sign-up.",
+          "Don't use the service for any unlawful purpose."
+        ]
+      },
+      {
+        "heading": "Third-Party Links & Affiliate Disclosure",
+        "body": "Links to retailer stores are provided for your convenience. We don't control, and aren't responsible for, the content, pricing, or transactions on third-party sites. Some of these links may be affiliate links — if you make a purchase through them, we may earn a commission at no extra cost to you."
+      },
+      {
+        "heading": "Intellectual Property",
+        "body": "The DatorBuve name, design, and code are ours. Component names, images, and specifications belong to their respective manufacturers and retailers, and are used to help you compare products."
+      },
+      {
+        "heading": "Limitation of Liability",
+        "body": "The service is provided \"as is\", without warranties of any kind. We are not liable for purchasing decisions made based on information from the site, for errors in third-party pricing or compatibility data, or for issues arising from third-party retailer websites. To the fullest extent permitted by law, we are not liable for any indirect, incidental, or consequential damages arising from your use of the service."
+      },
+      {
+        "heading": "Account Termination & Service Changes",
+        "body": "We may suspend or terminate accounts that violate these terms. You may stop using the service and delete your account at any time. We also reserve the right to discontinue, modify, or remove any part of the service at any time, including without prior notice."
+      },
+      {
+        "heading": "Severability",
+        "body": "If any provision of these terms is found to be unenforceable, the remaining provisions will remain in full effect."
+      },
+      {
+        "heading": "Governing Law & Entire Agreement",
+        "body": "These terms are governed by the laws of Latvia. Together with our Privacy Policy, these terms make up the entire agreement between you and us regarding the service."
+      },
+      {
+        "heading": "Changes to These Terms",
+        "body": "We may update these terms from time to time. Minor wording fixes will simply update the date at the top of this page. For meaningful or substantive changes, we'll notify you directly, by email, in addition to updating this page."
+      },
+      {
+        "heading": "Contact",
+        "body": "Questions about these terms? Contact us at legal@datorbuve.lv."
       }
     ]
   }
