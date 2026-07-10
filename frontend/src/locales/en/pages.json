@@ -1,79 +1,86 @@
 {
   "seo": {
     "home": {
-      "title": "PC Builder — Build Your PC Online | Latvia",
+      "title": "DatorBuve — Build Your PC Online | Latvia",
       "description": "Build and compare PCs using real components from the Latvian market, with live pricing and automatic compatibility checks."
     },
     "builder": {
-      "title": "PC Builder — Build Your PC",
+      "title": "DatorBuve — Build Your PC",
       "description": "Pick components or generate a build automatically within your budget, with real-time compatibility checks and live Latvian store pricing."
     },
     "guide": {
-      "title": "Guide — PC Builder",
+      "title": "Guide — DatorBuve",
       "description": "Learn how to build a PC, use the automatic builder, and manage your saved builds."
     },
     "login": {
-      "title": "Sign In — PC Builder",
-      "description": "Sign in to your PC Builder account to save and manage your builds."
+      "title": "Sign In — DatorBuve",
+      "description": "Sign in to your DatorBuve account to save and manage your builds."
     },
     "register": {
-      "title": "Sign Up — PC Builder",
-      "description": "Create a free PC Builder account to save your builds and access the automatic builder."
+      "title": "Sign Up — DatorBuve",
+      "description": "Create a free DatorBuve account to save your builds and access the automatic builder."
     },
     "savedBuilds": {
-      "title": "Saved Builds — PC Builder"
+      "title": "Saved Builds — DatorBuve"
     },
     "notFound": {
-      "title": "Page Not Found — PC Builder"
+      "title": "Page Not Found — DatorBuve"
     },
     "picker": {
       "cpu": {
-        "title": "CPU Prices in Latvia — Pick a Processor | PC Builder",
+        "title": "CPU Prices in Latvia — Pick a Processor | DatorBuve",
         "description": "Browse processors with live prices from Latvian stores. Filter by socket, cores and price, with automatic compatibility checks for your build."
       },
       "motherboard": {
-        "title": "Motherboard Prices in Latvia | PC Builder",
+        "title": "Motherboard Prices in Latvia | DatorBuve",
         "description": "Browse motherboards with live prices from Latvian stores. Filter by socket, chipset and form factor, with automatic compatibility checks."
       },
       "ram": {
-        "title": "RAM Prices in Latvia — DDR4 & DDR5 | PC Builder",
+        "title": "RAM Prices in Latvia — DDR4 & DDR5 | DatorBuve",
         "description": "Browse memory kits with live prices from Latvian stores. Filter by type, capacity and speed, with automatic compatibility checks."
       },
       "gpu": {
-        "title": "Graphics Card (GPU) Prices in Latvia | PC Builder",
+        "title": "Graphics Card (GPU) Prices in Latvia | DatorBuve",
         "description": "Browse graphics cards with live prices from Latvian stores. Filter by brand, VRAM and price, with automatic compatibility checks."
       },
       "psu": {
-        "title": "Power Supply (PSU) Prices in Latvia | PC Builder",
+        "title": "Power Supply (PSU) Prices in Latvia | DatorBuve",
         "description": "Browse power supplies with live prices from Latvian stores. Filter by wattage, efficiency and modularity, with automatic compatibility checks."
       },
       "ssd": {
-        "title": "SSD Prices in Latvia | PC Builder",
+        "title": "SSD Prices in Latvia | DatorBuve",
         "description": "Browse solid state drives with live prices from Latvian stores. Filter by capacity, type and interface, with automatic compatibility checks."
       },
       "hdd": {
-        "title": "Hard Drive (HDD) Prices in Latvia | PC Builder",
+        "title": "Hard Drive (HDD) Prices in Latvia | DatorBuve",
         "description": "Browse hard drives with live prices from Latvian stores. Filter by capacity and interface, with automatic compatibility checks."
       },
       "case": {
-        "title": "PC Case Prices in Latvia | PC Builder",
+        "title": "PC Case Prices in Latvia | DatorBuve",
         "description": "Browse PC cases with live prices from Latvian stores. Filter by form factor, with automatic compatibility checks for your components."
       },
       "cooler": {
-        "title": "CPU Cooler Prices in Latvia | PC Builder",
+        "title": "CPU Cooler Prices in Latvia | DatorBuve",
         "description": "Browse CPU coolers with live prices from Latvian stores. Filter by TDP support and fan size, with automatic compatibility checks."
       },
       "fan": {
-        "title": "Case Fan Prices in Latvia | PC Builder",
+        "title": "Case Fan Prices in Latvia | DatorBuve",
         "description": "Browse case fans with live prices from Latvian stores. Filter by size and pack count, with automatic compatibility checks."
       }
     },
     "componentDetail": {
-      "title": "{{name}} — Price in Latvia | PC Builder",
+      "title": "{{name}} — Price in Latvia | DatorBuve",
       "description": "Compare prices and availability for {{name}} across Latvian stores and check compatibility with your PC build."
     }
   },
   "home": {
+    "hero": {
+      "title": "DatorBuve",
+      "description": "Build and compare PCs using real components from the Latvian market, or let the auto-builder put one together for you.",
+      "startBuilding": "Start Building",
+      "signIn": "Sign In",
+      "myBuilds": "My Builds"
+    },
     "build": {
       "title": "BUILD YOUR PC",
       "description": "Design your PC using our simple builder. Choose from components available in the Latvian market, all with live, accurate pricing."
@@ -210,7 +217,7 @@
       "compatibilityIssues": "Compatibility Issues"
     },
     "sidePanel": {
-      "brand": "PC BUILDER"
+      "brand": "DATORBUVE"
     }
   }
 }

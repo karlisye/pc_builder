@@ -1,79 +1,86 @@
 {
   "seo": {
     "home": {
-      "title": "PC Builder — Izveido Savu Datoru Tiešsaistē | Latvija",
+      "title": "DatorBuve — Izveido Savu Datoru Tiešsaistē | Latvija",
       "description": "Izveido un salīdzini datorus, izmantojot reālas Latvijas tirgus komponentes ar aktuālām cenām un automātisku saderības pārbaudi."
     },
     "builder": {
-      "title": "PC Builder — Izveido Savu Datoru",
+      "title": "DatorBuve — Izveido Savu Datoru",
       "description": "Izvēlies komponentes vai automātiski izveido konfigurāciju sava budžeta ietvaros ar reāllaika saderības pārbaudi un aktuālām Latvijas veikalu cenām."
     },
     "guide": {
-      "title": "Pamācība — PC Builder",
+      "title": "Pamācība — DatorBuve",
       "description": "Uzzini, kā izveidot datoru, izmantot automātisko konstruktoru un pārvaldīt saglabātās konfigurācijas."
     },
     "login": {
-      "title": "Pieslēgties — PC Builder",
-      "description": "Pieslēdzies savam PC Builder kontam, lai saglabātu un pārvaldītu savas konfigurācijas."
+      "title": "Pieslēgties — DatorBuve",
+      "description": "Pieslēdzies savam DatorBuve kontam, lai saglabātu un pārvaldītu savas konfigurācijas."
     },
     "register": {
-      "title": "Reģistrēties — PC Builder",
-      "description": "Izveido bezmaksas PC Builder kontu, lai saglabātu konfigurācijas un izmantotu automātisko konstruktoru."
+      "title": "Reģistrēties — DatorBuve",
+      "description": "Izveido bezmaksas DatorBuve kontu, lai saglabātu konfigurācijas un izmantotu automātisko konstruktoru."
     },
     "savedBuilds": {
-      "title": "Saglabātās Konfigurācijas — PC Builder"
+      "title": "Saglabātās Konfigurācijas — DatorBuve"
     },
     "notFound": {
-      "title": "Lapa Nav Atrasta — PC Builder"
+      "title": "Lapa Nav Atrasta — DatorBuve"
     },
     "picker": {
       "cpu": {
-        "title": "Procesoru (CPU) cenas Latvijā | PC Builder",
+        "title": "Procesoru (CPU) cenas Latvijā | DatorBuve",
         "description": "Pārlūko procesorus ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc ligzdas, kodolu skaita un cenas ar automātisku saderības pārbaudi."
       },
       "motherboard": {
-        "title": "Mātesplašu cenas Latvijā | PC Builder",
+        "title": "Mātesplašu cenas Latvijā | DatorBuve",
         "description": "Pārlūko mātesplates ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc ligzdas, mikroshēmojuma un formfaktora ar automātisku saderības pārbaudi."
       },
       "ram": {
-        "title": "Operatīvās atmiņas (RAM) cenas Latvijā | PC Builder",
+        "title": "Operatīvās atmiņas (RAM) cenas Latvijā | DatorBuve",
         "description": "Pārlūko atmiņas komplektus ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc tipa, ietilpības un ātruma ar automātisku saderības pārbaudi."
       },
       "gpu": {
-        "title": "Videokaršu (GPU) cenas Latvijā | PC Builder",
+        "title": "Videokaršu (GPU) cenas Latvijā | DatorBuve",
         "description": "Pārlūko videokartes ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc ražotāja, VRAM un cenas ar automātisku saderības pārbaudi."
       },
       "psu": {
-        "title": "Barošanas bloku (PSU) cenas Latvijā | PC Builder",
+        "title": "Barošanas bloku (PSU) cenas Latvijā | DatorBuve",
         "description": "Pārlūko barošanas blokus ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc jaudas, efektivitātes un modularitātes ar automātisku saderības pārbaudi."
       },
       "ssd": {
-        "title": "SSD disku cenas Latvijā | PC Builder",
+        "title": "SSD disku cenas Latvijā | DatorBuve",
         "description": "Pārlūko SSD diskus ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc ietilpības, tipa un saskarnes ar automātisku saderības pārbaudi."
       },
       "hdd": {
-        "title": "Cieto disku (HDD) cenas Latvijā | PC Builder",
+        "title": "Cieto disku (HDD) cenas Latvijā | DatorBuve",
         "description": "Pārlūko cietos diskus ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc ietilpības un saskarnes ar automātisku saderības pārbaudi."
       },
       "case": {
-        "title": "Datoru korpusu cenas Latvijā | PC Builder",
+        "title": "Datoru korpusu cenas Latvijā | DatorBuve",
         "description": "Pārlūko datoru korpusus ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc formfaktora ar automātisku saderības pārbaudi."
       },
       "cooler": {
-        "title": "Procesora dzesētāju cenas Latvijā | PC Builder",
+        "title": "Procesora dzesētāju cenas Latvijā | DatorBuve",
         "description": "Pārlūko procesora dzesētājus ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc TDP atbalsta un ventilatora izmēra ar automātisku saderības pārbaudi."
       },
       "fan": {
-        "title": "Korpusa ventilatoru cenas Latvijā | PC Builder",
+        "title": "Korpusa ventilatoru cenas Latvijā | DatorBuve",
         "description": "Pārlūko korpusa ventilatorus ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc izmēra un skaita komplektā ar automātisku saderības pārbaudi."
       }
     },
     "componentDetail": {
-      "title": "{{name}} — cena Latvijā | PC Builder",
+      "title": "{{name}} — cena Latvijā | DatorBuve",
       "description": "Salīdzini {{name}} cenas un pieejamību Latvijas veikalos un pārbaudi saderību ar savu datora konfigurāciju."
     }
   },
   "home": {
+    "hero": {
+      "title": "DatorBuve",
+      "description": "Izveido un salīdzini datorus, izmantojot reālas Latvijas tirgus komponentes, vai ļauj automātiskajam konstruktoram to izveidot tavā vietā.",
+      "startBuilding": "Sākt Būvēt",
+      "signIn": "Pieslēgties",
+      "myBuilds": "Manas Konfigurācijas"
+    },
     "build": {
       "title": "IZVEIDO SAVU DATORU",
       "description": "Izveido savu datoru, izmantojot mūsu vienkāršo konstruktoru. Izvēlies no Latvijas tirgū pieejamām komponentēm ar precīzām, aktuālām cenām."
@@ -210,7 +217,7 @@
       "compatibilityIssues": "Saderības problēmas"
     },
     "sidePanel": {
-      "brand": "PC BUILDER"
+      "brand": "DATORBUVE"
     }
   }
 }

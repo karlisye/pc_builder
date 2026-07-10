@@ -10,7 +10,7 @@ import { stripLocale, useLocalePath } from '../lib/localePath';
 // `children` is only passed when rendered from an ErrorBoundary, where
 // <Outlet /> has nothing to render.
 const Layout = ({ children }) => {
-  const { t } = useTranslation('layout');
+  const { t } = useTranslation(['layout', 'common']);
   const { user, logout } = useAuth();
   const { pathname } = useLocation();
   const lp = useLocalePath();
@@ -74,7 +74,7 @@ const Layout = ({ children }) => {
             className="lg:hidden py-4 px-6 bg-primary text-white font-semibold hover:bg-primary-light transition"
             to={lp('/')}
           >
-            BUILDER
+            {t('common:appName')}
           </Link>
 
           {user ? (
@@ -84,7 +84,7 @@ const Layout = ({ children }) => {
                   className="py-4 px-6 bg-primary text-white font-semibold hover:bg-primary-light transition"
                   to={lp('/')}
                 >
-                  BUILDER
+                  {t('common:appName')}
                 </Link>
                 <Link className={navLinkClass('/builder')} to={lp('/builder')}>
                   {t('nav.build')}
@@ -185,7 +185,7 @@ const Layout = ({ children }) => {
                   className="py-4 px-6 bg-primary text-white font-semibold hover:bg-primary-light transition"
                   to={lp('/')}
                 >
-                  BUILDER
+                  {t('common:appName')}
                 </Link>
                 <Link className={navLinkClass('/builder')} to={lp('/builder')}>
                   {t('nav.build')}
@@ -235,7 +235,7 @@ const Layout = ({ children }) => {
         <footer className="bg-primary border-t border-primary-light">
           <div className="max-w-348 mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex flex-col items-center sm:items-start">
-              <span className="font-bold text-white">BUILDER</span>
+              <span className="font-bold text-white">{t('common:appName')}</span>
               <p className="text-surface text-sm mt-1">{t('footer.tagline')}</p>
             </div>
             <div className="flex gap-6 text-sm text-surface">
