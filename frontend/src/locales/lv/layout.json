@@ -9,6 +9,7 @@
     "hello": "Sveiki, {{name}}"
   },
   "footer": {
-    "tagline": "Salīdzini cenas un veido savu datoru."
+    "tagline": "Salīdzini cenas un veido savu datoru.",
+    "cookieSettings": "Sīkdatņu iestatījumi"
   }
 }

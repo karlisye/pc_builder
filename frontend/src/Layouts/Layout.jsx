@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, Outlet } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../Contexts/AuthContext';
+import { useConsent } from '../Contexts/ConsentContext';
 import { AlertIcon, ArrowIcon, MenuIcon } from '../Pages/Components/Common/Icons';
 import LanguageSwitcher from '../Pages/Components/Common/LanguageSwitcher';
 import VerifyEmailBanner from '../Pages/Components/Common/VerifyEmailBanner';
@@ -12,6 +13,7 @@ import { stripLocale, useLocalePath } from '../lib/localePath';
 const Layout = ({ children }) => {
   const { t } = useTranslation(['layout', 'common']);
   const { user, logout } = useAuth();
+  const { openSettings } = useConsent();
   const { pathname } = useLocation();
   const lp = useLocalePath();
   const basePath = stripLocale(pathname);
@@ -250,6 +252,12 @@ const Layout = ({ children }) => {
               <Link to={lp('/guide')} className="hover:text-white transition">
                 {t('nav.guide')}
               </Link>
+              <button
+                onClick={openSettings}
+                className="hover:text-white transition cursor-pointer"
+              >
+                {t('footer.cookieSettings')}
+              </button>
             </div>
             <a
               href="https://github.com/karlisye"

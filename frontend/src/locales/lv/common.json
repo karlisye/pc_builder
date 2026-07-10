@@ -12,6 +12,19 @@
   "next": "Tālāk",
   "previous": "Atpakaļ",
   "page": "{{current}}. lapa no {{total}}",
+  "cookieConsent": {
+    "title": "Sīkdatnes",
+    "description": "Mēs izmantojam nepieciešamās sīkdatnes, lai jūs paliktu pieslēgts un lapa būtu droša. Ar jūsu atļauju vēlamies izmantot arī analītikas sīkdatnes, lai saprastu, kā lapa tiek izmantota. To var mainīt jebkurā laikā, izmantojot saiti \"Sīkdatņu iestatījumi\" lapas apakšā.",
+    "acceptAll": "Pieņemt visas",
+    "rejectNonEssential": "Noraidīt nebūtiskās",
+    "customize": "Pielāgot",
+    "savePreferences": "Saglabāt izvēli",
+    "necessaryLabel": "Nepieciešamās",
+    "necessaryDescription": "Nepieciešamas pieslēgšanās un pamata funkcionalitātes nodrošināšanai. Vienmēr aktīvas.",
+    "analyticsLabel": "Analītika",
+    "analyticsDescription": "Palīdz mums saprast, kā apmeklētāji izmanto lapu.",
+    "close": "Aizvērt"
+  },
   "verifyEmail": {
     "banner": "Apstipriniet savu e-pastu, lai atbloķētu konfigurācijas ģenerēšanu un saglabāšanu.",
     "resend": "Nosūtīt vēlreiz",

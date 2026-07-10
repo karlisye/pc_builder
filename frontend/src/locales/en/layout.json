@@ -9,6 +9,7 @@
     "hello": "Hello, {{name}}"
   },
   "footer": {
-    "tagline": "Compare prices and build your PC."
+    "tagline": "Compare prices and build your PC.",
+    "cookieSettings": "Cookie Settings"
   }
 }

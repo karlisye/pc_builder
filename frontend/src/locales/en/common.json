@@ -12,6 +12,19 @@
   "next": "Next",
   "previous": "Previous",
   "page": "Page {{current}} of {{total}}",
+  "cookieConsent": {
+    "title": "Cookies",
+    "description": "We use necessary cookies to keep you signed in and secure. With your permission, we'd also like to use analytics cookies to understand how the site is used. You can change this anytime from the Cookie Settings link in the footer.",
+    "acceptAll": "Accept All",
+    "rejectNonEssential": "Reject Non-Essential",
+    "customize": "Customize",
+    "savePreferences": "Save Preferences",
+    "necessaryLabel": "Necessary",
+    "necessaryDescription": "Required for login and core site functionality. Always on.",
+    "analyticsLabel": "Analytics",
+    "analyticsDescription": "Helps us understand how visitors use the site.",
+    "close": "Close"
+  },
   "verifyEmail": {
     "banner": "Verify your email to unlock build generation and saving.",
     "resend": "Resend email",

@@ -12,7 +12,9 @@ import {
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './Contexts/AuthContext';
 import { ToastProvider } from './Contexts/ToastContext';
+import { ConsentProvider } from './Contexts/ConsentContext';
 import ToastContainer from './Pages/Components/Common/ToastContainer';
+import ConsentBanner from './Pages/Components/Common/ConsentBanner';
 import NotFound from './Pages/NotFound';
 import { langFromParams } from './lib/localePath';
 
@@ -56,7 +58,10 @@ export default function Root() {
       <AuthProvider>
         <ToastProvider>
           <ToastContainer />
-          <Outlet />
+          <ConsentProvider>
+            <ConsentBanner />
+            <Outlet />
+          </ConsentProvider>
         </ToastProvider>
       </AuthProvider>
     </QueryClientProvider>
