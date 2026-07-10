@@ -1,0 +1,70 @@
+{
+  "privacy": {
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated: July 10, 2026",
+    "intro": "DatorBuve (\"we\", \"us\") operates datorbuve.lv, a tool for browsing PC components, checking compatibility, and building and saving PC configurations. This page explains what personal data we collect, why, and what rights you have over it under the GDPR.",
+    "sections": [
+      {
+        "heading": "Data We Collect",
+        "list": [
+          "Account data: name, email address, and a hashed password when you register. We never store your password in plain text.",
+          "Build data: the components, name, and optional notes of any build you save, and whether it's shared publicly. If you mark a build as public, its name, selected components, and notes become visible to anyone with the share link — your account details (name, email) are never included or shown.",
+          "Cookies: see the Cookies section below."
+        ]
+      },
+      {
+        "heading": "How We Use Your Data",
+        "list": [
+          "To create and secure your account, and to keep you signed in — necessary for performance of a contract with you (GDPR Art. 6(1)(b)).",
+          "To save, display, and let you manage your PC builds — necessary for performance of a contract with you (GDPR Art. 6(1)(b)).",
+          "To send account-related emails: email verification and account-deletion confirmation — necessary for performance of a contract with you (GDPR Art. 6(1)(b)).",
+          "To protect sign-in and sign-up forms from automated abuse (Cloudflare Turnstile) — based on our legitimate interest in keeping the service secure (GDPR Art. 6(1)(f)).",
+          "To understand how the site is used, only if you've consented to analytics cookies — based on your consent (GDPR Art. 6(1)(a)), which you can withdraw at any time."
+        ]
+      },
+      {
+        "heading": "Cookies",
+        "body": "We use a small session cookie to keep you signed in — this is strictly necessary and doesn't require consent. With your permission, we may also use analytics cookies to understand how the site is used. You can accept, reject, or customize this choice at any time using the \"Cookie Settings\" link in the footer."
+      },
+      {
+        "heading": "Third-Party Services",
+        "list": [
+          "Cloudflare Turnstile — protects our sign-in and sign-up forms from bots. It processes your IP address and device signals for security purposes; see Cloudflare's privacy policy (cloudflare.com/privacypolicy) for details. This is used regardless of cookie preferences, as it's necessary for account security.",
+          "[Email delivery provider — placeholder, to be finalized] — used to send you verification and account-related emails."
+        ]
+      },
+      {
+        "heading": "International Data Transfers",
+        "body": "Some of our service providers, including Cloudflare and possibly our email delivery provider, may process data outside the EU/EEA. Where this happens, we rely on appropriate safeguards required by the GDPR, such as Standard Contractual Clauses, to ensure your data remains protected."
+      },
+      {
+        "heading": "Data Retention",
+        "body": "We keep your account and build data for as long as your account exists. You can delete your account at any time from Account Settings — this permanently removes your account and saved builds after you confirm via an emailed link."
+      },
+      {
+        "heading": "Your Rights",
+        "body": "Under the GDPR, you have the right to:",
+        "list": [
+          "Access the personal data we hold about you.",
+          "Correct inaccurate data (via Account Settings).",
+          "Erase your account and data at any time (via Account Settings — self-service, no need to contact us).",
+          "Request a copy of your data in a portable format.",
+          "Object to or restrict certain processing.",
+          "Lodge a complaint with your local data protection authority — in Latvia, the Data State Inspectorate (dvi.gov.lv)."
+        ]
+      },
+      {
+        "heading": "Data Security",
+        "body": "Passwords are hashed, not stored in plain text, and access to the database is restricted. No method of transmission or storage is 100% secure, but we take reasonable steps to protect your data."
+      },
+      {
+        "heading": "Changes to This Policy",
+        "body": "We may update this policy from time to time. Minor wording fixes will simply update the date at the top of this page. For meaningful or substantive changes — such as new data uses or new third-party services — we'll notify you directly, by email or an on-site banner, in addition to updating this page."
+      },
+      {
+        "heading": "Contact",
+        "body": "Questions about this policy or your data? Contact us at privacy@datorbuve.lv."
+      }
+    ]
+  }
+}

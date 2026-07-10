@@ -26,6 +26,10 @@
     "notFound": {
       "title": "Page Not Found — DatorBuve"
     },
+    "privacy": {
+      "title": "Privacy Policy — DatorBuve",
+      "description": "How DatorBuve collects, uses, and protects your personal data, including cookies and your rights under GDPR."
+    },
     "picker": {
       "cpu": {
         "title": "CPU Prices in Latvia — Pick a Processor | DatorBuve",

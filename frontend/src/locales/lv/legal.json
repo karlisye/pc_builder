@@ -1,0 +1,70 @@
+{
+  "privacy": {
+    "title": "Privātuma Politika",
+    "lastUpdated": "Pēdējoreiz atjaunināts: 2026. gada 10. jūlijs",
+    "intro": "DatorBuve (\"mēs\") uztur datorbuve.lv — rīku datora komponenšu pārlūkošanai, saderības pārbaudei, kā arī datoru konfigurāciju veidošanai un saglabāšanai. Šajā lapā ir izskaidrots, kādus personas datus mēs apkopojam, kāpēc, un kādas tiesības jums ir attiecībā uz tiem saskaņā ar VDAR.",
+    "sections": [
+      {
+        "heading": "Datu Apkopošana",
+        "list": [
+          "Konta dati: reģistrējoties, mēs apkopojam jūsu vārdu, e-pasta adresi un šifrētu paroli. Mēs nekad neuzglabājam paroli atklātā tekstā.",
+          "Konfigurācijas dati: ja saglabājat konfigurāciju, mēs uzglabājam izvēlētās komponentes, konfigurācijas nosaukumu, papildu piezīmes un to, vai tā ir publiski koplietota. Ja atzīmējat konfigurāciju kā publisku, tās nosaukums, izvēlētās komponentes un piezīmes kļūst redzamas ikvienam ar koplietošanas saiti — jūsu konta dati (vārds, e-pasts) nekad netiek iekļauti vai rādīti.",
+          "Sīkdatnes: skatiet sadaļu \"Sīkdatnes\" zemāk."
+        ]
+      },
+      {
+        "heading": "Datu Izmantošana",
+        "list": [
+          "Lai izveidotu un aizsargātu jūsu kontu, kā arī saglabātu jūsu pieslēgšanos — nepieciešams līguma ar jums izpildei (VDAR 6. panta 1. punkta b) apakšpunkts).",
+          "Lai saglabātu, attēlotu un ļautu jums pārvaldīt savas datora konfigurācijas — nepieciešams līguma ar jums izpildei (VDAR 6. panta 1. punkta b) apakšpunkts).",
+          "Lai nosūtītu ar kontu saistītus e-pastus: e-pasta apstiprināšanu un konta dzēšanas apstiprināšanu — nepieciešams līguma ar jums izpildei (VDAR 6. panta 1. punkta b) apakšpunkts).",
+          "Lai aizsargātu pieslēgšanās un reģistrācijas formas no automatizētas ļaunprātīgas izmantošanas (Cloudflare Turnstile) — pamatojoties uz mūsu leģitīmajām interesēm nodrošināt pakalpojuma drošību (VDAR 6. panta 1. punkta f) apakšpunkts).",
+          "Lai saprastu, kā lapa tiek izmantota, tikai tad, ja esat piekritis analītikas sīkdatnēm — pamatojoties uz jūsu piekrišanu (VDAR 6. panta 1. punkta a) apakšpunkts), kuru varat atsaukt jebkurā laikā."
+        ]
+      },
+      {
+        "heading": "Sīkdatnes",
+        "body": "Mēs izmantojam nelielu sesijas sīkdatni, lai jūs paliktu pieslēgts — tā ir absolūti nepieciešama un nav atkarīga no jūsu piekrišanas. Ar jūsu atļauju mēs varam izmantot arī analītikas sīkdatnes, lai saprastu, kā lapa tiek izmantota. Šo izvēli varat pieņemt, noraidīt vai pielāgot jebkurā laikā, izmantojot saiti \"Sīkdatņu iestatījumi\" lapas apakšā."
+      },
+      {
+        "heading": "Trešo Pušu Pakalpojumi",
+        "list": [
+          "Cloudflare Turnstile — aizsargā mūsu pieslēgšanās un reģistrācijas formas no robotiem. Tas apstrādā jūsu IP adresi un ierīces datus drošības nolūkos; sīkāku informāciju skatiet Cloudflare privātuma politikā (cloudflare.com/privacypolicy). Tas tiek izmantots neatkarīgi no sīkdatņu izvēles, jo ir nepieciešams konta drošībai.",
+          "[E-pasta piegādes pakalpojums — pagaidu vietturis, jāprecizē] — izmantots, lai nosūtītu jums apstiprināšanas un ar kontu saistītus e-pastus."
+        ]
+      },
+      {
+        "heading": "Starptautiska Datu Nodošana",
+        "body": "Daži no mūsu pakalpojumu sniedzējiem, tostarp Cloudflare un iespējams mūsu e-pasta piegādes pakalpojums, var apstrādāt datus ārpus ES/EEZ. Šādos gadījumos mēs paļaujamies uz VDAR noteiktajiem atbilstošajiem aizsardzības pasākumiem, piemēram, Standarta līguma klauzulām, lai nodrošinātu jūsu datu aizsardzību."
+      },
+      {
+        "heading": "Datu Uzglabāšanas Ilgums",
+        "body": "Mēs uzglabājam jūsu konta un konfigurāciju datus, kamēr pastāv jūsu konts. Jūs varat dzēst savu kontu jebkurā laikā konta iestatījumos — tas neatgriezeniski dzēš jūsu kontu un saglabātās konfigurācijas pēc apstiprinājuma, izmantojot uz e-pastu nosūtītu saiti."
+      },
+      {
+        "heading": "Jūsu Tiesības",
+        "body": "Saskaņā ar VDAR jums ir tiesības:",
+        "list": [
+          "Piekļūt personas datiem, kurus mēs par jums glabājam.",
+          "Labot neprecīzus datus (konta iestatījumos).",
+          "Dzēst savu kontu un datus jebkurā laikā (konta iestatījumos — bez nepieciešamības sazināties ar mums).",
+          "Pieprasīt savu datu kopiju pārnesamā formātā.",
+          "Iebilst pret vai ierobežot noteiktu datu apstrādi.",
+          "Iesniegt sūdzību savai vietējai datu aizsardzības iestādei — Latvijā tā ir Datu valsts inspekcija (dvi.gov.lv)."
+        ]
+      },
+      {
+        "heading": "Datu Drošība",
+        "body": "Paroles tiek šifrētas, nevis glabātas atklātā tekstā, un piekļuve datubāzei ir ierobežota. Neviena datu pārraides vai uzglabāšanas metode nav 100% droša, taču mēs veicam saprātīgus pasākumus jūsu datu aizsardzībai."
+      },
+      {
+        "heading": "Šīs Politikas Izmaiņas",
+        "body": "Mēs varam laiku pa laikam atjaunināt šo politiku. Nelielas redakcionālas izmaiņas tiks atspoguļotas, vienkārši atjauninot datumu šīs lapas augšpusē. Par būtiskām izmaiņām — piemēram, jauniem datu izmantošanas veidiem vai jauniem trešo pušu pakalpojumiem — mēs jūs informēsim tieši, izmantojot e-pastu vai paziņojumu lapā, papildus šīs lapas atjaunināšanai."
+      },
+      {
+        "heading": "Kontakti",
+        "body": "Jautājumi par šo politiku vai jūsu datiem? Sazinieties ar mums: privacy@datorbuve.lv."
+      }
+    ]
+  }
+}

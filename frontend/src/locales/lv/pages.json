@@ -26,6 +26,10 @@
     "notFound": {
       "title": "Lapa Nav Atrasta — DatorBuve"
     },
+    "privacy": {
+      "title": "Privātuma Politika — DatorBuve",
+      "description": "Kā DatorBuve apkopo, izmanto un aizsargā jūsu personas datus, tostarp sīkdatnes un jūsu tiesības saskaņā ar VDAR."
+    },
     "picker": {
       "cpu": {
         "title": "Procesoru (CPU) cenas Latvijā | DatorBuve",

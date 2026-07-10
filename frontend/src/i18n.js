@@ -7,6 +7,7 @@ import enAuth from './locales/en/auth.json';
 import enBuilder from './locales/en/builder.json';
 import enProfile from './locales/en/profile.json';
 import enPages from './locales/en/pages.json';
+import enLegal from './locales/en/legal.json';
 
 import lvCommon from './locales/lv/common.json';
 import lvLayout from './locales/lv/layout.json';
@@ -14,6 +15,7 @@ import lvAuth from './locales/lv/auth.json';
 import lvBuilder from './locales/lv/builder.json';
 import lvProfile from './locales/lv/profile.json';
 import lvPages from './locales/lv/pages.json';
+import lvLegal from './locales/lv/legal.json';
 
 const resources = {
   en: {
@@ -23,6 +25,7 @@ const resources = {
     builder: enBuilder,
     profile: enProfile,
     pages: enPages,
+    legal: enLegal,
   },
   lv: {
     common: lvCommon,
@@ -31,6 +34,7 @@ const resources = {
     builder: lvBuilder,
     profile: lvProfile,
     pages: lvPages,
+    legal: lvLegal,
   },
 };
 
@@ -44,7 +48,7 @@ export function createI18n(lng) {
     fallbackLng: 'lv',
     supportedLngs: ['en', 'lv'],
     defaultNS: 'common',
-    ns: ['common', 'layout', 'auth', 'builder', 'profile', 'pages'],
+    ns: ['common', 'layout', 'auth', 'builder', 'profile', 'pages', 'legal'],
     interpolation: {
       escapeValue: false,
     },
