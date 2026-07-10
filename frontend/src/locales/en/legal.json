@@ -1,5 +1,9 @@
 {
   "sidePanelTitle": "INFO",
+  "contact": {
+    "title": "Contact Us",
+    "intro": "Have a question, spotted a bug, or want to suggest something? Email us at info@datorbuve.lv."
+  },
   "about": {
     "title": "About DatorBuve",
     "lastUpdated": "Last updated: July 10, 2026",
@@ -36,7 +40,8 @@
       },
       {
         "heading": "Feedback",
-        "body": "Found a bug, a wrong spec, or have a suggestion? We'd like to hear about it — contact us at hello@datorbuve.lv."
+        "body": "Found a bug, a wrong spec, or have a suggestion? We'd like to hear about it.",
+        "link": { "to": "/contact", "text": "Contact Us" }
       }
     ]
   },
@@ -104,7 +109,8 @@
       },
       {
         "heading": "Contact",
-        "body": "Questions about this policy or your data? Contact us at privacy@datorbuve.lv."
+        "body": "Questions about this policy or your data?",
+        "link": { "to": "/contact", "text": "Contact Us" }
       }
     ]
   },
@@ -179,7 +185,8 @@
       },
       {
         "heading": "Contact",
-        "body": "Questions about these terms? Contact us at legal@datorbuve.lv."
+        "body": "Questions about these terms?",
+        "link": { "to": "/contact", "text": "Contact Us" }
       }
     ]
   }

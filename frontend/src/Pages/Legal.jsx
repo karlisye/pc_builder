@@ -5,7 +5,7 @@ import LegalDocument from './Components/Common/LegalDocument';
 import SidePanel from './Components/Common/SidePanel';
 import { useLocalePath } from '../lib/localePath';
 
-const docIds = ['about', 'privacy', 'terms'];
+const docIds = ['about', 'contact', 'privacy', 'terms'];
 
 const Legal = ({ doc = 'about' }) => {
   const { t } = useTranslation('legal');

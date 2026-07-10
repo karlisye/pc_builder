@@ -222,9 +222,9 @@ const SavedBuilds = () => {
 
   return (
     <>
-      <div className="h-full flex">
+      <div className="flex">
         <SidePanel title={t('savedBuilds.sidePanelTitle')}>
-          <div className="max-h-full overflow-y-auto">
+          <div className="">
             {builds.length === 0 ? (
               <p className="text-muted">{t('savedBuilds.noSavedBuilds')}</p>
             ) : (

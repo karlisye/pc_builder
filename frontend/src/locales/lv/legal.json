@@ -1,5 +1,9 @@
 {
   "sidePanelTitle": "INFORMĀCIJA",
+  "contact": {
+    "title": "Sazinies ar Mums",
+    "intro": "Ir jautājums, pamanīta kļūda vai ierosinājums? Raksti mums: info@datorbuve.lv."
+  },
   "about": {
     "title": "Par DatorBuve",
     "lastUpdated": "Pēdējoreiz atjaunināts: 2026. gada 10. jūlijs",
@@ -36,7 +40,8 @@
       },
       {
         "heading": "Atsauksmes",
-        "body": "Atradāt kļūdu, nepareizu specifikāciju vai jums ir ierosinājums? Mēs labprāt to uzzinātu — sazinieties ar mums: hello@datorbuve.lv."
+        "body": "Atradāt kļūdu, nepareizu specifikāciju vai jums ir ierosinājums? Mēs labprāt to uzzinātu.",
+        "link": { "to": "/contact", "text": "Sazinies ar Mums" }
       }
     ]
   },
@@ -104,7 +109,8 @@
       },
       {
         "heading": "Kontakti",
-        "body": "Jautājumi par šo politiku vai jūsu datiem? Sazinieties ar mums: privacy@datorbuve.lv."
+        "body": "Jautājumi par šo politiku vai jūsu datiem?",
+        "link": { "to": "/contact", "text": "Sazinies ar Mums" }
       }
     ]
   },
@@ -179,7 +185,8 @@
       },
       {
         "heading": "Kontakti",
-        "body": "Jautājumi par šiem noteikumiem? Sazinieties ar mums: legal@datorbuve.lv."
+        "body": "Jautājumi par šiem noteikumiem?",
+        "link": { "to": "/contact", "text": "Sazinies ar Mums" }
       }
     ]
   }

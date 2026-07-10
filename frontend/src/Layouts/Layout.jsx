@@ -231,43 +231,59 @@ const Layout = ({ children }) => {
         {user && !user.email_verified_at && <VerifyEmailBanner />}
       </header>
 
-      <div id="page-scroll" className="flex flex-col flex-1 overflow-y-auto">
-        <main className="flex-1">{children ?? <Outlet />}</main>
+      <div id="page-scroll" className="grid grid-rows-[1fr_auto] flex-1 overflow-y-auto">
+        <main className="">{children ?? <Outlet />}</main>
 
         <footer className="bg-primary border-t border-primary-light">
-          <div className="max-w-348 mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="max-w-348 mx-auto px-6 py-8 flex flex-col sm:flex-row items-center sm:items-start justify-between gap-8">
             <div className="flex flex-col items-center sm:items-start">
               <span className="font-bold text-white">{t('common:appName')}</span>
               <p className="text-surface text-sm mt-1">{t('footer.tagline')}</p>
             </div>
-            <div className="flex gap-6 text-sm text-surface">
-              <Link to={lp('/builder')} className="hover:text-white transition">
-                {t('nav.build')}
-              </Link>
-              {user && (
-                <Link to={lp('/builds')} className="hover:text-white transition">
-                  {t('nav.saved')}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 text-sm text-surface text-center sm:text-left">
+              <div className="flex flex-col gap-2">
+                <span className="text-white font-semibold uppercase text-xs tracking-wide">
+                  {t('footer.builderHeading')}
+                </span>
+                <Link to={lp('/builder')} className="hover:text-white transition">
+                  {t('nav.build')}
                 </Link>
-              )}
-              <Link to={lp('/guide')} className="hover:text-white transition">
-                {t('nav.guide')}
-              </Link>
-              <Link to={lp('/about')} className="hover:text-white transition">
-                {t('footer.about')}
-              </Link>
-              <Link to={lp('/terms')} className="hover:text-white transition">
-                {t('footer.terms')}
-              </Link>
-              <Link to={lp('/privacy')} className="hover:text-white transition">
-                {t('footer.privacy')}
-              </Link>
-              <button
-                onClick={openSettings}
-                className="hover:text-white transition cursor-pointer"
-              >
-                {t('footer.cookieSettings')}
-              </button>
+                {user && (
+                  <Link to={lp('/builds')} className="hover:text-white transition">
+                    {t('nav.saved')}
+                  </Link>
+                )}
+                <Link to={lp('/guide')} className="hover:text-white transition">
+                  {t('nav.guide')}
+                </Link>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <span className="text-white font-semibold uppercase text-xs tracking-wide">
+                  {t('footer.infoHeading')}
+                </span>
+                <Link to={lp('/about')} className="hover:text-white transition">
+                  {t('footer.about')}
+                </Link>
+                <Link to={lp('/contact')} className="hover:text-white transition">
+                  {t('footer.contact')}
+                </Link>
+                <Link to={lp('/terms')} className="hover:text-white transition">
+                  {t('footer.terms')}
+                </Link>
+                <Link to={lp('/privacy')} className="hover:text-white transition">
+                  {t('footer.privacy')}
+                </Link>
+                <button
+                  onClick={openSettings}
+                  className="hover:text-white transition cursor-pointer text-center sm:text-left"
+                >
+                  {t('footer.cookieSettings')}
+                </button>
+              </div>
             </div>
+
             <a
               href="https://github.com/karlisye"
               target="_blank"

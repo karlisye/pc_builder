@@ -10,7 +10,10 @@
   },
   "footer": {
     "tagline": "Salīdzini cenas un veido savu datoru.",
+    "builderHeading": "Konstruktors",
+    "infoHeading": "Informācija",
     "about": "Par Mums",
+    "contact": "Sazinies ar Mums",
     "terms": "Lietošanas Noteikumi",
     "privacy": "Privātuma Politika",
     "cookieSettings": "Sīkdatņu iestatījumi"
