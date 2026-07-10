@@ -54,13 +54,13 @@ const Home = () => {
               <p className="text-xl text-surface">{t('home.build.description')}</p>
             </div>
 
-            <div className="flex w-full xl:h-full h-80 bg-muted"></div>
+            <div className="flex w-full xl:h-100 h-80 bg-muted mt-auto my-auto"></div>
           </div>
         </div>
 
-        <div className="xl:w-1/2 px-6 py-10 text-text">
+        <div className="xl:w-1/2 px-6 py-10 text-text bg-background">
           <div className="xl:max-w-2xl xl:h-220 mr-auto border-4 border-secondary-light p-2 overflow-hidden flex xl:flex-col flex-col lg:flex-row gap-4">
-            <div className="flex w-full xl:h-full h-80 bg-muted"></div>
+            <div className="flex w-full xl:h-100 h-80 bg-muted my-auto"></div>
 
             <div className="self-end">
               <h1 className="sm:text-9xl text-7xl font-bold text-text mb-4 flex flex-wrap">
@@ -69,6 +69,19 @@ const Home = () => {
               <p className="text-xl text-text">{t('home.auto.description')}</p>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div className="w-full bg-background px-6 py-10 text-text">
+        <div className="border-4 border-secondary-light h-full max-w-347 mx-auto flex gap-4 p-2 flex-col xl:flex-row items-center">
+          <div>
+            <h1 className="sm:text-9xl text-7xl font-bold text-text mb-4 flex flex-wrap">
+              {t('home.save.title')}
+            </h1>
+            <p className="text-xl text-text mb-4">{t('home.save.description')}</p>
+          </div>
+
+          <div className="flex w-full md:h-100 h-80 bg-muted"></div>
         </div>
       </div>
     </div>

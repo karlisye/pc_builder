@@ -88,6 +88,11 @@
     "auto": {
       "title": "MAKE THE BUILDING EASY",
       "description": "Automatically complete your build at any stage using our smart auto-builder."
+    },
+    "save": {
+      "title": "SAVE AND SHARE",
+      "description": "Save your builds to come back to later, share them with a link, and revisit or update them anytime.",
+      "cta": "View My Builds"
     }
   },
   "guide": {

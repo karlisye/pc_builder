@@ -88,6 +88,11 @@
     "auto": {
       "title": "BŪVĒ VIEGLI UN ĀTRI",
       "description": "Automātiski pabeidz savu konfigurāciju jebkurā posmā, izmantojot mūsu inteliģento automātisko konstruktoru."
+    },
+    "save": {
+      "title": "SAGLABĀ UN DALIES",
+      "description": "Saglabā savas konfigurācijas, lai atgrieztos pie tām vēlāk, dalies ar tām, izmantojot saiti, un jebkurā brīdī tās apskati vai atjaunini.",
+      "cta": "Skatīt Manas Konfigurācijas"
     }
   },
   "guide": {
