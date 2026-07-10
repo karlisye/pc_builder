@@ -197,7 +197,8 @@
       "cooler": "Dzesētājs",
       "psu": "Barošanas bloks",
       "fan": "Ventilators"
-    }
+    },
+    "loadError": "Neizdevās ielādēt konfigurāciju"
   },
   "notFound": {
     "heading": "Lapa nav atrasta.",

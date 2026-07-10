@@ -197,7 +197,8 @@
       "cooler": "Cooler",
       "psu": "PSU",
       "fan": "Fan"
-    }
+    },
+    "loadError": "Failed to load build"
   },
   "notFound": {
     "heading": "Page not found.",

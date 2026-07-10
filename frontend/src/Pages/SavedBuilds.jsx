@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-import { Link, useSearchParams } from 'react-router';
+import { Link, useNavigate, useParams } from 'react-router';
 import ComponentDetail from './Components/Common/ComponentDetail';
 import Modal from './Components/Common/Modal';
 import {
@@ -16,7 +16,7 @@ import SidePanel from './Components/Common/SidePanel';
 import BuildIssuesPopup from './Components/Common/BuildIssuesPopup';
 import { formatDate } from '../lib/formatDate';
 import { formatPrice } from '../lib/componentPrice';
-import { useLang } from '../lib/localePath';
+import { useLang, useLocalePath } from '../lib/localePath';
 import { useToast } from '../Contexts/ToastContext';
 import { loadDraft, clearDraft } from '../lib/builderDraft';
 
@@ -36,8 +36,10 @@ const SLOT_KEYS = [
 const SavedBuilds = () => {
   const { t } = useTranslation(['pages', 'builder']);
   const lang = useLang();
+  const lp = useLocalePath();
   const { addToast } = useToast();
-  const [searchParams] = useSearchParams();
+  const { id: selectedId } = useParams();
+  const navigate = useNavigate();
   const [builds, setBuilds] = useState([]);
   const [selectedBuild, setSelectedBuild] = useState(null);
   const [loadingBuild, setLoadingBuild] = useState(false);
@@ -46,12 +48,15 @@ const SavedBuilds = () => {
     axios.get('/api/builds').then((res) => setBuilds(res.data));
   }, []);
 
+  // Selection is URL-driven (/builds/:id) so refresh/back/forward work.
   useEffect(() => {
-    const buildId = searchParams.get('buildId');
-    if (buildId) {
-      handleSelect({ id: buildId });
+    if (!selectedId) {
+      setSelectedBuild(null);
+      return;
     }
-  }, [searchParams]);
+    handleSelect(selectedId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedId]);
   const [editing, setEditing] = useState(false);
   const [editData, setEditData] = useState({ name: '', notes: '' });
   const [expandedSlot, setExpandedSlot] = useState(null);
@@ -123,17 +128,20 @@ const SavedBuilds = () => {
     setExpandedSlot((prev) => (prev === slot ? null : slot));
   };
 
-  const handleSelect = async (build) => {
+  const handleSelect = async (id) => {
     setLoadingBuild(true);
     setEditing(false);
     setExpandedSlot(null);
     setMenuOpen(false);
     try {
-      const res = await axios.get(`/api/builds/${build.id}`);
+      const res = await axios.get(`/api/builds/${id}`);
       setSelectedBuild(res.data);
       setEditData({ name: res.data.name, notes: res.data.notes ?? '' });
     } catch (err) {
-      console.error(err);
+      addToast(err.response?.data?.error ?? t('savedBuilds.loadError'), {
+        type: 'danger',
+      });
+      navigate(lp('/builds'), { replace: true });
     } finally {
       setLoadingBuild(false);
     }
@@ -144,7 +152,10 @@ const SavedBuilds = () => {
   const handleDelete = async (id) => {
     try {
       const res = await axios.delete(`/api/builds/${id}`);
-      if (selectedBuild?.id === id) setSelectedBuild(null);
+      if (String(id) === selectedId) {
+        setSelectedBuild(null);
+        navigate(lp('/builds'), { replace: true });
+      }
       const draft = loadDraft();
       if (draft && String(draft.buildId) === String(id)) clearDraft();
       refreshBuilds();
@@ -210,9 +221,11 @@ const SavedBuilds = () => {
               builds.map((build) => (
                 <div
                   key={build.id}
-                  onClick={() => handleSelect(build)}
+                  onClick={() => {
+                    if (String(build.id) !== selectedId) navigate(lp(`/builds/${build.id}`));
+                  }}
                   className={`hover:bg-secondary border transition-all cursor-pointer p-2 flex justify-between items-center border-secondary mb-2 ${
-                    selectedBuild?.id === build.id ? 'border-l-10' : ''
+                    String(build.id) === selectedId ? 'border-l-10' : ''
                   }`}
                 >
                   <div>
@@ -396,7 +409,7 @@ const SavedBuilds = () => {
 
                   <Link
                     className="py-4 px-8 bg-primary text-white text-center cursor-pointer hover:bg-primary-light transition"
-                    to={`/builder?build=${selectedBuild.id}`}
+                    to={lp(`/builder?build=${selectedBuild.id}`)}
                   >
                     {t('savedBuilds.continueBuild')}
                   </Link>
