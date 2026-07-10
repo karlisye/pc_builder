@@ -13,6 +13,7 @@ import {
   TrashIcon,
 } from './Components/Common/Icons';
 import SidePanel from './Components/Common/SidePanel';
+import PaginationControls from './Components/Common/PaginationControls';
 import BuildIssuesPopup from './Components/Common/BuildIssuesPopup';
 import { formatDate } from '../lib/formatDate';
 import { formatPrice } from '../lib/componentPrice';
@@ -41,12 +42,17 @@ const SavedBuilds = () => {
   const { id: selectedId } = useParams();
   const navigate = useNavigate();
   const [builds, setBuilds] = useState([]);
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState(null);
   const [selectedBuild, setSelectedBuild] = useState(null);
   const [loadingBuild, setLoadingBuild] = useState(false);
 
   useEffect(() => {
-    axios.get('/api/builds').then((res) => setBuilds(res.data));
-  }, []);
+    axios.get('/api/builds', { params: { page } }).then((res) => {
+      setBuilds(res.data.data);
+      setPagination({ currentPage: res.data.current_page, lastPage: res.data.last_page });
+    });
+  }, [page]);
 
   // Selection is URL-driven (/builds/:id) so refresh/back/forward work.
   useEffect(() => {
@@ -147,7 +153,11 @@ const SavedBuilds = () => {
     }
   };
 
-  const refreshBuilds = () => axios.get('/api/builds').then((res) => setBuilds(res.data));
+  const refreshBuilds = () =>
+    axios.get('/api/builds', { params: { page } }).then((res) => {
+      setBuilds(res.data.data);
+      setPagination({ currentPage: res.data.current_page, lastPage: res.data.last_page });
+    });
 
   const handleDelete = async (id) => {
     try {
@@ -214,7 +224,7 @@ const SavedBuilds = () => {
     <>
       <div className="h-full flex">
         <SidePanel title={t('savedBuilds.sidePanelTitle')}>
-          <div className="max-h-100">
+          <div className="max-h-full overflow-y-auto">
             {builds.length === 0 ? (
               <p className="text-muted">{t('savedBuilds.noSavedBuilds')}</p>
             ) : (
@@ -243,6 +253,11 @@ const SavedBuilds = () => {
                   </button>
                 </div>
               ))
+            )}
+          </div>
+          <div className="mt-auto">
+            {pagination && pagination.lastPage > 1 && (
+              <PaginationControls pagination={pagination} setPage={setPage} />
             )}
           </div>
         </SidePanel>
@@ -317,7 +332,9 @@ const SavedBuilds = () => {
                           </div>
                         )}
                       </div>
-                      <p className="text-muted text-sm">{formatDate(selectedBuild.created_at, lang)}</p>
+                      <p className="text-muted text-sm">
+                        {formatDate(selectedBuild.created_at, lang)}
+                      </p>
                     </div>
 
                     <div className="relative shrink-0">

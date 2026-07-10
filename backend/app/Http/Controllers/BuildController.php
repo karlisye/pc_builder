@@ -15,7 +15,7 @@ class BuildController extends Controller
     $builds = Build::query()
       ->where('user_id', $request->user()->id)
       ->orderByDesc('created_at')
-      ->get();
+      ->paginate(8);
 
     return response()->json($builds);
   }
