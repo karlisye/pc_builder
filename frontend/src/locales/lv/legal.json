@@ -1,5 +1,45 @@
 {
-  "sidePanelTitle": "JURIDISKĀ INFORMĀCIJA",
+  "sidePanelTitle": "INFORMĀCIJA",
+  "about": {
+    "title": "Par DatorBuve",
+    "lastUpdated": "Pēdējoreiz atjaunināts: 2026. gada 10. jūlijs",
+    "intro": "DatorBuve ir bezmaksas rīks datora komponenšu pārlūkošanai, saderības pārbaudei un datora salikšanai, izmantojot reālas, aktuālas cenas no Latvijas veikaliem — izveidots, lai vienuviet aizstātu izkaisītas izklājlapas ar pārliecību par savu konfigurāciju.",
+    "sections": [
+      {
+        "heading": "Mūsu Mērķis",
+        "body": "Datora salikšana nozīmē žonglēt ar saderību (vai šis dzesētājs ietilpst šajā korpusā? vai šis barošanas bloks pavilks šo videokarti?) un salīdzināt cenas dažādos veikalos, kas visi tās attēlo atšķirīgi. DatorBuve pastāv, lai to atvieglotu — viena vieta, kur pārlūkot komponentes, saņemt automātisku saderības pārbaudi un redzēt aktuālas Latvijas veikalu cenas."
+      },
+      {
+        "heading": "Ko Mēs Piedāvājam",
+        "list": [
+          "Aktuālas cenas un pieejamības statusu no Latvijas veikaliem.",
+          "Automātisku saderības pārbaudi starp izvēlētajām komponentēm.",
+          "Automātisko konstruktoru, kas salīdz pilnu, saderīgu konfigurāciju jūsu budžeta ietvaros.",
+          "Iespēju saglabāt savas konfigurācijas un dalīties ar tām, izmantojot saiti."
+        ]
+      },
+      {
+        "heading": "Kam Tas Ir Domāts",
+        "body": "Pirmreizējiem būvētājiem, kuri nezina, ar ko sākt, pieredzējušiem būvētājiem, kuri vēlas ātrāk salīdzināt cenas un specifikācijas, un ikvienam, kurš liek kopā datoru Latvijas tirgum."
+      },
+      {
+        "heading": "Kas Ir Aiz Šī Projekta",
+        "body": "DatorBuve ir neatkarīgs projekts, kas nav saistīts ar vai sponsorēts no kāda mazumtirgotāja vai ražotāja. Komponenšu ieteikumi un saderības pārbaudes balstās vienīgi uz specifikācijām, nevis apmaksātu izvietojumu."
+      },
+      {
+        "heading": "Iepazīsti Izstrādātāju",
+        "body": "Sveiki! DatorBuve ir neliels personīgs projekts, kas tapis brīvajā laikā. Visa mājaslapa, saderības pārbaudes sistēma, automātiskais datora konstruktors, cenu apkopošana un pārējās funkcijas ir izstrādātas viena cilvēka spēkiem.\nIdeja bija pavisam vienkārša – izveidot rīku, kas atvieglotu datoru komplektēšanu Latvijas tirgum.\nJa ir kādi ieteikumi, pamanītas kļūdas vai idejas, ko būtu vērts pievienot, priecāšos par jebkuru atsauksmi. Tās palīdzēs turpināt uzlabot DatorBuve un padarīt to noderīgāku visiem."
+      },
+      {
+        "heading": "Par Mūsu Datiem",
+        "body": "Cenas, pieejamība un specifikācijas tiek apkopotas no publiskiem sarakstiem Latvijas veikalos un regulāri atjauninātas, taču tās var atpalikt no tā, kas faktiski redzams veikala mājaslapā. Vienmēr pārbaudiet cenu un pieejamību pirms pirkuma veikšanas — sīkāku informāciju skatiet mūsu Lietošanas Noteikumos."
+      },
+      {
+        "heading": "Atsauksmes",
+        "body": "Atradāt kļūdu, nepareizu specifikāciju vai jums ir ierosinājums? Mēs labprāt to uzzinātu — sazinieties ar mums: hello@datorbuve.lv."
+      }
+    ]
+  },
   "privacy": {
     "title": "Privātuma Politika",
     "lastUpdated": "Pēdējoreiz atjaunināts: 2026. gada 10. jūlijs",

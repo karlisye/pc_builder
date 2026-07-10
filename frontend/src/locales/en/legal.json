@@ -1,5 +1,45 @@
 {
-  "sidePanelTitle": "LEGAL",
+  "sidePanelTitle": "INFO",
+  "about": {
+    "title": "About DatorBuve",
+    "lastUpdated": "Last updated: July 10, 2026",
+    "intro": "DatorBuve is a free tool for browsing PC components, checking compatibility, and building a PC using real, current prices from Latvian retailers — built to replace scattered spreadsheets and forum threads with one place to plan a build with confidence.",
+    "sections": [
+      {
+        "heading": "Our Mission",
+        "body": "Building a PC means juggling compatibility (does this cooler fit this case? will this PSU handle this GPU?) and comparing prices across stores that all list things differently. DatorBuve exists to make that easier — one place to browse parts, get automatic compatibility checks, and see live pricing from Latvian stores."
+      },
+      {
+        "heading": "What We Offer",
+        "list": [
+          "Live pricing and stock status from Latvian retailers.",
+          "Automatic compatibility checks between the components you pick.",
+          "An auto-builder that assembles a complete, compatible build within your budget.",
+          "The ability to save your builds and share them with a link."
+        ]
+      },
+      {
+        "heading": "Who It's For",
+        "body": "First-time builders who aren't sure where to start, experienced builders who just want to compare prices and specs faster, and anyone building a PC for the Latvian market."
+      },
+      {
+        "heading": "Who's Behind This",
+        "body": "DatorBuve is an independent project, not affiliated with or sponsored by any retailer or manufacturer. Component recommendations and compatibility checks are based purely on specifications, not paid placement."
+      },
+      {
+        "heading": "Meet the Developer",
+        "body": "Hi! DatorBuve is a small personal project, built in my spare time. The whole site, the compatibility checking system, the auto-builder, the price gathering, and everything else — all of it is built by one person.\nThe idea was simple: build a tool that makes it easier to put together a PC for the Latvian market.\nIf you have any suggestions, spot a bug, or have an idea worth adding, I'd love to hear about it. It'll help keep improving DatorBuve and make it more useful for everyone."
+      },
+      {
+        "heading": "About Our Data",
+        "body": "Prices, stock, and specifications are collected from public listings at Latvian retailers and refreshed regularly, but they can lag behind what's actually on the retailer's site. Always double-check price and availability before completing a purchase — see our Terms of Service for details."
+      },
+      {
+        "heading": "Feedback",
+        "body": "Found a bug, a wrong spec, or have a suggestion? We'd like to hear about it — contact us at hello@datorbuve.lv."
+      }
+    ]
+  },
   "privacy": {
     "title": "Privacy Policy",
     "lastUpdated": "Last updated: July 10, 2026",

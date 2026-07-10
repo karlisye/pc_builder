@@ -9,6 +9,7 @@ export default [
       route('guide/saved', 'routes/guide-saved.jsx'),
       route('email-verified', 'routes/email-verified.jsx'),
       route('account-deleted', 'routes/account-deleted.jsx'),
+      route('about', 'routes/about.jsx'),
       route('privacy', 'routes/privacy.jsx'),
       route('terms', 'routes/terms.jsx'),
       route('login', 'routes/login.jsx'),

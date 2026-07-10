@@ -16,7 +16,14 @@ const LegalDocument = ({ docKey }) => {
         {sections.map((section, i) => (
           <div key={i}>
             <h2 className="text-2xl font-semibold text-text mb-2">{section.heading}</h2>
-            {section.body && <p className="text-text mb-2">{section.body}</p>}
+            {section.body &&
+              section.body
+                .split('\n')
+                .map((paragraph, j) => (
+                  <p key={j} className="text-text mb-2">
+                    {paragraph}
+                  </p>
+                ))}
             {section.list && (
               <ul className="list-disc pl-6 space-y-1 text-text">
                 {section.list.map((item, j) => (

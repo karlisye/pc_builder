@@ -26,6 +26,10 @@
     "notFound": {
       "title": "Page Not Found — DatorBuve"
     },
+    "about": {
+      "title": "About Us — DatorBuve",
+      "description": "What DatorBuve is, who it's for, and who's behind it."
+    },
     "privacy": {
       "title": "Privacy Policy — DatorBuve",
       "description": "How DatorBuve collects, uses, and protects your personal data, including cookies and your rights under GDPR."

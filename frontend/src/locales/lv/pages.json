@@ -26,6 +26,10 @@
     "notFound": {
       "title": "Lapa Nav Atrasta — DatorBuve"
     },
+    "about": {
+      "title": "Par Mums — DatorBuve",
+      "description": "Kas ir DatorBuve, kam tas domāts, un kas stāv aiz šī projekta."
+    },
     "privacy": {
       "title": "Privātuma Politika — DatorBuve",
       "description": "Kā DatorBuve apkopo, izmanto un aizsargā jūsu personas datus, tostarp sīkdatnes un jūsu tiesības saskaņā ar VDAR."
