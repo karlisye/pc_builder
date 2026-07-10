@@ -1,8 +1,10 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from 'react-router';
 import { Trans, useTranslation } from "react-i18next";
+import { useLocalePath } from '../../../lib/localePath';
 
 const SavedSection = () => {
+  const lp = useLocalePath();
   const { t } = useTranslation("pages");
   return (
     <div className="max-w-4xl mx-auto px-6 pb-10">
@@ -23,7 +25,7 @@ const SavedSection = () => {
               savedLink: (
                 <Link
                   className="text-info hover:underline font-medium"
-                  to="/builds"
+                  to={lp('/builds')}
                 />
               ),
               savedButton: <span className="font-medium" />,

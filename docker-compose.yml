@@ -3,8 +3,22 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      target: web
     ports:
       - "80:80"
+    depends_on:
+      - backend
+      - frontend-ssr
+    networks:
+      - app
+
+  frontend-ssr:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: ssr
+    environment:
+      - API_BASE_URL=http://backend:8000
     depends_on:
       - backend
     networks:

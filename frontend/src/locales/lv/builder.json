@@ -83,7 +83,8 @@
     "notCompatible": "Nav saderīgs",
     "caseIncludesPsu": "Korpusā iekļauts barošanas bloks",
     "select": "Izvēlēties",
-    "startingFrom": "Sākot no €{{price}}"
+    "startingFrom": "Sākot no €{{price}}",
+    "viewDetails": "Pilna informācija"
   },
   "componentFilters": {
     "searchPlaceholder": "Meklēt {{component}}...",
@@ -142,6 +143,7 @@
     "total": "Kopā",
     "components": "Komponentes",
     "compatibility": "Saderība",
+    "validateFailed": "Pašlaik neizdevās pārbaudīt saderību — redzamie rezultāti var būt novecojuši.",
     "aboutThisBuild": "Par šo konfigurāciju",
     "fullyFunctionalNote": "Jūsu konfigurācija ir pilnībā funkcionāla. Šie ir tikai ieteikumi labākai pieredzei."
   },

@@ -21,7 +21,10 @@ RUN mkdir -p \
     /var/www/storage/framework/views \
     /var/www/storage/logs \
     && chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache \
-    && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+    && chmod -R 775 /var/www/storage /var/www/bootstrap/cache \
+    # nginx workers run as www-data but the apk package creates its temp dirs
+    # nginx-owned with mode 700 — large responses fail to buffer without this
+    && chown -R www-data:www-data /var/lib/nginx
 
 RUN composer install --optimize-autoloader --no-interaction
 

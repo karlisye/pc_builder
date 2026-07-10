@@ -1,18 +1,7 @@
+import { EMPTY_SLOTS } from './buildSlots';
+
 const STORAGE_KEY = 'pcbuilder.draft.v1';
 const MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
-
-const EMPTY_SLOTS = {
-  cpu: null,
-  motherboard: null,
-  ram: null,
-  gpu: null,
-  psu: null,
-  ssd: null,
-  hdd: null,
-  case: null,
-  fan: null,
-  cooler: null,
-};
 
 const isEmptyDraft = (draft) => {
   const hasComponent = Object.values(draft.selectedComponents ?? {}).some((c) => c !== null);

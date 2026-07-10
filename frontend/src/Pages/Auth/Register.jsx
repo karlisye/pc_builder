@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../Contexts/AuthContext';
-import Seo from '../Components/Common/Seo';
+import { useLocalePath } from '../../lib/localePath';
 
 const Register = () => {
+  const lp = useLocalePath();
   const { t } = useTranslation(['auth', 'pages']);
   const { register } = useAuth();
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ const Register = () => {
     setProcessing(true);
     try {
       await register(data.name, data.email, data.password, data.password_confirmation);
-      navigate('/');
+      navigate(lp('/'));
     } catch (err) {
       const serverErrors = err.response?.data?.errors;
       if (serverErrors) {
@@ -59,7 +60,6 @@ const Register = () => {
 
   return (
     <div className="h-full flex flex-col items-center justify-center">
-      <Seo title={t('pages:seo.register.title')} description={t('pages:seo.register.description')} />
       <div className="w-full md:w-200 px-8 py-6">
         <h1 className="text-3xl font-semibold mb-1">{t('register.title')}</h1>
         <div className="flex w-full shadow">
@@ -124,7 +124,7 @@ const Register = () => {
               </div>
 
               <div className="flex flex-col mx-4 my-4">
-                <Link className="text-info" to="/login">
+                <Link className="text-info" to={lp('/login')}>
                   {t('register.alreadyHaveAccount')}
                 </Link>
                 <button

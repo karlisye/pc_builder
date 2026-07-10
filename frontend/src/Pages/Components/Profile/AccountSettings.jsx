@@ -5,7 +5,6 @@ import Modal from '../Common/Modal';
 import { useAuth } from '../../../Contexts/AuthContext';
 import { useToast } from '../../../Contexts/ToastContext';
 import { AlertIcon } from '../Common/Icons';
-import Seo from '../Common/Seo';
 
 const AccountSettings = () => {
   const { t } = useTranslation(['profile', 'common']);
@@ -123,7 +122,6 @@ const AccountSettings = () => {
 
   return (
     <div className="py-6 px-4">
-      <Seo title={t('accountSettings.heading')} noindex />
       {!user.email_verified_at && (
         <div className="bg-alert/10 border border-alert/80 px-4 py-2 mb-4 flex gap-4 items-center">
           <span className="text-alert">

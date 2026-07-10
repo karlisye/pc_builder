@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router';
 import { useBuilder } from '../../../Contexts/BuilderContext';
 import { AddIcon, CloseIcon, InfoIcon } from '../Common/Icons';
 import ComponentPopup from './ComponentPopup';
@@ -7,16 +8,10 @@ import { formatPrice, getCheapestPrice } from '../../../lib/componentPrice';
 
 const ComponentCard = ({ component, name }) => {
   const { t } = useTranslation(['builder', 'common']);
-  const {
-    setCurrentCompToAdd,
-    setFilters,
-    setSearch,
-    setSort,
-    setSelectedComponents,
-    selectedComponents,
-    buildIssues,
-    setViewingComponent,
-  } = useBuilder();
+  const { setSelectedComponents, selectedComponents, buildIssues, pickerHref, detailHref } =
+    useBuilder();
+
+  const slot = name.toLowerCase();
 
   const resolveOptional = () => {
     const key = name.toLowerCase();
@@ -31,19 +26,11 @@ const ComponentCard = ({ component, name }) => {
   const includedInCase = name.toLowerCase() === 'psu' && !!selectedComponents.case?.psu_included;
   const [popup, setPopup] = useState(null);
 
-  const handleAddComponent = () => {
-    setCurrentCompToAdd(name);
-    setFilters({});
-    setSearch('');
-    setSort('');
-  };
-
   const handleRemove = () => {
     setSelectedComponents((prev) => ({
       ...prev,
-      [name.toLowerCase()]: null,
+      [slot]: null,
     }));
-    setCurrentCompToAdd(null);
   };
 
   const handlePopup = (e) => {
@@ -82,6 +69,7 @@ const ComponentCard = ({ component, name }) => {
                   <img
                     src={component.image_url}
                     alt={component.name}
+                    loading="lazy"
                     className="w-full h-full object-contain"
                   />
                 )}
@@ -121,6 +109,7 @@ const ComponentCard = ({ component, name }) => {
                     <a
                       href={cheapest.url}
                       target="_blank"
+                      rel="noopener noreferrer"
                       className="grid grid-cols-3 gap-1 text-sm border border-border bg-surface p-1 hover:bg-secondary-light transition cursor-pointer"
                     >
                       <span className="text-text font-medium truncate">
@@ -136,12 +125,12 @@ const ComponentCard = ({ component, name }) => {
                     </a>
 
                     {remaining > 0 && (
-                      <button
-                        onClick={() => setViewingComponent({ component, name })}
+                      <Link
+                        to={detailHref(slot, component.product_code)}
                         className="text-info text-sm text-left hover:underline cursor-pointer"
                       >
                         {t('componentCard.moreStores', { count: remaining })}
-                      </button>
+                      </Link>
                     )}
                   </>
                 );
@@ -149,16 +138,17 @@ const ComponentCard = ({ component, name }) => {
             </div>
 
             <div className="bg-primary mt-auto flex">
-              <button
-                className="text-white py-4 px-8 hover:bg-primary-light transition cursor-pointer flex-1"
-                onClick={() => setViewingComponent({ component, name })}
+              <Link
+                className="text-white py-4 px-8 hover:bg-primary-light transition cursor-pointer flex-1 text-center"
+                to={detailHref(slot, component.product_code)}
               >
                 {t('componentCard.more')}
-              </button>
+              </Link>
 
               <button
                 className="text-white p-4 hover:bg-danger/50 cursor-pointer transition"
                 onClick={handleRemove}
+                aria-label={t('componentCard.remove')}
               >
                 <CloseIcon size={20} />
               </button>
@@ -184,12 +174,13 @@ const ComponentCard = ({ component, name }) => {
                 )
               )}
               <span className="text-3xl font-semibold text-muted">{displayName}</span>
-              <button
+              <Link
                 className="bg-surface p-2 text-muted hover:bg-secondary-light transition cursor-pointer"
-                onClick={handleAddComponent}
+                to={pickerHref(slot)}
+                aria-label={t('addComponent.title', { component: displayName })}
               >
                 <AddIcon />
-              </button>
+              </Link>
             </div>
           </>
         )}
@@ -198,8 +189,11 @@ const ComponentCard = ({ component, name }) => {
           className={`absolute top-0 right-0 m-2 transition ${
             needsManualCheck ? 'text-alert hover:text-alert' : 'text-muted hover:text-text'
           }`}
+          tabIndex={0}
           onMouseEnter={handlePopup}
           onMouseLeave={() => setPopup(null)}
+          onFocus={handlePopup}
+          onBlur={() => setPopup(null)}
         >
           <InfoIcon />
         </div>
@@ -211,4 +205,4 @@ const ComponentCard = ({ component, name }) => {
   );
 };
 
-export default ComponentCard;
+export default React.memo(ComponentCard);

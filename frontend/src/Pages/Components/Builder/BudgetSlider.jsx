@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useBuilder } from "../../../Contexts/BuilderContext";
 import { getCheapestPrice } from "../../../lib/componentPrice";
+import { useLang } from "../../../lib/localePath";
 
 const BudgetSlider = ({
   value,
@@ -13,6 +14,7 @@ const BudgetSlider = ({
   showRemaining = true,
 }) => {
   const { t } = useTranslation("builder");
+  const lang = useLang();
   const { selectedComponents } = useBuilder();
   const [inputValue, setInputValue] = useState(value);
   const [isUnlimited, setIsUnlimited] = useState(false);
@@ -82,6 +84,7 @@ const BudgetSlider = ({
             onBlur={handleBlur}
             onKeyDown={(e) => e.key === "Enter" && e.target.blur()}
             disabled={isUnlimited}
+            aria-label={t("budgetSlider.totalBudget")}
             className="text-secondary-light font-semibold w-13 text-right focus:outline-none"
           />
         </div>
@@ -125,6 +128,7 @@ const BudgetSlider = ({
           value={isUnlimited ? min : value}
           onChange={handleSlider}
           disabled={isUnlimited}
+          aria-label={t("budgetSlider.totalBudget")}
           className={`relative z-20 w-full h-2 appearance-none bg-transparent transition-opacity 
             ${isUnlimited ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}
             ${value <= recommended ? "accent-danger/80" : "accent-secondary-light"}
@@ -133,8 +137,8 @@ const BudgetSlider = ({
       </div>
 
       <div className="flex justify-between">
-        <span className="text-muted text-xs">€{min.toLocaleString()}</span>
-        <span className="text-muted text-xs">€{max.toLocaleString()}</span>
+        <span className="text-muted text-xs">€{min.toLocaleString(lang)}</span>
+        <span className="text-muted text-xs">€{max.toLocaleString(lang)}</span>
       </div>
     </div>
   );

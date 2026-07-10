@@ -1,0 +1,53 @@
+import { useEffect } from 'react';
+import { data, isRouteErrorResponse, Outlet, redirect, useParams, useRouteError } from 'react-router';
+import { useTranslation } from 'react-i18next';
+import Layout from '../Layouts/Layout';
+import NotFound from '../Pages/NotFound';
+import { langFromParams } from '../lib/localePath';
+
+// LV is the unprefixed default; /lv/* permanently redirects to it and any
+// other prefix that isn't a known child route 404s here.
+// `url` (not request.url) because with pass-through requests the raw URL
+// carries .data suffixes and internal params on client navigations.
+export function loader({ params, request, url }) {
+  const { lang } = params;
+  if (lang === 'lv') {
+    const normalized = url ?? new URL(request.url);
+    throw redirect(
+      (normalized.pathname.replace(/^\/lv(?=\/|$)/, '') || '/') + normalized.search,
+      301,
+    );
+  }
+  if (lang !== undefined && lang !== 'en') throw data(null, { status: 404 });
+  return null;
+}
+
+export default function Locale() {
+  const params = useParams();
+  const lang = langFromParams(params);
+  const { i18n } = useTranslation();
+
+  useEffect(() => {
+    if (i18n.language !== lang) i18n.changeLanguage(lang);
+  }, [lang, i18n]);
+
+  return <Outlet />;
+}
+
+// Catches 404s thrown anywhere below (unknown locale prefix, the splat route,
+// bad picker types, missing product codes) and keeps the nav/footer around them.
+export function ErrorBoundary() {
+  const error = useRouteError();
+
+  return (
+    <Layout>
+      {isRouteErrorResponse(error) && error.status === 404 ? (
+        <NotFound />
+      ) : (
+        <div className="bg-primary h-full flex items-center justify-center">
+          <p className="text-white text-xl">Something went wrong.</p>
+        </div>
+      )}
+    </Layout>
+  );
+}

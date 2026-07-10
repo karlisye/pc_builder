@@ -25,6 +25,52 @@
     },
     "notFound": {
       "title": "Lapa Nav Atrasta — PC Builder"
+    },
+    "picker": {
+      "cpu": {
+        "title": "Procesoru (CPU) cenas Latvijā | PC Builder",
+        "description": "Pārlūko procesorus ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc ligzdas, kodolu skaita un cenas ar automātisku saderības pārbaudi."
+      },
+      "motherboard": {
+        "title": "Mātesplašu cenas Latvijā | PC Builder",
+        "description": "Pārlūko mātesplates ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc ligzdas, mikroshēmojuma un formfaktora ar automātisku saderības pārbaudi."
+      },
+      "ram": {
+        "title": "Operatīvās atmiņas (RAM) cenas Latvijā | PC Builder",
+        "description": "Pārlūko atmiņas komplektus ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc tipa, ietilpības un ātruma ar automātisku saderības pārbaudi."
+      },
+      "gpu": {
+        "title": "Videokaršu (GPU) cenas Latvijā | PC Builder",
+        "description": "Pārlūko videokartes ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc ražotāja, VRAM un cenas ar automātisku saderības pārbaudi."
+      },
+      "psu": {
+        "title": "Barošanas bloku (PSU) cenas Latvijā | PC Builder",
+        "description": "Pārlūko barošanas blokus ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc jaudas, efektivitātes un modularitātes ar automātisku saderības pārbaudi."
+      },
+      "ssd": {
+        "title": "SSD disku cenas Latvijā | PC Builder",
+        "description": "Pārlūko SSD diskus ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc ietilpības, tipa un saskarnes ar automātisku saderības pārbaudi."
+      },
+      "hdd": {
+        "title": "Cieto disku (HDD) cenas Latvijā | PC Builder",
+        "description": "Pārlūko cietos diskus ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc ietilpības un saskarnes ar automātisku saderības pārbaudi."
+      },
+      "case": {
+        "title": "Datoru korpusu cenas Latvijā | PC Builder",
+        "description": "Pārlūko datoru korpusus ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc formfaktora ar automātisku saderības pārbaudi."
+      },
+      "cooler": {
+        "title": "Procesora dzesētāju cenas Latvijā | PC Builder",
+        "description": "Pārlūko procesora dzesētājus ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc TDP atbalsta un ventilatora izmēra ar automātisku saderības pārbaudi."
+      },
+      "fan": {
+        "title": "Korpusa ventilatoru cenas Latvijā | PC Builder",
+        "description": "Pārlūko korpusa ventilatorus ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc izmēra un skaita komplektā ar automātisku saderības pārbaudi."
+      }
+    },
+    "componentDetail": {
+      "title": "{{name}} — cena Latvijā | PC Builder",
+      "description": "Salīdzini {{name}} cenas un pieejamību Latvijas veikalos un pārbaudi saderību ar savu datora konfigurāciju."
     }
   },
   "home": {
@@ -151,7 +197,8 @@
       "cooler": "Dzesētājs",
       "psu": "Barošanas bloks",
       "fan": "Ventilators"
-    }
+    },
+    "loadError": "Neizdevās ielādēt konfigurāciju"
   },
   "notFound": {
     "heading": "Lapa nav atrasta.",

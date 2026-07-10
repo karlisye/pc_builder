@@ -1,79 +1,96 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { Link, useParams, useRouteLoaderData, useSearchParams } from 'react-router';
 import { useBuilder } from '../../../Contexts/BuilderContext';
 import axios from 'axios';
 import AddComponentSkeleton from '../Skeletons/AddComponentSkeleton';
 import ComponentInfo from '../Common/ComponentInfo';
+import ListingsTable from '../Common/ListingsTable';
 import { AddIcon, CloseIcon, InfoIcon } from '../Common/Icons';
 import PaginationControls from '../Common/PaginationControls';
 import { formatPrice } from '../../../lib/componentPrice';
+import { selectedProductCodes } from '../../../lib/buildSlots';
+
+const RESERVED_PARAMS = new Set(['page', 'sort', 'search', 'build', 'shared']);
 
 const AddComponent = () => {
   const { t } = useTranslation(['builder', 'common']);
-  const {
-    currentCompToAdd,
-    setCurrentCompToAdd,
-    selectedComponents,
-    search,
-    filters,
-    sort,
-    setSelectedComponents,
-    debouncedSearch,
-  } = useBuilder();
-  const [components, setComponents] = useState([]);
-  const [pagination, setPagination] = useState(null);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
+  const { selectedComponents, setSelectedComponents, closePicker, detailHref } = useBuilder();
+  const { type } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [expandedId, setExpandedId] = useState(null);
   const [chosenSources, setChosenSources] = useState({});
 
+  const page = Number(searchParams.get('page') ?? 1);
+  const sort = searchParams.get('sort') ?? '';
+  const search = searchParams.get('search') ?? '';
+  const filters = {};
+  for (const [key, value] of searchParams.entries()) {
+    if (!RESERVED_PARAMS.has(key)) filters[key] = value;
+  }
+
+  const selected = selectedProductCodes(selectedComponents);
+  const selectedKey = JSON.stringify(selected);
+  const filtersKey = JSON.stringify(filters);
+
+  // The selection isn't in the URL, so reset pagination ourselves when it changes.
   useEffect(() => {
-    if (!currentCompToAdd) return;
-    setPage(1);
-  }, [currentCompToAdd, debouncedSearch, filters, sort]);
-
-  useEffect(() => {
-    if (!currentCompToAdd) return;
-    fetchComponents(page);
-  }, [currentCompToAdd, debouncedSearch, filters, sort, page]);
-
-  const fetchComponents = async (pageNum = 1) => {
-    setLoading(true);
-    setError('');
-
-    try {
-      const selected = Object.fromEntries(
-        Object.entries(selectedComponents)
-          .filter(([_, component]) => component !== null)
-          .map(([type, component]) => [type, component.product_code]),
-      );
-
-      const res = await axios.get(`/api/components/${currentCompToAdd.toLowerCase()}`, {
-        params: {
-          selected: JSON.stringify(selected),
-          page: pageNum,
-          search: search || undefined,
-          sort: sort || undefined,
-          ...filters,
+    if (Number(searchParams.get('page') ?? 1) > 1) {
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          next.delete('page');
+          return next;
         },
-      });
-
-      setComponents(res.data.data);
-      setPagination({
-        currentPage: res.data.current_page,
-        lastPage: res.data.last_page,
-        total: res.data.total,
-      });
-    } catch (err) {
-      setError(err.response?.data?.error ?? t('addComponent.failedToFetch'));
-    } finally {
-      setLoading(false);
+        { replace: true, preventScrollReset: true },
+      );
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedKey]);
 
-  const handleLeave = () => {
-    setCurrentCompToAdd(null);
+  const loaderData = useRouteLoaderData('routes/builder-picker');
+  const queryKey = ['components', type, selectedKey, search, sort, filtersKey, page];
+  const seed =
+    loaderData?.seedKey === JSON.stringify(queryKey) ? loaderData.list : undefined;
+
+  const { data, error, isPending, isPlaceholderData } = useQuery({
+    queryKey,
+    initialData: seed,
+    queryFn: ({ signal }) =>
+      axios
+        .get(`/api/components/${type}`, {
+          signal,
+          params: {
+            selected: selectedKey,
+            page,
+            search: search || undefined,
+            sort: sort || undefined,
+            ...filters,
+          },
+        })
+        .then((res) => res.data),
+    enabled: Boolean(type),
+    placeholderData: keepPreviousData,
+    staleTime: 60_000,
+  });
+
+  const components = data?.data ?? [];
+  const pagination = data
+    ? { currentPage: data.current_page, lastPage: data.last_page, total: data.total }
+    : null;
+  const errorMessage = error
+    ? (error.response?.data?.error ?? t('addComponent.failedToFetch'))
+    : '';
+
+  const setPage = (next) => {
+    const value = typeof next === 'function' ? next(page) : next;
+    setSearchParams((prev) => {
+      const nextParams = new URLSearchParams(prev);
+      if (value <= 1) nextParams.delete('page');
+      else nextParams.set('page', String(value));
+      return nextParams;
+    });
   };
 
   const handleExpand = (id) => {
@@ -84,37 +101,36 @@ const AddComponent = () => {
     setChosenSources((prev) => ({ ...prev, [component.product_code]: source }));
   };
 
-  const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-
   const handleSelect = (component) => {
     setSelectedComponents((prev) => ({
       ...prev,
-      [currentCompToAdd.toLowerCase()]: component,
+      [type]: component,
     }));
-    setCurrentCompToAdd(null);
+    closePicker();
   };
 
   return (
     <div className="border border-border w-full min-w-0 hover:bg-background transition p-4 mb-auto">
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-semibold text-text">
+        <h1 className="text-3xl font-semibold text-text">
           {t('addComponent.title', {
-            component: t(`common:components.${currentCompToAdd?.toLowerCase()}`),
+            component: t(`common:components.${type}`),
           })}
-        </h2>
+        </h1>
         <button
           className="w-10 h-10 text-muted hover:cursor-pointer bg-surface hover:bg-secondary-light transition p-2"
-          onClick={handleLeave}
+          onClick={closePicker}
+          aria-label={t('common:close')}
         >
           <CloseIcon />
         </button>
       </div>
 
-      {loading && <AddComponentSkeleton />}
-      {error && <p className="text-danger mt-4">{error}</p>}
+      {isPending && <AddComponentSkeleton />}
+      {errorMessage && <p className="text-danger mt-4">{errorMessage}</p>}
 
-      {!loading && !error && (
-        <div className="mt-4 flex flex-col gap-2">
+      {!isPending && !errorMessage && (
+        <div className={`mt-4 flex flex-col gap-2 ${isPlaceholderData ? 'opacity-60' : ''}`}>
           {components.length === 0 ? (
             <div className="mx-auto text-center">
               <p className="text-2xl font-semibold text-text">
@@ -141,8 +157,16 @@ const AddComponent = () => {
               return (
                 <div key={component.id} className="border border-border min-w-0">
                   <div
-                    key={component.id}
                     onClick={() => handleExpand(component.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleExpand(component.id);
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    aria-expanded={expandedId === component.id}
                     className={`flex justify-between items-center gap-2 p-2 min-w-0 cursor-pointer transition ${component.compatible && !component.out_of_stock ? 'bg-surface hover:bg-secondary-light' : 'bg-muted/50 hover:bg-muted/80'}`}
                   >
                     <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -151,6 +175,7 @@ const AddComponent = () => {
                           <img
                             src={component.image_url}
                             alt={component.name}
+                            loading="lazy"
                             className="w-full h-full object-contain"
                           />
                         )}
@@ -159,7 +184,7 @@ const AddComponent = () => {
                         className={`font-medium truncate min-w-0 ${component.compatible && !component.out_of_stock ? 'text-text' : 'text-text/50'}`}
                       >
                         {component.name}
-                        {currentCompToAdd === 'Motherboard' &&
+                        {type === 'motherboard' &&
                           (component.socket || component.memory_type) && (
                             <span className="text-text font-normal">
                               {' '}
@@ -168,7 +193,7 @@ const AddComponent = () => {
                               )
                             </span>
                           )}
-                        {currentCompToAdd === 'Case' && component.form_factor && (
+                        {type === 'case' && component.form_factor && (
                           <span className="text-text font-normal"> ({component.form_factor})</span>
                         )}
                       </span>
@@ -204,6 +229,7 @@ const AddComponent = () => {
                             handleSelect(component);
                           }}
                           title={t('addComponent.select')}
+                          aria-label={t('addComponent.select')}
                           className="text-surface hover:text-white bg-primary hover:bg-primary-light transition cursor-pointer p-1"
                         >
                           <AddIcon size={20} />
@@ -224,6 +250,7 @@ const AddComponent = () => {
                               <img
                                 src={component.image_url}
                                 alt={component.name}
+                                loading="lazy"
                                 className="w-full h-full object-contain"
                               />
                             )}
@@ -239,52 +266,14 @@ const AddComponent = () => {
                             <h3 className="text-sm font-semibold text-text mb-2">
                               {t('componentCard.availabilityTitle')}
                             </h3>
-                            <div className="flex flex-col gap-2">
-                              {component.listings.map((listing) => (
-                                <div
-                                  key={listing.source}
-                                  className="grid grid-cols-2 xl:grid-cols-[1fr_1fr_1fr_1fr_auto] items-center gap-2 border border-border bg-surface p-3 transition"
-                                >
-                                  <span className="text-text font-medium">
-                                    {capitalize(listing.source)}
-                                  </span>
-                                  <span className="text-muted">€{formatPrice(listing.price)}</span>
-                                  <span className="text-muted">
-                                    {listing.stock_status === 'in_stock'
-                                      ? listing.stock_quantity != null
-                                        ? t('componentCard.inStockWithQty', {
-                                            count: listing.stock_quantity,
-                                          })
-                                        : t('componentCard.inStock')
-                                      : listing.stock_status === 'orderable'
-                                        ? listing.stock_quantity != null
-                                          ? t('componentCard.orderableWithQty', {
-                                              count: listing.stock_quantity,
-                                            })
-                                          : t('componentCard.orderable')
-                                        : t('componentCard.outOfStock')}
-                                  </span>
-                                  <span className="text-muted text-sm">
-                                    {listing.scraped_at
-                                      ? t('componentCard.lastScraped', {
-                                          date: new Date(listing.scraped_at).toLocaleDateString(),
-                                        })
-                                      : t('componentCard.neverScraped')}
-                                  </span>
-                                  <a
-                                    href={listing.url}
-                                    target="_blank"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleChooseStore(component, listing.source);
-                                    }}
-                                    className="px-4 py-4 bg-primary text-white text-sm hover:bg-primary-light transition cursor-pointer text-center col-span-2 xl:col-span-1 xl:py-2"
-                                  >
-                                    {t('componentCard.seeInStore')}
-                                  </a>
-                                </div>
-                              ))}
-                            </div>
+                            <ListingsTable
+                              listings={component.listings}
+                              breakpoint="xl"
+                              onVisit={(e, listing) => {
+                                e.stopPropagation();
+                                handleChooseStore(component, listing.source);
+                              }}
+                            />
                           </div>
                         )}
 
@@ -295,6 +284,12 @@ const AddComponent = () => {
                           >
                             {t('addComponent.select')}
                           </button>
+                          <Link
+                            to={detailHref(type, component.product_code)}
+                            className="p-4 bg-surface text-text hover:bg-secondary-light transition cursor-pointer text-center"
+                          >
+                            {t('addComponent.viewDetails')}
+                          </Link>
                         </div>
                       </div>
                     </div>
@@ -313,4 +308,4 @@ const AddComponent = () => {
   );
 };
 
-export default AddComponent;
+export default React.memo(AddComponent);

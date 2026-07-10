@@ -1,15 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link, useLocation, Outlet } from 'react-router-dom';
+import { Link, useLocation, Outlet } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../Contexts/AuthContext';
 import { AlertIcon, ArrowIcon, MenuIcon } from '../Pages/Components/Common/Icons';
 import LanguageSwitcher from '../Pages/Components/Common/LanguageSwitcher';
 import VerifyEmailBanner from '../Pages/Components/Common/VerifyEmailBanner';
+import { stripLocale, useLocalePath } from '../lib/localePath';
 
-const Layout = () => {
+// `children` is only passed when rendered from an ErrorBoundary, where
+// <Outlet /> has nothing to render.
+const Layout = ({ children }) => {
   const { t } = useTranslation('layout');
   const { user, logout } = useAuth();
   const { pathname } = useLocation();
+  const lp = useLocalePath();
+  const basePath = stripLocale(pathname);
 
   const [profileActive, setProfileActive] = useState(false);
   const [menuActive, setMenuActive] = useState(false);
@@ -43,14 +48,14 @@ const Layout = () => {
   }, [profileActive, menuActive]);
 
   const navLinkClass = (path) => {
-    const isActive = pathname.startsWith(path);
+    const isActive = basePath.startsWith(path);
     return `flex-1 text-center py-4 px-6 transition ${
       isActive ? 'bg-primary text-white hover:bg-primary-light' : 'hover:bg-surface text-text'
     }`;
   };
 
   const menuLinkClass = (path) => {
-    const isActive = pathname.startsWith(path);
+    const isActive = basePath.startsWith(path);
     return `block py-3 px-4 transition ${
       isActive ? 'bg-primary text-white hover:bg-primary-light' : 'hover:bg-surface text-text'
     }`;
@@ -67,7 +72,7 @@ const Layout = () => {
         <nav className="flex items-center bg-background shadow">
           <Link
             className="lg:hidden py-4 px-6 bg-primary text-white font-semibold hover:bg-primary-light transition"
-            to="/"
+            to={lp('/')}
           >
             BUILDER
           </Link>
@@ -77,14 +82,14 @@ const Layout = () => {
               <div className="hidden lg:flex lg:w-120.5 shrink-0">
                 <Link
                   className="py-4 px-6 bg-primary text-white font-semibold hover:bg-primary-light transition"
-                  to="/"
+                  to={lp('/')}
                 >
                   BUILDER
                 </Link>
-                <Link className={navLinkClass('/builder')} to="/builder">
+                <Link className={navLinkClass('/builder')} to={lp('/builder')}>
                   {t('nav.build')}
                 </Link>
-                <Link className={navLinkClass('/builds')} to="/builds">
+                <Link className={navLinkClass('/builds')} to={lp('/builds')}>
                   {t('nav.saved')}
                 </Link>
               </div>
@@ -107,14 +112,14 @@ const Layout = () => {
               >
                 <Link
                   className={menuLinkClass('/builder')}
-                  to="/builder"
+                  to={lp('/builder')}
                   onClick={() => setMenuActive(false)}
                 >
                   {t('nav.build')}
                 </Link>
                 <Link
                   className={menuLinkClass('/builds')}
-                  to="/builds"
+                  to={lp('/builds')}
                   onClick={() => setMenuActive(false)}
                 >
                   {t('nav.saved')}
@@ -152,14 +157,14 @@ const Layout = () => {
                   </div>
                   <div>
                     <Link
-                      to="/profile"
+                      to={lp('/profile')}
                       className="flex items-center gap-2 px-4 py-2 text-text hover:bg-secondary-light transition"
                     >
                       {t('nav.profile')}
                       {!user.email_verified_at && <AlertIcon size={18} className="text-alert" />}
                     </Link>
                     <Link
-                      to="/guide"
+                      to={lp('/guide')}
                       className="flex items-center gap-2 px-4 py-2 text-text hover:bg-secondary-light transition"
                     >
                       {t('nav.guide')}
@@ -178,11 +183,11 @@ const Layout = () => {
               <div className="hidden lg:flex shrink-0">
                 <Link
                   className="py-4 px-6 bg-primary text-white font-semibold hover:bg-primary-light transition"
-                  to="/"
+                  to={lp('/')}
                 >
                   BUILDER
                 </Link>
-                <Link className={navLinkClass('/builder')} to="/builder">
+                <Link className={navLinkClass('/builder')} to={lp('/builder')}>
                   {t('nav.build')}
                 </Link>
               </div>
@@ -205,7 +210,7 @@ const Layout = () => {
               >
                 <Link
                   className={menuLinkClass('/builder')}
-                  to="/builder"
+                  to={lp('/builder')}
                   onClick={() => setMenuActive(false)}
                 >
                   {t('nav.build')}
@@ -214,7 +219,7 @@ const Layout = () => {
 
               <div className="ml-auto flex items-center">
                 <LanguageSwitcher className="mr-2" />
-                <Link className="py-4 px-6 hover:bg-surface transition" to="/login">
+                <Link className="py-4 px-6 hover:bg-surface transition" to={lp('/login')}>
                   {t('nav.signIn')}
                 </Link>
               </div>
@@ -225,9 +230,7 @@ const Layout = () => {
       </header>
 
       <div id="page-scroll" className="flex flex-col flex-1 overflow-y-auto">
-        <main className="flex-1">
-          <Outlet />
-        </main>
+        <main className="flex-1">{children ?? <Outlet />}</main>
 
         <footer className="bg-primary border-t border-primary-light">
           <div className="max-w-348 mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -236,15 +239,15 @@ const Layout = () => {
               <p className="text-surface text-sm mt-1">{t('footer.tagline')}</p>
             </div>
             <div className="flex gap-6 text-sm text-surface">
-              <Link to="/builder" className="hover:text-white transition">
+              <Link to={lp('/builder')} className="hover:text-white transition">
                 {t('nav.build')}
               </Link>
               {user && (
-                <Link to="/builds" className="hover:text-white transition">
+                <Link to={lp('/builds')} className="hover:text-white transition">
                   {t('nav.saved')}
                 </Link>
               )}
-              <Link to="/guide" className="hover:text-white transition">
+              <Link to={lp('/guide')} className="hover:text-white transition">
                 {t('nav.guide')}
               </Link>
             </div>

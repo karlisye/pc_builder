@@ -1,4 +1,4 @@
-FROM node:22-alpine AS build
+FROM node:24-alpine AS build
 
 WORKDIR /app
 
@@ -6,26 +6,27 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
+
+RUN rm -rf /app/build /app/.react-router /app/node_modules/.vite /tmp/*
 RUN npm run build
 
-FROM nginx:alpine
+FROM node:24-alpine AS ssr
 
-COPY --from=build /app/dist /usr/share/nginx/html
+WORKDIR /app
+ENV NODE_ENV=production
 
-RUN printf 'server {\n\
-    listen 80;\n\
-    root /usr/share/nginx/html;\n\
-    index index.html;\n\
-    location ~ ^/(api|sanctum)/ {\n\
-        proxy_pass http://backend:8000;\n\
-        proxy_set_header Host $host;\n\
-        proxy_set_header X-Real-IP $remote_addr;\n\
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n\
-        proxy_set_header Origin $http_origin;\n\
-    }\n\
-    location / {\n\
-        try_files $uri $uri/ /index.html;\n\
-    }\n\
-}\n' > /etc/nginx/conf.d/default.conf
+COPY package*.json ./
+RUN npm ci --omit=dev
+
+COPY --from=build /app/build ./build
+
+EXPOSE 3000
+CMD ["npx", "react-router-serve", "./build/server/index.js"]
+
+FROM nginx:alpine AS web
+
+RUN rm -f /usr/share/nginx/html/index.html /usr/share/nginx/html/50x.html
+COPY --from=build /app/build/client /usr/share/nginx/html
+COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80

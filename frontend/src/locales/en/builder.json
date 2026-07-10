@@ -83,7 +83,8 @@
     "notCompatible": "Not Compatible",
     "caseIncludesPsu": "Case includes PSU",
     "select": "Select",
-    "startingFrom": "Starting from €{{price}}"
+    "startingFrom": "Starting from €{{price}}",
+    "viewDetails": "Full details"
   },
   "componentFilters": {
     "searchPlaceholder": "Search {{component}}...",
@@ -142,6 +143,7 @@
     "total": "Total",
     "components": "Components",
     "compatibility": "Compatibility",
+    "validateFailed": "Couldn't verify compatibility right now — the results shown may be outdated.",
     "aboutThisBuild": "About This Build",
     "fullyFunctionalNote": "Your build is fully functional. These are just recommendations to get the best experience."
   },

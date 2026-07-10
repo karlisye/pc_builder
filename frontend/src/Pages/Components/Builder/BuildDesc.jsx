@@ -1,13 +1,14 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useBuilder } from "../../../Contexts/BuilderContext";
+import { useBuilder, useBuildMeta } from "../../../Contexts/BuilderContext";
 import ClosedSection from "../Common/ClosedSection";
 import { getCheapestPrice } from "../../../lib/componentPrice";
 
 const BuildDesc = () => {
   const { t } = useTranslation(["builder", "common"]);
-  const { selectedComponents, warnings, notes, buildIssues, buildWarnings, buildId, buildName } =
+  const { selectedComponents, warnings, notes, buildIssues, buildWarnings, validateFailed } =
     useBuilder();
+  const { buildId, buildName } = useBuildMeta();
 
   const filled = Object.values(selectedComponents).filter((v) => v !== null);
   const total = filled.reduce((sum, c) => sum + getCheapestPrice(c), 0);
@@ -42,6 +43,12 @@ const BuildDesc = () => {
           </span>
         </div>
       </div>
+
+      {validateFailed && (
+        <div className="border border-alert/80 bg-alert/10 p-4">
+          <p className="text-alert text-sm">{t("buildDesc.validateFailed")}</p>
+        </div>
+      )}
 
       {(Object.keys(buildIssues).length > 0 ||
         Object.keys(buildWarnings).length > 0 ||

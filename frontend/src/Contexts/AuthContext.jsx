@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { Navigate } from "react-router";
 import axios from "axios";
+import { useLocalePath } from "../lib/localePath";
 
 axios.defaults.withCredentials = true;
 axios.defaults.withXSRFToken = true;
@@ -65,3 +67,19 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
+
+// Client-side guards — the SSR server never sees Sanctum cookies, so auth
+// pages render null on the server and resolve after the /api/user fetch.
+export const GuestRoute = ({ children }) => {
+  const { user } = useAuth();
+  const lp = useLocalePath();
+  if (user === undefined) return null;
+  return user ? <Navigate to={lp("/")} replace /> : children;
+};
+
+export const AuthRoute = ({ children }) => {
+  const { user } = useAuth();
+  const lp = useLocalePath();
+  if (user === undefined) return null;
+  return user ? children : <Navigate to={lp("/login")} replace />;
+};
