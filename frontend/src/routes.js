@@ -8,6 +8,7 @@ export default [
       route('guide/auto', 'routes/guide-auto.jsx'),
       route('guide/saved', 'routes/guide-saved.jsx'),
       route('email-verified', 'routes/email-verified.jsx'),
+      route('account-deleted', 'routes/account-deleted.jsx'),
       route('login', 'routes/login.jsx'),
       route('register', 'routes/register.jsx'),
       route('builds/:id?', 'routes/builds.jsx'),

@@ -20,13 +20,14 @@
     "passwordUpdateError": "Neizdevās saglabāt paroli",
     "deleteAccountHeading": "Dzēst manu kontu",
     "deleteAccountButton": "Dzēst manu kontu",
-    "deleteConfirmTitle": "Vai tiešām vēlaties dzēst savu kontu?",
+    "deleteConfirmTitle": "Dzēst savu kontu?",
     "deleteConfirmSubtitle": "Šo darbību nevar atsaukt, un tā ir neatgriezeniska",
-    "deleteConfirmInstruction": "Lai apstiprinātu, lūdzu, ierakstiet",
-    "deleteConfirmInstructionSuffix": "",
-    "deleteConfirmKeyword": "delete-my-account",
-    "deleteConfirmIncorrect": "Apstiprinājuma teksts nav pareizs",
+    "deleteConfirmInstruction": "Mēs nosūtīsim apstiprinājuma saiti uz {{email}}. Jūsu konts tiks dzēsts tikai pēc tam, kad noklikšķināsiet uz šīs saites.",
+    "deleteConfirmSend": "Nosūtīt apstiprinājuma e-pastu",
+    "deleteConfirmSent": "Apstiprinājuma e-pasts nosūtīts. Pārbaudiet savu iesūtni, lai pabeigtu konta dzēšanu.",
+    "deleteConfirmError": "Neizdevās nosūtīt apstiprinājuma e-pastu",
     "delete": "Dzēst",
-    "cancelDelete": "Atcelt"
+    "cancelDelete": "Atcelt",
+    "close": "Aizvērt"
   }
 }

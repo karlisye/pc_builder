@@ -22,6 +22,11 @@
     "verifiedText": "Your email address has been verified.",
     "backHome": "Back to home"
   },
+  "accountDeleted": {
+    "title": "Account deleted",
+    "text": "Your account has been permanently deleted.",
+    "backHome": "Back to home"
+  },
   "components": {
     "cpu": "CPU",
     "motherboard": "Motherboard",

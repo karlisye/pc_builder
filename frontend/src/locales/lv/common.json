@@ -22,6 +22,11 @@
     "verifiedText": "Jūsu e-pasta adrese ir apstiprināta.",
     "backHome": "Atpakaļ uz sākumu"
   },
+  "accountDeleted": {
+    "title": "Konts dzēsts",
+    "text": "Jūsu konts ir neatgriezeniski dzēsts.",
+    "backHome": "Atpakaļ uz sākumu"
+  },
   "components": {
     "cpu": "Procesors",
     "motherboard": "Sistēmplate",

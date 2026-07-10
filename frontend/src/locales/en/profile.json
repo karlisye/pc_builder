@@ -20,13 +20,14 @@
     "passwordUpdateError": "Failed to save Password",
     "deleteAccountHeading": "Delete my account",
     "deleteAccountButton": "Delete my account",
-    "deleteConfirmTitle": "Are you sure you want to delete your account?",
+    "deleteConfirmTitle": "Delete your account?",
     "deleteConfirmSubtitle": "This action is permanent and cannot be undone",
-    "deleteConfirmInstruction": "Please type",
-    "deleteConfirmInstructionSuffix": "to confirm",
-    "deleteConfirmKeyword": "delete-my-account",
-    "deleteConfirmIncorrect": "Delete confirmation is incorrect",
+    "deleteConfirmInstruction": "We'll send a confirmation link to {{email}}. Your account will only be deleted once you click that link.",
+    "deleteConfirmSend": "Send confirmation email",
+    "deleteConfirmSent": "Confirmation email sent. Check your inbox to finish deleting your account.",
+    "deleteConfirmError": "Failed to send confirmation email",
     "delete": "Delete",
-    "cancelDelete": "Cancel"
+    "cancelDelete": "Cancel",
+    "close": "Close"
   }
 }
