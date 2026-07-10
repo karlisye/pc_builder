@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../Contexts/AuthContext';
 import { useLocalePath } from '../../lib/localePath';
+import Turnstile from '../Components/Common/Turnstile';
 
 const Register = () => {
   const lp = useLocalePath();
@@ -18,6 +19,7 @@ const Register = () => {
   });
   const [errors, setErrors] = useState({});
   const [processing, setProcessing] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState(null);
 
   const set = (field) => (e) => setData((prev) => ({ ...prev, [field]: e.target.value }));
 
@@ -44,7 +46,13 @@ const Register = () => {
     if (!validate()) return;
     setProcessing(true);
     try {
-      await register(data.name, data.email, data.password, data.password_confirmation);
+      await register(
+        data.name,
+        data.email,
+        data.password,
+        data.password_confirmation,
+        turnstileToken,
+      );
       navigate(lp('/'));
     } catch (err) {
       const serverErrors = err.response?.data?.errors;
@@ -123,13 +131,16 @@ const Register = () => {
                 )}
               </div>
 
-              <div className="flex flex-col mx-4 my-4">
+              <div className="flex flex-col mx-4 my-4 gap-2">
                 <Link className="text-info" to={lp('/login')}>
                   {t('register.alreadyHaveAccount')}
                 </Link>
+                <Turnstile onToken={setTurnstileToken} onExpire={() => setTurnstileToken(null)} />
                 <button
-                  className="bg-primary hover:bg-primary-light transition cursor-pointer text-white p-4"
-                  disabled={processing}
+                  className="bg-primary hover:bg-primary-light transition cursor-pointer text-white p-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={
+                    processing || (!!import.meta.env.VITE_TURNSTILE_SITE_KEY && !turnstileToken)
+                  }
                 >
                   {t('register.submit')}
                 </button>

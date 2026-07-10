@@ -6,11 +6,32 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
+  private function verifyTurnstile(?string $token): bool
+  {
+    $secret = config('services.turnstile.secret');
+
+    if (! $secret) {
+      return true;
+    }
+
+    if (! $token) {
+      return false;
+    }
+
+    $response = Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
+      'secret' => $secret,
+      'response' => $token,
+    ])->json();
+
+    return $response['success'] ?? false;
+  }
+
   public function register(Request $request)
   {
     $credentials = $request->validate([
@@ -19,6 +40,14 @@ class AuthController extends Controller
       'password' => ['required', 'string', 'confirmed', Password::min(8)
         ->mixedCase()->letters()->symbols()->numbers()]
     ]);
+
+    if (! $this->verifyTurnstile($request->input('turnstile_token'))) {
+      return response()->json([
+        'message' => __('messages.captcha_failed'),
+        'errors' => ['email' => [__('messages.captcha_failed')]],
+      ], 422);
+    }
+
     $user = User::create([
       'name' => $credentials['name'],
       'email' => $credentials['email'],
@@ -67,6 +96,13 @@ class AuthController extends Controller
     ]);
 
     Log::debug('validation passed');
+
+    if (! $this->verifyTurnstile($request->input('turnstile_token'))) {
+      return response()->json([
+        'message' => __('messages.captcha_failed'),
+        'errors' => ['email' => [__('messages.captcha_failed')]],
+      ], 422);
+    }
 
     if (Auth::attempt($credentials)) {
       $request->session()->regenerate();

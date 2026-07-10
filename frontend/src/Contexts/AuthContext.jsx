@@ -19,20 +19,21 @@ export const AuthProvider = ({ children }) => {
       .catch(() => setUser(null));
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (email, password, turnstile_token) => {
     await axios.get("/sanctum/csrf-cookie");
-    const res = await axios.post("/api/login", { email, password });
+    const res = await axios.post("/api/login", { email, password, turnstile_token });
     setUser(res.data);
     return res.data;
   };
 
-  const register = async (name, email, password, password_confirmation) => {
+  const register = async (name, email, password, password_confirmation, turnstile_token) => {
     await axios.get("/sanctum/csrf-cookie");
     const res = await axios.post("/api/register", {
       name,
       email,
       password,
       password_confirmation,
+      turnstile_token,
     });
     setUser(res.data);
     return res.data;

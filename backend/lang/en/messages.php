@@ -8,4 +8,5 @@ return [
     'already_verified' => 'Your email address is already verified.',
     'verification_sent' => 'Verification link sent.',
     'delete_confirmation_sent' => 'Confirmation link sent to your email.',
+    'captcha_failed' => 'Verification failed. Please try again.',
 ];
