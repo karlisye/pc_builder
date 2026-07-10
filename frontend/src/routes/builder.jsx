@@ -127,7 +127,22 @@ export default function BuilderLayout() {
       .then((res) => {
         const build = res.data.build;
         if (!build) {
-          draftGateRef.current = 'open';
+          clearDraft();
+          draftGateRef.current = 'skip-once';
+          setRestoredDraft(false);
+          setSelectedComponents({ ...EMPTY_SLOTS });
+          setBuildId(undefined);
+          setBuildName('');
+          setBuildNotes('');
+          setBuildType('');
+          setSearchParams(
+            (prev) => {
+              const next = new URLSearchParams(prev);
+              next.delete('build');
+              return next;
+            },
+            { replace: true },
+          );
           addToast(t('sidePanel.loadBuildError'), { type: 'danger' });
           return;
         }

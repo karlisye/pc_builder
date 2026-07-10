@@ -18,6 +18,7 @@ import { formatDate } from '../lib/formatDate';
 import { formatPrice } from '../lib/componentPrice';
 import { useLang } from '../lib/localePath';
 import { useToast } from '../Contexts/ToastContext';
+import { loadDraft, clearDraft } from '../lib/builderDraft';
 
 const SLOT_KEYS = [
   'cpu',
@@ -144,6 +145,8 @@ const SavedBuilds = () => {
     try {
       const res = await axios.delete(`/api/builds/${id}`);
       if (selectedBuild?.id === id) setSelectedBuild(null);
+      const draft = loadDraft();
+      if (draft && String(draft.buildId) === String(id)) clearDraft();
       refreshBuilds();
       addToast(res.data.message, { type: 'success' });
     } catch (err) {
