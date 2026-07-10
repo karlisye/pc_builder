@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { useAuth } from '../../Contexts/AuthContext';
 import { useLocalePath } from '../../lib/localePath';
 import Turnstile from '../Components/Common/Turnstile';
@@ -20,6 +20,7 @@ const Register = () => {
   const [errors, setErrors] = useState({});
   const [processing, setProcessing] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState(null);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   const set = (field) => (e) => setData((prev) => ({ ...prev, [field]: e.target.value }));
 
@@ -37,6 +38,7 @@ const Register = () => {
       e.password_confirmation = t('register.confirmPasswordRequired');
     else if (data.password !== data.password_confirmation)
       e.password_confirmation = t('register.passwordsDoNotMatch');
+    if (!agreedToTerms) e.agreedToTerms = t('register.agreeToTermsRequired');
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -132,9 +134,34 @@ const Register = () => {
               </div>
 
               <div className="flex flex-col mx-4 my-4 gap-2">
-                <Link className="text-info" to={lp('/login')}>
-                  {t('register.alreadyHaveAccount')}
-                </Link>
+                <label className="flex items-start gap-2 text-text text-sm">
+                  <input
+                    type="checkbox"
+                    checked={agreedToTerms}
+                    onChange={(e) => setAgreedToTerms(e.target.checked)}
+                    className="mt-0.5 shrink-0 cursor-pointer"
+                  />
+                  <span>
+                    <Trans
+                      t={t}
+                      i18nKey="register.agreeToTerms"
+                      components={{
+                        termsLink: (
+                          <Link to={lp('/terms')} target="_blank" className="text-info underline" />
+                        ),
+                        privacyLink: (
+                          <Link
+                            to={lp('/privacy')}
+                            target="_blank"
+                            className="text-info underline"
+                          />
+                        ),
+                      }}
+                    />
+                  </span>
+                </label>
+                {errors.agreedToTerms && <p className="text-danger">{errors.agreedToTerms}</p>}
+
                 <Turnstile onToken={setTurnstileToken} onExpire={() => setTurnstileToken(null)} />
                 <button
                   className="bg-primary hover:bg-primary-light transition cursor-pointer text-white p-4 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -144,6 +171,9 @@ const Register = () => {
                 >
                   {t('register.submit')}
                 </button>
+                <Link className="text-info" to={lp('/login')}>
+                  {t('register.alreadyHaveAccount')}
+                </Link>
               </div>
             </form>
           </div>

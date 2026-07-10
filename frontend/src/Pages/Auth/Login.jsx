@@ -83,9 +83,6 @@ const Login = () => {
               </div>
 
               <div className="flex flex-col mx-4 my-4 gap-2">
-                <Link className="text-info" to={lp('/register')}>
-                  {t('login.createAccount')}
-                </Link>
                 <Turnstile onToken={setTurnstileToken} onExpire={() => setTurnstileToken(null)} />
                 <button
                   className="bg-primary hover:bg-primary-light transition cursor-pointer text-white p-4 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -95,6 +92,9 @@ const Login = () => {
                 >
                   {t('login.submit')}
                 </button>
+                <Link className="text-info" to={lp('/register')}>
+                  {t('login.createAccount')}
+                </Link>
               </div>
             </form>
           </div>
