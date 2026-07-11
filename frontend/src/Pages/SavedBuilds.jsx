@@ -222,7 +222,7 @@ const SavedBuilds = () => {
 
   return (
     <>
-      <div className="flex">
+      <div className="flex h-full">
         <SidePanel title={t('savedBuilds.sidePanelTitle')}>
           <div className="">
             {builds.length === 0 ? (
@@ -257,7 +257,7 @@ const SavedBuilds = () => {
           </div>
           <div className="mt-auto">
             {pagination && pagination.lastPage > 1 && (
-              <PaginationControls pagination={pagination} setPage={setPage} />
+              <PaginationControls pagination={pagination} setPage={setPage} dark />
             )}
           </div>
         </SidePanel>
@@ -384,45 +384,38 @@ const SavedBuilds = () => {
                 </p>
 
                 <div className="flex flex-col-reverse xl:flex-row items-stretch gap-2">
-                  <div className="relative xl:w-64 my-auto">
-                    <div className="flex border border-border">
-                      <input
-                        type="text"
-                        readOnly
-                        disabled={!selectedBuild.is_public}
-                        value={
-                          selectedBuild.share_token
-                            ? `${window.location.origin}/builder?shared=${selectedBuild.share_token}`
-                            : ''
-                        }
-                        className="flex-1 min-w-0 bg-surface text-text px-3 truncate outline-none py-1 disabled:text-muted disabled:cursor-not-allowed"
-                      />
-                      {selectedBuild.is_public ? (
+                  {selectedBuild.is_public ? (
+                    <div className="relative xl:w-64 my-auto">
+                      <div className="flex border border-border">
+                        <input
+                          type="text"
+                          readOnly
+                          value={`${window.location.origin}/builder?shared=${selectedBuild.share_token}`}
+                          className="flex-1 min-w-0 bg-surface text-text px-3 truncate outline-none py-1"
+                        />
                         <button
                           onClick={() => copyShareLink(selectedBuild.share_token)}
                           className="px-3 text-background hover:text-white bg-primary hover:bg-primary-light transition cursor-pointer"
                         >
                           <CopyIcon size={18} />
                         </button>
-                      ) : (
-                        <button
-                          onClick={handleShare}
-                          className="px-4 text-background hover:text-white bg-primary hover:bg-primary-light transition cursor-pointer"
-                        >
-                          {t('savedBuilds.share')}
-                        </button>
-                      )}
-                    </div>
+                      </div>
 
-                    {selectedBuild.is_public && (
                       <button
                         onClick={handleUnshare}
                         className="absolute -bottom-5 left-0 text-muted hover:text-danger text-sm transition cursor-pointer"
                       >
                         {t('savedBuilds.unshare')}
                       </button>
-                    )}
-                  </div>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={handleShare}
+                      className="px-4 py-2 my-auto text-background hover:text-white bg-primary hover:bg-primary-light transition cursor-pointer"
+                    >
+                      {t('savedBuilds.share')}
+                    </button>
+                  )}
 
                   <Link
                     className="py-4 px-8 bg-primary text-white text-center cursor-pointer hover:bg-primary-light transition"

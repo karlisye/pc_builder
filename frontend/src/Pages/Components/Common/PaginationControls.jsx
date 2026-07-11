@@ -11,10 +11,15 @@ const getPageNumbers = (currentPage, lastPage) => {
   return Array.from(pages).sort((a, b) => a - b);
 };
 
-const PaginationControls = ({ pagination, setPage }) => {
+const PaginationControls = ({ pagination, setPage, dark = false }) => {
   const { t } = useTranslation("common");
   const { currentPage, lastPage } = pagination;
   const pageNumbers = getPageNumbers(currentPage, lastPage);
+
+  const idleClass = dark
+    ? "text-secondary-light hover:text-white"
+    : "text-muted hover:text-text";
+  const activeClass = dark ? "bg-secondary-light text-primary" : "bg-primary text-white";
 
   return (
     <div
@@ -24,7 +29,7 @@ const PaginationControls = ({ pagination, setPage }) => {
       <button
         disabled={currentPage === 1}
         onClick={() => setPage((p) => p - 1)}
-        className="text-muted hover:text-text disabled:opacity-30 transition cursor-pointer"
+        className={`${idleClass} disabled:opacity-30 transition cursor-pointer`}
       >
         {t("previous")}
       </button>
@@ -36,14 +41,14 @@ const PaginationControls = ({ pagination, setPage }) => {
 
           return (
             <React.Fragment key={page}>
-              {showEllipsis && <span className="text-muted px-1">…</span>}
+              {showEllipsis && (
+                <span className={`${dark ? "text-secondary-light" : "text-muted"} px-1`}>…</span>
+              )}
               <button
                 onClick={() => setPage(page)}
                 disabled={page === currentPage}
                 className={`min-w-8 px-2 py-1 text-sm transition cursor-pointer disabled:cursor-default ${
-                  page === currentPage
-                    ? "bg-primary text-white"
-                    : "text-muted hover:text-text"
+                  page === currentPage ? activeClass : idleClass
                 }`}
               >
                 {page}
@@ -56,7 +61,7 @@ const PaginationControls = ({ pagination, setPage }) => {
       <button
         disabled={currentPage === lastPage}
         onClick={() => setPage((p) => p + 1)}
-        className="text-muted hover:text-text disabled:opacity-30 transition cursor-pointer"
+        className={`${idleClass} disabled:opacity-30 transition cursor-pointer`}
       >
         {t("next")}
       </button>
