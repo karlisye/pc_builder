@@ -17,4 +17,4 @@ Disallow: /en/register
 Disallow: /en/forgot-password
 Disallow: /en/reset-password
 
-Sitemap: https://pcbuilder.lv/sitemap.xml
+Sitemap: https://datorbuve.lv/sitemap.xml
