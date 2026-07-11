@@ -4,6 +4,8 @@ import { Link } from 'react-router';
 import { useAuth } from '../Contexts/AuthContext';
 import { useLocalePath } from '../lib/localePath';
 import ComponentMarquee from './Components/Home/ComponentMarquee';
+import BudgetBuildDemo from './Components/Home/BudgetBuildDemo';
+import SavedBuildsDemo from './Components/Home/SavedBuildsDemo';
 
 const Home = () => {
   const { t } = useTranslation('pages');
@@ -61,7 +63,7 @@ const Home = () => {
 
         <div className="xl:w-1/2 px-6 py-10 text-text bg-background">
           <div className="xl:max-w-2xl xl:h-220 mr-auto border-4 border-secondary-light p-2 overflow-hidden flex xl:flex-col flex-col lg:flex-row gap-4">
-            <div className="flex w-full xl:h-100 h-80 bg-muted my-auto"></div>
+            <BudgetBuildDemo className="xl:h-100 h-80 my-auto" />
 
             <div className="self-end">
               <h1 className="sm:text-9xl text-7xl font-bold text-text mb-4 flex flex-wrap">
@@ -82,7 +84,7 @@ const Home = () => {
             <p className="text-xl text-text mb-4">{t('home.save.description')}</p>
           </div>
 
-          <div className="flex w-full md:h-100 h-80 bg-muted"></div>
+          <SavedBuildsDemo className="w-full md:h-100 h-80" />
         </div>
       </div>
     </div>

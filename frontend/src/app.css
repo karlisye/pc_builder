@@ -58,6 +58,154 @@
   animation: marquee-right 25s linear infinite;
 }
 
+/* Budget-builder demo (home auto-build section) */
+@keyframes budget-fill {
+  0% {
+    width: 0%;
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  88% {
+    width: 100%;
+    opacity: 1;
+  }
+  94%,
+  100% {
+    width: 100%;
+    opacity: 0;
+  }
+}
+
+.animate-budget-fill {
+  animation: budget-fill 9s ease-in-out infinite;
+}
+
+@keyframes budget-handle {
+  0% {
+    left: 0%;
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  88% {
+    left: 100%;
+    opacity: 1;
+  }
+  94%,
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+.animate-budget-handle {
+  animation: budget-handle 9s ease-in-out infinite;
+}
+
+@keyframes budget-slot-1 {
+  0%,
+  20% {
+    opacity: 0.35;
+    transform: scale(0.9);
+  }
+  24% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  30%,
+  90% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  94%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.9);
+  }
+}
+
+@keyframes budget-slot-2 {
+  0%,
+  40% {
+    opacity: 0.35;
+    transform: scale(0.9);
+  }
+  44% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  50%,
+  90% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  94%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.9);
+  }
+}
+
+@keyframes budget-slot-3 {
+  0%,
+  57% {
+    opacity: 0.35;
+    transform: scale(0.9);
+  }
+  61% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  66%,
+  90% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  94%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.9);
+  }
+}
+
+@keyframes budget-slot-4 {
+  0%,
+  74% {
+    opacity: 0.35;
+    transform: scale(0.9);
+  }
+  78% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  83%,
+  90% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  94%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.9);
+  }
+}
+
+.animate-budget-slot-1 {
+  animation: budget-slot-1 9s ease-in-out infinite;
+}
+.animate-budget-slot-2 {
+  animation: budget-slot-2 9s ease-in-out infinite;
+}
+.animate-budget-slot-3 {
+  animation: budget-slot-3 9s ease-in-out infinite;
+}
+.animate-budget-slot-4 {
+  animation: budget-slot-4 9s ease-in-out infinite;
+}
+
 @theme {
   --font-sans:
     'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
