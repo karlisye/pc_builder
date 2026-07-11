@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useBuilder, useBuildMeta } from "../../../Contexts/BuilderContext";
-import { useAuth } from "../../../Contexts/AuthContext";
-import axios from "axios";
-import { CloseIcon } from "../Common/Icons";
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useBuilder, useBuildMeta } from '../../../Contexts/BuilderContext';
+import { useAuth } from '../../../Contexts/AuthContext';
+import axios from 'axios';
+import { CloseIcon } from '../Common/Icons';
 import { Link, useSearchParams } from 'react-router';
-import { clearDraft } from "../../../lib/builderDraft";
-import { selectedProductCodes } from "../../../lib/buildSlots";
-import { useLocalePath } from "../../../lib/localePath";
-import { useToast } from "../../../Contexts/ToastContext";
+import { clearDraft } from '../../../lib/builderDraft';
+import { selectedProductCodes } from '../../../lib/buildSlots';
+import { useLocalePath } from '../../../lib/localePath';
+import { useToast } from '../../../Contexts/ToastContext';
 
 // Tracks whether the restore nudge has already been shown this page load,
 // so it only appears once on a real page refresh and not on every SPA nav.
 let nudgeShownThisLoad = false;
 
 const BuildInfo = () => {
-  const { t } = useTranslation(["builder", "common"]);
+  const { t } = useTranslation(['builder', 'common']);
   const { user, showVerifyBanner } = useAuth();
   const { addToast } = useToast();
   const {
@@ -42,17 +42,15 @@ const BuildInfo = () => {
   } = useBuildMeta();
   const [, setSearchParams] = useSearchParams();
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
-  const hasComponents = Object.values(selectedComponents).some(
-    (v) => v !== null,
-  );
+  const hasComponents = Object.values(selectedComponents).some((v) => v !== null);
 
   useEffect(() => {
     if (nudgeShownThisLoad || !restoredDraft) return;
 
     nudgeShownThisLoad = true;
-    addToast(t("buildInfo.restoredNudge"), { type: "info" });
+    addToast(t('buildInfo.restoredNudge'), { type: 'info' });
   }, [restoredDraft, addToast, t]);
 
   const handleRemove = (name) => {
@@ -65,22 +63,22 @@ const BuildInfo = () => {
 
   const handleSave = async (asNew = false) => {
     if (!buildName.trim()) {
-      setError(t("buildInfo.enterBuildName"));
+      setError(t('buildInfo.enterBuildName'));
       return;
     }
 
     const components = selectedProductCodes(selectedComponents);
 
     if (Object.keys(components).length === 0) {
-      setError(t("buildInfo.selectAtLeastOne"));
+      setError(t('buildInfo.selectAtLeastOne'));
       return;
     }
 
     setSaving(true);
-    setError("");
+    setError('');
 
     try {
-      const res = await axios.post("/api/builds", {
+      const res = await axios.post('/api/builds', {
         build_id: asNew ? undefined : buildId,
         name: buildName,
         notes: buildNotes,
@@ -91,23 +89,22 @@ const BuildInfo = () => {
       setSearchParams(
         (prev) => {
           const next = new URLSearchParams(prev);
-          next.set("build", res.data.id);
+          next.set('build', res.data.id);
           return next;
         },
         { replace: true },
       );
       clearDraft();
-      addToast(
-        asNew ? t("buildInfo.savedAsNew") : t("buildInfo.savedSuccessfully"),
-        { type: "success" },
-      );
+      addToast(asNew ? t('buildInfo.savedAsNew') : t('buildInfo.savedSuccessfully'), {
+        type: 'success',
+      });
     } catch (err) {
       if (err.response?.status === 403) {
         showVerifyBanner();
-        addToast(t("common:verifyEmail.gatedAction"), { type: "danger" });
+        addToast(t('common:verifyEmail.gatedAction'), { type: 'danger' });
       } else {
-        addToast(err.response?.data?.error ?? t("buildInfo.failedToSave"), {
-          type: "danger",
+        addToast(err.response?.data?.error ?? t('buildInfo.failedToSave'), {
+          type: 'danger',
         });
       }
     } finally {
@@ -121,9 +118,9 @@ const BuildInfo = () => {
     setSelectedComponents((prev) =>
       Object.fromEntries(Object.keys(prev).map((key) => [key, null])),
     );
-    setBuildName("");
-    setBuildNotes("");
-    setBuildType("");
+    setBuildName('');
+    setBuildNotes('');
+    setBuildType('');
     setWarnings([]);
     setBuildIssues({});
     setNotes([]);
@@ -141,14 +138,14 @@ const BuildInfo = () => {
             >
               <div className="overflow-hidden flex">
                 <span className="capitalize text-secondary-light p-2 whitespace-nowrap shrink-0">
-                  {t(`common:components.${key}`)}:{" "}
+                  {t(`common:components.${key}`)}:{' '}
                 </span>
                 <span className="text-surface p-2 truncate">{value.name}</span>
               </div>
               <button
                 className="p-2 bg-secondary text-muted hover:bg-danger/50 hover:text-danger/70 cursor-pointer transition border-l border-muted ml-auto"
                 onClick={() => handleRemove(key)}
-                aria-label={t("componentCard.remove")}
+                aria-label={t('componentCard.remove')}
               >
                 <CloseIcon />
               </button>
@@ -159,20 +156,15 @@ const BuildInfo = () => {
             </div>
           ))
       ) : (
-        <p className="text-secondary-light mb-4">
-          {t("buildInfo.selectComponents")}
-        </p>
+        <p className="text-secondary-light mb-4">{t('buildInfo.selectComponents')}</p>
       )}
 
       {(buildId || hasComponents) && !user && (
         <div className="pt-4 border-t border-primary-light">
-          <p className="text-secondary-light">
-            {t("buildInfo.loginToSave")}{" "}
-            <Link
-              className="text-info/80 cursor-pointer hover:underline"
-              to={lp("/login")}
-            >
-              {t("buildInfo.loginLink")}
+          <p className="text-secondary-light text-sm">
+            {t('buildInfo.loginToSave')}{' '}
+            <Link className="text-info/80 cursor-pointer hover:underline" to={lp('/login')}>
+              {t('buildInfo.loginLink')}
             </Link>
             .
           </p>
@@ -183,14 +175,14 @@ const BuildInfo = () => {
         <div className="space-y-4 pt-4 border-t border-primary-light">
           <div>
             <label className="text-secondary-light" htmlFor="name">
-              {t("buildInfo.nameLabel")}
+              {t('buildInfo.nameLabel')}
             </label>
             <input
               type="text"
               value={buildName}
               onChange={(e) => setBuildName(e.target.value)}
               id="name"
-              placeholder={t("buildInfo.namePlaceholder")}
+              placeholder={t('buildInfo.namePlaceholder')}
               className="bg-secondary-light focus:outline-1 outline-border text-text p-2 w-full"
             />
 
@@ -198,19 +190,19 @@ const BuildInfo = () => {
           </div>
 
           <label className="text-secondary-light" htmlFor="notes">
-            {t("buildInfo.notesLabel")}
+            {t('buildInfo.notesLabel')}
           </label>
           <textarea
             className="bg-secondary-light focus:outline-1 outline-border text-text p-2 w-full"
             value={buildNotes}
-            placeholder={t("buildInfo.notesPlaceholder")}
+            placeholder={t('buildInfo.notesPlaceholder')}
             onChange={(e) => setBuildNotes(e.target.value)}
             id="notes"
           ></textarea>
 
           <div className="flex flex-col flex-1">
             <label htmlFor="buildType" className="text-secondary-light">
-              {t("buildInfo.buildTypeLabel")}
+              {t('buildInfo.buildTypeLabel')}
             </label>
             <select
               onChange={(e) => setBuildType(e.target.value)}
@@ -218,11 +210,11 @@ const BuildInfo = () => {
               value={buildType}
               id="buildType"
             >
-              <option value="">{t("buildInfo.none")}</option>
-              <option value="gaming">{t("buildInfo.gaming")}</option>
-              <option value="office">{t("buildInfo.office")}</option>
-              <option value="rendering">{t("buildInfo.rendering")}</option>
-              <option value="streaming">{t("buildInfo.streaming")}</option>
+              <option value="">{t('buildInfo.none')}</option>
+              <option value="gaming">{t('buildInfo.gaming')}</option>
+              <option value="office">{t('buildInfo.office')}</option>
+              <option value="rendering">{t('buildInfo.rendering')}</option>
+              <option value="streaming">{t('buildInfo.streaming')}</option>
             </select>
           </div>
 
@@ -232,14 +224,14 @@ const BuildInfo = () => {
               disabled={saving}
               className="py-4 px-8 bg-secondary text-left text-white hover:bg-success/50 cursor-pointer disabled:opacity-50 transition flex-1"
             >
-              {saving ? t("buildInfo.saving") : t("buildInfo.saveBuild")}
+              {saving ? t('buildInfo.saving') : t('buildInfo.saveBuild')}
             </button>
 
             <button
               className="py-4 px-8 bg-secondary text-white hover:bg-danger/50 cursor-pointer disabled:opacity-50 transition"
               onClick={handleClear}
             >
-              {t("buildInfo.clearBuild")}
+              {t('buildInfo.clearBuild')}
             </button>
           </div>
 
@@ -248,7 +240,7 @@ const BuildInfo = () => {
               className="text-secondary-light hover:text-muted transition cursor-pointer border px-4 py-2 text-sm"
               onClick={() => handleSave(true)}
             >
-              {t("buildInfo.saveAsNewBuild")}
+              {t('buildInfo.saveAsNewBuild')}
             </button>
           )}
         </div>

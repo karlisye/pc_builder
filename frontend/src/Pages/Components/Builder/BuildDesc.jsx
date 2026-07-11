@@ -42,7 +42,7 @@ const BuildDesc = () => {
             {missingSlots.length > 0 && (
               <span className="relative group text-alert flex items-center">
                 <InfoIcon size={16} />
-                <span className="absolute right-0 top-full mt-1 hidden group-hover:block bg-primary text-white text-xs p-2 whitespace-nowrap z-10">
+                <span className="absolute right-0 top-full mt-1 hidden group-hover:block bg-primary text-white text-xs p-2 w-80 z-10">
                   {t('buildDesc.missingComponents', {
                     components: missingSlots
                       .map((slot) => t(`common:components.${slot}`, { defaultValue: slot }))
