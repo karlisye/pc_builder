@@ -75,6 +75,7 @@
   },
   "addComponent": {
     "title": "Add {{component}}",
+    "pickBest": "Pick Best",
     "failedToFetch": "Failed to fetch components",
     "noComponentsFound": "No Components Found",
     "tryAdjustingFilters": "Try adjusting your filters",

@@ -75,6 +75,7 @@
   },
   "addComponent": {
     "title": "Pievienot {{component}}",
+    "pickBest": "Izvēlēties labāko",
     "failedToFetch": "Neizdevās iegūt komponentes",
     "noComponentsFound": "Komponentes nav atrastas",
     "tryAdjustingFilters": "Pamēģiniet pielāgot filtrus",
