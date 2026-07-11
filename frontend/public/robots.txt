@@ -6,11 +6,15 @@ Disallow: /builds
 Disallow: /email-verified
 Disallow: /login
 Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password
 Disallow: /en/admin
 Disallow: /en/profile
 Disallow: /en/builds
 Disallow: /en/email-verified
 Disallow: /en/login
 Disallow: /en/register
+Disallow: /en/forgot-password
+Disallow: /en/reset-password
 
 Sitemap: https://pcbuilder.lv/sitemap.xml

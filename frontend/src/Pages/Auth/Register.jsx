@@ -171,9 +171,13 @@ const Register = () => {
                 >
                   {t('register.submit')}
                 </button>
-                <Link className="text-info" to={lp('/login')}>
-                  {t('register.alreadyHaveAccount')}
-                </Link>
+                <p className="text-muted">
+                  <Trans
+                    t={t}
+                    i18nKey="register.alreadyHaveAccount"
+                    components={{ signInLink: <Link className="text-info" to={lp('/login')} /> }}
+                  />
+                </p>
               </div>
             </form>
           </div>

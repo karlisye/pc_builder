@@ -17,11 +17,15 @@ class UserController extends Controller
 {
   public function update(Request $request, User $user): JsonResponse
   {
+    if ($request->user()->id !== $user->id) {
+      return response()->json(['error' => __('messages.not_found')], 404);
+    }
+
     $validated = $request->validate([
       'name' => ['sometimes', 'string', 'min:3', 'max:255'],
       'description' => ['sometimes', 'nullable', 'string'],
       'password' => ['sometimes', 'required_with:new_password', 'string'],
-      'new_password' => ['sometimes', 'string', 'confirmed', Password::min(3)->symbols()->letters()->numbers()->mixedCase()],
+      'new_password' => ['sometimes', 'string', 'confirmed', Password::min(8)->symbols()->letters()->numbers()->mixedCase()],
     ]);
 
     if (isset($validated['new_password'])) {
@@ -40,8 +44,12 @@ class UserController extends Controller
     return response()->json($user, 200);
   }
 
-  public function sendDeleteConfirmation(User $user): JsonResponse
+  public function sendDeleteConfirmation(Request $request, User $user): JsonResponse
   {
+    if ($request->user()->id !== $user->id) {
+      return response()->json(['error' => __('messages.not_found')], 404);
+    }
+
     $url = URL::temporarySignedRoute(
       'account.delete.verify',
       now()->addMinutes(60),

@@ -20,6 +20,14 @@
       "title": "Sign Up — DatorBuve",
       "description": "Create a free DatorBuve account to save your builds and access the automatic builder."
     },
+    "forgotPassword": {
+      "title": "Reset Password — DatorBuve",
+      "description": "Request a password reset link for your DatorBuve account."
+    },
+    "resetPassword": {
+      "title": "Choose a New Password — DatorBuve",
+      "description": "Set a new password for your DatorBuve account."
+    },
     "savedBuilds": {
       "title": "Saved Builds — DatorBuve"
     },

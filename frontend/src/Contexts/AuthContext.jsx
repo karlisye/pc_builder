@@ -44,6 +44,16 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const forgotPassword = async (email, turnstile_token) => {
+    await axios.get("/sanctum/csrf-cookie");
+    return axios.post("/api/forgot-password", { email, turnstile_token });
+  };
+
+  const resetPassword = async (token, email, password, password_confirmation) => {
+    await axios.get("/sanctum/csrf-cookie");
+    return axios.post("/api/reset-password", { token, email, password, password_confirmation });
+  };
+
   const resendVerification = () => {
     return axios.post("/api/email/verification-notification");
   };
@@ -56,6 +66,8 @@ export const AuthProvider = ({ children }) => {
         login,
         register,
         logout,
+        forgotPassword,
+        resetPassword,
         resendVerification,
         verifyBannerVisible,
         dismissVerifyBanner: () => setVerifyBannerVisible(false),

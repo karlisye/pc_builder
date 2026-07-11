@@ -15,6 +15,8 @@ export default [
       route('terms', 'routes/terms.jsx'),
       route('login', 'routes/login.jsx'),
       route('register', 'routes/register.jsx'),
+      route('forgot-password', 'routes/forgot-password.jsx'),
+      route('reset-password', 'routes/reset-password.jsx'),
       route('builds/:id?', 'routes/builds.jsx'),
       route('profile', 'routes/profile.jsx'),
       route('builder', 'routes/builder.jsx', [

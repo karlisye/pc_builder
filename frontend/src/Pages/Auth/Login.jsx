@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { useAuth } from '../../Contexts/AuthContext';
 import { useLocalePath } from '../../lib/localePath';
 import Turnstile from '../Components/Common/Turnstile';
@@ -40,7 +40,6 @@ const Login = () => {
         setErrors(serverErrors);
       } else {
         setErrors({ email: err.response?.data?.message ?? err.message ?? 'Something went wrong.' });
-        console.log(err.response);
       }
     } finally {
       setProcessing(false);
@@ -92,9 +91,16 @@ const Login = () => {
                 >
                   {t('login.submit')}
                 </button>
-                <Link className="text-info" to={lp('/register')}>
-                  {t('login.createAccount')}
+                <Link className="text-info" to={lp('/forgot-password')}>
+                  {t('login.forgotPassword')}
                 </Link>
+                <p className="text-muted">
+                  <Trans
+                    t={t}
+                    i18nKey="login.noAccount"
+                    components={{ signUpLink: <Link className="text-info" to={lp('/register')} /> }}
+                  />
+                </p>
               </div>
             </form>
           </div>

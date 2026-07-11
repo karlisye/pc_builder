@@ -20,6 +20,14 @@
       "title": "Reģistrēties — DatorBuve",
       "description": "Izveido bezmaksas DatorBuve kontu, lai saglabātu konfigurācijas un izmantotu automātisko konstruktoru."
     },
+    "forgotPassword": {
+      "title": "Paroles Atjaunošana — DatorBuve",
+      "description": "Pieprasiet paroles atjaunošanas saiti savam DatorBuve kontam."
+    },
+    "resetPassword": {
+      "title": "Izvēlieties Jaunu Paroli — DatorBuve",
+      "description": "Iestatiet jaunu paroli savam DatorBuve kontam."
+    },
     "savedBuilds": {
       "title": "Saglabātās Konfigurācijas — DatorBuve"
     },
