@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useBuilder, useBuildMeta } from '../../../Contexts/BuilderContext';
 import ClosedSection from '../Common/ClosedSection';
@@ -17,6 +17,21 @@ const BuildDesc = () => {
   const count = filled.length;
   const totalSlots = Object.keys(selectedComponents).length;
   const missingSlots = missingRequiredSlots(selectedComponents);
+  const [missingPopupOpen, setMissingPopupOpen] = useState(false);
+  const missingPopupRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (missingPopupRef.current && !missingPopupRef.current.contains(event.target)) {
+        setMissingPopupOpen(false);
+      }
+    };
+
+    if (missingPopupOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [missingPopupOpen]);
 
   const manualCheckSlots = Object.entries(selectedComponents).filter(
     ([, component]) => component?.needs_manual_check === true,
@@ -40,9 +55,24 @@ const BuildDesc = () => {
           <span className="text-secondary-light text-sm flex items-center gap-1">
             {count}/{totalSlots}
             {missingSlots.length > 0 && (
-              <span className="relative group text-alert flex items-center">
-                <InfoIcon size={16} />
-                <span className="absolute right-0 top-full mt-1 hidden group-hover:block bg-primary text-white text-xs p-2 w-80 z-10">
+              <span ref={missingPopupRef} className="relative group text-alert flex items-center">
+                <button
+                  type="button"
+                  onClick={() => setMissingPopupOpen((prev) => !prev)}
+                  className="cursor-pointer flex items-center"
+                  aria-label={t('buildDesc.missingComponents', {
+                    components: missingSlots
+                      .map((slot) => t(`common:components.${slot}`, { defaultValue: slot }))
+                      .join(', '),
+                  })}
+                >
+                  <InfoIcon size={16} />
+                </button>
+                <span
+                  className={`absolute right-0 top-full mt-1 bg-primary text-white text-xs p-2 w-80 z-10 group-hover:block ${
+                    missingPopupOpen ? 'block' : 'hidden'
+                  }`}
+                >
                   {t('buildDesc.missingComponents', {
                     components: missingSlots
                       .map((slot) => t(`common:components.${slot}`, { defaultValue: slot }))

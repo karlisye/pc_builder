@@ -284,13 +284,7 @@ const Layout = ({ children }) => {
               </div>
             </div>
 
-            <a
-              href="https://github.com/karlisye"
-              target="_blank"
-              className="text-surface hover:text-white transition text-sm"
-            >
-              @karlisye
-            </a>
+            <span className="text-surface text-sm">{t('footer.copyright')}</span>
           </div>
         </footer>
       </div>

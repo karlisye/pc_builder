@@ -42,6 +42,7 @@ const SavedBuilds = () => {
   const { id: selectedId } = useParams();
   const navigate = useNavigate();
   const [builds, setBuilds] = useState([]);
+  const [panelOpen, setPanelOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState(null);
   const [selectedBuild, setSelectedBuild] = useState(null);
@@ -223,7 +224,11 @@ const SavedBuilds = () => {
   return (
     <>
       <div className="flex h-full">
-        <SidePanel title={t('savedBuilds.sidePanelTitle')}>
+        <SidePanel
+          title={t('savedBuilds.sidePanelTitle')}
+          expanded={panelOpen}
+          onExpandedChange={setPanelOpen}
+        >
           <div className="">
             {builds.length === 0 ? (
               <p className="text-muted">{t('savedBuilds.noSavedBuilds')}</p>
@@ -233,6 +238,7 @@ const SavedBuilds = () => {
                   key={build.id}
                   onClick={() => {
                     if (String(build.id) !== selectedId) navigate(lp(`/builds/${build.id}`));
+                    setPanelOpen(false);
                   }}
                   className={`hover:bg-secondary border transition-all cursor-pointer p-2 flex justify-between items-center border-secondary mb-2 ${
                     String(build.id) === selectedId ? 'border-l-10' : ''
