@@ -142,6 +142,7 @@
     "currentlyEditing": "Tiek rediģēta konfigurācija: \"{{name}}\"",
     "total": "Kopā",
     "components": "Komponentes",
+    "missingComponents": "Vēl nepieciešams: {{components}}",
     "compatibility": "Saderība",
     "validateFailed": "Pašlaik neizdevās pārbaudīt saderību — redzamie rezultāti var būt novecojuši.",
     "aboutThisBuild": "Par šo konfigurāciju",
