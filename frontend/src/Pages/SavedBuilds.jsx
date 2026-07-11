@@ -64,7 +64,7 @@ const SavedBuilds = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedId]);
   const [editing, setEditing] = useState(false);
-  const [editData, setEditData] = useState({ name: '', notes: '' });
+  const [editData, setEditData] = useState({ name: '', notes: '', type: '' });
   const [expandedSlot, setExpandedSlot] = useState(null);
   const [deleting, setDeleting] = useState(null);
   const [expanded, setExpanded] = useState(false);
@@ -142,7 +142,7 @@ const SavedBuilds = () => {
     try {
       const res = await axios.get(`/api/builds/${id}`);
       setSelectedBuild(res.data);
-      setEditData({ name: res.data.name, notes: res.data.notes ?? '' });
+      setEditData({ name: res.data.name, notes: res.data.notes ?? '', type: res.data.type ?? '' });
     } catch (err) {
       addToast(err.response?.data?.error ?? t('savedBuilds.loadError'), {
         type: 'danger',
@@ -275,12 +275,27 @@ const SavedBuilds = () => {
             <div className="space-y-6">
               {editing ? (
                 <div className="space-y-2">
-                  <input
-                    type="text"
-                    value={editData.name}
-                    onChange={(e) => setEditData((prev) => ({ ...prev, name: e.target.value }))}
-                    className="bg-surface border border-border text-text p-2 w-full focus:outline-1 outline-border"
-                  />
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={editData.name}
+                      onChange={(e) => setEditData((prev) => ({ ...prev, name: e.target.value }))}
+                      className="bg-surface border border-border text-text p-2 flex-1 focus:outline-1 outline-border"
+                    />
+                    <select
+                      value={editData.type}
+                      onChange={(e) =>
+                        setEditData((prev) => ({ ...prev, type: e.target.value }))
+                      }
+                      className="bg-surface border border-border text-text p-2 focus:outline-1 outline-border"
+                    >
+                      <option value="">{t('builder:buildInfo.none')}</option>
+                      <option value="gaming">{t('builder:buildInfo.gaming')}</option>
+                      <option value="office">{t('builder:buildInfo.office')}</option>
+                      <option value="rendering">{t('builder:buildInfo.rendering')}</option>
+                      <option value="streaming">{t('builder:buildInfo.streaming')}</option>
+                    </select>
+                  </div>
                   <textarea
                     value={editData.notes}
                     onChange={(e) =>

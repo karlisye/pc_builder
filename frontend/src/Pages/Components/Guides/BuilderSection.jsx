@@ -47,52 +47,57 @@ const BuilderSection = () => {
           />
         </p>
 
-        <p className="text-text">
-          <Trans
-            t={t}
-            i18nKey="guides.builderSection.step2"
-            components={{
-              addButton: <AddButton />,
-            }}
-          />
-        </p>
+        <div>
+          <p className="text-text">
+            <Trans
+              t={t}
+              i18nKey="guides.builderSection.step2"
+              components={{
+                addButton: <AddButton />,
+              }}
+            />
+          </p>
+          <Note>{t("guides.builderSection.step2Note")}</Note>
+        </div>
+
+        <p className="text-text">{t("guides.builderSection.step3")}</p>
 
         <div>
-          <p className="text-text">{t("guides.builderSection.step3")}</p>
-          <Note>{t("guides.builderSection.step3Note")}</Note>
+          <p className="text-text">{t("guides.builderSection.step4")}</p>
+          <Note>{t("guides.builderSection.step4Note")}</Note>
         </div>
 
         <div>
           <p className="text-text">
             <Trans
               t={t}
-              i18nKey="guides.builderSection.step4"
+              i18nKey="guides.builderSection.step5"
               components={{ selectText: <span className="font-medium" /> }}
             />
           </p>
-          <Note>{t("guides.builderSection.step4Note")}</Note>
+          <Note>{t("guides.builderSection.step5Note")}</Note>
         </div>
 
-        <p className="text-text">{t("guides.builderSection.step5")}</p>
+        <p className="text-text">{t("guides.builderSection.step6")}</p>
 
         <h2 className="text-2xl font-semibold text-text">
           {t("guides.builderSection.savingHeading")}
         </h2>
 
-        <p className="text-text">{t("guides.builderSection.step6")}</p>
+        <p className="text-text">{t("guides.builderSection.step7")}</p>
 
         <div>
           <p className="text-text">
             <Trans
               t={t}
-              i18nKey="guides.builderSection.step7"
+              i18nKey="guides.builderSection.step8"
               components={{ saveButtonText: <span className="font-medium" /> }}
             />
           </p>
           <Note>
             <Trans
               t={t}
-              i18nKey="guides.builderSection.step7Note"
+              i18nKey="guides.builderSection.step8Note"
               components={{
                 closeIcon: <CloseButton />,
               }}

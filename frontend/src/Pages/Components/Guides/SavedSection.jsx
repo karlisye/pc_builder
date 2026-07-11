@@ -60,7 +60,10 @@ const SavedSection = () => {
           <Trans
             t={t}
             i18nKey="guides.savedSection.editStep1"
-            components={{ edit: <span className="font-medium" /> }}
+            components={{
+              menu: <span className="font-medium" />,
+              edit: <span className="font-medium" />,
+            }}
           />
         </p>
 
@@ -97,7 +100,10 @@ const SavedSection = () => {
           <Trans
             t={t}
             i18nKey="guides.savedSection.deleteStep1"
-            components={{ deleteBuild: <span className="font-semibold" /> }}
+            components={{
+              menu: <span className="font-semibold" />,
+              delete: <span className="font-semibold" />,
+            }}
           />
         </p>
 

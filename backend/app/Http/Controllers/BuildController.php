@@ -107,6 +107,7 @@ class BuildController extends Controller
     $validated = $request->validate([
       'name' => ['sometimes', 'string', 'max:255'],
       'notes' => ['sometimes', 'nullable', 'string', 'max:5000'],
+      'type' => ['sometimes', 'nullable', 'string', 'in:gaming,office,rendering,streaming'],
     ]);
 
     $build->update($validated);
