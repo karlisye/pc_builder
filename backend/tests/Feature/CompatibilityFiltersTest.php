@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\{Cpu, Motherboard, Ram, Gpu, PcCase, Psu, Cooler, Ssd, Hdd};
+use App\Services\BuilderSlotPicker;
+use App\Services\ComponentFilters;
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -10,9 +12,9 @@ use App\Models\{Cpu, Motherboard, Ram, Gpu, PcCase, Psu, Cooler, Ssd, Hdd};
  * GET /api/components/{type} with optional `selected` map.
  * Returns the full paginated data array (per_page=100).
  */
-function components(string $type, array $selected = []): array
+function components(string $type, array $selected = [], array $extra = []): array
 {
-  $params = ['per_page' => 100];
+  $params = ['per_page' => 100, ...$extra];
   if ($selected) {
     $params['selected'] = json_encode($selected);
   }
@@ -535,5 +537,42 @@ describe('HDD vs Case 3.5" bays', function () {
 
     $noBays = array_filter($compat, fn($c) => isset($c['bays_35']) && $c['bays_35'] === 0);
     expect($noBays)->toBeEmpty('Cases with no 3.5" bays should not be compatible when HDD is selected');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// GPU traditional PCIe power connectors (6/8/6+2-pin) vs PSU
+// ---------------------------------------------------------------------------
+
+describe('GPU traditional PCIe connector count vs PSU', function () {
+  it('excludes a GPU needing more traditional connectors than the PSU provides (loose browsing filter)', function () {
+    $gpu = Gpu::where('power_connectors', '2x 8-pin')->first();
+    $psu = Psu::where('pcie_connectors', '1 X 6pin')->first();
+    if (!$gpu || !$psu) test()->markTestSkipped('Need a 2x 8-pin GPU and a 1x 6-pin PSU in DB');
+
+    $compatibleIds = ComponentFilters::gpu(Gpu::query(), ['psu' => $psu])->pluck('id');
+    expect($compatibleIds)->not->toContain($gpu->id);
+  });
+
+  it('excludes a PSU providing fewer traditional connectors than the GPU needs (loose browsing filter)', function () {
+    $gpu = Gpu::where('power_connectors', '2x 8-pin')->first();
+    $psu = Psu::where('pcie_connectors', '1 X 6pin')->first();
+    if (!$gpu || !$psu) test()->markTestSkipped('Need a 2x 8-pin GPU and a 1x 6-pin PSU in DB');
+
+    $compatibleIds = ComponentFilters::psu(Psu::query(), ['gpu' => $gpu])->pluck('id');
+    expect($compatibleIds)->not->toContain($psu->id);
+  });
+
+  it('never lets the auto-builder pick a GPU/PSU pair with insufficient connectors', function () {
+    $gpu = Gpu::where('power_connectors', '2x 8-pin')->first();
+    $psu = Psu::where('pcie_connectors', '1 X 6pin')->first();
+    if (!$gpu || !$psu) test()->markTestSkipped('Need a 2x 8-pin GPU and a 1x 6-pin PSU in DB');
+
+    $picker = app(BuilderSlotPicker::class);
+    $picked = $picker->pick('psu', ['gpu' => $gpu], []);
+    expect($picked?->id)->not->toBe($psu->id);
+
+    $picked = $picker->pick('gpu', ['psu' => $psu], []);
+    expect($picked?->id)->not->toBe($gpu->id);
   });
 });

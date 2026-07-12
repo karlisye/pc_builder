@@ -189,6 +189,32 @@ class ComponentFilters
       });
     }
 
+    // PSU traditional PCIe connector count (6/8/6+2-pin): GPU candidates that need more
+    // than the selected PSU provides are incompatible. Separate from the 16-pin check
+    // above (that only covers ATX 3.0-style connectors) and can't be expressed as a plain
+    // column comparison since both fields are free-text, so candidates are materialized
+    // and filtered in PHP via the same parse helpers validateBuild() uses — mirrors the
+    // pluck-ids-then-constrain idiom CompatibilityService::getCompatible() already uses.
+    if ($psu = $selected['psu'] ?? null) {
+      $psuTraditional = $psu->pcie_connectors !== null
+        ? CompatibilityHelper::parsePsuPcieConnectors($psu->pcie_connectors)
+        : null;
+
+      $excludedIds = (clone $query)->get(['id', 'power_connectors'])
+        ->filter(function ($candidate) use ($psuTraditional, $strict) {
+          $required = CompatibilityHelper::parseGpuConnectors($candidate->power_connectors)['required_traditional'];
+          if ($required === 0) {
+            return false;
+          }
+          return $psuTraditional === null ? $strict : $required > $psuTraditional;
+        })
+        ->pluck('id');
+
+      if ($excludedIds->isNotEmpty()) {
+        $query->whereNotIn('id', $excludedIds);
+      }
+    }
+
     return $query;
   }
 
@@ -336,6 +362,25 @@ class ComponentFilters
           $query->where(function (Builder $q) {
             $q->whereNull('pcie_5')->orWhere('pcie_5', 1);
           });
+        }
+      }
+
+      // GPU traditional PCIe connector count (6/8/6+2-pin): PSU candidates must provide
+      // at least as many as the GPU needs. See the mirrored block in
+      // ComponentFilters::gpu() for why this is done via materialize-then-exclude
+      // instead of a plain column comparison.
+      if ($gpuConn['required_traditional'] > 0) {
+        $excludedIds = (clone $query)->get(['id', 'pcie_connectors'])
+          ->filter(function ($candidate) use ($gpuConn, $strict) {
+            if ($candidate->pcie_connectors === null) {
+              return $strict;
+            }
+            return CompatibilityHelper::parsePsuPcieConnectors($candidate->pcie_connectors) < $gpuConn['required_traditional'];
+          })
+          ->pluck('id');
+
+        if ($excludedIds->isNotEmpty()) {
+          $query->whereNotIn('id', $excludedIds);
         }
       }
     }
