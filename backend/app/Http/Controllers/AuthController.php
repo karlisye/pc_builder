@@ -6,11 +6,32 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Password as PasswordBroker;
 use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
+  private function verifyTurnstile(?string $token): bool
+  {
+    $secret = config('services.turnstile.secret');
+
+    if (! $secret) {
+      return true;
+    }
+
+    if (! $token) {
+      return false;
+    }
+
+    $response = Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
+      'secret' => $secret,
+      'response' => $token,
+    ])->json();
+
+    return $response['success'] ?? false;
+  }
+
   public function register(Request $request)
   {
     $credentials = $request->validate([
@@ -19,6 +40,14 @@ class AuthController extends Controller
       'password' => ['required', 'string', 'confirmed', Password::min(8)
         ->mixedCase()->letters()->symbols()->numbers()]
     ]);
+
+    if (! $this->verifyTurnstile($request->input('turnstile_token'))) {
+      return response()->json([
+        'message' => __('messages.captcha_failed'),
+        'errors' => ['email' => [__('messages.captcha_failed')]],
+      ], 422);
+    }
+
     $user = User::create([
       'name' => $credentials['name'],
       'email' => $credentials['email'],
@@ -66,11 +95,15 @@ class AuthController extends Controller
       'password' => ['required']
     ]);
 
-    Log::debug('validation passed');
+    if (! $this->verifyTurnstile($request->input('turnstile_token'))) {
+      return response()->json([
+        'message' => __('messages.captcha_failed'),
+        'errors' => ['email' => [__('messages.captcha_failed')]],
+      ], 422);
+    }
 
     if (Auth::attempt($credentials)) {
       $request->session()->regenerate();
-      Log::debug('session regenerated');
       return response()->json($request->user());
     }
 
@@ -78,6 +111,52 @@ class AuthController extends Controller
       'message' => 'The given data was invalid.',
       'errors' => ['email' => [__('messages.incorrect_credentials')]],
     ], 422);
+  }
+
+  public function forgotPassword(Request $request)
+  {
+    $request->validate([
+      'email' => ['required', 'email'],
+    ]);
+
+    if (! $this->verifyTurnstile($request->input('turnstile_token'))) {
+      return response()->json([
+        'message' => __('messages.captcha_failed'),
+        'errors' => ['email' => [__('messages.captcha_failed')]],
+      ], 422);
+    }
+
+    // Always report success so the endpoint can't be used to probe which
+    // emails have accounts. The broker's own throttle limits resends.
+    PasswordBroker::sendResetLink($request->only('email'));
+
+    return response()->json(['message' => __('messages.reset_link_sent')]);
+  }
+
+  public function resetPassword(Request $request)
+  {
+    $request->validate([
+      'token' => ['required', 'string'],
+      'email' => ['required', 'email'],
+      'password' => ['required', 'string', 'confirmed', Password::min(8)
+        ->mixedCase()->letters()->symbols()->numbers()]
+    ]);
+
+    $status = PasswordBroker::reset(
+      $request->only('email', 'password', 'password_confirmation', 'token'),
+      function (User $user, string $password) {
+        $user->forceFill(['password' => Hash::make($password)])->save();
+      }
+    );
+
+    if ($status !== PasswordBroker::PASSWORD_RESET) {
+      return response()->json([
+        'message' => __('messages.reset_invalid_token'),
+        'errors' => ['email' => [__('messages.reset_invalid_token')]],
+      ], 422);
+    }
+
+    return response()->json(['message' => __('messages.password_reset_success')]);
   }
 
   public function logout(Request $request)

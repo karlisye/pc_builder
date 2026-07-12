@@ -8,7 +8,12 @@ use Illuminate\Support\Facades\Cache;
 
 class SitemapController extends Controller
 {
-  private const SITE = 'https://pcbuilder.lv';
+  private readonly string $site;
+
+  public function __construct()
+  {
+    $this->site = rtrim(config('app.frontend_url'), '/');
+  }
 
   private const STATIC_PATHS = [
     '' => '1.0',
@@ -60,8 +65,8 @@ class SitemapController extends Controller
   // hreflang alternates for both.
   private function entry(string $path, ?string $lastmod, string $priority): string
   {
-    $lv = self::SITE . $path;
-    $en = self::SITE . '/en' . $path;
+    $lv = $this->site . $path;
+    $en = $this->site . '/en' . $path;
 
     $alternates =
       '<xhtml:link rel="alternate" hreflang="lv" href="' . e($lv) . '"/>'

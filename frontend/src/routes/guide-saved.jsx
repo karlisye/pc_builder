@@ -14,7 +14,7 @@ export const meta = ({ params }) => {
   return seoMeta({
     lang,
     path: '/guide/saved',
-    title: `${label} — PC Builder`,
+    title: `${label} — DatorBuve`,
     description: pagesSeo(lang, 'guide').description,
   });
 };

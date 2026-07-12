@@ -1,5 +1,5 @@
 {
-  "appName": "BUILDER",
+  "appName": "DatorBuve",
   "loading": "Ielādē...",
   "error": "Kaut kas nogāja greizi",
   "save": "Saglabāt",
@@ -12,14 +12,32 @@
   "next": "Tālāk",
   "previous": "Atpakaļ",
   "page": "{{current}}. lapa no {{total}}",
+  "cookieConsent": {
+    "title": "Sīkdatnes",
+    "description": "Mēs izmantojam nepieciešamās sīkdatnes, lai nodrošinātu pieslēgšanos un vietnes darbību. Ar jūsu atļauju vēlamies izmantot arī analītikas sīkdatnes, lai saprastu, kā lapa tiek izmantota. To var mainīt jebkurā laikā, izmantojot saiti \"Sīkdatņu iestatījumi\" lapas apakšā.",
+    "acceptAll": "Pieņemt visas",
+    "rejectNonEssential": "Noraidīt nebūtiskās",
+    "customize": "Pielāgot",
+    "savePreferences": "Saglabāt izvēli",
+    "necessaryLabel": "Nepieciešamās",
+    "necessaryDescription": "Nepieciešamas pieslēgšanās un pamata funkcionalitātes nodrošināšanai. Vienmēr aktīvas.",
+    "analyticsLabel": "Analītika",
+    "analyticsDescription": "Palīdz mums saprast, kā apmeklētāji izmanto lapu.",
+    "close": "Aizvērt"
+  },
   "verifyEmail": {
     "banner": "Apstipriniet savu e-pastu, lai atbloķētu konfigurācijas ģenerēšanu un saglabāšanu.",
     "resend": "Nosūtīt vēlreiz",
     "resendSuccess": "Apstiprināšanas e-pasts nosūtīts.",
     "resendError": "Neizdevās nosūtīt apstiprināšanas e-pastu.",
-    "gatedAction": "Lūdzu, apstipriniet savu e-pastu, pirms darbības.",
+    "gatedAction": "Vispirms apstipriniet savu e-pastu.",
     "verifiedTitle": "E-pasts apstiprināts",
     "verifiedText": "Jūsu e-pasta adrese ir apstiprināta.",
+    "backHome": "Atpakaļ uz sākumu"
+  },
+  "accountDeleted": {
+    "title": "Konts dzēsts",
+    "text": "Jūsu konts ir neatgriezeniski dzēsts.",
     "backHome": "Atpakaļ uz sākumu"
   },
   "components": {

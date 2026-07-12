@@ -2,7 +2,7 @@ import enPages from '../locales/en/pages.json';
 import lvPages from '../locales/lv/pages.json';
 import { localePath } from './localePath';
 
-const SITE_URL = import.meta.env.VITE_SITE_URL ?? 'https://pcbuilder.lv';
+const SITE_URL = import.meta.env.VITE_SITE_URL ?? 'https://datorbuve.lv';
 
 export const pagesSeo = (lang, key) => (lang === 'en' ? enPages : lvPages).seo[key] ?? {};
 

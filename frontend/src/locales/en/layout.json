@@ -9,6 +9,14 @@
     "hello": "Hello, {{name}}"
   },
   "footer": {
-    "tagline": "Build and share your PC."
+    "tagline": "Compare prices and build your PC.",
+    "builderHeading": "Builder",
+    "infoHeading": "Info",
+    "about": "About Us",
+    "contact": "Contact Us",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "cookieSettings": "Cookie Settings",
+    "copyright": "© 2026 DatorBuve. All rights reserved."
   }
 }

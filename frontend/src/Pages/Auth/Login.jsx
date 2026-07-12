@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { useAuth } from '../../Contexts/AuthContext';
 import { useLocalePath } from '../../lib/localePath';
+import Turnstile from '../Components/Common/Turnstile';
 
 const Login = () => {
   const lp = useLocalePath();
@@ -13,6 +14,7 @@ const Login = () => {
   const [data, setData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
   const [processing, setProcessing] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState(null);
 
   const set = (field) => (e) => setData((prev) => ({ ...prev, [field]: e.target.value }));
 
@@ -30,7 +32,7 @@ const Login = () => {
     if (!validate()) return;
     setProcessing(true);
     try {
-      await login(data.email, data.password);
+      await login(data.email, data.password, turnstileToken);
       navigate(lp('/'));
     } catch (err) {
       const serverErrors = err.response?.data?.errors;
@@ -38,7 +40,6 @@ const Login = () => {
         setErrors(serverErrors);
       } else {
         setErrors({ email: err.response?.data?.message ?? err.message ?? 'Something went wrong.' });
-        console.log(err.response);
       }
     } finally {
       setProcessing(false);
@@ -80,23 +81,35 @@ const Login = () => {
                 {errors.password && <p className="text-danger">{errors.password}</p>}
               </div>
 
-              <div className="flex flex-col mx-4 my-4">
-                <Link className="text-info" to={lp('/register')}>
-                  {t('login.createAccount')}
-                </Link>
+              <div className="flex flex-col mx-4 my-4 gap-2">
+                <Turnstile onToken={setTurnstileToken} onExpire={() => setTurnstileToken(null)} />
                 <button
-                  className="bg-primary hover:bg-primary-light transition cursor-pointer text-white p-4"
-                  disabled={processing}
+                  className="bg-primary hover:bg-primary-light transition cursor-pointer text-white p-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={
+                    processing || (!!import.meta.env.VITE_TURNSTILE_SITE_KEY && !turnstileToken)
+                  }
                 >
                   {t('login.submit')}
                 </button>
+                <Link className="text-info" to={lp('/forgot-password')}>
+                  {t('login.forgotPassword')}
+                </Link>
+                <p className="text-muted">
+                  <Trans
+                    t={t}
+                    i18nKey="login.noAccount"
+                    components={{ signUpLink: <Link className="text-info" to={lp('/register')} /> }}
+                  />
+                </p>
               </div>
             </form>
           </div>
 
           <div className="w-0 md:w-1/2 transition-all duration-300 bg-primary flex flex-col overflow-hidden">
-            <div className="border-4 border-secondary m-2 h-full flex items-center justify-center p-2">
-              <span className="text-7xl font-bold text-surface">{t('login.heroText')}</span>
+            <div className="border-4 border-secondary m-2 h-full flex items-center p-2">
+              <span className="text-7xl font-bold text-surface whitespace-pre-line">
+                {t('login.heroText')}
+              </span>
             </div>
           </div>
         </div>

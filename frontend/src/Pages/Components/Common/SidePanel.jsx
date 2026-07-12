@@ -2,9 +2,18 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ArrowIcon, CloseIcon } from './Icons';
 
-const SidePanel = ({ children, title = null, width = 'lg:w-120.5', headerRight = null }) => {
+const SidePanel = ({
+  children,
+  title = null,
+  width = 'lg:w-120.5',
+  headerRight = null,
+  expanded: expandedProp,
+  onExpandedChange,
+}) => {
   const { t } = useTranslation('pages');
-  const [expanded, setExpanded] = useState(false);
+  const [internalExpanded, setInternalExpanded] = useState(false);
+  const expanded = expandedProp ?? internalExpanded;
+  const setExpanded = onExpandedChange ?? setInternalExpanded;
 
   return (
     <>

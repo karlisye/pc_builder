@@ -1,86 +1,122 @@
 {
   "seo": {
     "home": {
-      "title": "PC Builder — Izveido Savu Datoru Tiešsaistē | Latvija",
+      "title": "DatorBuve",
       "description": "Izveido un salīdzini datorus, izmantojot reālas Latvijas tirgus komponentes ar aktuālām cenām un automātisku saderības pārbaudi."
     },
     "builder": {
-      "title": "PC Builder — Izveido Savu Datoru",
+      "title": "DatorBuve — Izveido savu datoru",
       "description": "Izvēlies komponentes vai automātiski izveido konfigurāciju sava budžeta ietvaros ar reāllaika saderības pārbaudi un aktuālām Latvijas veikalu cenām."
     },
     "guide": {
-      "title": "Pamācība — PC Builder",
+      "title": "Pamācība — DatorBuve",
       "description": "Uzzini, kā izveidot datoru, izmantot automātisko konstruktoru un pārvaldīt saglabātās konfigurācijas."
     },
     "login": {
-      "title": "Pieslēgties — PC Builder",
-      "description": "Pieslēdzies savam PC Builder kontam, lai saglabātu un pārvaldītu savas konfigurācijas."
+      "title": "Pieslēgties — DatorBuve",
+      "description": "Pieslēdzies savam DatorBuve kontam, lai saglabātu un pārvaldītu savas konfigurācijas."
     },
     "register": {
-      "title": "Reģistrēties — PC Builder",
-      "description": "Izveido bezmaksas PC Builder kontu, lai saglabātu konfigurācijas un izmantotu automātisko konstruktoru."
+      "title": "Reģistrēties — DatorBuve",
+      "description": "Izveido bezmaksas DatorBuve kontu, lai saglabātu konfigurācijas un izmantotu automātisko konstruktoru."
+    },
+    "forgotPassword": {
+      "title": "Paroles atjaunošana — DatorBuve",
+      "description": "Pieprasiet paroles atjaunošanas saiti savam DatorBuve kontam."
+    },
+    "resetPassword": {
+      "title": "Izvēlieties jaunu paroli — DatorBuve",
+      "description": "Iestatiet jaunu paroli savam DatorBuve kontam."
     },
     "savedBuilds": {
-      "title": "Saglabātās Konfigurācijas — PC Builder"
+      "title": "Saglabātās konfigurācijas — DatorBuve"
     },
     "notFound": {
-      "title": "Lapa Nav Atrasta — PC Builder"
+      "title": "Lapa nav atrasta — DatorBuve"
+    },
+    "about": {
+      "title": "Par mums — DatorBuve",
+      "description": "Kas ir DatorBuve, kam tas domāts, un kas stāv aiz šī projekta."
+    },
+    "contact": {
+      "title": "Sazinies ar mums — DatorBuve",
+      "description": "Sazinies ar DatorBuve."
+    },
+    "privacy": {
+      "title": "Privātuma Politika — DatorBuve",
+      "description": "Kā DatorBuve apkopo, izmanto un aizsargā jūsu personas datus, tostarp sīkdatnes un jūsu tiesības saskaņā ar VDAR."
+    },
+    "terms": {
+      "title": "Lietošanas Noteikumi — DatorBuve",
+      "description": "Noteikumi, kas attiecas uz DatorBuve izmantošanu, tostarp konta noteikumi, cenu un saderības atrunas, un saites uz trešo pušu veikaliem."
     },
     "picker": {
       "cpu": {
-        "title": "Procesoru (CPU) cenas Latvijā | PC Builder",
+        "title": "Procesoru (CPU) cenas Latvijā | DatorBuve",
         "description": "Pārlūko procesorus ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc ligzdas, kodolu skaita un cenas ar automātisku saderības pārbaudi."
       },
       "motherboard": {
-        "title": "Mātesplašu cenas Latvijā | PC Builder",
-        "description": "Pārlūko mātesplates ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc ligzdas, mikroshēmojuma un formfaktora ar automātisku saderības pārbaudi."
+        "title": "Sistēmplašu cenas Latvijā | DatorBuve",
+        "description": "Pārlūko sistēmplates ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc ligzdas, mikroshēmojuma un formfaktora ar automātisku saderības pārbaudi."
       },
       "ram": {
-        "title": "Operatīvās atmiņas (RAM) cenas Latvijā | PC Builder",
+        "title": "Operatīvās atmiņas (RAM) cenas Latvijā | DatorBuve",
         "description": "Pārlūko atmiņas komplektus ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc tipa, ietilpības un ātruma ar automātisku saderības pārbaudi."
       },
       "gpu": {
-        "title": "Videokaršu (GPU) cenas Latvijā | PC Builder",
+        "title": "Videokaršu (GPU) cenas Latvijā | DatorBuve",
         "description": "Pārlūko videokartes ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc ražotāja, VRAM un cenas ar automātisku saderības pārbaudi."
       },
       "psu": {
-        "title": "Barošanas bloku (PSU) cenas Latvijā | PC Builder",
+        "title": "Barošanas bloku (PSU) cenas Latvijā | DatorBuve",
         "description": "Pārlūko barošanas blokus ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc jaudas, efektivitātes un modularitātes ar automātisku saderības pārbaudi."
       },
       "ssd": {
-        "title": "SSD disku cenas Latvijā | PC Builder",
+        "title": "SSD disku cenas Latvijā | DatorBuve",
         "description": "Pārlūko SSD diskus ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc ietilpības, tipa un saskarnes ar automātisku saderības pārbaudi."
       },
       "hdd": {
-        "title": "Cieto disku (HDD) cenas Latvijā | PC Builder",
+        "title": "Cieto disku (HDD) cenas Latvijā | DatorBuve",
         "description": "Pārlūko cietos diskus ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc ietilpības un saskarnes ar automātisku saderības pārbaudi."
       },
       "case": {
-        "title": "Datoru korpusu cenas Latvijā | PC Builder",
+        "title": "Datoru korpusu cenas Latvijā | DatorBuve",
         "description": "Pārlūko datoru korpusus ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc formfaktora ar automātisku saderības pārbaudi."
       },
       "cooler": {
-        "title": "Procesora dzesētāju cenas Latvijā | PC Builder",
+        "title": "Procesora dzesētāju cenas Latvijā | DatorBuve",
         "description": "Pārlūko procesora dzesētājus ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc TDP atbalsta un ventilatora izmēra ar automātisku saderības pārbaudi."
       },
       "fan": {
-        "title": "Korpusa ventilatoru cenas Latvijā | PC Builder",
+        "title": "Korpusa ventilatoru cenas Latvijā | DatorBuve",
         "description": "Pārlūko korpusa ventilatorus ar aktuālām cenām no Latvijas veikaliem. Filtrē pēc izmēra un skaita komplektā ar automātisku saderības pārbaudi."
       }
     },
     "componentDetail": {
-      "title": "{{name}} — cena Latvijā | PC Builder",
+      "title": "{{name}} — cena Latvijā | DatorBuve",
       "description": "Salīdzini {{name}} cenas un pieejamību Latvijas veikalos un pārbaudi saderību ar savu datora konfigurāciju."
     }
   },
   "home": {
+    "hero": {
+      "title": "DatorBuve",
+      "description": "Izveido un salīdzini datorus, izmantojot reālas Latvijas tirgus komponentes, vai ļauj automātiskajam konstruktoram to izveidot tavā vietā.",
+      "startBuilding": "Sākt būvēt",
+      "signIn": "Pieslēgties",
+      "myBuilds": "Manas konfigurācijas"
+    },
     "build": {
       "title": "IZVEIDO SAVU DATORU",
       "description": "Izveido savu datoru, izmantojot mūsu vienkāršo konstruktoru. Izvēlies no Latvijas tirgū pieejamām komponentēm ar precīzām, aktuālām cenām."
     },
     "auto": {
-      "title": "BŪVĒ VIEGLI UN ĀTRI",
+      "title": "VIEGLI PABEIDZ DATORU",
       "description": "Automātiski pabeidz savu konfigurāciju jebkurā posmā, izmantojot mūsu inteliģento automātisko konstruktoru."
+    },
+    "save": {
+      "title": "SAGLABĀ UN DALIES",
+      "description": "Saglabā savas konfigurācijas, lai atgrieztos pie tām vēlāk, dalies ar tām, izmantojot saiti, un jebkurā brīdī tās apskati vai atjaunini.",
+      "cta": "Skatīt manas konfigurācijas"
     }
   },
   "guide": {
@@ -99,33 +135,35 @@
       "title": "Pirmā datora salikšana",
       "selectingComponentsHeading": "Komponenšu izvēle",
       "step1": "1. Dodies uz <buildLink>Veidot</buildLink> lapu, navigācijas joslā nospiežot pogu <buildButton>Veidot</buildButton>.",
-      "step2": "2. Atrodi komponenšu saraksta sadaļu un nospied pogu <addButton></addButton>, lai pievienotu jaunu komponentu.",
+      "step2": "2. Atrodi komponenšu saraksta sadaļu un nospied pogu <addButton></addButton>, lai pievienotu jaunu komponenti.",
+      "step2Note": "Secība, kādā tu izvēlies komponentes, nav svarīga. Obligātās komponentes ir atzīmētas ar zvaigznīti kartiņas augšējā kreisajā stūrī.",
       "step3": "3. Izmanto meklēšanas lauku un filtrus, lai pārlūkotu un atrastu komponentes, kas atbilst tavām vēlmēm.",
-      "step3Note": "Nesaderīgas komponentes būs atzīmētas ar norādi \"Nesaderīgs\".",
-      "step4": "4. Izvēlies komponentu no saraksta un nospied <selectText>Izvēlēties</selectText>, lai pievienotu to savai konfigurācijai. Tā parādīsies konfigurācijas informācijas panelī un komponenšu sarakstā.",
-      "step4Note": "Komponentu var noņemt vai apskatīt veikalā, izmantojot pogas komponenta kartītes apakšā.",
-      "step5": "5. Atkārto šos soļus, kamēr konfigurācija ir pabeigta.",
+      "step4": "4. Neesi pārliecināts, ko izvēlēties? Zem filtriem ir sadaļa \"Automātiski ģenerēt komponenti\", kur vari atlasīt budžetu un atļaut sistēmai izvēlēties atbilstošāko komponenti tavā vietā.",
+      "step4Note": "Nesaderīgas komponentes būs atzīmētas ar norādi \"Nesaderīgs\".",
+      "step5": "5. Izvēlies komponentu no saraksta un nospied <selectText>Izvēlēties</selectText>, lai pievienotu to savai konfigurācijai. Tā parādīsies konfigurācijas informācijas panelī un komponenšu sarakstā.",
+      "step5Note": "Komponentu var noņemt vai apskatīt detalizētu informāciju, izmantojot pogas komponentes kartītes apakšā.",
+      "step6": "6. Atkārto šos soļus, kamēr konfigurācija ir pabeigta. Sāna panelī var redzēt trūkstošās komponentes strādājošam datoram.",
       "savingHeading": "Konfigurācijas saglabāšana",
-      "step6": "6. Noteikti nosauc savu konfigurāciju un, ja vēlies, pievieno piezīmes attiecīgajos laukos.",
-      "step7": "7. Kad esi izvēlējies visas komponentes un nosaucis konfigurāciju, nospied pogu <saveButtonText>Saglabāt konfigurāciju</saveButtonText> konfigurācijas informācijas panelī.",
-      "step7Note": "Visu konfigurāciju var notīrīt vai noņemt atsevišķas komponentes, nospiežot pogu \"Notīrīt konfigurāciju\" vai ikonu <closeIcon></closeIcon> pie katras komponentes."
+      "step7": "7. Noteikti nosauc savu konfigurāciju un, ja vēlies, pievieno piezīmes attiecīgajos laukos un izvēlies datora tipu.",
+      "step8": "8. Kad esi izvēlējies visas komponentes un nosaucis konfigurāciju, nospied pogu <saveButtonText>Saglabāt konfigurāciju</saveButtonText> konfigurācijas informācijas panelī.",
+      "step8Note": "Visu konfigurāciju var notīrīt vai noņemt atsevišķas komponentes, nospiežot pogu \"Notīrīt konfigurāciju\" vai ikonu <closeIcon></closeIcon> pie katras komponentes."
     },
     "autoSection": {
       "title": "Automātiskā konstruktora izmantošana",
       "selectingComponentsHeading": "Komponenšu izvēle",
-      "step1": "1. Pēc izvēles vari sākt, pievienojot komponentes, kuras vēlies redzēt savā konfigurācijā. Vari arī izmantot automātisko komponenšu generatoru pie filtriem, lai automātiski atrastu saderīgu komponentu.",
+      "step1": "1. Pēc izvēles vari sākt, pievienojot komponentes, kuras vēlies redzēt savā konfigurācijā. Vari arī izmantot automātisko komponenšu ģeneratoru pie filtriem, lai automātiski atrastu saderīgu komponentu.",
       "step1Note": "Šis solis nav obligāts. Vari to izlaist, lai izveidotu pilnībā automātisku konfigurāciju.",
       "selectingBudgetHeading": "Budžeta izvēle",
       "step2": "2. Ritini līdz konfigurācijas informācijas paneļa beigām un izvēlies <autoBuilderText>Automātiskais konstruktors</autoBuilderText> opciju.",
       "step3": "3. Iestati savu budžetu, izmantojot slīdni, vai izvēlies neierobežotu budžetu, lai iegūtu pēc iespējas labākas komponentes.",
       "step3Note": "Budžets attiecas uz visu konfigurāciju. Ja jau esi izvēlējies kādas komponentes, to izmaksas tiks atskaitītas no pieejamā budžeta.",
-      "step4": "4. Iestati savas GPU, CPU un izmantošanas veida vēlmes zem budžeta slīdņa.",
-      "step4Note": "Pārliecinies, ka atzīmēta opcija \"Ietvert pasūtāmās preces\", lai izmantotu arī komponentes, kuru nav noliktavā, bet ko var pasūtīt.",
-      "generatingHeading": "Konfigurācijas generēšana",
-      "step5": "5. Kad budžets ir iestatīts, nospied generēšanas pogu, lai automātiski pabeigtu savu konfigurāciju.",
-      "step5Note": "Budžets ietekmē arī komponenšu sadalījumu. Piemēram, mazāka budžeta konfigurācijās (zem 500€) GPU var netikt iekļauts, tā vietā izvēloties CPU ar iebūvētu grafiku. Tas pats attiecas uz tādām komponentēm kā CPU dzesētāji. <link>Apskati visus budžeta sadalījumus zemāk</link>.",
+      "step4": "4. Iestati savas grafikas kartes, procesora un izmantošanas veida preferences zem budžeta slīdņa.",
+      "step4Note": "Pārliecinies, ka atzīmēta opcija \"Ietvert pasūtāmās preces\", lai izmantotu arī komponentes, kuru nav noliktavā, bet kuras var pasūtīt.",
+      "generatingHeading": "Konfigurācijas ģenerēšana",
+      "step5": "5. Kad budžets ir iestatīts, nospied ģenerēšanas pogu, lai automātiski pabeigtu savu konfigurāciju.",
+      "step5Note": "Budžets ietekmē arī komponenšu sadalījumu. Piemēram, mazāka budžeta konfigurācijās (zem 500€) grafikas karte var netikt iekļauta, tā vietā izvēloties procesoru ar iebūvētu grafiku. Tas pats attiecas uz tādām komponentēm kā procesora dzesētāji. <link>Apskati visus budžeta sadalījumus zemāk</link>.",
       "step6": "6. Pēc konfigurācijas izveides iesakām pirms pirkuma manuāli pārbaudīt visu komponenšu saderību.",
-      "step6Note": "HDD komponente netiek automātiski iekļauta, jo tā ir izvēles. Ja CPU ir iebūvēts dzesētājs un budžets ir ierobežots, atsevišķs CPU dzesētājs arī var tikt uzskatīts par izvēles komponentu.",
+      "step6Note": "HDD komponente netiek automātiski iekļauta, jo tā nav nepieciešama. Ja procesoram ir iebūvēts dzesētājs un budžets ir ierobežots, atsevišķs procesora dzesētājs arī var tikt uzskatīts par neobligātu komponenti.",
       "budgetAllocationsHeading": "Budžeta sadalījumi",
       "table": {
         "component": "Komponente",
@@ -139,7 +177,7 @@
         "rendering": "Renderēšanai",
         "gpu": "GPU",
         "cpu": "CPU",
-        "motherboard": "Mātesplate",
+        "motherboard": "Sistēmplate",
         "ram": "RAM",
         "cooler": "Dzesētājs",
         "case": "Korpuss",
@@ -156,13 +194,13 @@
       "step3": "3. Nospied uz jebkuras komponentes, lai zemāk apskatītu tās detaļas un aprakstu.",
       "step4": "4. Lai apskatītu komponentu veikalā, nospied pogu <seeInStore>Apskatīt veikalā</seeInStore> aprakstā vai pogu <buy>Pirkt</buy> pie komponentes sarakstā.",
       "editingHeading": "Konfigurācijas informācijas redigēšana",
-      "editStep1": "1. Nospied pogu <edit>Redigēt</edit> pie konfigurācijas nosaukuma.",
+      "editStep1": "1. Nospied <menu>trīs punktu pogu</menu> pie konfigurācijas nosaukuma un izvēlies <edit>Rediģēt</edit>.",
       "editStep2": "2. Atjaunini laukus pēc nepieciešamības. Piezīmju lauku vari atstāt tukšu, ja vēlies.",
       "editStep3": "3. Nospied <save>Saglabāt</save>, lai pievienotu izmaiņas, vai <cancel>Atcelt</cancel>, lai tās atceltu.",
       "continuingHeading": "Konfigurācijas turpināšana",
       "continueStep1": "1. Nospied pogu <continueBuild>Turpināt konfigurāciju</continueBuild>, lai turpinātu konfigurācijas veidošanu no vietas, kur to pārtrauci. Tu tiksi pārvirzīts uz konstruktora lapu ar savu pašreizējo konfigurāciju.",
       "deletingHeading": "Konfigurācijas dzēšana",
-      "deleteStep1": "1. Nospied pogu <deleteBuild>Dzēst konfigurāciju</deleteBuild> (vai dzēšanas opciju konfigurācijas informācijas panelī), lai noņemtu izvēlēto konfigurāciju.",
+      "deleteStep1": "1. Nospied <menu>trīs punktu pogu</menu> un izvēlies <delete>Dzēst</delete> (vai dzēšanas opciju konfigurācijas informācijas panelī), lai noņemtu izvēlēto konfigurāciju.",
       "deleteStep2": "2. Parādīsies apstiprinājuma logs. Apstiprini, lai neatgriezeniski dzēstu konfigurāciju."
     }
   },
@@ -188,7 +226,7 @@
     "shareError": "Neizdevās atjaunināt kopīgošanas iestatījumus",
     "slotLabels": {
       "cpu": "Procesors",
-      "motherboard": "Mātesplate",
+      "motherboard": "Sistēmplate",
       "ram": "Operatīvā atmiņa",
       "gpu": "Videokarte",
       "ssd": "SSD",
@@ -210,7 +248,7 @@
       "compatibilityIssues": "Saderības problēmas"
     },
     "sidePanel": {
-      "brand": "PC BUILDER"
+      "brand": "DATORBUVE"
     }
   }
 }

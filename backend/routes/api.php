@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register'])->middleware(['guest', 'throttle:auth']);
 Route::post('/login', [AuthController::class, 'login'])->middleware(['guest', 'throttle:auth']);
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->middleware(['guest', 'throttle:auth']);
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware(['guest', 'throttle:auth']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 Route::get('/user', [AuthController::class, 'user'])->middleware('auth:sanctum');
 
@@ -17,6 +19,10 @@ Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verify'])
   ->name('verification.verify');
 Route::post('/email/verification-notification', [AuthController::class, 'resendVerification'])
   ->middleware(['auth:sanctum', 'throttle:6,1']);
+
+Route::get('/users/delete/{id}/{hash}', [UserController::class, 'confirmDelete'])
+  ->middleware(['signed', 'throttle:6,1'])
+  ->name('account.delete.verify');
 
 Route::get('/components/{type}', [ComponentController::class, 'index'])->middleware('throttle:component-browse');
 Route::get('/components/{type}/filters', [ComponentController::class, 'filters'])->middleware('throttle:component-browse');
@@ -36,5 +42,5 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::post('/builds/{build}/share', [BuildController::class, 'share']);
 
   Route::patch('/users/{user}', [UserController::class, 'update']);
-  Route::delete('/users/{user}', [UserController::class, 'destroy']);
+  Route::post('/users/{user}/delete-confirmation', [UserController::class, 'sendDeleteConfirmation']);
 });

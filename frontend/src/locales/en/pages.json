@@ -1,79 +1,110 @@
 {
   "seo": {
     "home": {
-      "title": "PC Builder — Build Your PC Online | Latvia",
+      "title": "DatorBuve — Build Your PC Online | Latvia",
       "description": "Build and compare PCs using real components from the Latvian market, with live pricing and automatic compatibility checks."
     },
     "builder": {
-      "title": "PC Builder — Build Your PC",
+      "title": "DatorBuve — Build Your PC",
       "description": "Pick components or generate a build automatically within your budget, with real-time compatibility checks and live Latvian store pricing."
     },
     "guide": {
-      "title": "Guide — PC Builder",
+      "title": "Guide — DatorBuve",
       "description": "Learn how to build a PC, use the automatic builder, and manage your saved builds."
     },
     "login": {
-      "title": "Sign In — PC Builder",
-      "description": "Sign in to your PC Builder account to save and manage your builds."
+      "title": "Sign In — DatorBuve",
+      "description": "Sign in to your DatorBuve account to save and manage your builds."
     },
     "register": {
-      "title": "Sign Up — PC Builder",
-      "description": "Create a free PC Builder account to save your builds and access the automatic builder."
+      "title": "Sign Up — DatorBuve",
+      "description": "Create a free DatorBuve account to save your builds and access the automatic builder."
+    },
+    "forgotPassword": {
+      "title": "Reset Password — DatorBuve",
+      "description": "Request a password reset link for your DatorBuve account."
+    },
+    "resetPassword": {
+      "title": "Choose a New Password — DatorBuve",
+      "description": "Set a new password for your DatorBuve account."
     },
     "savedBuilds": {
-      "title": "Saved Builds — PC Builder"
+      "title": "Saved Builds — DatorBuve"
     },
     "notFound": {
-      "title": "Page Not Found — PC Builder"
+      "title": "Page Not Found — DatorBuve"
+    },
+    "about": {
+      "title": "About Us — DatorBuve",
+      "description": "What DatorBuve is, who it's for, and who's behind it."
+    },
+    "contact": {
+      "title": "Contact Us — DatorBuve",
+      "description": "Get in touch with DatorBuve."
+    },
+    "privacy": {
+      "title": "Privacy Policy — DatorBuve",
+      "description": "How DatorBuve collects, uses, and protects your personal data, including cookies and your rights under GDPR."
+    },
+    "terms": {
+      "title": "Terms of Service — DatorBuve",
+      "description": "The terms that apply to using DatorBuve, including account rules, pricing/compatibility disclaimers, and third-party store links."
     },
     "picker": {
       "cpu": {
-        "title": "CPU Prices in Latvia — Pick a Processor | PC Builder",
+        "title": "CPU Prices in Latvia — Pick a Processor | DatorBuve",
         "description": "Browse processors with live prices from Latvian stores. Filter by socket, cores and price, with automatic compatibility checks for your build."
       },
       "motherboard": {
-        "title": "Motherboard Prices in Latvia | PC Builder",
+        "title": "Motherboard Prices in Latvia | DatorBuve",
         "description": "Browse motherboards with live prices from Latvian stores. Filter by socket, chipset and form factor, with automatic compatibility checks."
       },
       "ram": {
-        "title": "RAM Prices in Latvia — DDR4 & DDR5 | PC Builder",
+        "title": "RAM Prices in Latvia — DDR4 & DDR5 | DatorBuve",
         "description": "Browse memory kits with live prices from Latvian stores. Filter by type, capacity and speed, with automatic compatibility checks."
       },
       "gpu": {
-        "title": "Graphics Card (GPU) Prices in Latvia | PC Builder",
+        "title": "Graphics Card (GPU) Prices in Latvia | DatorBuve",
         "description": "Browse graphics cards with live prices from Latvian stores. Filter by brand, VRAM and price, with automatic compatibility checks."
       },
       "psu": {
-        "title": "Power Supply (PSU) Prices in Latvia | PC Builder",
+        "title": "Power Supply (PSU) Prices in Latvia | DatorBuve",
         "description": "Browse power supplies with live prices from Latvian stores. Filter by wattage, efficiency and modularity, with automatic compatibility checks."
       },
       "ssd": {
-        "title": "SSD Prices in Latvia | PC Builder",
+        "title": "SSD Prices in Latvia | DatorBuve",
         "description": "Browse solid state drives with live prices from Latvian stores. Filter by capacity, type and interface, with automatic compatibility checks."
       },
       "hdd": {
-        "title": "Hard Drive (HDD) Prices in Latvia | PC Builder",
+        "title": "Hard Drive (HDD) Prices in Latvia | DatorBuve",
         "description": "Browse hard drives with live prices from Latvian stores. Filter by capacity and interface, with automatic compatibility checks."
       },
       "case": {
-        "title": "PC Case Prices in Latvia | PC Builder",
+        "title": "PC Case Prices in Latvia | DatorBuve",
         "description": "Browse PC cases with live prices from Latvian stores. Filter by form factor, with automatic compatibility checks for your components."
       },
       "cooler": {
-        "title": "CPU Cooler Prices in Latvia | PC Builder",
+        "title": "CPU Cooler Prices in Latvia | DatorBuve",
         "description": "Browse CPU coolers with live prices from Latvian stores. Filter by TDP support and fan size, with automatic compatibility checks."
       },
       "fan": {
-        "title": "Case Fan Prices in Latvia | PC Builder",
+        "title": "Case Fan Prices in Latvia | DatorBuve",
         "description": "Browse case fans with live prices from Latvian stores. Filter by size and pack count, with automatic compatibility checks."
       }
     },
     "componentDetail": {
-      "title": "{{name}} — Price in Latvia | PC Builder",
+      "title": "{{name}} — Price in Latvia | DatorBuve",
       "description": "Compare prices and availability for {{name}} across Latvian stores and check compatibility with your PC build."
     }
   },
   "home": {
+    "hero": {
+      "title": "DatorBuve",
+      "description": "Build and compare PCs using real components from the Latvian market, or let the auto-builder put one together for you.",
+      "startBuilding": "Start Building",
+      "signIn": "Sign In",
+      "myBuilds": "My Builds"
+    },
     "build": {
       "title": "BUILD YOUR PC",
       "description": "Design your PC using our simple builder. Choose from components available in the Latvian market, all with live, accurate pricing."
@@ -81,6 +112,11 @@
     "auto": {
       "title": "MAKE THE BUILDING EASY",
       "description": "Automatically complete your build at any stage using our smart auto-builder."
+    },
+    "save": {
+      "title": "SAVE AND SHARE",
+      "description": "Save your builds to come back to later, share them with a link, and revisit or update them anytime.",
+      "cta": "View My Builds"
     }
   },
   "guide": {
@@ -100,15 +136,17 @@
       "selectingComponentsHeading": "Selecting Components",
       "step1": "1. Go to the <buildLink>Build</buildLink> page by clicking the <buildButton>Build</buildButton> button in the navigation bar.",
       "step2": "2. Find the component list section and click the <addButton></addButton> button to add a new component.",
+      "step2Note": "The order in which you select components doesn't matter. Required components are marked with an asterisk in the top-left corner of the card.",
       "step3": "3. Use the search bar and filters to browse and find components that match your preferences.",
-      "step3Note": "Incompatible components will be marked with an \"Incompatible\" flag.",
-      "step4": "4. Select a component from the list and click <selectText>Select</selectText> to add it to your build. It will then appear in the build info panel and the component list.",
-      "step4Note": "You can remove a component or view it in the store using the buttons at the bottom of the component card.",
-      "step5": "5. Repeat these steps until your build is complete.",
+      "step4": "4. Can't decide on a component? Under the filters there's an \"Auto Generate Component\" section, where you can set a budget and let the system pick the best matching component for you.",
+      "step4Note": "Incompatible components will be marked with an \"Incompatible\" flag.",
+      "step5": "5. Select a component from the list and click <selectText>Select</selectText> to add it to your build. It will then appear in the build info panel and the component list.",
+      "step5Note": "You can remove a component or view detailed information using the buttons at the bottom of the component card.",
+      "step6": "6. Repeat these steps until your build is complete. The side panel shows which components are still missing for a working PC.",
       "savingHeading": "Saving Your Build",
-      "step6": "6. Make sure to name your build and add the optional notes by filling out their fields.",
-      "step7": "7. Once you’ve selected all your components and named your build, click the <saveButtonText>Save Build</saveButtonText> button in the build info panel.",
-      "step7Note": "You can clear the entire build or remove individual components by clicking the Clear Build button or pressing the <closeIcon></closeIcon> icon next to each component."
+      "step7": "7. Make sure to name your build, add optional notes, and choose a build type.",
+      "step8": "8. Once you’ve selected all your components and named your build, click the <saveButtonText>Save Build</saveButtonText> button in the build info panel.",
+      "step8Note": "You can clear the entire build or remove individual components by clicking the Clear Build button or pressing the <closeIcon></closeIcon> icon next to each component."
     },
     "autoSection": {
       "title": "Using the Automatic Builder",
@@ -156,13 +194,13 @@
       "step3": "3. Click on any component to view its details and description below.",
       "step4": "4. To view a component in store, click the <seeInStore>See In Store</seeInStore> button in the description or the <buy>Buy</buy> button next to the component in the list.",
       "editingHeading": "Editing Build Information",
-      "editStep1": "1. Click the <edit>Edit</edit> button next to your build name.",
+      "editStep1": "1. Click the <menu>three-dot menu button</menu> next to your build name and select <edit>Edit</edit>.",
       "editStep2": "2. Update the fields as needed. You can leave the notes field empty if you prefer.",
       "editStep3": "3. Click <save>Save</save> to apply your changes or <cancel>Cancel</cancel> to discard them.",
       "continuingHeading": "Continuing the Build",
       "continueStep1": "1. Click the <continueBuild>Continue Build</continueBuild> button to resume editing your build from where you left off. You will be redirected to the build page with your current configuration.",
       "deletingHeading": "Deleting a Build",
-      "deleteStep1": "1. Click the <deleteBuild>Delete Build</deleteBuild> button (or the delete option in the build info panel) to remove the selected build.",
+      "deleteStep1": "1. Click the <menu>three-dot menu button</menu> and select <delete>Delete</delete> (or the delete option in the build info panel) to remove the selected build.",
       "deleteStep2": "2. A confirmation popup will appear. Confirm to permanently delete the build."
     }
   },
@@ -210,7 +248,7 @@
       "compatibilityIssues": "Compatibility Issues"
     },
     "sidePanel": {
-      "brand": "PC BUILDER"
+      "brand": "DATORBUVE"
     }
   }
 }

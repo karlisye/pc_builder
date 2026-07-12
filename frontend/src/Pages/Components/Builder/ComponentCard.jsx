@@ -5,6 +5,7 @@ import { useBuilder } from '../../../Contexts/BuilderContext';
 import { AddIcon, CloseIcon, InfoIcon } from '../Common/Icons';
 import ComponentPopup from './ComponentPopup';
 import { formatPrice, getCheapestPrice } from '../../../lib/componentPrice';
+import { isSlotOptional } from '../../../lib/buildSlots';
 
 const ComponentCard = ({ component, name }) => {
   const { t } = useTranslation(['builder', 'common']);
@@ -13,16 +14,7 @@ const ComponentCard = ({ component, name }) => {
 
   const slot = name.toLowerCase();
 
-  const resolveOptional = () => {
-    const key = name.toLowerCase();
-    if (['cpu', 'motherboard', 'ram', 'ssd', 'case'].includes(key)) return false;
-    if (['hdd', 'fan'].includes(key)) return true;
-    if (key === 'gpu') return !!selectedComponents.cpu?.integrated_graphics;
-    if (key === 'cooler') return !!selectedComponents.cpu?.cooler_included;
-    if (key === 'psu') return !!selectedComponents.case?.psu_included;
-    return false;
-  };
-  const isOptional = resolveOptional();
+  const isOptional = isSlotOptional(slot, selectedComponents);
   const includedInCase = name.toLowerCase() === 'psu' && !!selectedComponents.case?.psu_included;
   const [popup, setPopup] = useState(null);
 

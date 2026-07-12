@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 import { Link } from 'react-router';
-import { Trans, useTranslation } from "react-i18next";
-import Note from "./Note";
-import { AddIcon, CloseIcon } from "../Common/Icons";
+import { Trans, useTranslation } from 'react-i18next';
+import Note from './Note';
+import { AddIcon, CloseIcon } from '../Common/Icons';
 import { useLocalePath } from '../../../lib/localePath';
 
 const AddButton = () => (
@@ -19,16 +19,14 @@ const CloseButton = () => (
 
 const BuilderSection = () => {
   const lp = useLocalePath();
-  const { t } = useTranslation("pages");
+  const { t } = useTranslation('pages');
   return (
     <div className="max-w-4xl mx-auto px-6 pb-10">
-      <h1 className="text-4xl font-semibold mb-8 text-text">
-        {t("guides.builderSection.title")}
-      </h1>
+      <h1 className="text-4xl font-semibold mb-8 text-text">{t('guides.builderSection.title')}</h1>
 
       <div className="space-y-5">
         <h2 className="text-2xl font-semibold text-text">
-          {t("guides.builderSection.selectingComponentsHeading")}
+          {t('guides.builderSection.selectingComponentsHeading')}
         </h2>
 
         <p className="text-text">
@@ -37,62 +35,64 @@ const BuilderSection = () => {
             i18nKey="guides.builderSection.step1"
             components={{
               buildLink: (
-                <Link
-                  className="text-info hover:underline font-medium"
-                  to={lp('/builder')}
-                />
+                <Link className="text-info hover:underline font-medium" to={lp('/builder')} />
               ),
               buildButton: <span className="font-medium" />,
             }}
           />
         </p>
 
-        <p className="text-text">
-          <Trans
-            t={t}
-            i18nKey="guides.builderSection.step2"
-            components={{
-              addButton: <AddButton />,
-            }}
-          />
-        </p>
+        <div>
+          <p className="text-text">
+            <Trans
+              t={t}
+              i18nKey="guides.builderSection.step2"
+              components={{
+                addButton: <AddButton />,
+              }}
+            />
+          </p>
+          <Note>{t('guides.builderSection.step2Note')}</Note>
+        </div>
+
+        <p className="text-text">{t('guides.builderSection.step3')}</p>
 
         <div>
-          <p className="text-text">{t("guides.builderSection.step3")}</p>
-          <Note>{t("guides.builderSection.step3Note")}</Note>
+          <p className="text-text">{t('guides.builderSection.step4')}</p>
+          <Note>{t('guides.builderSection.step4Note')}</Note>
         </div>
 
         <div>
           <p className="text-text">
             <Trans
               t={t}
-              i18nKey="guides.builderSection.step4"
+              i18nKey="guides.builderSection.step5"
               components={{ selectText: <span className="font-medium" /> }}
             />
           </p>
-          <Note>{t("guides.builderSection.step4Note")}</Note>
+          <Note>{t('guides.builderSection.step5Note')}</Note>
         </div>
 
-        <p className="text-text">{t("guides.builderSection.step5")}</p>
+        <p className="text-text">{t('guides.builderSection.step6')}</p>
 
         <h2 className="text-2xl font-semibold text-text">
-          {t("guides.builderSection.savingHeading")}
+          {t('guides.builderSection.savingHeading')}
         </h2>
 
-        <p className="text-text">{t("guides.builderSection.step6")}</p>
+        <p className="text-text">{t('guides.builderSection.step7')}</p>
 
         <div>
           <p className="text-text">
             <Trans
               t={t}
-              i18nKey="guides.builderSection.step7"
+              i18nKey="guides.builderSection.step8"
               components={{ saveButtonText: <span className="font-medium" /> }}
             />
           </p>
           <Note>
             <Trans
               t={t}
-              i18nKey="guides.builderSection.step7Note"
+              i18nKey="guides.builderSection.step8Note"
               components={{
                 closeIcon: <CloseButton />,
               }}

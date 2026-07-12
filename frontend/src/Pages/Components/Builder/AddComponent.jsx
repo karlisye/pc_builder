@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { Link, useParams, useRouteLoaderData, useSearchParams } from 'react-router';
@@ -9,6 +9,7 @@ import ComponentInfo from '../Common/ComponentInfo';
 import ListingsTable from '../Common/ListingsTable';
 import { AddIcon, CloseIcon, InfoIcon } from '../Common/Icons';
 import PaginationControls from '../Common/PaginationControls';
+import ComponentGeneratorForm from './ComponentGeneratorForm';
 import { formatPrice } from '../../../lib/componentPrice';
 import { selectedProductCodes } from '../../../lib/buildSlots';
 
@@ -21,6 +22,26 @@ const AddComponent = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [expandedId, setExpandedId] = useState(null);
   const [chosenSources, setChosenSources] = useState({});
+  const [pickBestOpen, setPickBestOpen] = useState(false);
+  const pickBestRef = useRef(null);
+  const pickBestButtonRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        pickBestRef.current &&
+        !pickBestRef.current.contains(event.target) &&
+        !pickBestButtonRef.current.contains(event.target)
+      ) {
+        setPickBestOpen(false);
+      }
+    };
+
+    if (pickBestOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [pickBestOpen]);
 
   const page = Number(searchParams.get('page') ?? 1);
   const sort = searchParams.get('sort') ?? '';
@@ -51,8 +72,7 @@ const AddComponent = () => {
 
   const loaderData = useRouteLoaderData('routes/builder-picker');
   const queryKey = ['components', type, selectedKey, search, sort, filtersKey, page];
-  const seed =
-    loaderData?.seedKey === JSON.stringify(queryKey) ? loaderData.list : undefined;
+  const seed = loaderData?.seedKey === JSON.stringify(queryKey) ? loaderData.list : undefined;
 
   const { data, error, isPending, isPlaceholderData } = useQuery({
     queryKey,
@@ -111,19 +131,41 @@ const AddComponent = () => {
 
   return (
     <div className="border border-border w-full min-w-0 hover:bg-background transition p-4 mb-auto">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-semibold text-text">
+      <div className="flex justify-between items-center gap-2">
+        <h1 className="text-3xl font-semibold text-text min-w-0 flex-1">
           {t('addComponent.title', {
             component: t(`common:components.${type}`),
           })}
         </h1>
-        <button
-          className="w-10 h-10 text-muted hover:cursor-pointer bg-surface hover:bg-secondary-light transition p-2"
-          onClick={closePicker}
-          aria-label={t('common:close')}
-        >
-          <CloseIcon />
-        </button>
+        <div className="flex items-center gap-2 shrink-0 relative">
+          <button
+            ref={pickBestButtonRef}
+            onClick={() => setPickBestOpen((prev) => !prev)}
+            className={`px-4 py-2 transition cursor-pointer whitespace-nowrap ${
+              pickBestOpen
+                ? 'bg-primary-light text-white'
+                : 'bg-primary text-white hover:bg-primary-light'
+            }`}
+          >
+            {t('addComponent.pickBest')}
+          </button>
+          <button
+            className="w-10 h-10 text-muted hover:cursor-pointer bg-surface hover:bg-secondary-light transition p-2"
+            onClick={closePicker}
+            aria-label={t('common:close')}
+          >
+            <CloseIcon />
+          </button>
+
+          {pickBestOpen && (
+            <div
+              ref={pickBestRef}
+              className="absolute right-0 top-full mt-2 w-80 max-h-[70vh] overflow-y-auto bg-background border border-border shadow z-10 p-4"
+            >
+              <ComponentGeneratorForm />
+            </div>
+          )}
+        </div>
       </div>
 
       {isPending && <AddComponentSkeleton />}
@@ -167,74 +209,82 @@ const AddComponent = () => {
                     role="button"
                     tabIndex={0}
                     aria-expanded={expandedId === component.id}
-                    className={`flex justify-between items-center gap-2 p-2 min-w-0 cursor-pointer transition ${component.compatible && !component.out_of_stock ? 'bg-surface hover:bg-secondary-light' : 'bg-muted/50 hover:bg-muted/80'}`}
+                    className={`flex items-stretch gap-3 p-2 min-w-0 cursor-pointer transition ${component.compatible && !component.out_of_stock ? 'bg-surface hover:bg-secondary-light' : 'bg-muted/50 hover:bg-muted/80'}`}
                   >
-                    <div className="flex items-center gap-3 min-w-0 flex-1">
-                      <div className="w-10 h-10 bg-background shrink-0 flex items-center justify-center overflow-hidden">
-                        {component.image_url && (
-                          <img
-                            src={component.image_url}
-                            alt={component.name}
-                            loading="lazy"
-                            className="w-full h-full object-contain"
-                          />
-                        )}
-                      </div>
-                      <span
-                        className={`font-medium truncate min-w-0 ${component.compatible && !component.out_of_stock ? 'text-text' : 'text-text/50'}`}
-                      >
-                        {component.name}
-                        {type === 'motherboard' &&
-                          (component.socket || component.memory_type) && (
-                            <span className="text-text font-normal">
-                              {' '}
-                              (
-                              {[component.socket, component.memory_type].filter(Boolean).join(', ')}
-                              )
-                            </span>
-                          )}
-                        {type === 'case' && component.form_factor && (
-                          <span className="text-text font-normal"> ({component.form_factor})</span>
-                        )}
-                      </span>
-                      {component.compatible && component.needs_manual_check && (
-                        <span
-                          className="relative group/manual-check text-alert shrink-0"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <InfoIcon size={18} />
-                          <span className="absolute left-1/2 -translate-x-1/2 bottom-full mb-1 hidden group-hover/manual-check:block bg-primary text-white text-xs p-1 whitespace-nowrap z-10">
-                            {t('componentCard.checkManually')}
-                          </span>
-                        </span>
+                    <div className="sm:w-10 sm:h-10 w-20 h-20 bg-background shrink-0 flex items-center justify-center overflow-hidden">
+                      {component.image_url && (
+                        <img
+                          src={component.image_url}
+                          alt={component.name}
+                          loading="lazy"
+                          className="w-full h-full object-contain"
+                        />
                       )}
                     </div>
 
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-muted text-sm whitespace-nowrap">
-                        {component.out_of_stock
-                          ? t('addComponent.outOfStock')
-                          : !component.compatible
-                            ? component.case_includes_psu
-                              ? t('addComponent.caseIncludesPsu')
-                              : t('addComponent.notCompatible')
-                            : t('addComponent.startingFrom', {
-                                price: formatPrice(component.price),
-                              })}
-                      </span>
-                      {component.compatible && !component.out_of_stock && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleSelect(component);
-                          }}
-                          title={t('addComponent.select')}
-                          aria-label={t('addComponent.select')}
-                          className="text-surface hover:text-white bg-primary hover:bg-primary-light transition cursor-pointer p-1"
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 min-w-0 flex-1">
+                      <div className="flex items-center gap-2 min-w-0 flex-1">
+                        <span
+                          className={`font-medium flex-1 ${component.compatible && !component.out_of_stock ? 'text-text' : 'text-text/50'}`}
                         >
-                          <AddIcon size={20} />
-                        </button>
-                      )}
+                          {component.name}
+                          {type === 'motherboard' &&
+                            (component.socket || component.memory_type) && (
+                              <span className="text-text font-normal">
+                                {' '}
+                                (
+                                {[component.socket, component.memory_type]
+                                  .filter(Boolean)
+                                  .join(', ')}
+                                )
+                              </span>
+                            )}
+                          {type === 'case' && component.form_factor && (
+                            <span className="text-text font-normal">
+                              {' '}
+                              ({component.form_factor})
+                            </span>
+                          )}
+                        </span>
+                        {component.compatible && component.needs_manual_check && (
+                          <span
+                            className="relative group/manual-check text-alert shrink-0"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <InfoIcon size={18} />
+                            <span className="absolute left-1/2 -translate-x-1/2 bottom-full mb-1 hidden group-hover/manual-check:block bg-primary text-white text-xs p-1 whitespace-nowrap z-10">
+                              {t('componentCard.checkManually')}
+                            </span>
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0">
+                        <span className="text-muted text-sm whitespace-nowrap">
+                          {component.out_of_stock
+                            ? t('addComponent.outOfStock')
+                            : !component.compatible
+                              ? component.case_includes_psu
+                                ? t('addComponent.caseIncludesPsu')
+                                : t('addComponent.notCompatible')
+                              : t('addComponent.startingFrom', {
+                                  price: formatPrice(component.price),
+                                })}
+                        </span>
+                        {component.compatible && !component.out_of_stock && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleSelect(component);
+                            }}
+                            title={t('addComponent.select')}
+                            aria-label={t('addComponent.select')}
+                            className="text-surface hover:text-white bg-primary hover:bg-primary-light transition cursor-pointer p-1"
+                          >
+                            <AddIcon size={20} />
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                   <div

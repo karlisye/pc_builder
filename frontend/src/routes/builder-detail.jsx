@@ -7,7 +7,7 @@ import { EMPTY_SLOTS } from '../lib/buildSlots';
 import { langFromParams, localePath } from '../lib/localePath';
 import { pagesSeo, seoMeta } from '../lib/seoMeta';
 
-const SITE_URL = import.meta.env.VITE_SITE_URL ?? 'https://pcbuilder.lv';
+const SITE_URL = import.meta.env.VITE_SITE_URL ?? 'https://datorbuve.lv';
 
 export async function loader({ params }) {
   if (!(params.type in EMPTY_SLOTS)) throw data(null, { status: 404 });

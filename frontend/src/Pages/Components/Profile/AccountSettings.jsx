@@ -23,7 +23,8 @@ const AccountSettings = () => {
   const [passError, setPassError] = useState('');
 
   const [deleting, setDeleting] = useState(false);
-  const [deleteConfirm, setDeleteConfirm] = useState('');
+  const [sendingDelete, setSendingDelete] = useState(false);
+  const [deleteSent, setDeleteSent] = useState(false);
   const [deleteError, setDeleteError] = useState('');
 
   const handleEdit = async (e) => {
@@ -105,18 +106,15 @@ const AccountSettings = () => {
   };
 
   const handleDeleteAccount = async () => {
-    if (deleteConfirm !== t('accountSettings.deleteConfirmKeyword')) {
-      setDeleteError(t('accountSettings.deleteConfirmIncorrect'));
-      return;
-    }
-
+    setSendingDelete(true);
+    setDeleteError('');
     try {
-      await axios.delete(`/api/users/${user.id}`);
+      await axios.post(`/api/users/${user.id}/delete-confirmation`);
+      setDeleteSent(true);
     } catch (err) {
-      console.error(err);
+      setDeleteError(err.response?.data?.message ?? t('accountSettings.deleteConfirmError'));
     } finally {
-      setUser(null);
-      window.location.href = '/';
+      setSendingDelete(false);
     }
   };
 
@@ -270,7 +268,11 @@ const AccountSettings = () => {
       </h2>
       <button
         className="py-4 px-8 bg-primary text-white hover:bg-danger/80 cursor-pointer mt-2 transition disabled:text-muted mb-6"
-        onClick={() => setDeleting(true)}
+        onClick={() => {
+          setDeleteSent(false);
+          setDeleteError('');
+          setDeleting(true);
+        }}
       >
         {t('accountSettings.deleteAccountButton')}
       </button>
@@ -284,38 +286,42 @@ const AccountSettings = () => {
             {t('accountSettings.deleteConfirmSubtitle')}
           </p>
 
-          <div className="flex flex-col m-4">
-            <span className="text-muted">
-              {t('accountSettings.deleteConfirmInstruction')}
-              <span className="text-danger"> {t('accountSettings.deleteConfirmKeyword')} </span>
-              {t('accountSettings.deleteConfirmInstructionSuffix')}
-            </span>
-            <input
-              type="text"
-              className="text-danger p-2 bg-surface focus:outline outline-border"
-              value={deleteConfirm}
-              onChange={(e) => setDeleteConfirm(e.target.value)}
-            />
-          </div>
+          <p className="text-muted mx-4 mb-4">
+            {deleteSent
+              ? t('accountSettings.deleteConfirmSent')
+              : t('accountSettings.deleteConfirmInstruction', { email: user.email })}
+          </p>
 
-          {deleteError && <p className="text-danger text-sm">{deleteError}</p>}
+          {deleteError && <p className="text-danger text-sm mx-4">{deleteError}</p>}
 
           <div className="flex gap-4 m-4">
-            <button
-              className="flex-1 p-4 bg-primary text-background cursor-pointer hover:bg-primary-light transition"
-              onClick={handleDeleteAccount}
-            >
-              {t('accountSettings.delete')}
-            </button>
-            <button
-              className="flex-1 p-4 bg-surface text-text cursor-pointer hover:bg-secondary-light transition"
-              onClick={() => {
-                setDeleting(false);
-                setDeleteError('');
-              }}
-            >
-              {t('accountSettings.cancelDelete')}
-            </button>
+            {deleteSent ? (
+              <button
+                className="flex-1 p-4 bg-surface text-text cursor-pointer hover:bg-secondary-light transition"
+                onClick={() => setDeleting(false)}
+              >
+                {t('accountSettings.close')}
+              </button>
+            ) : (
+              <>
+                <button
+                  className="flex-1 p-4 bg-primary text-background cursor-pointer hover:bg-primary-light transition disabled:opacity-50"
+                  disabled={sendingDelete}
+                  onClick={handleDeleteAccount}
+                >
+                  {t('accountSettings.deleteConfirmSend')}
+                </button>
+                <button
+                  className="flex-1 p-4 bg-surface text-text cursor-pointer hover:bg-secondary-light transition"
+                  onClick={() => {
+                    setDeleting(false);
+                    setDeleteError('');
+                  }}
+                >
+                  {t('accountSettings.cancelDelete')}
+                </button>
+              </>
+            )}
           </div>
         </Modal>
       )}

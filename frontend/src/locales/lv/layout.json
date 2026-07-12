@@ -9,6 +9,14 @@
     "hello": "Sveiki, {{name}}"
   },
   "footer": {
-    "tagline": "Veido un kopīgo savu datoru."
+    "tagline": "Salīdzini cenas un veido savu datoru.",
+    "builderHeading": "Konstruktors",
+    "infoHeading": "Informācija",
+    "about": "Par mums",
+    "contact": "Sazinies ar mums",
+    "terms": "Lietošanas Noteikumi",
+    "privacy": "Privātuma Politika",
+    "cookieSettings": "Sīkdatņu iestatījumi",
+    "copyright": "© 2026 DatorBuve. Visas tiesības aizsargātas."
   }
 }

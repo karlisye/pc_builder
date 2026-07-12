@@ -13,6 +13,7 @@ import {
   TrashIcon,
 } from './Components/Common/Icons';
 import SidePanel from './Components/Common/SidePanel';
+import PaginationControls from './Components/Common/PaginationControls';
 import BuildIssuesPopup from './Components/Common/BuildIssuesPopup';
 import { formatDate } from '../lib/formatDate';
 import { formatPrice } from '../lib/componentPrice';
@@ -41,12 +42,18 @@ const SavedBuilds = () => {
   const { id: selectedId } = useParams();
   const navigate = useNavigate();
   const [builds, setBuilds] = useState([]);
+  const [panelOpen, setPanelOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState(null);
   const [selectedBuild, setSelectedBuild] = useState(null);
   const [loadingBuild, setLoadingBuild] = useState(false);
 
   useEffect(() => {
-    axios.get('/api/builds').then((res) => setBuilds(res.data));
-  }, []);
+    axios.get('/api/builds', { params: { page } }).then((res) => {
+      setBuilds(res.data.data);
+      setPagination({ currentPage: res.data.current_page, lastPage: res.data.last_page });
+    });
+  }, [page]);
 
   // Selection is URL-driven (/builds/:id) so refresh/back/forward work.
   useEffect(() => {
@@ -58,7 +65,7 @@ const SavedBuilds = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedId]);
   const [editing, setEditing] = useState(false);
-  const [editData, setEditData] = useState({ name: '', notes: '' });
+  const [editData, setEditData] = useState({ name: '', notes: '', type: '' });
   const [expandedSlot, setExpandedSlot] = useState(null);
   const [deleting, setDeleting] = useState(null);
   const [expanded, setExpanded] = useState(false);
@@ -136,7 +143,7 @@ const SavedBuilds = () => {
     try {
       const res = await axios.get(`/api/builds/${id}`);
       setSelectedBuild(res.data);
-      setEditData({ name: res.data.name, notes: res.data.notes ?? '' });
+      setEditData({ name: res.data.name, notes: res.data.notes ?? '', type: res.data.type ?? '' });
     } catch (err) {
       addToast(err.response?.data?.error ?? t('savedBuilds.loadError'), {
         type: 'danger',
@@ -147,7 +154,11 @@ const SavedBuilds = () => {
     }
   };
 
-  const refreshBuilds = () => axios.get('/api/builds').then((res) => setBuilds(res.data));
+  const refreshBuilds = () =>
+    axios.get('/api/builds', { params: { page } }).then((res) => {
+      setBuilds(res.data.data);
+      setPagination({ currentPage: res.data.current_page, lastPage: res.data.last_page });
+    });
 
   const handleDelete = async (id) => {
     try {
@@ -212,9 +223,13 @@ const SavedBuilds = () => {
 
   return (
     <>
-      <div className="h-full flex">
-        <SidePanel title={t('savedBuilds.sidePanelTitle')}>
-          <div className="max-h-100">
+      <div className="flex h-full">
+        <SidePanel
+          title={t('savedBuilds.sidePanelTitle')}
+          expanded={panelOpen}
+          onExpandedChange={setPanelOpen}
+        >
+          <div className="">
             {builds.length === 0 ? (
               <p className="text-muted">{t('savedBuilds.noSavedBuilds')}</p>
             ) : (
@@ -223,6 +238,7 @@ const SavedBuilds = () => {
                   key={build.id}
                   onClick={() => {
                     if (String(build.id) !== selectedId) navigate(lp(`/builds/${build.id}`));
+                    setPanelOpen(false);
                   }}
                   className={`hover:bg-secondary border transition-all cursor-pointer p-2 flex justify-between items-center border-secondary mb-2 ${
                     String(build.id) === selectedId ? 'border-l-10' : ''
@@ -245,6 +261,11 @@ const SavedBuilds = () => {
               ))
             )}
           </div>
+          <div className="mt-auto">
+            {pagination && pagination.lastPage > 1 && (
+              <PaginationControls pagination={pagination} setPage={setPage} dark />
+            )}
+          </div>
         </SidePanel>
 
         <div className="flex-1 pt-6 px-4 mb-6">
@@ -260,12 +281,27 @@ const SavedBuilds = () => {
             <div className="space-y-6">
               {editing ? (
                 <div className="space-y-2">
-                  <input
-                    type="text"
-                    value={editData.name}
-                    onChange={(e) => setEditData((prev) => ({ ...prev, name: e.target.value }))}
-                    className="bg-surface border border-border text-text p-2 w-full focus:outline-1 outline-border"
-                  />
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={editData.name}
+                      onChange={(e) => setEditData((prev) => ({ ...prev, name: e.target.value }))}
+                      className="bg-surface border border-border text-text p-2 flex-1 focus:outline-1 outline-border"
+                    />
+                    <select
+                      value={editData.type}
+                      onChange={(e) =>
+                        setEditData((prev) => ({ ...prev, type: e.target.value }))
+                      }
+                      className="bg-surface border border-border text-text p-2 focus:outline-1 outline-border"
+                    >
+                      <option value="">{t('builder:buildInfo.none')}</option>
+                      <option value="gaming">{t('builder:buildInfo.gaming')}</option>
+                      <option value="office">{t('builder:buildInfo.office')}</option>
+                      <option value="rendering">{t('builder:buildInfo.rendering')}</option>
+                      <option value="streaming">{t('builder:buildInfo.streaming')}</option>
+                    </select>
+                  </div>
                   <textarea
                     value={editData.notes}
                     onChange={(e) =>
@@ -317,7 +353,9 @@ const SavedBuilds = () => {
                           </div>
                         )}
                       </div>
-                      <p className="text-muted text-sm">{formatDate(selectedBuild.created_at, lang)}</p>
+                      <p className="text-muted text-sm">
+                        {formatDate(selectedBuild.created_at, lang)}
+                      </p>
                     </div>
 
                     <div className="relative shrink-0">
@@ -367,45 +405,38 @@ const SavedBuilds = () => {
                 </p>
 
                 <div className="flex flex-col-reverse xl:flex-row items-stretch gap-2">
-                  <div className="relative xl:w-64 my-auto">
-                    <div className="flex border border-border">
-                      <input
-                        type="text"
-                        readOnly
-                        disabled={!selectedBuild.is_public}
-                        value={
-                          selectedBuild.share_token
-                            ? `${window.location.origin}/builder?shared=${selectedBuild.share_token}`
-                            : ''
-                        }
-                        className="flex-1 min-w-0 bg-surface text-text px-3 truncate outline-none py-1 disabled:text-muted disabled:cursor-not-allowed"
-                      />
-                      {selectedBuild.is_public ? (
+                  {selectedBuild.is_public ? (
+                    <div className="relative xl:w-64 my-auto">
+                      <div className="flex border border-border">
+                        <input
+                          type="text"
+                          readOnly
+                          value={`${window.location.origin}/builder?shared=${selectedBuild.share_token}`}
+                          className="flex-1 min-w-0 bg-surface text-text px-3 truncate outline-none py-1"
+                        />
                         <button
                           onClick={() => copyShareLink(selectedBuild.share_token)}
                           className="px-3 text-background hover:text-white bg-primary hover:bg-primary-light transition cursor-pointer"
                         >
                           <CopyIcon size={18} />
                         </button>
-                      ) : (
-                        <button
-                          onClick={handleShare}
-                          className="px-4 text-background hover:text-white bg-primary hover:bg-primary-light transition cursor-pointer"
-                        >
-                          {t('savedBuilds.share')}
-                        </button>
-                      )}
-                    </div>
+                      </div>
 
-                    {selectedBuild.is_public && (
                       <button
                         onClick={handleUnshare}
                         className="absolute -bottom-5 left-0 text-muted hover:text-danger text-sm transition cursor-pointer"
                       >
                         {t('savedBuilds.unshare')}
                       </button>
-                    )}
-                  </div>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={handleShare}
+                      className="px-4 py-2 my-auto text-background hover:text-white bg-primary hover:bg-primary-light transition cursor-pointer"
+                    >
+                      {t('savedBuilds.share')}
+                    </button>
+                  )}
 
                   <Link
                     className="py-4 px-8 bg-primary text-white text-center cursor-pointer hover:bg-primary-light transition"

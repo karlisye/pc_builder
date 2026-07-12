@@ -19,20 +19,21 @@ export const AuthProvider = ({ children }) => {
       .catch(() => setUser(null));
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (email, password, turnstile_token) => {
     await axios.get("/sanctum/csrf-cookie");
-    const res = await axios.post("/api/login", { email, password });
+    const res = await axios.post("/api/login", { email, password, turnstile_token });
     setUser(res.data);
     return res.data;
   };
 
-  const register = async (name, email, password, password_confirmation) => {
+  const register = async (name, email, password, password_confirmation, turnstile_token) => {
     await axios.get("/sanctum/csrf-cookie");
     const res = await axios.post("/api/register", {
       name,
       email,
       password,
       password_confirmation,
+      turnstile_token,
     });
     setUser(res.data);
     return res.data;
@@ -41,6 +42,16 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     await axios.post("/api/logout");
     setUser(null);
+  };
+
+  const forgotPassword = async (email, turnstile_token) => {
+    await axios.get("/sanctum/csrf-cookie");
+    return axios.post("/api/forgot-password", { email, turnstile_token });
+  };
+
+  const resetPassword = async (token, email, password, password_confirmation) => {
+    await axios.get("/sanctum/csrf-cookie");
+    return axios.post("/api/reset-password", { token, email, password, password_confirmation });
   };
 
   const resendVerification = () => {
@@ -55,6 +66,8 @@ export const AuthProvider = ({ children }) => {
         login,
         register,
         logout,
+        forgotPassword,
+        resetPassword,
         resendVerification,
         verifyBannerVisible,
         dismissVerifyBanner: () => setVerifyBannerVisible(false),
