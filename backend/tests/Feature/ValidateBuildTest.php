@@ -449,7 +449,7 @@ describe('HDD vs Case 3.5" bays', function () {
 });
 
 // ---------------------------------------------------------------------------
-// Clean builds — no issues
+// Clean builds - no issues
 // ---------------------------------------------------------------------------
 
 describe('Clean builds produce no issues', function () {
