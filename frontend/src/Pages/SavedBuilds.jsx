@@ -184,8 +184,8 @@ const SavedBuilds = () => {
       setSelectedBuild(res.data);
       setEditing(false);
       refreshBuilds();
-    } catch (err) {
-      console.error(err);
+    } catch {
+      // keep the edit form open so the user can retry
     }
   };
 

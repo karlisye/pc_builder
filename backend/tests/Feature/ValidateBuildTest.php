@@ -176,11 +176,14 @@ describe('GPU length ↔ Case', function () {
 
 describe('Cooler vs CPU', function () {
   it('flags cooler and cpu when cooler socket does not match CPU', function () {
+    // many coolers are multi-socket — the pick must genuinely exclude AM5,
+    // or an unordered first() can grab a universal cooler and pass validation
     $cooler = Cooler::where('compatibility', 'LIKE', '%LGA1700%')
+      ->where('compatibility', 'NOT LIKE', '%AM5%')
       ->whereNotNull('compatibility')
       ->first();
     $cpu    = Cpu::where('socket', 'AM5')->first();
-    if (!$cooler || !$cpu) test()->markTestSkipped('Need LGA1700 cooler and AM5 CPU');
+    if (!$cooler || !$cpu) test()->markTestSkipped('Need AM5-incompatible LGA1700 cooler and AM5 CPU');
 
     $res = validate(['cooler' => $cooler->product_code, 'cpu' => $cpu->product_code]);
     expect(hasIssue($res, 'cooler'))->toBeTrue();

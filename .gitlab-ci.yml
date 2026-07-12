@@ -1,0 +1,127 @@
+# CI/CD for datorbuve.lv — main is the production branch.
+#
+# Required CI/CD variables (Settings > CI/CD > Variables):
+#   TEST_APP_KEY            any "base64:..." key for the test app (masked)
+#   VITE_TURNSTILE_SITE_KEY production Turnstile widget site key
+#   SERVER_HOST             VPS IP
+#   SERVER_USER             deploy user on the VPS
+#   SSH_PRIVATE_KEY         private key for SERVER_USER (type: variable, masked)
+#
+# The full Pest suite runs against the sanitized component fixture in
+# backend/database/ci/components-dump.sql.gz (refresh with scripts/make-ci-dump.sh).
+
+stages:
+  - test
+  - build
+  - deploy
+
+backend-tests:
+  stage: test
+  image: php:8.4-cli-alpine
+  services:
+    - name: mysql:8.4
+      alias: mysql
+  variables:
+    MYSQL_DATABASE: pc_builder
+    MYSQL_USER: sail
+    MYSQL_PASSWORD: cipass
+    MYSQL_ROOT_PASSWORD: cipass
+    # real env vars beat .env.testing values (DB_HOST=mysql already matches)
+    APP_ENV: testing
+    APP_KEY: $TEST_APP_KEY
+    DB_PASSWORD: cipass
+  cache:
+    key:
+      files:
+        - backend/composer.lock
+    paths:
+      - backend/vendor/
+  before_script:
+    - apk add --no-cache git unzip mariadb-client $PHPIZE_DEPS
+    - docker-php-ext-install pdo_mysql > /dev/null
+    - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+  script:
+    - cd backend
+    - touch .env  # phpdotenv warns if the base .env is missing; testing config comes from .env.testing
+    - composer install --no-interaction --prefer-dist
+    - php artisan migrate --force
+    - zcat database/ci/components-dump.sql.gz | mysql -hmysql -usail -pcipass pc_builder
+    - php artisan test
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH
+
+frontend-build:
+  stage: test
+  image: node:24-alpine
+  cache:
+    key:
+      files:
+        - frontend/package-lock.json
+    paths:
+      - frontend/node_modules/
+  script:
+    - cd frontend
+    - npm ci
+    - npm run build
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH
+
+build-images:
+  stage: build
+  image: docker:27
+  services:
+    - docker:27-dind
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+  script:
+    - docker build
+      --build-arg COMPOSER_FLAGS=--no-dev
+      -t "$CI_REGISTRY_IMAGE/backend:latest"
+      -t "$CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA"
+      backend/
+    - docker build
+      --target web
+      --build-arg VITE_TURNSTILE_SITE_KEY="$VITE_TURNSTILE_SITE_KEY"
+      --build-arg VITE_SITE_URL=https://datorbuve.lv
+      -t "$CI_REGISTRY_IMAGE/frontend-web:latest"
+      -t "$CI_REGISTRY_IMAGE/frontend-web:$CI_COMMIT_SHORT_SHA"
+      frontend/
+    - docker build
+      --target ssr
+      --build-arg VITE_TURNSTILE_SITE_KEY="$VITE_TURNSTILE_SITE_KEY"
+      --build-arg VITE_SITE_URL=https://datorbuve.lv
+      -t "$CI_REGISTRY_IMAGE/frontend-ssr:latest"
+      -t "$CI_REGISTRY_IMAGE/frontend-ssr:$CI_COMMIT_SHORT_SHA"
+      frontend/
+    - docker push --all-tags "$CI_REGISTRY_IMAGE/backend"
+    - docker push --all-tags "$CI_REGISTRY_IMAGE/frontend-web"
+    - docker push --all-tags "$CI_REGISTRY_IMAGE/frontend-ssr"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+
+deploy:
+  stage: deploy
+  image: alpine:3.21
+  before_script:
+    - apk add --no-cache openssh-client
+    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_deploy && chmod 600 ~/.ssh/id_deploy
+    - ssh-keyscan -H "$SERVER_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+  script:
+    - scp -i ~/.ssh/id_deploy docker-compose.prod.yml frontend/docker/nginx.prod.conf "$SERVER_USER@$SERVER_HOST:/opt/datorbuve/"
+    - ssh -i ~/.ssh/id_deploy "$SERVER_USER@$SERVER_HOST" '
+        cd /opt/datorbuve &&
+        docker compose --env-file .env.production -f docker-compose.prod.yml pull &&
+        docker compose --env-file .env.production -f docker-compose.prod.yml up -d &&
+        docker compose --env-file .env.production -f docker-compose.prod.yml exec -T backend php artisan migrate --force &&
+        docker compose --env-file .env.production -f docker-compose.prod.yml exec -T backend php artisan cache:clear
+      '
+  environment:
+    name: production
+    url: https://datorbuve.lv
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"

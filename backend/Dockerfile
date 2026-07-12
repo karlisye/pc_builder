@@ -6,7 +6,14 @@ RUN apk add --no-cache \
     libpng-dev \
     libzip-dev \
     oniguruma-dev \
-    && docker-php-ext-install pdo_mysql mbstring zip gd
+    && docker-php-ext-install pdo_mysql mbstring zip gd opcache
+
+RUN printf 'opcache.enable=1\n\
+opcache.memory_consumption=128\n\
+opcache.interned_strings_buffer=16\n\
+opcache.max_accelerated_files=10000\n\
+opcache.validate_timestamps=1\n\
+opcache.revalidate_freq=2\n' > /usr/local/etc/php/conf.d/opcache.ini
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
@@ -26,7 +33,9 @@ RUN mkdir -p \
     # nginx-owned with mode 700 — large responses fail to buffer without this
     && chown -R www-data:www-data /var/lib/nginx
 
-RUN composer install --optimize-autoloader --no-interaction
+# CI passes --no-dev for production images; local builds keep dev deps (Telescope, Pest)
+ARG COMPOSER_FLAGS=""
+RUN composer install --optimize-autoloader --no-interaction $COMPOSER_FLAGS
 
 RUN printf 'user www-data;\n\
 worker_processes auto;\n\

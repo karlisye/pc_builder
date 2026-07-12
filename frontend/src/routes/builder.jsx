@@ -220,7 +220,6 @@ export default function BuilderLayout() {
       // must not make an incompatible build look clean.
       setValidateFailed(true);
       addToast(t('buildDesc.validateFailed'), { type: 'danger' });
-      console.error(err);
     }
   };
 

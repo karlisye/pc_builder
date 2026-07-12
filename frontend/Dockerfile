@@ -2,6 +2,13 @@ FROM node:24-alpine AS build
 
 WORKDIR /app
 
+# Vite bakes these in at build time — CI must pass the production values,
+# or Turnstile silently disables and canonical URLs fall back to the default
+ARG VITE_TURNSTILE_SITE_KEY=""
+ARG VITE_SITE_URL=""
+ENV VITE_TURNSTILE_SITE_KEY=$VITE_TURNSTILE_SITE_KEY \
+    VITE_SITE_URL=$VITE_SITE_URL
+
 COPY package*.json ./
 RUN npm ci
 
