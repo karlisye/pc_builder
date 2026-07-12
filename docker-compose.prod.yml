@@ -4,7 +4,7 @@
 # the server and never committed.
 services:
   frontend:
-    image: registry.gitlab.com/karlisy/pc_builder/frontend-web:latest
+    image: registry.gitlab.com/karlisy/pc_builder/frontend-web:${IMAGE_TAG:-latest}
     ports:
       - "80:80"
       - "443:443"
@@ -19,7 +19,7 @@ services:
       - app
 
   frontend-ssr:
-    image: registry.gitlab.com/karlisy/pc_builder/frontend-ssr:latest
+    image: registry.gitlab.com/karlisy/pc_builder/frontend-ssr:${IMAGE_TAG:-latest}
     environment:
       - API_BASE_URL=http://backend:8000
     restart: unless-stopped
@@ -29,7 +29,7 @@ services:
       - app
 
   backend:
-    image: registry.gitlab.com/karlisy/pc_builder/backend:latest
+    image: registry.gitlab.com/karlisy/pc_builder/backend:${IMAGE_TAG:-latest}
     env_file:
       - .env.production
     command: sh -c "php artisan config:cache && php artisan route:cache && php-fpm -D && nginx -g 'daemon off;'"
@@ -49,7 +49,7 @@ services:
       - app
 
   queue-worker:
-    image: registry.gitlab.com/karlisy/pc_builder/backend:latest
+    image: registry.gitlab.com/karlisy/pc_builder/backend:${IMAGE_TAG:-latest}
     env_file:
       - .env.production
     command: sh -c "php artisan config:cache && php artisan queue:work --tries=3"

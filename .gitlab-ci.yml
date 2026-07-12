@@ -5,10 +5,13 @@
 #   VITE_TURNSTILE_SITE_KEY production Turnstile widget site key
 #   SERVER_HOST             VPS IP
 #   SERVER_USER             deploy user on the VPS
-#   SSH_PRIVATE_KEY         private key for SERVER_USER (type: variable, masked)
+#   SSH_PRIVATE_KEY         private key for SERVER_USER (type: File)
 #
 # The full Pest suite runs against the sanitized component fixture in
 # backend/database/ci/components-dump.sql.gz (refresh with scripts/make-ci-dump.sh).
+#
+# Recommended GitLab settings: protect the `production` environment
+# (Settings > CI/CD > Protected environments) so only maintainers can deploy.
 
 stages:
   - test
@@ -17,6 +20,7 @@ stages:
 
 backend-tests:
   stage: test
+  interruptible: true
   image: php:8.4-cli-alpine
   services:
     - name: mysql:8.4
@@ -53,6 +57,7 @@ backend-tests:
 
 frontend-build:
   stage: test
+  interruptible: true
   image: node:24-alpine
   cache:
     key:
@@ -70,6 +75,7 @@ frontend-build:
 
 build-images:
   stage: build
+  interruptible: true
   image: docker:27
   services:
     - docker:27-dind
@@ -109,17 +115,16 @@ deploy:
   before_script:
     - apk add --no-cache openssh-client
     - mkdir -p ~/.ssh && chmod 700 ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_deploy && chmod 600 ~/.ssh/id_deploy
+    - cp "$SSH_PRIVATE_KEY" ~/.ssh/id_deploy
+    - chmod 600 ~/.ssh/id_deploy
     - ssh-keyscan -H "$SERVER_HOST" >> ~/.ssh/known_hosts 2>/dev/null
   script:
     - scp -i ~/.ssh/id_deploy docker-compose.prod.yml frontend/docker/nginx.prod.conf "$SERVER_USER@$SERVER_HOST:/opt/datorbuve/"
-    - ssh -i ~/.ssh/id_deploy "$SERVER_USER@$SERVER_HOST" '
-        cd /opt/datorbuve &&
-        docker compose --env-file .env.production -f docker-compose.prod.yml pull &&
-        docker compose --env-file .env.production -f docker-compose.prod.yml up -d &&
-        docker compose --env-file .env.production -f docker-compose.prod.yml exec -T backend php artisan migrate --force &&
-        docker compose --env-file .env.production -f docker-compose.prod.yml exec -T backend php artisan cache:clear
-      '
+    # deploy the exact SHA-tagged images from this pipeline, never `latest`
+    - ssh -i ~/.ssh/id_deploy "$SERVER_USER@$SERVER_HOST" "IMAGE_TAG=$CI_COMMIT_SHORT_SHA sh -s" < scripts/deploy.sh
+    # end-to-end smoke test through Cloudflare -> nginx -> Laravel
+    - apk add --no-cache curl
+    - curl -fsS -m 15 https://datorbuve.lv/up > /dev/null && echo "https://datorbuve.lv/up OK"
   environment:
     name: production
     url: https://datorbuve.lv
