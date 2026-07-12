@@ -49,7 +49,7 @@ backend-tests:
     - touch .env  # phpdotenv warns if the base .env is missing; testing config comes from .env.testing
     - composer install --no-interaction --prefer-dist
     - php artisan migrate --force
-    - zcat database/ci/components-dump.sql.gz | mariadb --ssl-mode=DISABLED -hmysql -usail -pcipass pc_builder
+    - zcat database/ci/components-dump.sql.gz | mariadb --ssl=OFF -hmysql -usail -pcipass pc_builder
     - php artisan test
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
