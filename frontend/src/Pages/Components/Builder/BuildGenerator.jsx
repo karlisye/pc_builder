@@ -31,6 +31,12 @@ const MIN_TYPE_BUDGETS = {
 const typeAvailableFor = (type, budget) =>
   !budget || !MIN_TYPE_BUDGETS[type] || budget >= MIN_TYPE_BUDGETS[type];
 
+// artificial floor so generation always feels like it's doing real work, even
+// when the request itself resolves almost instantly
+const MIN_GENERATE_DURATION_MS = 3000;
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const BuildGenerator = () => {
   const { t } = useTranslation(["builder", "common"]);
   const { user, showVerifyBanner } = useAuth();
@@ -46,6 +52,8 @@ const BuildGenerator = () => {
   const { setBuildType } = useBuildMeta();
   const lp = useLocalePath();
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [progressDuration, setProgressDuration] = useState(0);
   const [budget, setBudget] = useState(1500);
   const [preferences, setPreferences] = useState({
     gpu: null,
@@ -98,14 +106,26 @@ const BuildGenerator = () => {
     setLoading(true);
     setWarnings([]);
     setNotes([]);
+    setProgress(0);
+    setProgressDuration(0);
+    // commit the 0% state first, then animate to 90% over the full minimum
+    // duration on the next frame — the rest of the bar fills once we know
+    // the real result, whether that lands before or after the floor
+    requestAnimationFrame(() => {
+      setProgressDuration(MIN_GENERATE_DURATION_MS);
+      setProgress(90);
+    });
+
     try {
       const selected = selectedProductCodes(selectedComponents);
 
-      const res = await axios.post("/api/builder", {
-        selected,
-        budget,
-        preferences,
-      });
+      const [res] = await Promise.all([
+        axios.post("/api/builder", { selected, budget, preferences }),
+        sleep(MIN_GENERATE_DURATION_MS),
+      ]);
+
+      setProgressDuration(200);
+      setProgress(100);
 
       if (res.data.success) {
         setSelectedComponents((prev) => ({
@@ -127,6 +147,8 @@ const BuildGenerator = () => {
         addToast(res.data.error, { type: "danger" });
       }
     } catch (err) {
+      setProgressDuration(200);
+      setProgress(100);
       if (err.response?.status === 403) {
         showVerifyBanner();
         addToast(t("common:verifyEmail.gatedAction"), { type: "danger" });
@@ -137,7 +159,11 @@ const BuildGenerator = () => {
         );
       }
     } finally {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+        setProgress(0);
+        setProgressDuration(0);
+      }, 250);
     }
   };
 
@@ -321,6 +347,22 @@ const BuildGenerator = () => {
             t("buildGenerator.generate")
           )}
         </button>
+
+        {loading && (
+          <div
+            className="h-1 w-full bg-muted/30 overflow-hidden mt-2"
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={progress}
+            aria-label={t("buildGenerator.generating")}
+          >
+            <div
+              className="h-full bg-secondary-light"
+              style={{ width: `${progress}%`, transition: `width ${progressDuration}ms ease-out` }}
+            />
+          </div>
+        )}
       </ClosedSection>
     </div>
   );

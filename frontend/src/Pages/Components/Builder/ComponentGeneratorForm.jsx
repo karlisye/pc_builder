@@ -19,6 +19,12 @@ const DEFAULT_PREFERENCES = {
   include_orderable: true,
 };
 
+// shorter than the full-build generator's floor — a single-slot regen is a
+// smaller task, so it doesn't need as long to feel like real work
+const MIN_GENERATE_DURATION_MS = 1500;
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const ComponentGeneratorForm = () => {
   const { t } = useTranslation(['builder', 'common']);
   const { user, showVerifyBanner } = useAuth();
@@ -29,6 +35,8 @@ const ComponentGeneratorForm = () => {
 
   const [budget, setBudget] = useState(150);
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [progressDuration, setProgressDuration] = useState(0);
   const [preferences, setPreferences] = useState(DEFAULT_PREFERENCES);
 
   const updatePref = (key, value) => {
@@ -37,14 +45,26 @@ const ComponentGeneratorForm = () => {
 
   const handleGenerate = async () => {
     setLoading(true);
+    setProgress(0);
+    setProgressDuration(0);
+    // commit the 0% state first, then animate to 90% over the full minimum
+    // duration on the next frame — the rest of the bar fills once we know
+    // the real result, whether that lands before or after the floor
+    requestAnimationFrame(() => {
+      setProgressDuration(MIN_GENERATE_DURATION_MS);
+      setProgress(90);
+    });
+
     try {
       const selected = selectedProductCodes(selectedComponents);
 
-      const res = await axios.post(`/api/builder/${pickerType}`, {
-        budget,
-        selected,
-        preferences,
-      });
+      const [res] = await Promise.all([
+        axios.post(`/api/builder/${pickerType}`, { budget, selected, preferences }),
+        sleep(MIN_GENERATE_DURATION_MS),
+      ]);
+
+      setProgressDuration(200);
+      setProgress(100);
 
       if (res.data.success) {
         setSelectedComponents((prev) => ({
@@ -60,6 +80,8 @@ const ComponentGeneratorForm = () => {
         addToast(res.data.error, { type: 'danger' });
       }
     } catch (err) {
+      setProgressDuration(200);
+      setProgress(100);
       if (err.response?.status === 403) {
         showVerifyBanner();
         addToast(t('common:verifyEmail.gatedAction'), { type: 'danger' });
@@ -69,7 +91,11 @@ const ComponentGeneratorForm = () => {
         });
       }
     } finally {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+        setProgress(0);
+        setProgressDuration(0);
+      }, 250);
     }
   };
 
@@ -185,6 +211,22 @@ const ComponentGeneratorForm = () => {
       >
         {loading ? <p>{t('componentGenerator.generating')}</p> : t('componentGenerator.generate')}
       </button>
+
+      {loading && (
+        <div
+          className="h-1 w-full bg-muted/30 overflow-hidden"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={progress}
+          aria-label={t('componentGenerator.generating')}
+        >
+          <div
+            className="h-full bg-secondary-light"
+            style={{ width: `${progress}%`, transition: `width ${progressDuration}ms ease-out` }}
+          />
+        </div>
+      )}
     </div>
   );
 };
