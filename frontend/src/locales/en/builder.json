@@ -27,7 +27,7 @@
     "availabilityTitle": "Availability",
     "lastScraped": "Last checked: {{date}}",
     "neverScraped": "Last checked: never",
-    "checkManually": "Missing spec data — please check this fits manually"
+    "checkManually": "Missing spec data. Check this fits manually."
   },
   "componentPopup": {
     "required": "Required",
@@ -145,7 +145,7 @@
     "components": "Components",
     "missingComponents": "Still needed: {{components}}",
     "compatibility": "Compatibility",
-    "validateFailed": "Couldn't verify compatibility right now — the results shown may be outdated.",
+    "validateFailed": "Couldn't verify compatibility right now. Results shown may be outdated.",
     "aboutThisBuild": "About This Build",
     "fullyFunctionalNote": "Your build is fully functional. These are just recommendations to get the best experience."
   },
@@ -169,8 +169,8 @@
     "streaming": "Streaming",
     "includeOnlyOrderable": "Include Only Orderable Items",
     "somethingWentWrong": "Something went wrong",
-    "incompatibleWarning": "One or more components in your current build are incompatible. Please change or remove them to generate.",
-    "manualCheckWarning": "One or more selected components are missing spec data needed to verify fit. Please replace or remove them to generate.",
+    "incompatibleWarning": "One or more components in your current build are incompatible. Change or remove them to generate.",
+    "manualCheckWarning": "One or more selected components are missing spec data needed to verify fit. Replace or remove them to generate.",
     "allSlotsFilledWarning": "All required components are already selected. Remove one to generate a new build.",
     "generating": "Generating...",
     "generate": "Generate",
@@ -192,8 +192,8 @@
     "intel": "INTEL",
     "includeOnlyOrderable": "Include Only Orderable Items",
     "somethingWentWrong": "Something went wrong",
-    "incompatibleWarning": "One or more components in your current build are incompatible. Please change or remove them to generate.",
-    "manualCheckWarning": "One or more selected components are missing spec data needed to verify fit. Please replace or remove them to generate.",
+    "incompatibleWarning": "One or more components in your current build are incompatible. Change or remove them to generate.",
+    "manualCheckWarning": "One or more selected components are missing spec data needed to verify fit. Replace or remove them to generate.",
     "generating": "Generating...",
     "generate": "Generate",
     "generateSuccess": "Component generated successfully",
@@ -202,8 +202,8 @@
   },
   "buildInfo": {
     "selectComponents": "Select your components",
-    "enterBuildName": "Please enter a build name",
-    "selectAtLeastOne": "Please select at least one component",
+    "enterBuildName": "Enter a build name",
+    "selectAtLeastOne": "Select at least one component",
     "savedAsNew": "Saved as new build!",
     "savedSuccessfully": "Build saved successfully",
     "failedToSave": "Failed to save build",

@@ -6,12 +6,12 @@
   },
   "about": {
     "title": "About DatorBuve",
-    "lastUpdated": "Last updated: July 10, 2026",
-    "intro": "DatorBuve is a free tool for browsing PC components, checking compatibility, and building a PC using real, current prices from Latvian retailers — built to replace scattered spreadsheets and forum threads with one place to plan a build with confidence.",
+    "lastUpdated": "Last updated: July 12, 2026",
+    "intro": "DatorBuve is a free tool for browsing PC components, checking compatibility, and building a PC using real, current prices from Latvian retailers. It replaces scattered spreadsheets and forum threads with one place to plan a build with confidence.",
     "sections": [
       {
         "heading": "Our Mission",
-        "body": "Building a PC means juggling compatibility (does this cooler fit this case? will this PSU handle this GPU?) and comparing prices across stores that all list things differently. DatorBuve exists to make that easier — one place to browse parts, get automatic compatibility checks, and see live pricing from Latvian stores."
+        "body": "Building a PC means juggling compatibility (does this cooler fit this case? will this PSU handle this GPU?) and comparing prices across stores that all list things differently. DatorBuve exists to make that easier: one place to browse parts, get automatic compatibility checks, and see live pricing from Latvian stores."
       },
       {
         "heading": "What We Offer",
@@ -32,11 +32,11 @@
       },
       {
         "heading": "Meet the Developer",
-        "body": "Hi! DatorBuve is a small personal project, built in my spare time. The whole site, the compatibility checking system, the auto-builder, the price gathering, and everything else — all of it is built by one person.\nThe idea was simple: build a tool that makes it easier to put together a PC for the Latvian market.\nIf you have any suggestions, spot a bug, or have an idea worth adding, I'd love to hear about it. It'll help keep improving DatorBuve and make it more useful for everyone."
+        "body": "Hi! DatorBuve is a small personal project, built in my spare time. The whole site, the compatibility checking system, the auto-builder, the price gathering, and everything else: all of it is built by one person.\nThe idea was simple: build a tool that makes it easier to put together a PC for the Latvian market.\nIf you have any suggestions, spot a bug, or have an idea worth adding, I'd love to hear about it. It'll help keep improving DatorBuve and make it more useful for everyone."
       },
       {
         "heading": "About Our Data",
-        "body": "Prices, stock, and specifications are collected from public listings at Latvian retailers and refreshed regularly, but they can lag behind what's actually on the retailer's site. Always double-check price and availability before completing a purchase — see our Terms of Service for details."
+        "body": "Prices, stock, and specifications are collected from public listings at Latvian retailers and refreshed regularly, but they can lag behind what's actually on the retailer's site. Always double-check price and availability before completing a purchase. See our Terms of Service for details."
       },
       {
         "heading": "Feedback",
@@ -47,36 +47,36 @@
   },
   "privacy": {
     "title": "Privacy Policy",
-    "lastUpdated": "Last updated: July 10, 2026",
+    "lastUpdated": "Last updated: July 12, 2026",
     "intro": "DatorBuve (\"we\", \"us\") operates datorbuve.lv, a tool for browsing PC components, checking compatibility, and building and saving PC configurations. This page explains what personal data we collect, why, and what rights you have over it under the GDPR.",
     "sections": [
       {
         "heading": "Data We Collect",
         "list": [
           "Account data: name, email address, and a hashed password when you register. We never store your password in plain text.",
-          "Build data: the components, name, and optional notes of any build you save, and whether it's shared publicly. If you mark a build as public, its name, selected components, and notes become visible to anyone with the share link — your account details (name, email) are never included or shown.",
+          "Build data: the components, name, and optional notes of any build you save, and whether it's shared publicly. If you mark a build as public, its name, selected components, and notes become visible to anyone with the share link. Your account details (name, email) are never included or shown.",
           "Cookies: see the Cookies section below."
         ]
       },
       {
         "heading": "How We Use Your Data",
         "list": [
-          "To create and secure your account, and to keep you signed in — necessary for performance of a contract with you (GDPR Art. 6(1)(b)).",
-          "To save, display, and let you manage your PC builds — necessary for performance of a contract with you (GDPR Art. 6(1)(b)).",
-          "To send account-related emails: email verification and account-deletion confirmation — necessary for performance of a contract with you (GDPR Art. 6(1)(b)).",
-          "To protect sign-in and sign-up forms from automated abuse (Cloudflare Turnstile) — based on our legitimate interest in keeping the service secure (GDPR Art. 6(1)(f)).",
-          "To understand how the site is used, only if you've consented to analytics cookies — based on your consent (GDPR Art. 6(1)(a)), which you can withdraw at any time."
+          "To create and secure your account, and to keep you signed in. Necessary for performance of a contract with you (GDPR Art. 6(1)(b)).",
+          "To save, display, and let you manage your PC builds. Necessary for performance of a contract with you (GDPR Art. 6(1)(b)).",
+          "To send account-related emails: email verification and account-deletion confirmation. Necessary for performance of a contract with you (GDPR Art. 6(1)(b)).",
+          "To protect sign-in and sign-up forms from automated abuse (Cloudflare Turnstile). Based on our legitimate interest in keeping the service secure (GDPR Art. 6(1)(f)).",
+          "To understand how the site is used, only if you've consented to analytics cookies. Based on your consent (GDPR Art. 6(1)(a)), which you can withdraw at any time."
         ]
       },
       {
         "heading": "Cookies",
-        "body": "We use a small session cookie to keep you signed in — this is strictly necessary and doesn't require consent. With your permission, we may also use analytics cookies to understand how the site is used. You can accept, reject, or customize this choice at any time using the \"Cookie Settings\" link in the footer."
+        "body": "We use a small session cookie to keep you signed in. This is strictly necessary and doesn't require consent. With your permission, we may also use analytics cookies to understand how the site is used. You can accept, reject, or customize this choice at any time using the \"Cookie Settings\" link in the footer."
       },
       {
         "heading": "Third-Party Services",
         "list": [
-          "Cloudflare Turnstile — protects our sign-in and sign-up forms from bots. It processes your IP address and device signals for security purposes; see Cloudflare's privacy policy (cloudflare.com/privacypolicy) for details. This is used regardless of cookie preferences, as it's necessary for account security.",
-          "[Email delivery provider — placeholder, to be finalized] — used to send you verification and account-related emails."
+          "Cloudflare Turnstile: protects our sign-in and sign-up forms from bots. It processes your IP address and device signals for security purposes; see Cloudflare's privacy policy (cloudflare.com/privacypolicy) for details. This is used regardless of cookie preferences, as it's necessary for account security.",
+          "[Email delivery provider (placeholder, to be finalized)]: used to send you verification and account-related emails."
         ]
       },
       {
@@ -85,7 +85,7 @@
       },
       {
         "heading": "Data Retention",
-        "body": "We keep your account and build data for as long as your account exists. You can delete your account at any time from Account Settings — this permanently removes your account and saved builds after you confirm via an emailed link."
+        "body": "We keep your account and build data for as long as your account exists. You can delete your account at any time from Account Settings. This permanently removes your account and saved builds after you confirm via an emailed link."
       },
       {
         "heading": "Your Rights",
@@ -93,10 +93,10 @@
         "list": [
           "Access the personal data we hold about you.",
           "Correct inaccurate data (via Account Settings).",
-          "Erase your account and data at any time (via Account Settings — self-service, no need to contact us).",
+          "Erase your account and data at any time (via Account Settings, self-service, no need to contact us).",
           "Request a copy of your data in a portable format.",
           "Object to or restrict certain processing.",
-          "Lodge a complaint with your local data protection authority — in Latvia, the Data State Inspectorate (dvi.gov.lv)."
+          "Lodge a complaint with your local data protection authority: in Latvia, the Data State Inspectorate (dvi.gov.lv)."
         ]
       },
       {
@@ -105,7 +105,7 @@
       },
       {
         "heading": "Changes to This Policy",
-        "body": "We may update this policy from time to time. Minor wording fixes will simply update the date at the top of this page. For meaningful or substantive changes — such as new data uses or new third-party services — we'll notify you directly, by email, in addition to updating this page."
+        "body": "We may update this policy from time to time. Minor wording fixes will simply update the date at the top of this page. For meaningful or substantive changes (such as new data uses or new third-party services), we'll notify you directly, by email, in addition to updating this page."
       },
       {
         "heading": "Contact",
@@ -116,12 +116,12 @@
   },
   "terms": {
     "title": "Terms of Service",
-    "lastUpdated": "Last updated: July 10, 2026",
+    "lastUpdated": "Last updated: July 12, 2026",
     "intro": "These terms govern your use of DatorBuve (\"we\", \"us\"), a tool for browsing PC components, checking compatibility, and building and saving PC configurations for the Latvian market. By using the site, you agree to these terms.",
     "sections": [
       {
         "heading": "The Service",
-        "body": "DatorBuve lets you browse PC components, check compatibility between them, generate builds automatically within a budget, and save or share configurations. We are not a retailer — we don't sell components, process payments, or fulfill orders. Purchases happen on third-party store websites we link to."
+        "body": "DatorBuve lets you browse PC components, check compatibility between them, generate builds automatically within a budget, and save or share configurations. We are not a retailer. We don't sell components, process payments, or fulfill orders. Purchases happen on third-party store websites we link to."
       },
       {
         "heading": "Eligibility",
@@ -132,7 +132,7 @@
         "list": [
           "You're responsible for keeping your password confidential and for all activity under your account.",
           "You agree to provide accurate information when registering.",
-          "You may delete your account at any time from Account Settings — this permanently removes your account and saved builds."
+          "You may delete your account at any time from Account Settings. This permanently removes your account and saved builds."
         ]
       },
       {
@@ -141,7 +141,7 @@
       },
       {
         "heading": "Compatibility Disclaimer",
-        "body": "Compatibility checks, warnings, and auto-generated builds are provided as a best-effort convenience based on the specifications we have on file, and are not a guarantee of fit or function. Some checks are skipped when a component's specs are unknown (flagged as \"needs manual check\"). Always verify critical specifications yourself — dimensions, power requirements, socket type — before purchasing."
+        "body": "Compatibility checks, warnings, and auto-generated builds are provided as a best-effort convenience based on the specifications we have on file, and are not a guarantee of fit or function. Some checks are skipped when a component's specs are unknown (flagged as \"needs manual check\"). Always verify critical specifications yourself (dimensions, power requirements, socket type) before purchasing."
       },
       {
         "heading": "Saved & Shared Builds",
@@ -157,7 +157,7 @@
       },
       {
         "heading": "Third-Party Links & Affiliate Disclosure",
-        "body": "Links to retailer stores are provided for your convenience. We don't control, and aren't responsible for, the content, pricing, or transactions on third-party sites. Some of these links may be affiliate links — if you make a purchase through them, we may earn a commission at no extra cost to you."
+        "body": "Links to retailer stores are provided for your convenience. We don't control, and aren't responsible for, the content, pricing, or transactions on third-party sites. Some of these links may be affiliate links. If you make a purchase through them, we may earn a commission at no extra cost to you."
       },
       {
         "heading": "Intellectual Property",

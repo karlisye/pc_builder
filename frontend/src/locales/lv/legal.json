@@ -1,20 +1,20 @@
 {
   "sidePanelTitle": "INFORMĀCIJA",
   "contact": {
-    "title": "Sazinies ar Mums",
+    "title": "Sazinies ar mums",
     "intro": "Ir jautājums, pamanīta kļūda vai ierosinājums? Raksti mums: info@datorbuve.lv."
   },
   "about": {
     "title": "Par DatorBuve",
-    "lastUpdated": "Pēdējoreiz atjaunināts: 2026. gada 10. jūlijs",
-    "intro": "DatorBuve ir bezmaksas rīks datora komponenšu pārlūkošanai, saderības pārbaudei un datora salikšanai, izmantojot reālas, aktuālas cenas no Latvijas veikaliem — izveidots, lai vienuviet aizstātu izkaisītas izklājlapas ar pārliecību par savu konfigurāciju.",
+    "lastUpdated": "Pēdējoreiz atjaunināts: 2026. gada 12. jūlijs",
+    "intro": "DatorBuve ir bezmaksas rīks datora komponenšu pārlūkošanai, saderības pārbaudei un datora salikšanai, izmantojot reālas, aktuālas cenas no Latvijas veikaliem. Tas aizstāj izkaisītas izklājlapas ar vienu vietu, kur pārliecinoši plānot savu konfigurāciju.",
     "sections": [
       {
-        "heading": "Mūsu Mērķis",
-        "body": "Datora salikšana nozīmē žonglēt ar saderību (vai šis dzesētājs ietilpst šajā korpusā? vai šis barošanas bloks pavilks šo videokarti?) un salīdzināt cenas dažādos veikalos, kas visi tās attēlo atšķirīgi. DatorBuve pastāv, lai to atvieglotu — viena vieta, kur pārlūkot komponentes, saņemt automātisku saderības pārbaudi un redzēt aktuālas Latvijas veikalu cenas."
+        "heading": "Mūsu mērķis",
+        "body": "Datora salikšana nozīmē žonglēt ar saderību (vai šis dzesētājs ietilpst šajā korpusā? vai šis barošanas bloks pavilks šo videokarti?) un salīdzināt cenas dažādos veikalos, kas visi tās attēlo atšķirīgi. DatorBuve pastāv, lai to atvieglotu: viena vieta, kur pārlūkot komponentes, saņemt automātisku saderības pārbaudi un redzēt aktuālas Latvijas veikalu cenas."
       },
       {
-        "heading": "Ko Mēs Piedāvājam",
+        "heading": "Ko mēs piedāvājam",
         "list": [
           "Aktuālas cenas un pieejamības statusu no Latvijas veikaliem.",
           "Automātisku saderības pārbaudi starp izvēlētajām komponentēm.",
@@ -23,108 +23,108 @@
         ]
       },
       {
-        "heading": "Kam Tas Ir Domāts",
+        "heading": "Kam tas ir domāts",
         "body": "Pirmreizējiem būvētājiem, kuri nezina, ar ko sākt, pieredzējušiem būvētājiem, kuri vēlas ātrāk salīdzināt cenas un specifikācijas, un ikvienam, kurš liek kopā datoru Latvijas tirgum."
       },
       {
-        "heading": "Kas Ir Aiz Šī Projekta",
+        "heading": "Kas ir aiz šī projekta",
         "body": "DatorBuve ir neatkarīgs projekts, kas nav saistīts ar vai sponsorēts no kāda mazumtirgotāja vai ražotāja. Komponenšu ieteikumi un saderības pārbaudes balstās vienīgi uz specifikācijām, nevis apmaksātu izvietojumu."
       },
       {
-        "heading": "Iepazīsti Izstrādātāju",
-        "body": "Sveiki! DatorBuve ir neliels personīgs projekts, kas tapis brīvajā laikā. Visa mājaslapa, saderības pārbaudes sistēma, automātiskais datora konstruktors, cenu apkopošana un pārējās funkcijas ir izstrādātas viena cilvēka spēkiem.\nIdeja bija pavisam vienkārša – izveidot rīku, kas atvieglotu datoru komplektēšanu Latvijas tirgum.\nJa ir kādi ieteikumi, pamanītas kļūdas vai idejas, ko būtu vērts pievienot, priecāšos par jebkuru atsauksmi. Tās palīdzēs turpināt uzlabot DatorBuve un padarīt to noderīgāku visiem."
+        "heading": "Iepazīsti izstrādātāju",
+        "body": "Sveiki! DatorBuve ir neliels personīgs projekts, kas tapis brīvajā laikā. Visa mājaslapa, saderības pārbaudes sistēma, automātiskais datora konstruktors, cenu apkopošana un pārējās funkcijas ir izstrādātas viena cilvēka spēkiem.\nIdeja bija pavisam vienkārša: izveidot rīku, kas atvieglotu datoru komplektēšanu Latvijas tirgum.\nJa ir kādi ieteikumi, pamanītas kļūdas vai idejas, ko būtu vērts pievienot, priecāšos par jebkuru atsauksmi. Tās palīdzēs turpināt uzlabot DatorBuve un padarīt to noderīgāku visiem."
       },
       {
-        "heading": "Par Mūsu Datiem",
-        "body": "Cenas, pieejamība un specifikācijas tiek apkopotas no publiskiem sarakstiem Latvijas veikalos un regulāri atjauninātas, taču tās var atpalikt no tā, kas faktiski redzams veikala mājaslapā. Vienmēr pārbaudiet cenu un pieejamību pirms pirkuma veikšanas — sīkāku informāciju skatiet mūsu Lietošanas Noteikumos."
+        "heading": "Par mūsu datiem",
+        "body": "Cenas, pieejamība un specifikācijas tiek apkopotas no publiskiem sarakstiem Latvijas veikalos un regulāri atjauninātas, taču tās var atpalikt no tā, kas faktiski redzams veikala mājaslapā. Vienmēr pārbaudiet cenu un pieejamību pirms pirkuma veikšanas. Sīkāku informāciju skatiet mūsu Lietošanas Noteikumos."
       },
       {
         "heading": "Atsauksmes",
         "body": "Atradāt kļūdu, nepareizu specifikāciju vai jums ir ierosinājums? Mēs labprāt to uzzinātu.",
-        "link": { "to": "/contact", "text": "Sazinies ar Mums" }
+        "link": { "to": "/contact", "text": "Sazinies ar mums" }
       }
     ]
   },
   "privacy": {
     "title": "Privātuma Politika",
-    "lastUpdated": "Pēdējoreiz atjaunināts: 2026. gada 10. jūlijs",
-    "intro": "DatorBuve (\"mēs\") uztur datorbuve.lv — rīku datora komponenšu pārlūkošanai, saderības pārbaudei, kā arī datoru konfigurāciju veidošanai un saglabāšanai. Šajā lapā ir izskaidrots, kādus personas datus mēs apkopojam, kāpēc, un kādas tiesības jums ir attiecībā uz tiem saskaņā ar VDAR.",
+    "lastUpdated": "Pēdējoreiz atjaunināts: 2026. gada 12. jūlijs",
+    "intro": "DatorBuve (\"mēs\") uztur datorbuve.lv, rīku datora komponenšu pārlūkošanai, saderības pārbaudei, kā arī datoru konfigurāciju veidošanai un saglabāšanai. Šajā lapā ir izskaidrots, kādus personas datus mēs apkopojam, kāpēc, un kādas tiesības jums ir attiecībā uz tiem saskaņā ar VDAR.",
     "sections": [
       {
-        "heading": "Datu Apkopošana",
+        "heading": "Datu apkopošana",
         "list": [
           "Konta dati: reģistrējoties, mēs apkopojam jūsu vārdu, e-pasta adresi un šifrētu paroli. Mēs nekad neuzglabājam paroli atklātā tekstā.",
-          "Konfigurācijas dati: ja saglabājat konfigurāciju, mēs uzglabājam izvēlētās komponentes, konfigurācijas nosaukumu, papildu piezīmes un to, vai tā ir publiski koplietota. Ja atzīmējat konfigurāciju kā publisku, tās nosaukums, izvēlētās komponentes un piezīmes kļūst redzamas ikvienam ar koplietošanas saiti — jūsu konta dati (vārds, e-pasts) nekad netiek iekļauti vai rādīti.",
+          "Konfigurācijas dati: ja saglabājat konfigurāciju, mēs uzglabājam izvēlētās komponentes, konfigurācijas nosaukumu, papildu piezīmes un to, vai tā ir publiski koplietota. Ja atzīmējat konfigurāciju kā publisku, tās nosaukums, izvēlētās komponentes un piezīmes kļūst redzamas ikvienam ar koplietošanas saiti. Jūsu konta dati (vārds, e-pasts) nekad netiek iekļauti vai rādīti.",
           "Sīkdatnes: skatiet sadaļu \"Sīkdatnes\" zemāk."
         ]
       },
       {
-        "heading": "Datu Izmantošana",
+        "heading": "Datu izmantošana",
         "list": [
-          "Lai izveidotu un aizsargātu jūsu kontu, kā arī saglabātu jūsu pieslēgšanos — nepieciešams līguma ar jums izpildei (VDAR 6. panta 1. punkta b) apakšpunkts).",
-          "Lai saglabātu, attēlotu un ļautu jums pārvaldīt savas datora konfigurācijas — nepieciešams līguma ar jums izpildei (VDAR 6. panta 1. punkta b) apakšpunkts).",
-          "Lai nosūtītu ar kontu saistītus e-pastus: e-pasta apstiprināšanu un konta dzēšanas apstiprināšanu — nepieciešams līguma ar jums izpildei (VDAR 6. panta 1. punkta b) apakšpunkts).",
-          "Lai aizsargātu pieslēgšanās un reģistrācijas formas no automatizētas ļaunprātīgas izmantošanas (Cloudflare Turnstile) — pamatojoties uz mūsu leģitīmajām interesēm nodrošināt pakalpojuma drošību (VDAR 6. panta 1. punkta f) apakšpunkts).",
-          "Lai saprastu, kā lapa tiek izmantota, tikai tad, ja esat piekritis analītikas sīkdatnēm — pamatojoties uz jūsu piekrišanu (VDAR 6. panta 1. punkta a) apakšpunkts), kuru varat atsaukt jebkurā laikā."
+          "Lai izveidotu un aizsargātu jūsu kontu, kā arī saglabātu jūsu pieslēgšanos. Nepieciešams līguma ar jums izpildei (VDAR 6. panta 1. punkta b) apakšpunkts).",
+          "Lai saglabātu, attēlotu un ļautu jums pārvaldīt savas datora konfigurācijas. Nepieciešams līguma ar jums izpildei (VDAR 6. panta 1. punkta b) apakšpunkts).",
+          "Lai nosūtītu ar kontu saistītus e-pastus: e-pasta apstiprināšanu un konta dzēšanas apstiprināšanu. Nepieciešams līguma ar jums izpildei (VDAR 6. panta 1. punkta b) apakšpunkts).",
+          "Lai aizsargātu pieslēgšanās un reģistrācijas formas no automatizētas ļaunprātīgas izmantošanas (Cloudflare Turnstile). Pamatojoties uz mūsu leģitīmajām interesēm nodrošināt pakalpojuma drošību (VDAR 6. panta 1. punkta f) apakšpunkts).",
+          "Lai saprastu, kā lapa tiek izmantota, tikai tad, ja esat piekritis analītikas sīkdatnēm. Pamatojoties uz jūsu piekrišanu (VDAR 6. panta 1. punkta a) apakšpunkts), kuru varat atsaukt jebkurā laikā."
         ]
       },
       {
         "heading": "Sīkdatnes",
-        "body": "Mēs izmantojam nelielu sesijas sīkdatni, lai jūs paliktu pieslēgts — tā ir absolūti nepieciešama un nav atkarīga no jūsu piekrišanas. Ar jūsu atļauju mēs varam izmantot arī analītikas sīkdatnes, lai saprastu, kā lapa tiek izmantota. Šo izvēli varat pieņemt, noraidīt vai pielāgot jebkurā laikā, izmantojot saiti \"Sīkdatņu iestatījumi\" lapas apakšā."
+        "body": "Mēs izmantojam nelielu sesijas sīkdatni, lai jūs paliktu pieslēgts. Tā ir absolūti nepieciešama un nav atkarīga no jūsu piekrišanas. Ar jūsu atļauju mēs varam izmantot arī analītikas sīkdatnes, lai saprastu, kā lapa tiek izmantota. Šo izvēli varat pieņemt, noraidīt vai pielāgot jebkurā laikā, izmantojot saiti \"Sīkdatņu iestatījumi\" lapas apakšā."
       },
       {
-        "heading": "Trešo Pušu Pakalpojumi",
+        "heading": "Trešo pušu pakalpojumi",
         "list": [
-          "Cloudflare Turnstile — aizsargā mūsu pieslēgšanās un reģistrācijas formas no robotiem. Tas apstrādā jūsu IP adresi un ierīces datus drošības nolūkos; sīkāku informāciju skatiet Cloudflare privātuma politikā (cloudflare.com/privacypolicy). Tas tiek izmantots neatkarīgi no sīkdatņu izvēles, jo ir nepieciešams konta drošībai.",
-          "[E-pasta piegādes pakalpojums — pagaidu vietturis, jāprecizē] — izmantots, lai nosūtītu jums apstiprināšanas un ar kontu saistītus e-pastus."
+          "Cloudflare Turnstile: aizsargā mūsu pieslēgšanās un reģistrācijas formas no robotiem. Tas apstrādā jūsu IP adresi un ierīces datus drošības nolūkos; sīkāku informāciju skatiet Cloudflare privātuma politikā (cloudflare.com/privacypolicy). Tas tiek izmantots neatkarīgi no sīkdatņu izvēles, jo ir nepieciešams konta drošībai.",
+          "[E-pasta piegādes pakalpojums (pagaidu vietturis, jāprecizē)]: izmantots, lai nosūtītu jums apstiprināšanas un ar kontu saistītus e-pastus."
         ]
       },
       {
-        "heading": "Starptautiska Datu Nodošana",
+        "heading": "Starptautiska datu nodošana",
         "body": "Daži no mūsu pakalpojumu sniedzējiem, tostarp Cloudflare un iespējams mūsu e-pasta piegādes pakalpojums, var apstrādāt datus ārpus ES/EEZ. Šādos gadījumos mēs paļaujamies uz VDAR noteiktajiem atbilstošajiem aizsardzības pasākumiem, piemēram, Standarta līguma klauzulām, lai nodrošinātu jūsu datu aizsardzību."
       },
       {
-        "heading": "Datu Uzglabāšanas Ilgums",
-        "body": "Mēs uzglabājam jūsu konta un konfigurāciju datus, kamēr pastāv jūsu konts. Jūs varat dzēst savu kontu jebkurā laikā konta iestatījumos — tas neatgriezeniski dzēš jūsu kontu un saglabātās konfigurācijas pēc apstiprinājuma, izmantojot uz e-pastu nosūtītu saiti."
+        "heading": "Datu uzglabāšanas ilgums",
+        "body": "Mēs uzglabājam jūsu konta un konfigurāciju datus, kamēr pastāv jūsu konts. Jūs varat dzēst savu kontu jebkurā laikā konta iestatījumos. Tas neatgriezeniski dzēš jūsu kontu un saglabātās konfigurācijas pēc apstiprinājuma, izmantojot uz e-pastu nosūtītu saiti."
       },
       {
-        "heading": "Jūsu Tiesības",
+        "heading": "Jūsu tiesības",
         "body": "Saskaņā ar VDAR jums ir tiesības:",
         "list": [
           "Piekļūt personas datiem, kurus mēs par jums glabājam.",
           "Labot neprecīzus datus (konta iestatījumos).",
-          "Dzēst savu kontu un datus jebkurā laikā (konta iestatījumos — bez nepieciešamības sazināties ar mums).",
+          "Dzēst savu kontu un datus jebkurā laikā (konta iestatījumos, bez nepieciešamības sazināties ar mums).",
           "Pieprasīt savu datu kopiju pārnesamā formātā.",
           "Iebilst pret vai ierobežot noteiktu datu apstrādi.",
-          "Iesniegt sūdzību savai vietējai datu aizsardzības iestādei — Latvijā tā ir Datu valsts inspekcija (dvi.gov.lv)."
+          "Iesniegt sūdzību savai vietējai datu aizsardzības iestādei: Latvijā tā ir Datu valsts inspekcija (dvi.gov.lv)."
         ]
       },
       {
-        "heading": "Datu Drošība",
+        "heading": "Datu drošība",
         "body": "Paroles tiek šifrētas, nevis glabātas atklātā tekstā, un piekļuve datubāzei ir ierobežota. Neviena datu pārraides vai uzglabāšanas metode nav 100% droša, taču mēs veicam saprātīgus pasākumus jūsu datu aizsardzībai."
       },
       {
-        "heading": "Šīs Politikas Izmaiņas",
-        "body": "Mēs varam laiku pa laikam atjaunināt šo politiku. Nelielas redakcionālas izmaiņas tiks atspoguļotas, vienkārši atjauninot datumu šīs lapas augšpusē. Par būtiskām izmaiņām — piemēram, jauniem datu izmantošanas veidiem vai jauniem trešo pušu pakalpojumiem — mēs jūs informēsim tieši, izmantojot e-pastu, papildus šīs lapas atjaunināšanai."
+        "heading": "Šīs politikas izmaiņas",
+        "body": "Mēs varam laiku pa laikam atjaunināt šo politiku. Nelielas redakcionālas izmaiņas tiks atspoguļotas, vienkārši atjauninot datumu šīs lapas augšpusē. Par būtiskām izmaiņām (piemēram, jauniem datu izmantošanas veidiem vai jauniem trešo pušu pakalpojumiem) mēs jūs informēsim tieši, izmantojot e-pastu, papildus šīs lapas atjaunināšanai."
       },
       {
         "heading": "Kontakti",
         "body": "Jautājumi par šo politiku vai jūsu datiem?",
-        "link": { "to": "/contact", "text": "Sazinies ar Mums" }
+        "link": { "to": "/contact", "text": "Sazinies ar mums" }
       }
     ]
   },
   "terms": {
     "title": "Lietošanas Noteikumi",
-    "lastUpdated": "Pēdējoreiz atjaunināts: 2026. gada 10. jūlijs",
-    "intro": "Šie noteikumi regulē DatorBuve (\"mēs\") — rīka datora komponenšu pārlūkošanai, saderības pārbaudei, kā arī datoru konfigurāciju veidošanai un saglabāšanai Latvijas tirgum — izmantošanu. Izmantojot lapu, jūs piekrītat šiem noteikumiem.",
+    "lastUpdated": "Pēdējoreiz atjaunināts: 2026. gada 12. jūlijs",
+    "intro": "Šie noteikumi regulē DatorBuve (\"mēs\"), rīka datora komponenšu pārlūkošanai, saderības pārbaudei, kā arī datoru konfigurāciju veidošanai un saglabāšanai Latvijas tirgum, izmantošanu. Izmantojot lapu, jūs piekrītat šiem noteikumiem.",
     "sections": [
       {
         "heading": "Pakalpojums",
-        "body": "DatorBuve ļauj pārlūkot datora komponentes, pārbaudīt to savstarpējo saderību, automātiski ģenerēt konfigurācijas budžeta ietvaros, kā arī saglabāt vai koplietot konfigurācijas. Mēs neesam mazumtirgotājs — mēs nepārdodam komponentes, neapstrādājam maksājumus un neizpildām pasūtījumus. Pirkumi notiek trešo pušu veikalu mājaslapās, uz kurām mēs norādām saites."
+        "body": "DatorBuve ļauj pārlūkot datora komponentes, pārbaudīt to savstarpējo saderību, automātiski ģenerēt konfigurācijas budžeta ietvaros, kā arī saglabāt vai koplietot konfigurācijas. Mēs neesam mazumtirgotājs. Mēs nepārdodam komponentes, neapstrādājam maksājumus un neizpildām pasūtījumus. Pirkumi notiek trešo pušu veikalu mājaslapās, uz kurām mēs norādām saites."
       },
       {
-        "heading": "Atbilstība Vecuma Prasībām",
+        "heading": "Atbilstība vecuma prasībām",
         "body": "Lai izveidotu kontu un izmantotu pakalpojumu, jums jābūt sasniegušam vismaz 16 gadu vecumu."
       },
       {
@@ -132,23 +132,23 @@
         "list": [
           "Jūs esat atbildīgs par savas paroles konfidencialitāti un visām darbībām, kas veiktas jūsu kontā.",
           "Jūs piekrītat sniegt precīzu informāciju, reģistrējoties.",
-          "Jūs varat dzēst savu kontu jebkurā laikā konta iestatījumos — tas neatgriezeniski dzēš jūsu kontu un saglabātās konfigurācijas."
+          "Jūs varat dzēst savu kontu jebkurā laikā konta iestatījumos. Tas neatgriezeniski dzēš jūsu kontu un saglabātās konfigurācijas."
         ]
       },
       {
-        "heading": "Cenu un Pieejamības Atruna",
+        "heading": "Cenu un pieejamības atruna",
         "body": "Cenas un pieejamības informācija tiek apkopota no trešo pušu mazumtirgotāju mājaslapām un var būt novecojusi, neprecīza vai vairs nepieejama brīdī, kad to skatāt. Vienmēr pārbaudiet aktuālo cenu un pieejamību mazumtirgotāja mājaslapā pirms pirkuma veikšanas. Mēs neesam atbildīgi par cenu kļūdām vai neatbilstībām."
       },
       {
-        "heading": "Saderības Atruna",
-        "body": "Saderības pārbaudes, brīdinājumi un automātiski ģenerētas konfigurācijas tiek nodrošinātas kā ērtība, balstoties uz mūsu rīcībā esošajām specifikācijām, un nav garantija par atbilstību vai funkcionalitāti. Dažas pārbaudes tiek izlaistas, ja komponentes specifikācijas nav zināmas (atzīmētas kā \"jāpārbauda manuāli\"). Vienmēr pats pārbaudiet svarīgākās specifikācijas — izmērus, jaudas prasības, ligzdas tipu — pirms pirkuma veikšanas."
+        "heading": "Saderības atruna",
+        "body": "Saderības pārbaudes, brīdinājumi un automātiski ģenerētas konfigurācijas tiek nodrošinātas kā ērtība, balstoties uz mūsu rīcībā esošajām specifikācijām, un nav garantija par atbilstību vai funkcionalitāti. Dažas pārbaudes tiek izlaistas, ja komponentes specifikācijas nav zināmas (atzīmētas kā \"jāpārbauda manuāli\"). Vienmēr pats pārbaudiet svarīgākās specifikācijas (izmērus, jaudas prasības, ligzdas tipu) pirms pirkuma veikšanas."
       },
       {
-        "heading": "Saglabātās un Koplietotās Konfigurācijas",
+        "heading": "Saglabātās un koplietotās konfigurācijas",
         "body": "Konfigurāciju nosaukumi, piezīmes un komponenšu izvēle ir jūsu izveidots saturs. Ja atzīmējat konfigurāciju kā publisku, tās nosaukums, komponentes un piezīmes kļūst redzamas ikvienam ar koplietošanas saiti. Neiekļaujiet konfigurāciju nosaukumos vai piezīmēs nelikumīgu, aizskarošu vai personisku informāciju."
       },
       {
-        "heading": "Pieņemamā Izmantošana",
+        "heading": "Pieņemamā izmantošana",
         "list": [
           "Neveiciet lapas satura izgūšanu (scraping), automatizāciju vai pārmērīgu automatizētu pieprasījumu sūtīšanu.",
           "Nemēģiniet apiet drošības pasākumus, tostarp botu aizsardzību pieslēgšanās un reģistrācijas formās.",
@@ -156,19 +156,19 @@
         ]
       },
       {
-        "heading": "Trešo Pušu Saites un Afilācijas Atklāsme",
-        "body": "Saites uz mazumtirgotāju veikaliem tiek nodrošinātas jūsu ērtībai. Mēs nekontrolējam un neesam atbildīgi par saturu, cenām vai darījumiem trešo pušu mājaslapās. Dažas no šīm saitēm var būt afilācijas saites — ja veicat pirkumu, izmantojot tās, mēs varam saņemt komisijas maksu bez papildu izmaksām jums."
+        "heading": "Trešo pušu saites un afilācijas atklāsme",
+        "body": "Saites uz mazumtirgotāju veikaliem tiek nodrošinātas jūsu ērtībai. Mēs nekontrolējam un neesam atbildīgi par saturu, cenām vai darījumiem trešo pušu mājaslapās. Dažas no šīm saitēm var būt afilācijas saites. Ja veicat pirkumu, izmantojot tās, mēs varam saņemt komisijas maksu bez papildu izmaksām jums."
       },
       {
-        "heading": "Intelektuālais Īpašums",
+        "heading": "Intelektuālais īpašums",
         "body": "DatorBuve nosaukums, dizains un kods pieder mums. Komponenšu nosaukumi, attēli un specifikācijas pieder attiecīgajiem ražotājiem un mazumtirgotājiem, un tiek izmantoti, lai palīdzētu jums salīdzināt produktus."
       },
       {
-        "heading": "Atbildības Ierobežojums",
+        "heading": "Atbildības ierobežojums",
         "body": "Pakalpojums tiek nodrošināts \"tāds, kāds ir\", bez jebkādām garantijām. Mēs neesam atbildīgi par pirkuma lēmumiem, kas pieņemti, pamatojoties uz lapā sniegto informāciju, par kļūdām trešo pušu cenu vai saderības datos, vai par problēmām, kas rodas trešo pušu mazumtirgotāju mājaslapās. Ciktāl to pieļauj likums, mēs nekādā gadījumā neesam atbildīgi par netiešiem, nejaušiem vai izrietošiem zaudējumiem, kas radušies pakalpojuma izmantošanas rezultātā."
       },
       {
-        "heading": "Konta Apturēšana un Pakalpojuma Izmaiņas",
+        "heading": "Konta apturēšana un pakalpojuma izmaiņas",
         "body": "Mēs varam apturēt vai izbeigt kontus, kas pārkāpj šos noteikumus. Jūs varat jebkurā laikā pārtraukt pakalpojuma izmantošanu un dzēst savu kontu. Mēs paturam tiesības jebkurā laikā pārtraukt, mainīt vai noņemt jebkuru pakalpojuma daļu, tostarp bez iepriekšēja brīdinājuma."
       },
       {
@@ -176,17 +176,17 @@
         "body": "Ja kāds no šo noteikumu punktiem tiek atzīts par neizpildāmu, pārējie punkti paliek spēkā pilnā apmērā."
       },
       {
-        "heading": "Piemērojamie Tiesību Akti un Vienošanās Kopums",
+        "heading": "Piemērojamie tiesību akti un vienošanās kopums",
         "body": "Šos noteikumus regulē Latvijas Republikas tiesību akti. Kopā ar mūsu Privātuma Politiku šie noteikumi veido pilnu vienošanos starp jums un mums attiecībā uz pakalpojumu."
       },
       {
-        "heading": "Šo Noteikumu Izmaiņas",
+        "heading": "Šo noteikumu izmaiņas",
         "body": "Mēs varam laiku pa laikam atjaunināt šos noteikumus. Nelielas redakcionālas izmaiņas tiks atspoguļotas, vienkārši atjauninot datumu šīs lapas augšpusē. Par būtiskām izmaiņām mēs jūs informēsim tieši, izmantojot e-pastu, papildus šīs lapas atjaunināšanai."
       },
       {
         "heading": "Kontakti",
         "body": "Jautājumi par šiem noteikumiem?",
-        "link": { "to": "/contact", "text": "Sazinies ar Mums" }
+        "link": { "to": "/contact", "text": "Sazinies ar mums" }
       }
     ]
   }

@@ -30,7 +30,7 @@
     "resend": "Resend email",
     "resendSuccess": "Verification email sent.",
     "resendError": "Could not resend verification email.",
-    "gatedAction": "Please verify your email before doing this.",
+    "gatedAction": "Verify your email before doing this.",
     "verifiedTitle": "Email verified",
     "verifiedText": "Your email address has been verified.",
     "backHome": "Back to home"

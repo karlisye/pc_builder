@@ -14,7 +14,7 @@
   "page": "{{current}}. lapa no {{total}}",
   "cookieConsent": {
     "title": "Sīkdatnes",
-    "description": "Mēs izmantojam nepieciešamās sīkdatnes, lai jūs paliktu pieslēgts un lapa būtu droša. Ar jūsu atļauju vēlamies izmantot arī analītikas sīkdatnes, lai saprastu, kā lapa tiek izmantota. To var mainīt jebkurā laikā, izmantojot saiti \"Sīkdatņu iestatījumi\" lapas apakšā.",
+    "description": "Mēs izmantojam nepieciešamās sīkdatnes, lai nodrošinātu pieslēgšanos un vietnes darbību. Ar jūsu atļauju vēlamies izmantot arī analītikas sīkdatnes, lai saprastu, kā lapa tiek izmantota. To var mainīt jebkurā laikā, izmantojot saiti \"Sīkdatņu iestatījumi\" lapas apakšā.",
     "acceptAll": "Pieņemt visas",
     "rejectNonEssential": "Noraidīt nebūtiskās",
     "customize": "Pielāgot",
@@ -30,7 +30,7 @@
     "resend": "Nosūtīt vēlreiz",
     "resendSuccess": "Apstiprināšanas e-pasts nosūtīts.",
     "resendError": "Neizdevās nosūtīt apstiprināšanas e-pastu.",
-    "gatedAction": "Lūdzu, apstipriniet savu e-pastu, pirms darbības.",
+    "gatedAction": "Vispirms apstipriniet savu e-pastu.",
     "verifiedTitle": "E-pasts apstiprināts",
     "verifiedText": "Jūsu e-pasta adrese ir apstiprināta.",
     "backHome": "Atpakaļ uz sākumu"

@@ -138,7 +138,7 @@
       "step2": "2. Find the component list section and click the <addButton></addButton> button to add a new component.",
       "step2Note": "The order in which you select components doesn't matter. Required components are marked with an asterisk in the top-left corner of the card.",
       "step3": "3. Use the search bar and filters to browse and find components that match your preferences.",
-      "step4": "4. If you can't decide on a component or aren't sure — under the filters there's an \"Auto Generate Component\" section, where you can set a budget and let the system pick the best matching component for you.",
+      "step4": "4. Can't decide on a component? Under the filters there's an \"Auto Generate Component\" section, where you can set a budget and let the system pick the best matching component for you.",
       "step4Note": "Incompatible components will be marked with an \"Incompatible\" flag.",
       "step5": "5. Select a component from the list and click <selectText>Select</selectText> to add it to your build. It will then appear in the build info panel and the component list.",
       "step5Note": "You can remove a component or view detailed information using the buttons at the bottom of the component card.",

@@ -27,7 +27,7 @@
     "availabilityTitle": "Pieejamība",
     "lastScraped": "Pēdējā pārbaude: {{date}}",
     "neverScraped": "Pēdējā pārbaude: nekad",
-    "checkManually": "Trūkst specifikāciju datu — lūdzu, pārbaudiet atbilstību manuāli"
+    "checkManually": "Trūkst specifikāciju datu. Pārbaudiet atbilstību manuāli."
   },
   "componentPopup": {
     "required": "Obligāts",
@@ -69,7 +69,7 @@
       "description": "Datora smadzenes. Izpilda visas instrukcijas un palaiž programmatūru."
     },
     "motherboard": {
-      "fullName": "Mātesplate",
+      "fullName": "Sistēmplate",
       "description": "Pamatkomponente, kas savieno visas daļas un nodrošina to saziņu."
     }
   },
@@ -145,12 +145,12 @@
     "components": "Komponentes",
     "missingComponents": "Vēl nepieciešams: {{components}}",
     "compatibility": "Saderība",
-    "validateFailed": "Pašlaik neizdevās pārbaudīt saderību — redzamie rezultāti var būt novecojuši.",
+    "validateFailed": "Pašlaik neizdevās pārbaudīt saderību. Redzamie rezultāti var būt novecojuši.",
     "aboutThisBuild": "Par šo konfigurāciju",
     "fullyFunctionalNote": "Jūsu konfigurācija ir pilnībā funkcionāla. Šie ir tikai ieteikumi labākai pieredzei."
   },
   "buildGenerator": {
-    "title": "Automātiski generēt konfigurāciju",
+    "title": "Automātiski ģenerēt konfigurāciju",
     "intro": "Nezini, ar ko sākt? Mēs izvēlēsimies labākās savietojamās komponentes jūsu budžetam. Lai uzzinātu vairāk, apskatiet",
     "guideLink": "automātiskā veidotāja",
     "guideSuffix": "ceļvedi.",
@@ -169,17 +169,17 @@
     "streaming": "Straumēšana",
     "includeOnlyOrderable": "Iekļaut tikai pasūtāmās preces",
     "somethingWentWrong": "Kaut kas nogāja greizi",
-    "incompatibleWarning": "Viena vai vairākas komponentes jūsu konfigurācijā nav saderīgas. Lai generētu, nomainiet vai noņemiet tās.",
-    "manualCheckWarning": "Vienai vai vairākām izvēlētajām komponentēm trūkst specifikācijas datu, lai pārbaudītu atbilstību. Lūdzu, samainiet vai noņemiet to pirms ģenerēšanas.",
+    "incompatibleWarning": "Viena vai vairākas komponentes jūsu konfigurācijā nav saderīgas. Lai ģenerētu, nomainiet vai noņemiet tās.",
+    "manualCheckWarning": "Vienai vai vairākām izvēlētajām komponentēm trūkst specifikācijas datu, lai pārbaudītu atbilstību. Samainiet vai noņemiet to pirms ģenerēšanas.",
     "allSlotsFilledWarning": "Visas nepieciešamās komponentes jau ir izvēlētas. Noņemiet vienu, lai ģenerētu jaunu konfigurāciju.",
-    "generating": "Generē...",
-    "generate": "Generēt",
-    "generateSuccess": "Konfigurācija veiksmīgi generēta",
+    "generating": "Ģenerē...",
+    "generate": "Ģenerēt",
+    "generateSuccess": "Konfigurācija veiksmīgi ģenerēta",
     "loginRequired": "Pieslēdzieties, lai izmantotu automātisko konfigurācijas ģeneratoru.",
     "loginLink": "Pieslēgties"
   },
   "componentGenerator": {
-    "title": "Automātiski generēt komponenti",
+    "title": "Automātiski ģenerēt komponenti",
     "intro": "Nezini, kuru komponenti izvēlēties? Mēs izvēlēsimies labāko savietojamo komponenti jūsu budžetam. Lai uzzinātu vairāk, apskatiet",
     "guideLink": "automātiskā veidotāja",
     "guideSuffix": "ceļvedi.",
@@ -192,18 +192,18 @@
     "intel": "INTEL",
     "includeOnlyOrderable": "Iekļaut tikai pasūtāmās preces",
     "somethingWentWrong": "Kaut kas nogāja greizi",
-    "incompatibleWarning": "Viena vai vairākas komponentes jūsu konfigurācijā nav saderīgas. Lai generētu, nomainiet vai noņemiet tās.",
-    "manualCheckWarning": "Vienai vai vairākām izvēlētajām komponentēm trūkst specifikācijas datu, lai pārbaudītu atbilstību. Lūdzu, samainiet vai noņemiet to pirms ģenerēšanas.",
+    "incompatibleWarning": "Viena vai vairākas komponentes jūsu konfigurācijā nav saderīgas. Lai ģenerētu, nomainiet vai noņemiet tās.",
+    "manualCheckWarning": "Vienai vai vairākām izvēlētajām komponentēm trūkst specifikācijas datu, lai pārbaudītu atbilstību. Samainiet vai noņemiet to pirms ģenerēšanas.",
     "generating": "Ģenerē...",
     "generate": "Ģenerēt",
-    "generateSuccess": "Komponente veiksmīgi generēta",
+    "generateSuccess": "Komponente veiksmīgi ģenerēta",
     "loginRequired": "Pieslēdzieties, lai izmantotu automātisko komponentes ģeneratoru.",
     "loginLink": "Pieslēgties"
   },
   "buildInfo": {
     "selectComponents": "Izvēlieties savas komponentes",
-    "enterBuildName": "Lūdzu, ievadiet konfigurācijas nosaukumu",
-    "selectAtLeastOne": "Lūdzu, izvēlieties vismaz vienu komponenti",
+    "enterBuildName": "Ievadiet konfigurācijas nosaukumu",
+    "selectAtLeastOne": "Izvēlieties vismaz vienu komponenti",
     "savedAsNew": "Saglabāts kā jauna konfigurācija!",
     "savedSuccessfully": "Konfigurācija saglabāta",
     "failedToSave": "Neizdevās saglabāt konfigurāciju",
