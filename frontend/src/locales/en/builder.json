@@ -171,6 +171,7 @@
     "somethingWentWrong": "Something went wrong",
     "incompatibleWarning": "One or more components in your current build are incompatible. Please change or remove them to generate.",
     "manualCheckWarning": "One or more selected components are missing spec data needed to verify fit. Please replace or remove them to generate.",
+    "allSlotsFilledWarning": "All required components are already selected. Remove one to generate a new build.",
     "generating": "Generating...",
     "generate": "Generate",
     "generateSuccess": "Build generated successfully",

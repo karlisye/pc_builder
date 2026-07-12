@@ -171,6 +171,7 @@
     "somethingWentWrong": "Kaut kas nogāja greizi",
     "incompatibleWarning": "Viena vai vairākas komponentes jūsu konfigurācijā nav saderīgas. Lai generētu, nomainiet vai noņemiet tās.",
     "manualCheckWarning": "Vienai vai vairākām izvēlētajām komponentēm trūkst specifikācijas datu, lai pārbaudītu atbilstību. Lūdzu, samainiet vai noņemiet to pirms ģenerēšanas.",
+    "allSlotsFilledWarning": "Visas nepieciešamās komponentes jau ir izvēlētas. Noņemiet vienu, lai ģenerētu jaunu konfigurāciju.",
     "generating": "Generē...",
     "generate": "Generēt",
     "generateSuccess": "Konfigurācija veiksmīgi generēta",

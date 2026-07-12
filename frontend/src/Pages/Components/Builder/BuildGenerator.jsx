@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useBuilder, useBuildMeta } from "../../../Contexts/BuilderContext";
 import BudgetSlider from "./BudgetSlider";
@@ -12,6 +12,7 @@ import {
   selectedProductCodes,
   hasIncompatibleSelection,
   needsManualCheckSelection,
+  missingRequiredSlots,
 } from "../../../lib/buildSlots";
 
 const RECOMMENDED_BUDGETS = {
@@ -55,6 +56,18 @@ const BuildGenerator = () => {
   const [info, setInfo] = useState("");
 
   const recommendedBudget = RECOMMENDED_BUDGETS[preferences.type] ?? 600;
+
+  // a preference for a slot that's already filled has nothing left to influence, and would
+  // otherwise sit stale in state — clear it as soon as that component gets selected
+  useEffect(() => {
+    if (selectedComponents.gpu && preferences.gpu !== null) {
+      setPreferences((prev) => ({ ...prev, gpu: null }));
+    }
+    if (selectedComponents.cpu && preferences.cpu !== null) {
+      setPreferences((prev) => ({ ...prev, cpu: null }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedComponents.gpu, selectedComponents.cpu]);
 
   const updateInfo = (newBudget, newType) => {
     const recommended = RECOMMENDED_BUDGETS[newType] ?? 600;
@@ -134,6 +147,9 @@ const BuildGenerator = () => {
   // verified (missing spec data) — the auto-builder can't assume it fits, so block generation
   const needsManualCheck = needsManualCheckSelection(selectedComponents);
 
+  // nothing left for the generator to fill in
+  const allSlotsFilled = missingRequiredSlots(selectedComponents).length === 0;
+
   if (!user) {
     return (
       <div className="pt-4 border-t mt-4 border-secondary">
@@ -183,42 +199,48 @@ const BuildGenerator = () => {
           {t("buildGenerator.preferences")}
         </p>
 
-        <div className={`flex ${budget >= 500 || !budget ? "gap-2" : ""}`}>
-          <div
-            className={`flex flex-col transition-all p-px overflow-hidden ${budget >= 500 || !budget ? "flex-1" : "w-0"}`}
-          >
-            <label className="text-sm text-secondary-light" htmlFor="build_gpu_pref">
-              {t("buildGenerator.gpu")}
-            </label>
-            <select
-              id="build_gpu_pref"
-              onChange={(e) => updatePref("gpu", e.target.value)}
-              className="p-1 text-secondary-light text-sm border border-muted hover:outline focus:outline outline-secondary-light"
-              value={preferences.gpu ?? ""}
-            >
-              <option value="">{t("buildGenerator.any")}</option>
-              <option value="nvidia">{t("buildGenerator.nvidia")}</option>
-              <option value="amd">{t("buildGenerator.amd")}</option>
-              <option value="intel">{t("buildGenerator.intel")}</option>
-            </select>
-          </div>
+        {(!selectedComponents.gpu || !selectedComponents.cpu) && (
+          <div className={`flex ${budget >= 500 || !budget ? "gap-2" : ""}`}>
+            {!selectedComponents.gpu && (
+              <div
+                className={`flex flex-col transition-all p-px overflow-hidden ${budget >= 500 || !budget ? "flex-1" : "w-0"}`}
+              >
+                <label className="text-sm text-secondary-light" htmlFor="build_gpu_pref">
+                  {t("buildGenerator.gpu")}
+                </label>
+                <select
+                  id="build_gpu_pref"
+                  onChange={(e) => updatePref("gpu", e.target.value)}
+                  className="p-1 text-secondary-light text-sm border border-muted hover:outline focus:outline outline-secondary-light"
+                  value={preferences.gpu ?? ""}
+                >
+                  <option value="">{t("buildGenerator.any")}</option>
+                  <option value="nvidia">{t("buildGenerator.nvidia")}</option>
+                  <option value="amd">{t("buildGenerator.amd")}</option>
+                  <option value="intel">{t("buildGenerator.intel")}</option>
+                </select>
+              </div>
+            )}
 
-          <div className="flex flex-col flex-1">
-            <label className="text-sm text-secondary-light" htmlFor="build_cpu_pref">
-              {t("buildGenerator.cpu")}
-            </label>
-            <select
-              id="build_cpu_pref"
-              onChange={(e) => updatePref("cpu", e.target.value)}
-              className="p-1 text-secondary-light text-sm border border-muted hover:outline focus:outline outline-secondary-light"
-              value={preferences.cpu ?? ""}
-            >
-              <option value="">{t("buildGenerator.any")}</option>
-              <option value="amd">{t("buildGenerator.amd")}</option>
-              <option value="intel">{t("buildGenerator.intel")}</option>
-            </select>
+            {!selectedComponents.cpu && (
+              <div className="flex flex-col flex-1">
+                <label className="text-sm text-secondary-light" htmlFor="build_cpu_pref">
+                  {t("buildGenerator.cpu")}
+                </label>
+                <select
+                  id="build_cpu_pref"
+                  onChange={(e) => updatePref("cpu", e.target.value)}
+                  className="p-1 text-secondary-light text-sm border border-muted hover:outline focus:outline outline-secondary-light"
+                  value={preferences.cpu ?? ""}
+                >
+                  <option value="">{t("buildGenerator.any")}</option>
+                  <option value="amd">{t("buildGenerator.amd")}</option>
+                  <option value="intel">{t("buildGenerator.intel")}</option>
+                </select>
+              </div>
+            )}
           </div>
-        </div>
+        )}
 
         <div className="flex flex-col flex-1">
           <label className="text-sm text-secondary-light" htmlFor="build_usage_pref">
@@ -280,10 +302,18 @@ const BuildGenerator = () => {
           </div>
         )}
 
+        {!hasIncompatible && !needsManualCheck && allSlotsFilled && (
+          <div className="p-2 border bg-alert/10 border-alert/80">
+            <p className="text-alert text-sm">
+              {t("buildGenerator.allSlotsFilledWarning")}
+            </p>
+          </div>
+        )}
+
         <button
           className="p-4 mt-4 w-full bg-secondary-light text-text cursor-pointer hover:bg-secondary-light/50 transition disabled:opacity-50"
           onClick={handleGenerate}
-          disabled={loading || hasIncompatible || needsManualCheck}
+          disabled={loading || hasIncompatible || needsManualCheck || allSlotsFilled}
         >
           {loading ? (
             <p>{t("buildGenerator.generating")}</p>
