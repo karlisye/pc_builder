@@ -3,7 +3,7 @@ import { Link, useLocation, Outlet } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../Contexts/AuthContext';
 import { useConsent } from '../Contexts/ConsentContext';
-import { AlertIcon, ArrowIcon, MenuIcon } from '../Pages/Components/Common/Icons';
+import { AlertIcon, ArrowIcon, MenuIcon, SignInIcon } from '../Pages/Components/Common/Icons';
 import LanguageSwitcher from '../Pages/Components/Common/LanguageSwitcher';
 import VerifyEmailBanner from '../Pages/Components/Common/VerifyEmailBanner';
 import { stripLocale, useLocalePath } from '../lib/localePath';
@@ -223,8 +223,13 @@ const Layout = ({ children }) => {
 
               <div className="ml-auto flex items-center">
                 <LanguageSwitcher className="mr-2" />
-                <Link className="py-4 px-6 hover:bg-surface transition" to={lp('/login')}>
-                  {t('nav.signIn')}
+                <Link
+                  className="py-4 px-6 hover:bg-surface transition flex items-center"
+                  to={lp('/login')}
+                  aria-label={t('nav.signIn')}
+                >
+                  <SignInIcon size={20} className="sm:hidden" />
+                  <span className="hidden sm:inline">{t('nav.signIn')}</span>
                 </Link>
               </div>
             </>

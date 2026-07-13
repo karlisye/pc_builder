@@ -16,12 +16,23 @@ const Home = () => {
     <div className="overflow-y-auto max-w-screen">
       <div className="w-full bg-primary px-6 py-10">
         <div className="border-4 border-secondary h-full max-w-347 mx-auto flex gap-4 p-2 flex-col">
-          <h1 className="sm:text-9xl text-7xl font-bold text-surface mb-4 flex flex-wrap break-all">
-            {t('home.hero.title')}
+          <h1 className="sm:text-9xl text-7xl font-bold text-surface mb-4 flex flex-wrap">
+            {(() => {
+              const title = t('home.hero.title');
+              const splitIndex = title.slice(1).search(/[A-Z]/) + 1;
+              if (splitIndex <= 0) return title;
+              return (
+                <>
+                  {title.slice(0, splitIndex)}
+                  <br className="sm:hidden" />
+                  {title.slice(splitIndex)}
+                </>
+              );
+            })()}
           </h1>
           <p className="text-xl text-surface max-w-3xl">{t('home.hero.description')}</p>
 
-          <div className="flex gap-4 items-center mt-auto">
+          <div className="flex flex-col sm:flex-row gap-4 items-center mt-auto">
             <Link
               to={lp('/builder')}
               className="bg-secondary-light hover:bg-secondary-light/50 transition cursor-pointer text-text py-4 md:w-60 w-full text-center"
@@ -51,7 +62,7 @@ const Home = () => {
         <div className="xl:w-1/2 bg-primary px-6 py-10 text-text">
           <div className="xl:max-w-2xl xl:h-220 ml-auto border-4 border-secondary p-2 overflow-hidden flex xl:flex-col flex-col lg:flex-row gap-8">
             <div className="flex-1">
-              <h1 className="sm:text-9xl text-7xl font-bold text-surface mb-4 flex flex-wrap">
+              <h1 className="md:text-9xl sm:text-7xl text-6xl font-bold text-surface mb-4 flex flex-wrap">
                 {t('home.build.title')}
               </h1>
               <p className="text-xl text-surface">{t('home.build.description')}</p>
@@ -66,7 +77,7 @@ const Home = () => {
             <BudgetBuildDemo className="xl:h-100 h-80 my-auto" />
 
             <div className="self-end">
-              <h1 className="sm:text-9xl text-7xl font-bold text-text mb-4 flex flex-wrap">
+              <h1 className="md:text-9xl sm:text-7xl text-6xl font-bold text-text mb-4 flex flex-wrap">
                 {t('home.auto.title')}
               </h1>
               <p className="text-xl text-text">{t('home.auto.description')}</p>
@@ -78,7 +89,7 @@ const Home = () => {
       <div className="w-full bg-background px-6 py-10 text-text">
         <div className="border-4 border-secondary-light h-full max-w-347 mx-auto flex gap-4 p-2 flex-col xl:flex-row items-center">
           <div>
-            <h1 className="sm:text-9xl text-7xl font-bold text-text mb-4 flex flex-wrap">
+            <h1 className="md:text-9xl sm:text-7xl text-6xl font-bold text-text mb-4 flex flex-wrap">
               {t('home.save.title')}
             </h1>
             <p className="text-xl text-text mb-4">{t('home.save.description')}</p>
