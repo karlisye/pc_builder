@@ -48,6 +48,7 @@ const BuildGenerator = () => {
     setWarnings,
     setNotes,
     buildIssues,
+    setSidePanelExpanded,
   } = useBuilder();
   const { setBuildType } = useBuildMeta();
   const lp = useLocalePath();
@@ -134,6 +135,7 @@ const BuildGenerator = () => {
         }));
         setBuildType(res.data.type);
         closePicker();
+        setSidePanelExpanded(false);
         setWarnings(res.data.warnings);
         setNotes(res.data.notes);
         addToast(t("buildGenerator.generateSuccess"), { type: "success" });

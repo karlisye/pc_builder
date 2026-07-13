@@ -3,7 +3,7 @@ import { Link, useLocation, Outlet } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../Contexts/AuthContext';
 import { useConsent } from '../Contexts/ConsentContext';
-import { AlertIcon, ArrowIcon, MenuIcon } from '../Pages/Components/Common/Icons';
+import { AlertIcon, ArrowIcon, MenuIcon, SignInIcon } from '../Pages/Components/Common/Icons';
 import LanguageSwitcher from '../Pages/Components/Common/LanguageSwitcher';
 import VerifyEmailBanner from '../Pages/Components/Common/VerifyEmailBanner';
 import { stripLocale, useLocalePath } from '../lib/localePath';
@@ -58,8 +58,8 @@ const Layout = ({ children }) => {
 
   const menuLinkClass = (path) => {
     const isActive = basePath.startsWith(path);
-    return `block py-3 px-4 transition ${
-      isActive ? 'bg-primary text-white hover:bg-primary-light' : 'hover:bg-surface text-text'
+    return `block py-3 px-4 transition hover:bg-secondary-light text-text ${
+      isActive ? 'border-l-8  border-primary bg-muted/20' : ''
     }`;
   };
 
@@ -160,6 +160,7 @@ const Layout = ({ children }) => {
                   <div>
                     <Link
                       to={lp('/profile')}
+                      onClick={() => setProfileActive(false)}
                       className="flex items-center gap-2 px-4 py-2 text-text hover:bg-secondary-light transition"
                     >
                       {t('nav.profile')}
@@ -167,6 +168,7 @@ const Layout = ({ children }) => {
                     </Link>
                     <Link
                       to={lp('/guide')}
+                      onClick={() => setProfileActive(false)}
                       className="flex items-center gap-2 px-4 py-2 text-text hover:bg-secondary-light transition"
                     >
                       {t('nav.guide')}
@@ -221,8 +223,13 @@ const Layout = ({ children }) => {
 
               <div className="ml-auto flex items-center">
                 <LanguageSwitcher className="mr-2" />
-                <Link className="py-4 px-6 hover:bg-surface transition" to={lp('/login')}>
-                  {t('nav.signIn')}
+                <Link
+                  className="py-4 px-6 hover:bg-surface transition flex items-center"
+                  to={lp('/login')}
+                  aria-label={t('nav.signIn')}
+                >
+                  <SignInIcon size={20} className="sm:hidden" />
+                  <span className="hidden sm:inline">{t('nav.signIn')}</span>
                 </Link>
               </div>
             </>
@@ -288,13 +295,16 @@ const Layout = ({ children }) => {
           </div>
         </footer>
       </div>
-
-      <span
-        aria-hidden="true"
-        className="fixed bottom-10 left-10 z-50 pointer-events-none select-none border-8 text-secondary-light/90 text-8xl font-bold tracking-widest px-2 py-1"
-      >
-        PROTOTYPE
-      </span>
+      
+      <div className='border-8 text-secondary-light/90 fixed bottom-10 left-10 z-50 pointer-events-none select-none m-2'>
+        <span
+          aria-hidden="true"
+          className="  md:text-8xl sm:text-6xl text-4xl font-bold tracking-widest px-2 py-1"
+        >
+          PROTOTYPE
+        </span>
+        <span className='block'>The prices and links shown are for testing purposes only</span>
+      </div>
     </div>
   );
 };
