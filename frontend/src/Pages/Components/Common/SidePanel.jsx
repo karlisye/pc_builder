@@ -34,17 +34,27 @@ const SidePanel = ({
           ${expanded ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
       >
         {(title || headerRight) && (
-          <div className="flex justify-between items-center pt-6 px-4">
-            {title && <h1 className="text-4xl font-semibold text-white">{title}</h1>}
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-2 pt-6 px-4">
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              {title && (
+                <h1 className="flex-1 min-w-0 text-4xl font-semibold text-white break-words">
+                  {title}
+                </h1>
+              )}
 
-            {headerRight && <div className="ml-auto flex items-center gap-2">{headerRight}</div>}
+              <button
+                className="w-10 h-10 shrink-0 lg:hidden text-secondary-light hover:cursor-pointer bg-primary hover:bg-primary-light transition p-2"
+                onClick={() => setExpanded(false)}
+              >
+                <CloseIcon />
+              </button>
+            </div>
 
-            <button
-              className="w-10 h-10 lg:hidden text-secondary-light hover:cursor-pointer bg-primary hover:bg-primary-light transition p-2 ml-4"
-              onClick={() => setExpanded(false)}
-            >
-              <CloseIcon />
-            </button>
+            {headerRight && (
+              <div className="w-full sm:w-auto sm:ml-auto flex items-center gap-2">
+                {headerRight}
+              </div>
+            )}
           </div>
         )}
 
