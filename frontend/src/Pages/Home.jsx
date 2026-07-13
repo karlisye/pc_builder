@@ -16,7 +16,7 @@ const Home = () => {
     <div className="overflow-y-auto max-w-screen">
       <div className="w-full bg-primary px-6 py-10">
         <div className="border-4 border-secondary h-full max-w-347 mx-auto flex gap-4 p-2 flex-col">
-          <h1 className="sm:text-9xl text-7xl font-bold text-surface mb-4 flex flex-wrap">
+          <h1 className="sm:text-9xl text-7xl font-bold text-surface mb-4 flex flex-wrap break-all">
             {t('home.hero.title')}
           </h1>
           <p className="text-xl text-surface max-w-3xl">{t('home.hero.description')}</p>
