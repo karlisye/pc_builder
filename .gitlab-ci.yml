@@ -41,7 +41,9 @@ backend-tests:
     paths:
       - backend/vendor/
   before_script:
-    - apk add --no-cache git unzip mysql-client $PHPIZE_DEPS
+    # mariadb-connector-c supplies caching_sha2_password.so — without it the
+    # MariaDB client cannot authenticate against MySQL 8.4 at all
+    - apk add --no-cache git unzip mariadb-client mariadb-connector-c $PHPIZE_DEPS
     - docker-php-ext-install pdo_mysql > /dev/null
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
   script:
@@ -49,7 +51,10 @@ backend-tests:
     - touch .env  # phpdotenv warns if the base .env is missing; testing config comes from .env.testing
     - composer install --no-interaction --prefer-dist
     - php artisan migrate --force
-    - zcat database/ci/components-dump.sql.gz | mysql --ssl-mode=DISABLED -hmysql -usail -pcipass pc_builder
+    # Alpine's client is MariaDB, so MySQL's --ssl-mode=DISABLED doesn't exist;
+    # keep TLS on but skip cert verification (MariaDB 11.4+ verifies by default
+    # and rejects MySQL 8.4's self-signed cert)
+    - zcat database/ci/components-dump.sql.gz | mariadb --skip-ssl-verify-server-cert -hmysql -usail -pcipass pc_builder
     - php artisan test
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
