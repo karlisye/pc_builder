@@ -39,6 +39,7 @@ export default function BuilderLayout() {
   const [validateFailed, setValidateFailed] = useState(false);
   const [buildType, setBuildType] = useState('');
   const [restoredDraft, setRestoredDraft] = useState(false);
+  const [sidePanelExpanded, setSidePanelExpanded] = useState(false);
 
   const lang = langFromParams(params);
   const pickerType = params.type ?? null;
@@ -253,6 +254,7 @@ export default function BuilderLayout() {
       buildWarnings,
       setBuildWarnings,
       validateFailed,
+      setSidePanelExpanded,
     }),
     [
       pickerType,
@@ -291,6 +293,8 @@ export default function BuilderLayout() {
         <div className="h-full flex min-w-0">
           <SidePanel
             title={t('sidePanel.title')}
+            expanded={sidePanelExpanded}
+            onExpandedChange={setSidePanelExpanded}
             headerRight={
               (buildId || Object.values(selectedComponents).some((c) => c !== null)) && (
                 <Link

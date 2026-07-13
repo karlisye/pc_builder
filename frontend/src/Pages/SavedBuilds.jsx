@@ -42,7 +42,7 @@ const SavedBuilds = () => {
   const { id: selectedId } = useParams();
   const navigate = useNavigate();
   const [builds, setBuilds] = useState([]);
-  const [panelOpen, setPanelOpen] = useState(false);
+  const [panelOpen, setPanelOpen] = useState(true);
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState(null);
   const [selectedBuild, setSelectedBuild] = useState(null);

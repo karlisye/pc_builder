@@ -131,30 +131,30 @@ const AddComponent = () => {
 
   return (
     <div className="border border-border w-full min-w-0 hover:bg-background transition p-4 mb-auto">
-      <div className="flex justify-between items-center gap-2">
-        <h1 className="text-3xl font-semibold text-text min-w-0 flex-1">
+      <div className="flex flex-wrap justify-between items-center gap-2">
+        <h1 className="order-1 text-3xl font-semibold text-text min-w-0 flex-1">
           {t('addComponent.title', {
             component: t(`common:components.${type}`),
           })}
         </h1>
-        <div className="flex items-center gap-2 shrink-0 relative">
+        <button
+          className="order-2 sm:order-3 w-10 h-10 text-muted hover:cursor-pointer bg-surface hover:bg-secondary-light transition p-2 shrink-0"
+          onClick={closePicker}
+          aria-label={t('common:close')}
+        >
+          <CloseIcon />
+        </button>
+        <div className="order-3 sm:order-2 w-full sm:w-auto shrink-0 relative">
           <button
             ref={pickBestButtonRef}
             onClick={() => setPickBestOpen((prev) => !prev)}
-            className={`px-4 py-2 transition cursor-pointer whitespace-nowrap ${
+            className={`w-full sm:w-auto px-4 py-2 transition cursor-pointer whitespace-nowrap ${
               pickBestOpen
                 ? 'bg-primary-light text-white'
                 : 'bg-primary text-white hover:bg-primary-light'
             }`}
           >
             {t('addComponent.pickBest')}
-          </button>
-          <button
-            className="w-10 h-10 text-muted hover:cursor-pointer bg-surface hover:bg-secondary-light transition p-2"
-            onClick={closePicker}
-            aria-label={t('common:close')}
-          >
-            <CloseIcon />
           </button>
 
           {pickBestOpen && (
