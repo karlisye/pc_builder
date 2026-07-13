@@ -291,7 +291,7 @@ const Layout = ({ children }) => {
 
       <span
         aria-hidden="true"
-        className="fixed bottom-2 left-2 z-50 pointer-events-none select-none bg-primary/80 text-white/90 text-xs font-bold tracking-widest px-2 py-1"
+        className="fixed bottom-10 left-10 z-50 pointer-events-none select-none border-8 text-secondary-light/90 text-8xl font-bold tracking-widest px-2 py-1"
       >
         PROTOTYPE
       </span>
