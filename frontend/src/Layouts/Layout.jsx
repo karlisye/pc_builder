@@ -295,13 +295,16 @@ const Layout = ({ children }) => {
           </div>
         </footer>
       </div>
-
-      <span
-        aria-hidden="true"
-        className="fixed bottom-10 left-10 z-50 pointer-events-none select-none border-8 text-secondary-light/90 text-8xl font-bold tracking-widest px-2 py-1"
-      >
-        PROTOTYPE
-      </span>
+      
+      <div className='border-8 text-secondary-light/90 fixed bottom-10 left-10 z-50 pointer-events-none select-none m-2'>
+        <span
+          aria-hidden="true"
+          className="  md:text-8xl sm:text-6xl text-4xl font-bold tracking-widest px-2 py-1"
+        >
+          PROTOTYPE
+        </span>
+        <span className='block'>The prices and links shown are for testing purposes only</span>
+      </div>
     </div>
   );
 };
