@@ -58,8 +58,8 @@ const Layout = ({ children }) => {
 
   const menuLinkClass = (path) => {
     const isActive = basePath.startsWith(path);
-    return `block py-3 px-4 transition ${
-      isActive ? 'bg-primary text-white hover:bg-primary-light' : 'hover:bg-surface text-text'
+    return `block py-3 px-4 transition hover:bg-secondary-light text-text ${
+      isActive ? 'border-l-8  border-primary bg-muted/20' : ''
     }`;
   };
 
@@ -160,6 +160,7 @@ const Layout = ({ children }) => {
                   <div>
                     <Link
                       to={lp('/profile')}
+                      onClick={() => setProfileActive(false)}
                       className="flex items-center gap-2 px-4 py-2 text-text hover:bg-secondary-light transition"
                     >
                       {t('nav.profile')}
@@ -167,6 +168,7 @@ const Layout = ({ children }) => {
                     </Link>
                     <Link
                       to={lp('/guide')}
+                      onClick={() => setProfileActive(false)}
                       className="flex items-center gap-2 px-4 py-2 text-text hover:bg-secondary-light transition"
                     >
                       {t('nav.guide')}

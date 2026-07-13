@@ -2,6 +2,31 @@ import React, { useRef } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import Note from "./Note";
 
+const BUDGET_COLUMNS = [
+  { budget: "budgetLow", type: "general" },
+  { budget: "budgetLow", type: "office" },
+  { budget: "budgetMid", type: "general" },
+  { budget: "budgetMid", type: "gaming" },
+  { budget: "budgetMid", type: "office" },
+  { budget: "budgetMid", type: "streaming" },
+  { budget: "budgetHigh", type: "general" },
+  { budget: "budgetHigh", type: "gaming" },
+  { budget: "budgetHigh", type: "office" },
+  { budget: "budgetHigh", type: "rendering" },
+  { budget: "budgetHigh", type: "streaming" },
+];
+
+const BUDGET_ROWS = [
+  { key: "gpu", values: [null, null, "24%", "27%", null, "20%", "25%", "27%", null, "25%", "22%"] },
+  { key: "cpu", values: ["26%", "28%", "16%", "14%", "25%", "20%", "14%", "12%", "22%", "15%", "20%"] },
+  { key: "motherboard", values: ["20%", "22%", "10%", "10%", "18%", "10%", "10%", "10%", "16%", "10%", "10%"] },
+  { key: "ram", values: ["24%", "25%", "20%", "20%", "30%", "20%", "22%", "23%", "35%", "28%", "22%"] },
+  { key: "cooler", values: [null, null, "3%", "3%", "3%", "3%", "2%", "2%", "2%", "2%", "2%"] },
+  { key: "case", values: ["10%", "9%", "7%", "7%", "8%", "7%", "6%", "6%", "6%", "5%", "6%"] },
+  { key: "psu", values: ["10%", "9%", "7%", "7%", "8%", "7%", "6%", "6%", "6%", "5%", "6%"] },
+  { key: "ssd", values: ["10%", "7%", "13%", "12%", "8%", "13%", "15%", "14%", "13%", "10%", "12%"] },
+];
+
 const AutoSection = () => {
   const { t } = useTranslation("pages");
   const tableRef = useRef(null);
@@ -80,7 +105,36 @@ const AutoSection = () => {
           {t("guides.autoSection.budgetAllocationsHeading")}
         </h2>
 
-        <div className="overflow-x-auto" ref={tableRef}>
+        <div ref={tableRef}>
+        <div className="sm:hidden space-y-4">
+          {BUDGET_COLUMNS.map(({ budget, type }) => (
+            <div key={`${budget}-${type}`} className="border border-secondary-light">
+              <p className="p-2 bg-secondary-light/50 font-semibold text-text">
+                {t(`guides.autoSection.table.${budget}`)} - {t(`guides.autoSection.table.${type}`)}
+              </p>
+              <table className="w-full text-left text-text">
+                <tbody>
+                  {BUDGET_ROWS.map(({ key, values }, i) => {
+                    const value = values[BUDGET_COLUMNS.findIndex(
+                      (c) => c.budget === budget && c.type === type,
+                    )];
+                    if (value == null) return null;
+                    return (
+                      <tr key={key} className={i % 2 === 0 ? "bg-background" : ""}>
+                        <td className="p-2 border-t border-secondary-light">
+                          {t(`guides.autoSection.table.${key}`)}
+                        </td>
+                        <td className="p-2 border-t border-secondary-light text-right">{value}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          ))}
+        </div>
+
+        <div className="hidden sm:block overflow-x-auto max-w-4xl">
           <table className="text-left text-text">
             <thead className="bg-secondary-light/50">
               <tr>
@@ -225,6 +279,7 @@ const AutoSection = () => {
               </tr>
             </tbody>
           </table>
+        </div>
         </div>
       </div>
     </div>

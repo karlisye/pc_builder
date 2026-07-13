@@ -37,7 +37,7 @@ const SidePanel = ({
           <div className="flex flex-wrap items-center gap-x-2 gap-y-2 pt-6 px-4">
             <div className="flex items-center gap-2 flex-1 min-w-0">
               {title && (
-                <h1 className="flex-1 min-w-0 text-4xl font-semibold text-white break-words">
+                <h1 className="flex-1 min-w-0 text-4xl font-semibold text-white wrap-break-word">
                   {title}
                 </h1>
               )}
