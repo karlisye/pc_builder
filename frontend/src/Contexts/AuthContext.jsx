@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { Navigate } from "react-router";
 import axios from "axios";
 import { useLocalePath } from "../lib/localePath";
+import { trackEvent } from "../lib/analytics";
 
 axios.defaults.withCredentials = true;
 axios.defaults.withXSRFToken = true;
@@ -36,6 +37,7 @@ export const AuthProvider = ({ children }) => {
       turnstile_token,
     });
     setUser(res.data);
+    trackEvent("sign_up");
     return res.data;
   };
 

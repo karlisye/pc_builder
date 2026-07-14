@@ -9,6 +9,7 @@ import { clearDraft } from '../../../lib/builderDraft';
 import { selectedProductCodes } from '../../../lib/buildSlots';
 import { useLocalePath } from '../../../lib/localePath';
 import { useToast } from '../../../Contexts/ToastContext';
+import { trackEvent } from '../../../lib/analytics';
 
 // Tracks whether the restore nudge has already been shown this page load,
 // so it only appears once on a real page refresh and not on every SPA nav.
@@ -85,6 +86,7 @@ const BuildInfo = () => {
         type: buildType,
         components,
       });
+      if (asNew || !buildId) trackEvent('build_saved');
       setBuildId(res.data.id);
       setSearchParams(
         (prev) => {
