@@ -47,7 +47,7 @@
   },
   "privacy": {
     "title": "Privacy Policy",
-    "lastUpdated": "Last updated: July 12, 2026",
+    "lastUpdated": "Last updated: July 14, 2026",
     "intro": "DatorBuve (\"we\", \"us\") operates datorbuve.lv, a tool for browsing PC components, checking compatibility, and building and saving PC configurations. This page explains what personal data we collect, why, and what rights you have over it under the GDPR.",
     "sections": [
       {
@@ -70,18 +70,19 @@
       },
       {
         "heading": "Cookies",
-        "body": "We use a small session cookie to keep you signed in. This is strictly necessary and doesn't require consent. With your permission, we may also use analytics cookies to understand how the site is used. You can accept, reject, or customize this choice at any time using the \"Cookie Settings\" link in the footer."
+        "body": "We use a small session cookie to keep you signed in. This is strictly necessary and doesn't require consent. With your permission, we also use Google Analytics cookies (named _ga and _ga_...) to understand how the site is used. These are only set after you accept analytics cookies — nothing is loaded or stored before that. You can accept, reject, or customize this choice at any time using the \"Cookie Settings\" link in the footer; rejecting analytics after accepting also removes these cookies."
       },
       {
         "heading": "Third-Party Services",
         "list": [
           "Cloudflare Turnstile: protects our sign-in and sign-up forms from bots. It processes your IP address and device signals for security purposes; see Cloudflare's privacy policy (cloudflare.com/privacypolicy) for details. This is used regardless of cookie preferences, as it's necessary for account security.",
-          "[Email delivery provider (placeholder, to be finalized)]: used to send you verification and account-related emails."
+          "Google Analytics (Google Ireland Ltd.): measures aggregated site usage — pages visited and actions like generating or saving a build — so we can improve the site. It runs only if you consent to analytics cookies. See Google's privacy policy (policies.google.com/privacy) for details.",
+          "Resend: delivers our verification and account-related emails. It processes your email address and the email content for delivery purposes; see Resend's privacy policy (resend.com/legal/privacy-policy) for details."
         ]
       },
       {
         "heading": "International Data Transfers",
-        "body": "Some of our service providers, including Cloudflare and possibly our email delivery provider, may process data outside the EU/EEA. Where this happens, we rely on appropriate safeguards required by the GDPR, such as Standard Contractual Clauses, to ensure your data remains protected."
+        "body": "Some of our service providers, including Cloudflare, Google, and Resend, may process data outside the EU/EEA. Where this happens, we rely on appropriate safeguards required by the GDPR, such as Standard Contractual Clauses or the EU–US Data Privacy Framework, to ensure your data remains protected."
       },
       {
         "heading": "Data Retention",

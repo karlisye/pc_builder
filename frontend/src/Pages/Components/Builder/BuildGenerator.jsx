@@ -8,6 +8,7 @@ import ClosedSection from "../Common/ClosedSection";
 import { useAuth } from "../../../Contexts/AuthContext";
 import { useToast } from "../../../Contexts/ToastContext";
 import { useLocalePath } from "../../../lib/localePath";
+import { trackEvent } from "../../../lib/analytics";
 import {
   selectedProductCodes,
   hasIncompatibleSelection,
@@ -129,6 +130,7 @@ const BuildGenerator = () => {
       setProgress(100);
 
       if (res.data.success) {
+        trackEvent("build_generated", { budget });
         setSelectedComponents((prev) => ({
           ...prev,
           ...res.data.build,

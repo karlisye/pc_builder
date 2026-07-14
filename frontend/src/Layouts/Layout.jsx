@@ -25,6 +25,13 @@ const Layout = ({ children }) => {
   const menuRef = useRef(null);
   const menuButtonRef = useRef(null);
 
+  // The window never scrolls (h-screen overflow-hidden root) — #page-scroll is
+  // the real scroll container, so root.jsx's <ScrollRestoration /> can't reach
+  // it. Query-param changes (picker filters/sort/page) must not reset scroll.
+  useEffect(() => {
+    document.getElementById('page-scroll')?.scrollTo(0, 0);
+  }, [pathname]);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (

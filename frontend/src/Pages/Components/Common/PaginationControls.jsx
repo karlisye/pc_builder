@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 const getPageNumbers = (currentPage, lastPage) => {
@@ -13,8 +13,25 @@ const getPageNumbers = (currentPage, lastPage) => {
 
 const PaginationControls = ({ pagination, setPage, dark = false }) => {
   const { t } = useTranslation("common");
+  const containerRef = useRef(null);
   const { currentPage, lastPage } = pagination;
   const pageNumbers = getPageNumbers(currentPage, lastPage);
+
+  // Page changes are query-param navigations, so Layout's pathname-keyed
+  // scroll reset never fires — scroll whichever ancestor actually scrolls
+  // (#page-scroll in the picker, the side panel in SavedBuilds).
+  const changePage = (next) => {
+    setPage(next);
+    let el = containerRef.current?.parentElement;
+    while (el) {
+      const { overflowY } = getComputedStyle(el);
+      if ((overflowY === "auto" || overflowY === "scroll") && el.scrollHeight > el.clientHeight) {
+        el.scrollTo(0, 0);
+        return;
+      }
+      el = el.parentElement;
+    }
+  };
 
   const idleClass = dark
     ? "text-secondary-light hover:text-white"
@@ -23,12 +40,13 @@ const PaginationControls = ({ pagination, setPage, dark = false }) => {
 
   return (
     <div
+      ref={containerRef}
       className="flex justify-between items-center mt-4 gap-2"
       aria-label={t("page", { current: currentPage, total: lastPage })}
     >
       <button
         disabled={currentPage === 1}
-        onClick={() => setPage((p) => p - 1)}
+        onClick={() => changePage((p) => p - 1)}
         className={`${idleClass} disabled:opacity-30 transition cursor-pointer`}
       >
         {t("previous")}
@@ -45,7 +63,7 @@ const PaginationControls = ({ pagination, setPage, dark = false }) => {
                 <span className={`${dark ? "text-secondary-light" : "text-muted"} px-1`}>…</span>
               )}
               <button
-                onClick={() => setPage(page)}
+                onClick={() => changePage(page)}
                 disabled={page === currentPage}
                 className={`min-w-8 px-2 py-1 text-sm transition cursor-pointer disabled:cursor-default ${
                   page === currentPage ? activeClass : idleClass
@@ -60,7 +78,7 @@ const PaginationControls = ({ pagination, setPage, dark = false }) => {
 
       <button
         disabled={currentPage === lastPage}
-        onClick={() => setPage((p) => p + 1)}
+        onClick={() => changePage((p) => p + 1)}
         className={`${idleClass} disabled:opacity-30 transition cursor-pointer`}
       >
         {t("next")}

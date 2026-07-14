@@ -47,7 +47,7 @@
   },
   "privacy": {
     "title": "Privātuma Politika",
-    "lastUpdated": "Pēdējoreiz atjaunināts: 2026. gada 12. jūlijs",
+    "lastUpdated": "Pēdējoreiz atjaunināts: 2026. gada 14. jūlijs",
     "intro": "DatorBuve (\"mēs\") uztur datorbuve.lv, rīku datora komponenšu pārlūkošanai, saderības pārbaudei, kā arī datoru konfigurāciju veidošanai un saglabāšanai. Šajā lapā ir izskaidrots, kādus personas datus mēs apkopojam, kāpēc, un kādas tiesības jums ir attiecībā uz tiem saskaņā ar VDAR.",
     "sections": [
       {
@@ -70,18 +70,19 @@
       },
       {
         "heading": "Sīkdatnes",
-        "body": "Mēs izmantojam nelielu sesijas sīkdatni, lai jūs paliktu pieslēgts. Tā ir absolūti nepieciešama un nav atkarīga no jūsu piekrišanas. Ar jūsu atļauju mēs varam izmantot arī analītikas sīkdatnes, lai saprastu, kā lapa tiek izmantota. Šo izvēli varat pieņemt, noraidīt vai pielāgot jebkurā laikā, izmantojot saiti \"Sīkdatņu iestatījumi\" lapas apakšā."
+        "body": "Mēs izmantojam nelielu sesijas sīkdatni, lai jūs paliktu pieslēgts. Tā ir absolūti nepieciešama un nav atkarīga no jūsu piekrišanas. Ar jūsu atļauju mēs izmantojam arī Google Analytics sīkdatnes (ar nosaukumiem _ga un _ga_...), lai saprastu, kā lapa tiek izmantota. Tās tiek iestatītas tikai pēc tam, kad esat piekritis analītikas sīkdatnēm — pirms tam nekas netiek ielādēts vai saglabāts. Šo izvēli varat pieņemt, noraidīt vai pielāgot jebkurā laikā, izmantojot saiti \"Sīkdatņu iestatījumi\" lapas apakšā; ja piekrišanu vēlāk atsaucat, šīs sīkdatnes tiek dzēstas."
       },
       {
         "heading": "Trešo pušu pakalpojumi",
         "list": [
           "Cloudflare Turnstile: aizsargā mūsu pieslēgšanās un reģistrācijas formas no robotiem. Tas apstrādā jūsu IP adresi un ierīces datus drošības nolūkos; sīkāku informāciju skatiet Cloudflare privātuma politikā (cloudflare.com/privacypolicy). Tas tiek izmantots neatkarīgi no sīkdatņu izvēles, jo ir nepieciešams konta drošībai.",
-          "[E-pasta piegādes pakalpojums (pagaidu vietturis, jāprecizē)]: izmantots, lai nosūtītu jums apstiprināšanas un ar kontu saistītus e-pastus."
+          "Google Analytics (Google Ireland Ltd.): apkopotā veidā mēra lapas izmantošanu — apmeklētās lapas un darbības, piemēram, konfigurācijas ģenerēšanu vai saglabāšanu —, lai mēs varētu lapu uzlabot. Tas darbojas tikai tad, ja esat piekritis analītikas sīkdatnēm. Sīkāku informāciju skatiet Google privātuma politikā (policies.google.com/privacy).",
+          "Resend: piegādā mūsu apstiprināšanas un ar kontu saistītos e-pastus. Piegādes nolūkos tas apstrādā jūsu e-pasta adresi un vēstules saturu; sīkāku informāciju skatiet Resend privātuma politikā (resend.com/legal/privacy-policy)."
         ]
       },
       {
         "heading": "Starptautiska datu nodošana",
-        "body": "Daži no mūsu pakalpojumu sniedzējiem, tostarp Cloudflare un iespējams mūsu e-pasta piegādes pakalpojums, var apstrādāt datus ārpus ES/EEZ. Šādos gadījumos mēs paļaujamies uz VDAR noteiktajiem atbilstošajiem aizsardzības pasākumiem, piemēram, Standarta līguma klauzulām, lai nodrošinātu jūsu datu aizsardzību."
+        "body": "Daži no mūsu pakalpojumu sniedzējiem, tostarp Cloudflare, Google un Resend, var apstrādāt datus ārpus ES/EEZ. Šādos gadījumos mēs paļaujamies uz VDAR noteiktajiem atbilstošajiem aizsardzības pasākumiem, piemēram, Standarta līguma klauzulām vai ES un ASV datu privātuma regulējumu (EU–US Data Privacy Framework), lai nodrošinātu jūsu datu aizsardzību."
       },
       {
         "heading": "Datu uzglabāšanas ilgums",

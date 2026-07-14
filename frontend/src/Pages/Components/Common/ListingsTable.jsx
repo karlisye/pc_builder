@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { formatPrice } from '../../../lib/componentPrice';
 import { formatDate } from '../../../lib/formatDate';
 import { useLang } from '../../../lib/localePath';
+import { trackEvent } from '../../../lib/analytics';
 
 const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -53,7 +54,10 @@ const ListingsTable = ({ listings, breakpoint = 'sm', onVisit }) => {
             href={listing.url}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={onVisit ? (e) => onVisit(e, listing) : undefined}
+            onClick={(e) => {
+              trackEvent('store_link_click', { store: listing.source });
+              onVisit?.(e, listing);
+            }}
             className={`px-4 py-4 bg-primary text-white text-sm hover:bg-primary-light transition cursor-pointer text-center ${LINK_CLASSES[breakpoint]}`}
           >
             {t('componentCard.seeInStore')}
