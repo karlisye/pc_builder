@@ -22,7 +22,7 @@
     "necessaryLabel": "Necessary",
     "necessaryDescription": "Required for login and core site functionality. Always on.",
     "analyticsLabel": "Analytics",
-    "analyticsDescription": "Helps us understand how visitors use the site.",
+    "analyticsDescription": "Google Analytics — helps us understand how visitors use the site. Only loads if you allow it.",
     "close": "Close"
   },
   "verifyEmail": {

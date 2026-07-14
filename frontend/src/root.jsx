@@ -15,6 +15,7 @@ import { ToastProvider } from './Contexts/ToastContext';
 import { ConsentProvider } from './Contexts/ConsentContext';
 import ToastContainer from './Pages/Components/Common/ToastContainer';
 import ConsentBanner from './Pages/Components/Common/ConsentBanner';
+import AnalyticsTracker from './Pages/Components/Common/AnalyticsTracker';
 import NotFound from './Pages/NotFound';
 import { langFromParams } from './lib/localePath';
 
@@ -60,6 +61,7 @@ export default function Root() {
           <ToastContainer />
           <ConsentProvider>
             <ConsentBanner />
+            <AnalyticsTracker />
             <Outlet />
           </ConsentProvider>
         </ToastProvider>

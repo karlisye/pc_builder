@@ -22,7 +22,7 @@
     "necessaryLabel": "Nepieciešamās",
     "necessaryDescription": "Nepieciešamas pieslēgšanās un pamata funkcionalitātes nodrošināšanai. Vienmēr aktīvas.",
     "analyticsLabel": "Analītika",
-    "analyticsDescription": "Palīdz mums saprast, kā apmeklētāji izmanto lapu.",
+    "analyticsDescription": "Google Analytics — palīdz mums saprast, kā apmeklētāji izmanto lapu. Tiek ielādēts tikai ar jūsu atļauju.",
     "close": "Aizvērt"
   },
   "verifyEmail": {
