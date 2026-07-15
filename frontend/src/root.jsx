@@ -19,7 +19,7 @@ import AnalyticsTracker from './Pages/Components/Common/AnalyticsTracker';
 import NotFound from './Pages/NotFound';
 import { langFromParams } from './lib/localePath';
 
-export const links = () => [];
+export const links = () => [{ rel: 'icon', type: 'image/svg+xml', href: '/icon.svg' }];
 
 export function Layout({ children }) {
   const params = useParams();
