@@ -8,13 +8,28 @@ const LegalDocument = ({ docKey }) => {
   const lp = useLocalePath();
   const sections = t(`${docKey}.sections`, { returnObjects: true, defaultValue: [] });
   const lastUpdated = t(`${docKey}.lastUpdated`, { defaultValue: '' });
+  const intro = t(`${docKey}.intro`);
+  const emailRegex = /[\w.+-]+@[\w-]+\.[\w-]+(?:\.[\w-]+)*/g;
+  const introParts = intro.split(emailRegex);
+  const introEmails = intro.match(emailRegex) || [];
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-10">
       <h1 className="text-4xl font-semibold mb-1 text-text">{t(`${docKey}.title`)}</h1>
       {lastUpdated && <p className="text-muted text-sm mb-8">{lastUpdated}</p>}
 
-      <p className="text-text mb-8">{t(`${docKey}.intro`)}</p>
+      <p className="text-text mb-8">
+        {introParts.map((part, i) => (
+          <React.Fragment key={i}>
+            {part}
+            {introEmails[i] && (
+              <a href={`mailto:${introEmails[i]}`} className="text-info underline">
+                {introEmails[i]}
+              </a>
+            )}
+          </React.Fragment>
+        ))}
+      </p>
 
       <div className="space-y-8">
         {sections.map((section, i) => (
