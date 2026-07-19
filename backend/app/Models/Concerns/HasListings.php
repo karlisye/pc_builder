@@ -16,9 +16,6 @@ trait HasListings
       ->where('component_type', $this->getTable());
   }
 
-  // cheapest non-out-of-stock listing, falling back to any listing if none are available
-  // memoized per instance since price/stock_status/stock_quantity/url all call this.
-  // reuses the eager-loaded `listings` relation when present, to avoid a query per component.
   public function cheapestListing(): ?Listing
   {
     if (! $this->cheapestListingResolved) {
@@ -41,8 +38,6 @@ trait HasListings
     return $this->cheapestListingCache;
   }
 
-  // virtual attributes kept for backwards compatibility with code that
-  // expects price/stock_status/stock_quantity/url directly on the component
   public function getPriceAttribute()
   {
     return $this->cheapestListing()?->price;

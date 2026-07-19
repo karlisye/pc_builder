@@ -87,10 +87,6 @@ class CompatibilityService
     $paginator->getCollection()->transform(function ($item) use ($type, $selectedIdForType, $compatibleIds, $caseHasPsu) {
       $item->selected = ($item->id === $selectedIdForType);
       $item->compatible = in_array($item->id, $compatibleIds);
-      // intrinsic to the item itself — missing spec data needed to verify fit against
-      // *any* counterpart, independent of what else is currently selected (a case with no
-      // max_gpu_length is unverifiable regardless of which GPU you're browsing, but that
-      // shouldn't taint every GPU in the list — see ComponentFilters::hasUnverifiableSpecs())
       $item->needs_manual_check = ComponentFilters::hasUnverifiableSpecs($type, $item);
       $item->out_of_stock = $item->stock_status === 'out_of_stock';
       if ($caseHasPsu) {
@@ -121,30 +117,36 @@ class CompatibilityService
     // cpu / motherboard socket
     if ($cpu && $mb && $cpu->socket !== $mb->socket) {
       $issues['cpu'][] = __('compatibility.cpu_socket_mismatch', [
-        'cpu_socket' => $cpu->socket, 'mb_socket' => $mb->socket,
+        'cpu_socket' => $cpu->socket,
+        'mb_socket' => $mb->socket,
       ]);
       $issues['motherboard'][] = __('compatibility.motherboard_socket_mismatch', [
-        'mb_socket' => $mb->socket, 'cpu_socket' => $cpu->socket,
+        'mb_socket' => $mb->socket,
+        'cpu_socket' => $cpu->socket,
       ]);
     }
 
     // motherboard / ram memory type
     if ($mb && $ram && $mb->memory_type !== $ram->memory_type) {
       $issues['motherboard'][] = __('compatibility.motherboard_memory_mismatch', [
-        'mb_type' => $mb->memory_type, 'ram_type' => $ram->memory_type,
+        'mb_type' => $mb->memory_type,
+        'ram_type' => $ram->memory_type,
       ]);
       $issues['ram'][] = __('compatibility.ram_memory_mismatch', [
-        'ram_type' => $ram->memory_type, 'mb_type' => $mb->memory_type,
+        'ram_type' => $ram->memory_type,
+        'mb_type' => $mb->memory_type,
       ]);
     }
 
     // cpu / ram memory type
     if ($cpu && $ram && $cpu->memory_type && !CompatibilityHelper::cpuSupportsRamType($cpu->memory_type, $ram->memory_type)) {
       $issues['cpu'][] = __('compatibility.cpu_ram_memory_mismatch', [
-        'cpu_type' => $cpu->memory_type, 'ram_type' => $ram->memory_type,
+        'cpu_type' => $cpu->memory_type,
+        'ram_type' => $ram->memory_type,
       ]);
       $issues['ram'][] = __('compatibility.ram_cpu_memory_mismatch', [
-        'ram_type' => $ram->memory_type, 'cpu_type' => $cpu->memory_type,
+        'ram_type' => $ram->memory_type,
+        'cpu_type' => $cpu->memory_type,
       ]);
     }
 
@@ -159,10 +161,12 @@ class CompatibilityService
     if ($ram && $mb && $ram->modules_count !== null && $mb->memory_slots !== null) {
       if ($ram->modules_count > $mb->memory_slots) {
         $issues['ram'][] = __('compatibility.ram_too_many_modules', [
-          'modules' => $ram->modules_count, 'slots' => $mb->memory_slots,
+          'modules' => $ram->modules_count,
+          'slots' => $mb->memory_slots,
         ]);
         $issues['motherboard'][] = __('compatibility.motherboard_not_enough_slots', [
-          'slots' => $mb->memory_slots, 'modules' => $ram->modules_count,
+          'slots' => $mb->memory_slots,
+          'modules' => $ram->modules_count,
         ]);
       }
     }
@@ -171,10 +175,12 @@ class CompatibilityService
     if ($ram && $mb && $ram->capacity !== null && $mb->max_memory_capacity !== null) {
       if ($ram->capacity > $mb->max_memory_capacity) {
         $issues['ram'][] = __('compatibility.ram_exceeds_max_capacity', [
-          'ram_capacity' => $ram->capacity, 'mb_max' => $mb->max_memory_capacity,
+          'ram_capacity' => $ram->capacity,
+          'mb_max' => $mb->max_memory_capacity,
         ]);
         $issues['motherboard'][] = __('compatibility.motherboard_max_capacity_exceeded', [
-          'mb_max' => $mb->max_memory_capacity, 'ram_capacity' => $ram->capacity,
+          'mb_max' => $mb->max_memory_capacity,
+          'ram_capacity' => $ram->capacity,
         ]);
       }
     }
@@ -183,10 +189,12 @@ class CompatibilityService
     if ($ram && $mb && $ram->frequency !== null && $mb->memory_max_speed !== null) {
       if ($ram->frequency > $mb->memory_max_speed) {
         $issues['ram'][] = __('compatibility.ram_speed_exceeds_mb_max', [
-          'ram_freq' => $ram->frequency, 'mb_max' => $mb->memory_max_speed,
+          'ram_freq' => $ram->frequency,
+          'mb_max' => $mb->memory_max_speed,
         ]);
         $issues['motherboard'][] = __('compatibility.mb_max_speed_exceeded', [
-          'mb_max' => $mb->memory_max_speed, 'ram_freq' => $ram->frequency,
+          'mb_max' => $mb->memory_max_speed,
+          'ram_freq' => $ram->frequency,
         ]);
       }
     }
@@ -195,10 +203,12 @@ class CompatibilityService
     if ($gpu && $case && $gpu->length_mm !== null && $case->max_gpu_length !== null) {
       if ($gpu->length_mm > $case->max_gpu_length) {
         $issues['gpu'][] = __('compatibility.gpu_too_long', [
-          'gpu_length' => $gpu->length_mm, 'case_max_length' => $case->max_gpu_length,
+          'gpu_length' => $gpu->length_mm,
+          'case_max_length' => $case->max_gpu_length,
         ]);
         $issues['case'][] = __('compatibility.case_too_small_gpu', [
-          'case_max_length' => $case->max_gpu_length, 'gpu_length' => $gpu->length_mm,
+          'case_max_length' => $case->max_gpu_length,
+          'gpu_length' => $gpu->length_mm,
         ]);
       }
     }
@@ -207,10 +217,12 @@ class CompatibilityService
     if ($cooler && $case && $cooler->height_mm !== null && $case->max_cpu_cooler_height !== null) {
       if ($cooler->height_mm > $case->max_cpu_cooler_height) {
         $issues['cooler'][] = __('compatibility.cooler_too_tall', [
-          'cooler_height' => $cooler->height_mm, 'case_max_height' => $case->max_cpu_cooler_height,
+          'cooler_height' => $cooler->height_mm,
+          'case_max_height' => $case->max_cpu_cooler_height,
         ]);
         $issues['case'][] = __('compatibility.case_too_small_cooler', [
-          'case_max_height' => $case->max_cpu_cooler_height, 'cooler_height' => $cooler->height_mm,
+          'case_max_height' => $case->max_cpu_cooler_height,
+          'cooler_height' => $cooler->height_mm,
         ]);
       }
     }
@@ -229,18 +241,18 @@ class CompatibilityService
     if ($cooler && $cpu && $cooler->tdp_support !== null && $cpu->tdp !== null) {
       if ($cooler->tdp_support < $cpu->tdp) {
         $issues['cooler'][] = __('compatibility.cooler_tdp_too_low', [
-          'cooler_tdp' => $cooler->tdp_support, 'cpu_tdp' => $cpu->tdp,
+          'cooler_tdp' => $cooler->tdp_support,
+          'cpu_tdp' => $cpu->tdp,
         ]);
         $issues['cpu'][] = __('compatibility.cpu_tdp_too_high', [
-          'cpu_tdp' => $cpu->tdp, 'cooler_tdp' => $cooler->tdp_support,
+          'cpu_tdp' => $cpu->tdp,
+          'cooler_tdp' => $cooler->tdp_support,
         ]);
       }
     }
 
     // motherboard / case form factor
     if ($mb && $case && $mb->form_factor && $case->form_factor) {
-      // unrecognized case labels (e.g. "Raspberry Pi") are treated the same way the auto-builder's
-      // filters treat them: pull a known size out of the label, or assume the smallest known size
       $effectiveCaseFormFactor = CompatibilityHelper::isKnownCaseFormFactor($case->form_factor)
         ? $case->form_factor
         : (CompatibilityHelper::inferKnownCaseFormFactor($case->form_factor) ?? 'mITX');
@@ -248,10 +260,12 @@ class CompatibilityService
       $compatibleMotherboards = CompatibilityHelper::compatibleMotherboardsFor($effectiveCaseFormFactor);
       if (!empty($compatibleMotherboards) && !in_array($mb->form_factor, $compatibleMotherboards)) {
         $issues['motherboard'][] = __('compatibility.motherboard_form_factor_incompatible', [
-          'mb_form' => $mb->form_factor, 'case_form' => $case->form_factor,
+          'mb_form' => $mb->form_factor,
+          'case_form' => $case->form_factor,
         ]);
         $issues['case'][] = __('compatibility.case_form_factor_incompatible', [
-          'case_form' => $case->form_factor, 'mb_form' => $mb->form_factor,
+          'case_form' => $case->form_factor,
+          'mb_form' => $mb->form_factor,
         ]);
       }
     }
@@ -280,10 +294,12 @@ class CompatibilityService
     if ($psu && $case && $psu->psu_type && $case->form_factor) {
       if (CompatibilityHelper::isAtxCaseFormFactor($case->form_factor) && $psu->psu_type !== 'ATX') {
         $issues['psu'][] = __('compatibility.psu_form_factor_atx_case', [
-          'psu_type' => $psu->psu_type, 'case_form' => $case->form_factor,
+          'psu_type' => $psu->psu_type,
+          'case_form' => $case->form_factor,
         ]);
         $issues['case'][] = __('compatibility.case_psu_form_factor_mismatch', [
-          'case_form' => $case->form_factor, 'psu_type' => $psu->psu_type,
+          'case_form' => $case->form_factor,
+          'psu_type' => $psu->psu_type,
         ]);
       }
     }
@@ -301,10 +317,12 @@ class CompatibilityService
         $psuConn = CompatibilityHelper::parsePsuPcieConnectors($psu->pcie_connectors);
         if ($psuConn < $gpuConn['required_traditional']) {
           $issues['gpu'][] = __('compatibility.gpu_insufficient_pcie_connectors', [
-            'required' => $gpuConn['required_traditional'], 'available' => $psuConn,
+            'required' => $gpuConn['required_traditional'],
+            'available' => $psuConn,
           ]);
           $issues['psu'][] = __('compatibility.psu_insufficient_pcie_connectors', [
-            'available' => $psuConn, 'required' => $gpuConn['required_traditional'],
+            'available' => $psuConn,
+            'required' => $gpuConn['required_traditional'],
           ]);
         }
       }
@@ -333,7 +351,8 @@ class CompatibilityService
       }
       if ($sataCount > $mb->sata_ports) {
         $issues['motherboard'][] = __('compatibility.motherboard_sata_ports_exceeded', [
-          'count' => $sataCount, 'ports' => $mb->sata_ports,
+          'count' => $sataCount,
+          'ports' => $mb->sata_ports,
         ]);
       }
     }
@@ -356,7 +375,6 @@ class CompatibilityService
       $issues['case'][] = __('compatibility.case_psu_already_included');
     }
 
-    // psu wattage (unified: cpu+gpu, or gpu-only)
     // use case psu_wattage when no separate PSU is selected but case includes one
     $effectivePsuWattage = $psu?->wattage ?? ($case?->psu_included ? $case->psu_wattage : null);
     if ($effectivePsuWattage !== null && $gpu) {
@@ -372,7 +390,8 @@ class CompatibilityService
       if ($requiredWattage > 0 && $effectivePsuWattage < $requiredWattage) {
         $targetKey = $psu ? 'psu' : 'case';
         $issues[$targetKey][] = __('compatibility.psu_insufficient_wattage', [
-          'psu_wattage' => $effectivePsuWattage, 'required' => ceil($requiredWattage),
+          'psu_wattage' => $effectivePsuWattage,
+          'required' => ceil($requiredWattage),
         ]);
         if ($cpu) {
           $issues['cpu'][] = __('compatibility.cpu_psu_wattage_too_low');

@@ -40,7 +40,16 @@ class CompatibilityHelper
 
   // ATX-class case form factors — only accept ATX PSUs
   public const KNOWN_ATX_CASE_FORM_FACTORS = [
-    'XL ATX', 'Extended ATX', 'E-ATX', 'EEB', 'SSI-EEB', 'SSI-CEB', 'CEB', 'ATX', 'mATX', 'Micro ATX',
+    'XL ATX',
+    'Extended ATX',
+    'E-ATX',
+    'EEB',
+    'SSI-EEB',
+    'SSI-CEB',
+    'CEB',
+    'ATX',
+    'mATX',
+    'Micro ATX',
   ];
 
   // known case sizes
@@ -90,8 +99,6 @@ class CompatibilityHelper
     return $ff && in_array($ff, self::KNOWN_CASE_FORM_FACTORS, true);
   }
 
-  // scraped case form factors are sometimes unrecognized labels that still mention a known
-  // size (e.g. "Rack 1U mITX") — pull that known size back out so it isn't treated as fully exotic
   public static function inferKnownCaseFormFactor(string $formFactor): ?string
   {
     $matches = array_filter(
@@ -113,7 +120,6 @@ class CompatibilityHelper
     return $ff !== null && in_array($ff, self::KNOWN_ATX_CASE_FORM_FACTORS, true);
   }
 
-  // Returns ['requires_16pin' => bool, 'required_traditional' => int]
   public static function parseGpuConnectors(?string $connectors): array
   {
     if (!$connectors) {
@@ -153,5 +159,4 @@ class CompatibilityHelper
     }
     return $cpuMemType === $ramMemType;
   }
-
 }

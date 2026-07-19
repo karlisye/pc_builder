@@ -8,9 +8,6 @@ return new class extends Migration
 {
   public function up(): void
   {
-    // rename to match the max_* naming convention used by max_gpu_length,
-    // max_cpu_cooler_height, max_psu_length (doctrine/dbal isn't installed,
-    // so drop + re-add instead of ->renameColumn())
     Schema::table('cases', function (Blueprint $table) {
       $table->dropColumn('radiator_support');
     });

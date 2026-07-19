@@ -38,7 +38,7 @@ class SitemapController extends Controller
 
       foreach (CompatibilityService::VALID_TYPES as $type => $modelClass) {
         $modelClass::query()
-          ->whereHas('listings', fn ($q) => $q->whereIn('stock_status', ['in_stock', 'orderable']))
+          ->whereHas('listings', fn($q) => $q->whereIn('stock_status', ['in_stock', 'orderable']))
           ->select('product_code')
           ->withMax('listings', 'scraped_at')
           ->chunk(500, function ($rows) use (&$urls, $type) {
@@ -61,8 +61,6 @@ class SitemapController extends Controller
     return response($xml, 200, ['Content-Type' => 'application/xml']);
   }
 
-  // One <url> per locale variant (LV unprefixed + /en), each carrying the
-  // hreflang alternates for both.
   private function entry(string $path, ?string $lastmod, string $priority): string
   {
     $lv = $this->site . $path;
