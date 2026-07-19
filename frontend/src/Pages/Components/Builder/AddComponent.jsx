@@ -25,6 +25,7 @@ const AddComponent = () => {
   const [pickBestOpen, setPickBestOpen] = useState(false);
   const pickBestRef = useRef(null);
   const pickBestButtonRef = useRef(null);
+  const selectionInProgressRef = useRef(false);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -57,6 +58,12 @@ const AddComponent = () => {
 
   // The selection isn't in the URL, so reset pagination ourselves when it changes.
   useEffect(() => {
+    // Selecting a part changes selectedKey immediately before the picker route
+    // unmounts. Do not let this effect update the picker's URL during that
+    // navigation, otherwise it can keep/reopen AddComponent (most visibly when
+    // selecting an incompatible part from an expanded card on page 2+).
+    if (selectionInProgressRef.current) return;
+
     if (Number(searchParams.get('page') ?? 1) > 1) {
       setSearchParams(
         (prev) => {
@@ -122,6 +129,7 @@ const AddComponent = () => {
   };
 
   const handleSelect = (component) => {
+    selectionInProgressRef.current = true;
     setSelectedComponents((prev) => ({
       ...prev,
       [type]: component,
