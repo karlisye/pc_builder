@@ -54,8 +54,6 @@ describe('user route ownership', function () {
 });
 
 describe('forgot password', function () {
-  // the container env carries the real dev TURNSTILE_SECRET_KEY, which would
-  // make verifyTurnstile() call Cloudflare for real — disable it per-test
   beforeEach(function () {
     config(['services.turnstile.secret' => null]);
   });

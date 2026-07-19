@@ -329,10 +329,6 @@ it('auto-generated psu wattage is capped near what the build needs, not maxed ou
   $wattage = $res->json('build.psu.wattage');
   expect($wattage)->not->toBeNull();
 
-  // scoring also weighs efficiency/modularity, so this isn't pinned to the
-  // scorer's exact headroom multiplier - just asserts it stays in the
-  // ballpark of what the build needs instead of maxing out at the highest
-  // wattage available (which would be 1600W+ for this low-power build)
   $requiredWattage = max(($cpu->tdp + $gpu->tdp) * 1.3, $gpu->min_psu ?? 0);
   $generousCeiling = max($requiredWattage * 3, 900);
 
@@ -358,9 +354,6 @@ it('auto-generated cpu+gpu combo does not exceed a preselected weak psu', functi
   expect($cpuTdp)->not->toBeNull();
   expect($gpuTdp)->not->toBeNull();
 
-  // fan is picked after psu/gpu so its few watts aren't known at filter
-  // time - allow a small tolerance for that instead of pinning to the exact
-  // formula (see design-decisions.md for why this residual gap is accepted)
   $required = max(($cpuTdp + $gpuTdp + $ramModules * 5) * 1.3, $gpuMinPsu ?? 0);
 
   expect($required)->toBeLessThanOrEqual($psu->wattage * 1.15);

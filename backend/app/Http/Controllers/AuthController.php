@@ -126,8 +126,6 @@ class AuthController extends Controller
       ], 422);
     }
 
-    // Always report success so the endpoint can't be used to probe which
-    // emails have accounts. The broker's own throttle limits resends.
     PasswordBroker::sendResetLink($request->only('email'));
 
     return response()->json(['message' => __('messages.reset_link_sent')]);

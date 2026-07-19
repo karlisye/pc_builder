@@ -83,8 +83,6 @@ export const AuthProvider = ({ children }) => {
 
 export const useAuth = () => useContext(AuthContext);
 
-// Client-side guards — the SSR server never sees Sanctum cookies, so auth
-// pages render null on the server and resolve after the /api/user fetch.
 export const GuestRoute = ({ children }) => {
   const { user } = useAuth();
   const lp = useLocalePath();
