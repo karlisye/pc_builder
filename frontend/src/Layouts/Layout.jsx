@@ -8,8 +8,6 @@ import LanguageSwitcher from '../Pages/Components/Common/LanguageSwitcher';
 import VerifyEmailBanner from '../Pages/Components/Common/VerifyEmailBanner';
 import { stripLocale, useLocalePath } from '../lib/localePath';
 
-// `children` is only passed when rendered from an ErrorBoundary, where
-// <Outlet /> has nothing to render.
 const Layout = ({ children }) => {
   const { t } = useTranslation(['layout', 'common']);
   const { user, logout } = useAuth();
@@ -25,9 +23,6 @@ const Layout = ({ children }) => {
   const menuRef = useRef(null);
   const menuButtonRef = useRef(null);
 
-  // The window never scrolls (h-screen overflow-hidden root) — #page-scroll is
-  // the real scroll container, so root.jsx's <ScrollRestoration /> can't reach
-  // it. Query-param changes (picker filters/sort/page) must not reset scroll.
   useEffect(() => {
     document.getElementById('page-scroll')?.scrollTo(0, 0);
   }, [pathname]);

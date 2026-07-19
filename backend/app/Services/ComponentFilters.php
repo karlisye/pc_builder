@@ -8,11 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class ComponentFilters
 {
-  // Whether $item is missing a spec field that a compatibility check relies on, independent of
-  // what else is currently selected — e.g. a case with no max_gpu_length can never have its GPU
-  // fit verified, no matter which GPU is being compared. This is intentionally intrinsic to the
-  // item itself (not the current selection pair), so it doesn't taint every candidate on the
-  // *other* side of a comparison — see CompatibilityService::getCompatible().
   public static function hasUnverifiableSpecs(string $type, Model $item): bool
   {
     return match ($type) {
@@ -189,12 +184,6 @@ class ComponentFilters
       });
     }
 
-    // PSU traditional PCIe connector count (6/8/6+2-pin): GPU candidates that need more
-    // than the selected PSU provides are incompatible. Separate from the 16-pin check
-    // above (that only covers ATX 3.0-style connectors) and can't be expressed as a plain
-    // column comparison since both fields are free-text, so candidates are materialized
-    // and filtered in PHP via the same parse helpers validateBuild() uses — mirrors the
-    // pluck-ids-then-constrain idiom CompatibilityService::getCompatible() already uses.
     if ($psu = $selected['psu'] ?? null) {
       $psuTraditional = $psu->pcie_connectors !== null
         ? CompatibilityHelper::parsePsuPcieConnectors($psu->pcie_connectors)
@@ -365,10 +354,6 @@ class ComponentFilters
         }
       }
 
-      // GPU traditional PCIe connector count (6/8/6+2-pin): PSU candidates must provide
-      // at least as many as the GPU needs. See the mirrored block in
-      // ComponentFilters::gpu() for why this is done via materialize-then-exclude
-      // instead of a plain column comparison.
       if ($gpuConn['required_traditional'] > 0) {
         $excludedIds = (clone $query)->get(['id', 'pcie_connectors'])
           ->filter(function ($candidate) use ($gpuConn, $strict) {
@@ -495,10 +480,7 @@ class ComponentFilters
     }
   }
 
-  // Applies a numeric limit against $column. In loose mode (manual browsing) a null value
-  // on either side is treated as "can't rule it out" and let through — the frontend flags
-  // these as needing a manual check. In strict mode (auto-builder) null on either side means
-  // the fit can't be verified, so the candidate is excluded outright rather than guessed at.
+  // Applies a numeric limit against $column
   private static function limitBy(Builder $query, string $column, ?float $limit, string $operator, bool $strict): void
   {
     if ($limit === null) {

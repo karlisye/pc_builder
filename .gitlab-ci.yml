@@ -1,18 +1,15 @@
 # CI/CD for datorbuve.lv — main is the production branch.
 #
-# Required CI/CD variables (Settings > CI/CD > Variables):
-#   TEST_APP_KEY            any "base64:..." key for the test app (masked)
+# Required CI/CD variables:
+#   TEST_APP_KEY            any "base64:..." key for the test app
 #   VITE_TURNSTILE_SITE_KEY production Turnstile widget site key
-#   VITE_GA_MEASUREMENT_ID  production Google Analytics 4 Measurement ID (G-...)
+#   VITE_GA_MEASUREMENT_ID  production Google Analytics 4 Measurement ID
 #   SERVER_HOST             VPS IP
 #   SERVER_USER             deploy user on the VPS
 #   SSH_PRIVATE_KEY         private key for SERVER_USER (type: File)
 #
 # The full Pest suite runs against the sanitized component fixture in
 # backend/database/ci/components-dump.sql.gz (refresh with scripts/make-ci-dump.sh).
-#
-# Recommended GitLab settings: protect the `production` environment
-# (Settings > CI/CD > Protected environments) so only maintainers can deploy.
 
 stages:
   - test
@@ -31,7 +28,6 @@ backend-tests:
     MYSQL_USER: sail
     MYSQL_PASSWORD: cipass
     MYSQL_ROOT_PASSWORD: cipass
-    # real env vars beat .env.testing values (DB_HOST=mysql already matches)
     APP_ENV: testing
     APP_KEY: $TEST_APP_KEY
     DB_PASSWORD: cipass
@@ -42,19 +38,14 @@ backend-tests:
     paths:
       - backend/vendor/
   before_script:
-    # mariadb-connector-c supplies caching_sha2_password.so — without it the
-    # MariaDB client cannot authenticate against MySQL 8.4 at all
     - apk add --no-cache git unzip mariadb-client mariadb-connector-c $PHPIZE_DEPS
     - docker-php-ext-install pdo_mysql > /dev/null
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
   script:
     - cd backend
-    - touch .env  # phpdotenv warns if the base .env is missing; testing config comes from .env.testing
+    - touch .env
     - composer install --no-interaction --prefer-dist
     - php artisan migrate --force
-    # Alpine's client is MariaDB, so MySQL's --ssl-mode=DISABLED doesn't exist;
-    # keep TLS on but skip cert verification (MariaDB 11.4+ verifies by default
-    # and rejects MySQL 8.4's self-signed cert)
     - zcat database/ci/components-dump.sql.gz | mariadb --skip-ssl-verify-server-cert -hmysql -usail -pcipass pc_builder
     - php artisan test
   rules:
@@ -123,17 +114,13 @@ deploy:
   before_script:
     - apk add --no-cache openssh-client
     - mkdir -p ~/.ssh && chmod 700 ~/.ssh
-    # normalize the key: strip CRs and ensure a trailing newline — OpenSSH
-    # rejects the file ("error in libcrypto") if the paste lost the final \n
     - tr -d '\r' < "$SSH_PRIVATE_KEY" > ~/.ssh/id_deploy
     - '[ -n "$(tail -c1 ~/.ssh/id_deploy)" ] && echo >> ~/.ssh/id_deploy || true'
     - chmod 600 ~/.ssh/id_deploy
     - ssh-keyscan -H "$SERVER_HOST" >> ~/.ssh/known_hosts 2>/dev/null
   script:
     - scp -i ~/.ssh/id_deploy docker-compose.prod.yml frontend/docker/nginx.prod.conf "$SERVER_USER@$SERVER_HOST:/opt/datorbuve/"
-    # deploy the exact SHA-tagged images from this pipeline, never `latest`
     - ssh -i ~/.ssh/id_deploy "$SERVER_USER@$SERVER_HOST" "IMAGE_TAG=$CI_COMMIT_SHORT_SHA sh -s" < scripts/deploy.sh
-    # end-to-end smoke test through Cloudflare -> nginx -> Laravel
     - apk add --no-cache curl
     - curl -fsS -m 15 https://datorbuve.lv/up > /dev/null && echo "https://datorbuve.lv/up OK"
   environment:

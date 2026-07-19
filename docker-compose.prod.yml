@@ -1,7 +1,6 @@
-# Production compose — lives at /opt/datorbuve/ on the server (scp'd by the
-# deploy job). Images come from the GitLab Container Registry; nothing is
-# built or bind-mounted here. The real .env.production is created manually on
-# the server and never committed.
+# Production compose
+# lives at /opt/datorbuve/ on the server
+# The real .env.production is created manually on the server and never committed.
 services:
   frontend:
     image: registry.gitlab.com/karlisy/pc_builder/frontend-web:${IMAGE_TAG:-latest}
